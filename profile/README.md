@@ -4,16 +4,7 @@ Doel van het CEDA (Center for Educational Data Analytics) is om door middel van 
 
 Dit doet CEDA door succesvolle informatieproducten uit instellingen op te halen en praktisch toegankelijk te maken voor alle andere instellingen. We ontwikkelen in Python, R, Power BI en Azure. 
 
-In deze github-omgeving delen we alle code en dashboards. Voor meer informatie over CEDA en de door ons georganiseerde werkgroepen, workshops en sessies, zie de [CEDA-pagina](https://edu.nl/twt84) op het community platform.
-
-# CEDA Repositories
-# ED2C: Educational Data Competence Center
-
-Welkom bij het **Educational Data Competence Center (ED2C)**, een samenwerkingsinitiatief gericht op het bevorderen van data-gedreven oplossingen in het onderwijs. Onze missie is het ontwikkelen van open-source tools, datapijplijnen en samenwerkingsprojecten die de data-inzichten en analyses binnen onderwijsinstellingen verbeteren.
-
-## Over Ons
-
-Wij zijn een team dat zich inzet voor het benutten van data om betere onderwijsresultaten te bereiken. Onze projecten omvatten data-preparatie, visualisatie, analyse en documentatie. Hieronder vindt u een overzicht van onze repositories:
+In deze github-omgeving delen we alle code en dashboards. Voor meer informatie over CEDA en de door ons georganiseerde werkgroepen, workshops en sessies, zie de [CEDA-pagina](https://edu.nl/twt84) op het community platform of neem contact op met projectleider [Corneel den Hartogh](mailto:corneeldenhartogh@surf.nl).
 
 ### Analytics
 
