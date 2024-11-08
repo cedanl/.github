@@ -6,6 +6,8 @@ Dit doet CEDA door succesvolle informatieproducten uit instellingen op te halen 
 
 In deze github-omgeving delen we alle code en dashboards. Voor meer informatie over CEDA en de door ons georganiseerde werkgroepen, workshops en sessies, zie de [CEDA-pagina](https://edu.nl/twt84) op het community platform of neem contact op met projectleider [Corneel den Hartogh](mailto:corneeldenhartogh@surf.nl).
 
+## CEDA Repositories
+
 ### Analytics
 
 - **Instroomprognose**: Voorspellen van de instroom van studenten op basis van Studielink telbestanden.
