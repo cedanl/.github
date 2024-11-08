@@ -53,5 +53,6 @@ Wij verwelkomen bijdragen van de gemeenschap! Er zijn diverse mogelijkheden:
 5. **Organiseer met ons een reginale sessie** Laat het vooral weten als je hier interesse in hebt.
 
 ---
+## Contact
 
-**Contact**: Voor vragen kunt u contact opnemen met projectleider [Corneel den Hartogh](mailto:corneeldenhartogh@surf.nl).
+Voor algemene vragen kunt u contact opnemen met projectleider [Corneel den Hartogh](mailto:corneeldenhartogh@surf.nl).
