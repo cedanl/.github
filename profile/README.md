@@ -47,7 +47,7 @@ In deze github-omgeving delen we alle code en dashboards. Voor meer informatie o
 Wij verwelkomen bijdragen van de gemeenschap! Er zijn diverse mogelijkheden:
 
 1. **Maak een issue aan op één van de repositories** Geef een suggestie of stel een vraag.
-2. **Word lid van de [CEDA-pagina](https://edu.nl/twt84)) op het community platform** Zo blijf je op de hoogte.
+2. **Word lid van de [CEDA-pagina](https://edu.nl/twt84) op het community platform** Zo blijf je op de hoogte.
 3. **Neem deel aan een werkgroep** Geef je op via [dit formulier](https://edu.nl/ju7pe) en denk mee op specifieke onderwerpen.
 4. **Neem deel aan een workshop** Houd hiervoor het community platform in de gaten.
 5. **Organiseer met ons een reginale sessie** Laat het vooral weten als je hier interesse in hebt.
