@@ -25,7 +25,6 @@ In deze github-omgeving delen we alle code en dashboards. Voor meer informatie o
 
 - **1CijferHO ETL Tools**: Een Python tool die alle 1CijferHO bestanden uitpakt, koppelt en goede kolomnamen geeft.
   - [eencijfer](https://github.com/ed2c/eencijfer)
-
 - **1CijferHO Data verrijking**: Tool die obv 1CijferHO data afgeleide variabelen maakt mbt instroom, aansluitig en studiesucces.
   - [1cho_ins_preparation_r](https://github.com/ed2c/1cho_ins_preparation_r)
 
@@ -38,7 +37,6 @@ In deze github-omgeving delen we alle code en dashboards. Voor meer informatie o
 
 - **Publieke Activiteiten**: Repository voor presentaties van CEDA.
   - [public_activities](https://github.com/ed2c/public_activities)
-
 - **Centrum Documentatie**: Quarto-documentatie over de werkwijzen van CEDA.
   - [centre_documentation](https://github.com/ed2c/centre_documentation)
 
