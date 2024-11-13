@@ -11,9 +11,10 @@ In deze github-omgeving delen we alle code en dashboards. Voor meer informatie o
 ### Analytics
 
 - **Instroomprognose**: Voorspellen van de instroom van studenten op basis van Studielink telbestanden.
-  - [https://github.com/ed2c/studentprognose] 
+  - [instroomprognose](https://github.com/ed2c/studentprognose)
 - **Wisselstroom Analyse**: Analyseren van studentstromen door het onderwijs met behulp van DUO bekostigingsbestanden.
-  - [wisselstroom_analysis](https://github.com/ed2c/wisselstroom_analysis)
+  - [Wisselstroom how-to](https://github.com/ed2c/wisselstroom_demo)
+  - [Onderliggend package](https://github.com/ed2c/wisselstroom_demo)
 
 ### Visualisatie
 
@@ -24,9 +25,9 @@ In deze github-omgeving delen we alle code en dashboards. Voor meer informatie o
 ### Preparatie
 
 - **1CijferHO ETL Tools**: Een Python tool die alle 1CijferHO bestanden uitpakt, koppelt en goede kolomnamen geeft.
-  - [eencijfer](https://github.com/ed2c/eencijfer)
-- **1CijferHO Data verrijking**: Tool die obv 1CijferHO data afgeleide variabelen maakt mbt instroom, aansluitig en studiesucces.
-  - [1cho_ins_preparation_r](https://github.com/ed2c/1cho_ins_preparation_r)
+  - [1 Cijfer basis](https://github.com/ed2c/eencijfer)
+- **1CijferHO Data verrijking**: Tool die obv 1CijferHO data afgeleide variabelen maakt mbt instroom, aansluiting en studiesucces.
+  - [1 Cijfer verrijking](https://github.com/ed2c/1cho_ins_preparation_r)
 
 ### Tools en Hulpmiddelen
 
