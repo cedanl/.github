@@ -14,7 +14,7 @@ In deze github-omgeving delen we alle code en dashboards. Voor meer informatie o
   - [instroomprognose](https://github.com/ed2c/studentprognose)
 - **Wisselstroom Analyse**: Analyseren van studentstromen door het onderwijs met behulp van DUO bekostigingsbestanden.
   - [Wisselstroom how-to](https://github.com/ed2c/wisselstroom_demo)
-  - [Onderliggend package](https://github.com/ed2c/wisselstroom_demo)
+  - [Package Wisselstroom, nodig voor demo](https://github.com/ed2c/wisselstroom)
 
 ### Visualisatie
 
