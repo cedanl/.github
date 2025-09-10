@@ -2,7 +2,7 @@
 name: Test request
 about: Request data tests for specific files/flows
 title: "[TEST] "
-labels: ["testing"]
+labels: ["help wanted"]
 assignees: ""
 
 ---
