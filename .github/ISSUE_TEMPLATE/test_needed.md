@@ -1,9 +1,9 @@
 ---
 name: Test request
 about: Request data tests for specific files/flows
-title: "[TEST] "
-labels: ["help wanted"]
-assignees: ""
+title: '[TEST] '
+labels: 'help wanted'
+assignees: ''
 
 ---
 
