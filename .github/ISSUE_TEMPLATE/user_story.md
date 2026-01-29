@@ -1,5 +1,5 @@
 ---
-name: Shape Up User Story (Pitch-based)
+name: Shape Up User Story
 about: Maak een Shape Up-achtige user story/pitch aan
 title: '[PITCH] '
 labels: 'pitch, shape-up, product'
