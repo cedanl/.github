@@ -13,8 +13,8 @@ assignees: ''
 <!-- Hoeveel tijd willen we hieraan besteden? -->
 
 - [ ] Small (1-2 werkdagen)
+- [ ] Medium (3-5 werkdagen)
 - [ ] Large (hele sprint --> 6-8 werkdagen)
-- [ ] Custom: ______
 
 ## 3. Solution
 <!-- High-level aanpak, misschien enkele key elements -->
