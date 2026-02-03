@@ -19,7 +19,7 @@ jobs:
 
       - name: Sync labels to all repos
         env:
-          GH_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN }}
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
         run: |
           # Parse labels from YAML
           # Requires yq to be installed (comes with ubuntu-latest)
