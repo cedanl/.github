@@ -1,0 +1,51 @@
+name: Sync labels to all cedanl repos
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/labels.yml'
+  workflow_dispatch:
+  schedule:
+    # Wekelijks op maandag om 6:00 UTC
+    - cron: '0 6 * * 1'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync labels to all repos
+        env:
+          GH_TOKEN: ${{ secrets.LABEL_SYNC_TOKEN }}
+        run: |
+          # Parse labels from YAML
+          # Requires yq to be installed (comes with ubuntu-latest)
+
+          # Get all repos in cedanl org
+          repos=$(gh repo list cedanl --json name --jq '.[].name')
+
+          # Read labels from labels.yml
+          labels=$(yq eval -o=json '.[] | {"name": .name, "color": .color, "description": .description}' .github/labels.yml)
+
+          for repo in $repos; do
+            echo "Syncing labels to cedanl/$repo..."
+
+            # Create or update each label
+            echo "$labels" | while read -r label; do
+              name=$(echo "$label" | jq -r '.name')
+              color=$(echo "$label" | jq -r '.color')
+              description=$(echo "$label" | jq -r '.description')
+
+              # Try to create label, if it exists update it
+              gh label create "$name" \
+                --repo "cedanl/$repo" \
+                --color "$color" \
+                --description "$description" \
+                --force 2>/dev/null || true
+            done
+          done
+
+          echo "Label sync complete!"

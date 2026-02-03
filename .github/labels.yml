@@ -1,0 +1,20 @@
+# CEDA Labels - Centraal beheerd
+# Deze labels worden gesynchroniseerd naar alle cedanl repositories
+# via de sync-labels workflow
+
+# Domein labels
+- name: instroomprognose
+  color: "1D76DB"
+  description: Instroomprognose MBO
+
+- name: uitvalanalyse
+  color: "D93F0B"
+  description: Uitval analyses
+
+- name: tech
+  color: "5319E7"
+  description: Technische verbeteringen
+
+- name: project
+  color: "0E8A16"
+  description: Project organisatie

@@ -1,0 +1,77 @@
+name: Add issues to CEDA Board
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Elk uur
+    - cron: '0 * * * *'
+
+env:
+  PROJECT_NUMBER: 2
+  PROJECT_OWNER: cedanl
+
+jobs:
+  add-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add new issues to CEDA Board
+        env:
+          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+        run: |
+          # Get all repos in cedanl org
+          repos=$(gh repo list cedanl --json name --jq '.[].name')
+
+          # Get project ID
+          project_id=$(gh project view $PROJECT_NUMBER --owner $PROJECT_OWNER --format json --jq '.id')
+          echo "Project ID: $project_id"
+
+          # Get Issue Type field ID and option IDs
+          field_data=$(gh project field-list $PROJECT_NUMBER --owner $PROJECT_OWNER --format json)
+          type_field_id=$(echo "$field_data" | jq -r '.fields[] | select(.name == "Issue Type") | .id')
+          story_option_id=$(echo "$field_data" | jq -r '.fields[] | select(.name == "Issue Type") | .options[] | select(.name == "Story") | .id')
+          item_option_id=$(echo "$field_data" | jq -r '.fields[] | select(.name == "Issue Type") | .options[] | select(.name == "Item") | .id')
+          bug_option_id=$(echo "$field_data" | jq -r '.fields[] | select(.name == "Issue Type") | .options[] | select(.name == "Bug") | .id')
+
+          echo "Type Field ID: $type_field_id"
+
+          for repo in $repos; do
+            echo "Processing cedanl/$repo..."
+
+            # Get all open issues from this repo
+            issues=$(gh issue list --repo "cedanl/$repo" --state open --json number,title,nodeId --limit 100 2>/dev/null || echo "[]")
+
+            echo "$issues" | jq -c '.[]' | while read -r issue; do
+              node_id=$(echo "$issue" | jq -r '.nodeId')
+              title=$(echo "$issue" | jq -r '.title')
+              number=$(echo "$issue" | jq -r '.number')
+
+              # Try to add to project (will fail silently if already added)
+              item_id=$(gh project item-add $PROJECT_NUMBER --owner $PROJECT_OWNER --url "https://github.com/cedanl/$repo/issues/$number" --format json 2>/dev/null | jq -r '.id' || echo "")
+
+              if [ -n "$item_id" ] && [ "$item_id" != "null" ]; then
+                echo "Added issue #$number from $repo: $title"
+
+                # Determine type based on title prefix
+                type_option=""
+                if [[ "$title" == "[STORY]"* ]]; then
+                  type_option="$story_option_id"
+                elif [[ "$title" == "[ITEM]"* ]]; then
+                  type_option="$item_option_id"
+                elif [[ "$title" == "[BUG]"* ]]; then
+                  type_option="$bug_option_id"
+                fi
+
+                # Set the Issue Type field if we determined a type
+                if [ -n "$type_option" ] && [ -n "$type_field_id" ]; then
+                  gh project item-edit \
+                    --project-id "$project_id" \
+                    --id "$item_id" \
+                    --field-id "$type_field_id" \
+                    --single-select-option-id "$type_option" 2>/dev/null || true
+                  echo "  Set type for issue #$number"
+                fi
+              fi
+            done
+          done
+
+          echo "Sync complete!"
