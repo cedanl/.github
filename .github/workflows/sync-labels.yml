@@ -21,25 +21,22 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
         run: |
-          # Parse labels from YAML
-          # Requires yq to be installed (comes with ubuntu-latest)
-
           # Get all repos in cedanl org
           repos=$(gh repo list cedanl --json name --jq '.[].name')
 
-          # Read labels from labels.yml
-          labels=$(yq eval -o=json '.[] | {"name": .name, "color": .color, "description": .description}' .github/labels.yml)
+          # Read labels from labels.yml as JSON array
+          labels=$(yq eval -o=json '.' .github/labels.yml)
 
           for repo in $repos; do
             echo "Syncing labels to cedanl/$repo..."
 
-            # Create or update each label
-            echo "$labels" | while read -r label; do
+            # Iterate over each label in the array
+            echo "$labels" | jq -c '.[]' | while read -r label; do
               name=$(echo "$label" | jq -r '.name')
               color=$(echo "$label" | jq -r '.color')
               description=$(echo "$label" | jq -r '.description')
 
-              # Try to create label, if it exists update it
+              echo "  Creating/updating label: $name"
               gh label create "$name" \
                 --repo "cedanl/$repo" \
                 --color "$color" \
