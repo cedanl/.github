@@ -50,20 +50,20 @@ body:
     validations:
       required: false
 
-  - type: input
+  - type: textarea
     id: validated
     attributes:
       label: Gevalideerd met
-      description: Met wie is deze pitch afgestemd? Gebruik @username om te taggen.
-      placeholder: "@username"
+      description: Met wie is deze pitch afgestemd? Typ @ voor autocomplete.
+      placeholder: "@"
     validations:
       required: false
 
-  - type: input
+  - type: textarea
     id: sparring
     attributes:
       label: Sparring partner
-      description: Met wie kun je snel sparren? Gebruik @username om te taggen.
-      placeholder: "@username"
+      description: Met wie kun je snel sparren? Typ @ voor autocomplete.
+      placeholder: "@"
     validations:
       required: false
