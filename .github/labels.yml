@@ -1,6 +1,6 @@
 # CEDA Labels - Centraal beheerd
-# Deze labels worden gesynchroniseerd naar alle cedanl repositories
 
+# Domein labels
 - name: instroom
   color: "1D76DB"
   description: Instroomprognose MBO
@@ -16,3 +16,8 @@
 - name: project
   color: "0E8A16"
   description: Project organisatie
+
+# Status labels
+- name: needs-shaping
+  color: "FBCA04"
+  description: Pitch die nog gevormd moet worden

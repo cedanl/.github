@@ -6,55 +6,18 @@ body:
     id: description
     attributes:
       label: Beschrijving
-      description: Korte beschrijving van de bug
-      placeholder: Beschrijf de bug...
-    validations:
-      required: true
+      description: |
+        Beschrijf de bug en hoe deze te reproduceren.
 
-  - type: textarea
-    id: steps
-    attributes:
-      label: Stappen om te reproduceren
-      description: Hoe kunnen we de bug reproduceren?
+        Optioneel: verwacht/huidig gedrag, screenshots, logs, omgeving.
       placeholder: |
-        1.
-        2.
-        3.
+        **Wat gaat er mis?**
+        ...
+
+        **Stappen om te reproduceren:**
+        1. ...
+
+        **Screenshots / Logs (optioneel):**
+        ...
     validations:
       required: true
-
-  - type: textarea
-    id: expected
-    attributes:
-      label: Verwacht gedrag
-      description: Wat zou er moeten gebeuren?
-      placeholder: Beschrijf het verwachte gedrag...
-    validations:
-      required: true
-
-  - type: textarea
-    id: actual
-    attributes:
-      label: Huidig gedrag
-      description: Wat gebeurt er nu?
-      placeholder: Beschrijf wat er nu gebeurt...
-    validations:
-      required: true
-
-  - type: textarea
-    id: screenshots
-    attributes:
-      label: Screenshots / Logs
-      description: Voeg screenshots of relevante logs toe indien beschikbaar
-      placeholder: Sleep afbeeldingen hierheen of plak logs...
-    validations:
-      required: false
-
-  - type: input
-    id: environment
-    attributes:
-      label: Omgeving
-      description: OS, versie, branch, etc.
-      placeholder: "bijv. macOS 14, Python 3.11, main branch"
-    validations:
-      required: false

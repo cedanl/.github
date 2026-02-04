@@ -2,12 +2,6 @@ name: Pitch
 description: Shape Up pitch voor een groter stuk werk
 type: Pitch
 body:
-  - type: markdown
-    attributes:
-      value: |
-        ## Pitch aanmaken
-        Gebruik dit formulier om een Shape Up pitch te beschrijven.
-
   - type: textarea
     id: problem
     attributes:
@@ -23,9 +17,9 @@ body:
       label: Appetite (timebox)
       description: Hoeveel tijd willen we hieraan besteden?
       options:
-        - Small (1-2 werkdagen)
-        - Large (hele sprint, 6-8 werkdagen)
-        - Custom
+        - Small (1-2 dagen)
+        - Medium (3-4 dagen)
+        - Large (5-6 dagen)
     validations:
       required: true
 
@@ -36,13 +30,13 @@ body:
       description: High-level aanpak, misschien enkele key elements.
       placeholder: Beschrijf de oplossingsrichting...
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: risks
     attributes:
       label: Risks / Rabbit holes
-      description: Welke valkuilen moeten we vermijden? Welke elementen hebben risico om in te verdwalen?
+      description: Welke valkuilen moeten we vermijden?
       placeholder: Beschrijf risico's...
     validations:
       required: false
@@ -52,26 +46,6 @@ body:
     attributes:
       label: No-Gos
       description: Wat doen we expliciet NIET in deze versie?
-      placeholder: |
-        -
-        -
-    validations:
-      required: false
-
-  - type: input
-    id: validated
-    attributes:
-      label: Gevalideerd met
-      description: Naam collega / key-user met wie deze pitch is afgestemd
-      placeholder: Naam...
-    validations:
-      required: false
-
-  - type: input
-    id: sparring
-    attributes:
-      label: Sparring partner
-      description: Met wie kun je gedurende deze pitch snel sparren?
-      placeholder: Naam...
+      placeholder: Beschrijf no-gos...
     validations:
       required: false

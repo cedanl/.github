@@ -1,41 +1,22 @@
 name: Task
-description: Werkitem of taak (onderdeel van een pitch of standalone)
+description: Werkitem of taak
 type: Task
 body:
   - type: textarea
     id: description
     attributes:
       label: Beschrijving
-      description: Wat moet er gedaan worden?
-      placeholder: Beschrijf de taak...
+      description: |
+        Wat moet er gedaan worden?
+
+        Je kunt hier ook acceptatiecriteria en context toevoegen.
+      placeholder: |
+        Beschrijf de taak...
+
+        **Acceptatiecriteria:**
+        - [ ] ...
+
+        **Context:**
+        Links of achtergrond...
     validations:
       required: true
-
-  - type: textarea
-    id: acceptance
-    attributes:
-      label: Acceptatiecriteria
-      description: Wanneer is deze taak klaar?
-      placeholder: |
-        - [ ]
-        - [ ]
-    validations:
-      required: false
-
-  - type: textarea
-    id: context
-    attributes:
-      label: Context
-      description: Relevante links, gerelateerde issues, of achtergrond informatie.
-      placeholder: Links of context...
-    validations:
-      required: false
-
-  - type: input
-    id: parent
-    attributes:
-      label: Parent Pitch
-      description: Link naar de parent pitch indien van toepassing
-      placeholder: "#123 of URL"
-    validations:
-      required: false
