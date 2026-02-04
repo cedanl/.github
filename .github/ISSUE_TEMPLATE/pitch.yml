@@ -1,6 +1,10 @@
 name: Pitch
 description: Shape Up pitch voor een groter stuk werk
 type: Pitch
+labels: []
+assignees: []
+projects:
+  - cedanl/2
 body:
   - type: textarea
     id: problem

@@ -1,6 +1,10 @@
 name: Task
 description: Taak, item of werk unit
 type: Task
+labels: []
+assignees: []
+projects:
+  - cedanl/2
 body:
   - type: textarea
     id: description

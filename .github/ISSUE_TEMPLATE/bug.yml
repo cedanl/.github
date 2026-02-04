@@ -1,6 +1,10 @@
 name: Bug
 description: Rapporteer een bug of probleem
 type: Bug
+labels: []
+assignees: []
+projects:
+  - cedanl/2
 body:
   - type: textarea
     id: description
