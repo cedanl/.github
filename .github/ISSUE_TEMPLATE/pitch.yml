@@ -49,3 +49,21 @@ body:
       placeholder: Beschrijf no-gos...
     validations:
       required: false
+
+  - type: input
+    id: validated
+    attributes:
+      label: Gevalideerd met
+      description: Met wie is deze pitch afgestemd? Gebruik @username om te taggen.
+      placeholder: "@username"
+    validations:
+      required: false
+
+  - type: input
+    id: sparring
+    attributes:
+      label: Sparring partner
+      description: Met wie kun je snel sparren? Gebruik @username om te taggen.
+      placeholder: "@username"
+    validations:
+      required: false
