@@ -14,7 +14,7 @@ jobs:
   add-issues:
     runs-on: ubuntu-latest
     steps:
-      - name: Add new issues to CEDA Board
+      - name: Process issues across all repos
         env:
           GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
         run: |
@@ -24,18 +24,44 @@ jobs:
           for repo in $repos; do
             echo "Processing cedanl/$repo..."
 
+            # Determine default label based on repo name
+            default_label=""
+            if [[ "$repo" == *"instroom"* ]] || [[ "$repo" == *"prognose"* ]]; then
+              default_label="instroom"
+            elif [[ "$repo" == *"1cijfer"* ]] || [[ "$repo" == *"1cho"* ]]; then
+              default_label="uitval"
+            elif [[ "$repo" == *"uitval"* ]] || [[ "$repo" == *"vsv"* ]] || [[ "$repo" == *"uitnodiging"* ]]; then
+              default_label="uitval"
+            fi
+
             # Get all open issues from this repo
-            issues=$(gh issue list --repo "cedanl/$repo" --state open --json number,title --limit 100 2>/dev/null || echo "[]")
+            issues=$(gh issue list --repo "cedanl/$repo" --state open --json number,title,author,labels,assignees --limit 100 2>/dev/null || echo "[]")
 
             echo "$issues" | jq -c '.[]' | while read -r issue; do
-              title=$(echo "$issue" | jq -r '.title')
               number=$(echo "$issue" | jq -r '.number')
+              title=$(echo "$issue" | jq -r '.title')
+              author=$(echo "$issue" | jq -r '.author.login')
+              has_assignee=$(echo "$issue" | jq -r '.assignees | length')
+              current_labels=$(echo "$issue" | jq -r '.labels | map(.name) | join(",")')
 
-              # Try to add to project (will fail silently if already added)
+              # Auto-assign creator if no assignee
+              if [ "$has_assignee" -eq 0 ] && [ -n "$author" ]; then
+                gh issue edit "$number" --repo "cedanl/$repo" --add-assignee "$author" 2>/dev/null && \
+                  echo "  Assigned $author to #$number"
+              fi
+
+              # Add default label if not already labeled with a domain label
+              if [ -n "$default_label" ]; then
+                if [[ ! "$current_labels" =~ "instroom" ]] && [[ ! "$current_labels" =~ "uitval" ]] && [[ ! "$current_labels" =~ "tech" ]] && [[ ! "$current_labels" =~ "project" ]]; then
+                  gh issue edit "$number" --repo "cedanl/$repo" --add-label "$default_label" 2>/dev/null && \
+                    echo "  Added label '$default_label' to #$number"
+                fi
+              fi
+
+              # Add to project board
               result=$(gh project item-add $PROJECT_NUMBER --owner $PROJECT_OWNER --url "https://github.com/cedanl/$repo/issues/$number" 2>/dev/null || echo "skip")
-
               if [ "$result" != "skip" ]; then
-                echo "Added issue #$number from $repo: $title"
+                echo "  Added #$number to CEDA Board"
               fi
             done
           done
