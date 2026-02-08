@@ -7,6 +7,42 @@ description: Writing and maintaining GitHub issues and pull requests for cedanl 
 
 Standards for issues and pull requests in cedanl repositories.
 
+## Workflow
+
+When the user invokes `/write-issue [description]`:
+
+### 1. Bepaal issue type op basis van input
+
+| Input bevat | Type |
+|-------------|------|
+| Bug, fout, broken, kapot, error | Bug |
+| Groot werk, meerdere dagen, architectuur, evaluatie | Pitch |
+| Al het andere | Task |
+
+### 2. Formateer de issue body
+
+Gebruik het juiste template (zie secties hieronder). Neem de input van de user als basis en vul aan met context uit de codebase waar nodig.
+
+### 3. Bepaal labels
+
+Kies labels op basis van inhoud uit de beschikbare domein- en statuslabels hieronder.
+
+### 4. Maak de issue aan via gh
+
+```bash
+gh issue create \
+  --title "<titel>" \
+  --label "<label1>,<label2>" \
+  --body "$(cat <<'EOF'
+<geformatteerde body>
+EOF
+)"
+```
+
+### 5. Rapporteer het resultaat
+
+Toon de issue URL die `gh issue create` teruggeeft.
+
 ## Issue Types
 
 | Type | Use for |
