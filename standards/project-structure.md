@@ -51,9 +51,8 @@ De README is het visitekaartje van het project — gericht op **relevantie en ge
 6. **Contact / bijdragen** — wie verantwoordelijk is, hoe bij te dragen
 
 **Wat niet in de README hoort:**
-- Gedetailleerde projectstructuur (directory tree) → verplaats naar `CLAUDE.md` of `docs/`
-- Technische architectuurdocumentatie → verplaats naar `docs/architecture.md`
-- Uitgebreide API-documentatie → verplaats naar `docs/` of gegenereerde docs
+- Gedetailleerde projectstructuur (directory tree) → verplaats naar `CLAUDE.md`
+- Technische architectuurdocumentatie → verplaats naar `CLAUDE.md` of `vignettes/`
 
 ### Data directories
 
@@ -108,7 +107,7 @@ project-name/
 │   ├── app/                    # Shiny app for interactive mode
 │   │    ├── app.R
 │   │    └── config.yml         # Fixed config for local data paths
-│   └── metadata/               # Add additional mapping tables / reference data
+│   └── metadata/               # Mapping tables, reference data, data dictionary
 ├── data/
 │   ├── 01-raw/
 │   ├── 02-prepared/
@@ -131,7 +130,7 @@ project-name/
 - `main.R` sources the package and runs the pipeline end-to-end
 - Shiny app in `inst/app/` wraps package functions with a UI
 - `config.yml` in the app defines local data paths — users only need to set paths once
-- `renv` manages dependencies
+- `renv` manages dependencies, `air` for code formatting
 
 ### Python Variant
 
@@ -148,7 +147,7 @@ project-name/
 │       ├── decode.py           # Parse and transform
 │       ├── validate.py         # Quality checks
 │       ├── export.py           # Write Parquet + CSV output
-│       └── metadata/           # Mapping tables, reference data (inside package)
+│       └── metadata/           # Mapping tables, reference data, data dictionary
 │           ├── __init__.py
 │           └── field_definitions.csv
 ├── app/                        # Streamlit app for interactive mode
@@ -198,7 +197,7 @@ project-name/
 │   ├── app/                    # Shiny app for interactive mode
 │   │   ├── app.R
 │   │   └── config.yml
-│   ├── metadata/
+│   ├── metadata/               # Mapping tables, reference data, data dictionary
 │   └── templates/              # Report templates (Quarto/Rmd)
 ├── metadata/                   # Lookup tables, variable definitions
 ├── data/
@@ -239,7 +238,7 @@ project-name/
 │       ├── analyze.py          # Core analysis / modeling
 │       ├── visualize.py        # Plotting functions
 │       ├── export.py           # Output generation
-│       └── metadata/           # Lookup tables, variable definitions (inside package)
+│       └── metadata/           # Lookup tables, variable definitions, data dictionary
 │           ├── __init__.py
 │           ├── variabelen.csv
 │           └── levels.csv

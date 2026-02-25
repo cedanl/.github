@@ -266,6 +266,20 @@ test_that("transform_data returns expected columns", {
 - Test expected outputs, edge cases, and error conditions
 - Include small test fixtures in `tests/testthat/fixtures/`
 
+## Formatting
+
+Use [air](https://posit-dev.github.io/air/) for automatic code formatting. Air is R's equivalent of `ruff` (Python) — an opinionated formatter that enforces consistent style.
+
+```bash
+# Format all R files
+air format .
+
+# Check without modifying
+air format --check .
+```
+
+Air handles indentation, spacing, line breaks, and brace placement. Focus on writing clear code and let air handle the formatting.
+
 ## Dependency Management
 
 - Use `renv` for reproducible environments

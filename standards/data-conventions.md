@@ -19,10 +19,9 @@ When creating derived or computed variables, follow the naming conventions of th
 
 | Suffix | Meaning | Example |
 |--------|---------|---------|
-| `_cat` | Categorized/binned numeric | `INS_Hoogste_vooropleiding_soort_cat` |
-| `_code` | Numeric code for a string value | `INS_Vooropleiding_voor_HO_code` |
-| `_date` | Date field | `DEM_Leeftijd_peildatum_1_oktober_date` |
-| `_origineel` | Original value before transformation | `INS_Datum_diploma_origineel` |
+| `_cat` | Categorized/binned numeric | `hoogste_vooropleiding_soort_cat` |
+| `_code` | Numeric code for a string value | `vooropleiding_voor_ho_code` |
+| `_date` | Date field | `leeftijd_peildatum_1_oktober_date` |
 | `_scaled` | Standardized/normalized | `INS_Score_scaled` |
 
 ### Character rules
@@ -53,12 +52,6 @@ Provide both formats:
 - Delimiter: `;` (semicolon) — standard for Dutch data, avoids conflicts with comma in decimal numbers
 - Encoding: UTF-8 for output files
 - Quote all text fields that might contain delimiters
-
-### Input data from DUO
-
-DUO fixed-width ASCII files typically use:
-- Encoding: Latin1 (ISO 8859-1)
-- Fixed-width fields defined in accompanying `.txt` metadata files
 
 Always convert to UTF-8 during the ingestion step.
 
@@ -110,11 +103,11 @@ Place this documentation in:
 
 ## Data Dictionaries
 
-Elk repository dat data verwerkt of produceert **moet** een data dictionary bevatten voor de output datasets. Data dictionaries worden in twee formaten bijgehouden:
+Every repo that processes or produces data **must** include a data dictionary for its output datasets. Maintain two formats: machine-readable and human-readable.
 
 ### Machine-readable: `data_dictionary.csv`
 
-Een CSV-bestand (`;`-gescheiden, UTF-8) in de `metadata/` directory met de volgende kolommen:
+A `;`-delimited CSV file (UTF-8) in the repo's metadata directory (see [Project Structure](project-structure.md) for exact location per language).
 
 | Kolom | Verplicht | Beschrijving |
 |-------|-----------|-------------|
@@ -127,38 +120,23 @@ Een CSV-bestand (`;`-gescheiden, UTF-8) in de `metadata/` directory met de volge
 | `allowed_values` | nee | Toegestane waarden of bereik (bijv. `1-5`, `MBO;HBO;WO`) |
 | `sensitive` | nee | `true` als het veld persoonsgegevens bevat |
 
-Voorbeeld:
+### Human-readable: rendered documentation
 
-```csv
-dataset;column_name;description;type;source;example;allowed_values;sensitive
-instroom_2024;INS_Studentnummer;Geanonimiseerd studentnummer;character;DUO;STU_00001;;false
-instroom_2024;INS_Opleidingsnaam;Naam van de opleiding;character;DUO;Verpleegkunde;;false
-instroom_2024;INS_Datum_inschrijving;Datum eerste inschrijving;date;DUO;2024-09-01;;false
-instroom_2024;INS_Leeftijd_cat;Leeftijdscategorie bij inschrijving;character;derived;18-25;< 18;18-25;25+;false
-```
+Generate a readable version from `data_dictionary.csv`, for example:
 
-### Human-readable: gerenderde documentatie
+- **Quarto** rendered to HTML (recommended — fits existing CEDA workflow)
+- **R**: `DT::datatable()` or `gt::gt()` in a Quarto vignette
+- **Python**: table in a Streamlit app page
 
-Genereer vanuit `data_dictionary.csv` een leesbare versie, bijvoorbeeld:
+### Location
 
-- **Quarto** → render naar HTML (aanbevolen, past bij bestaande CEDA workflow)
-- **R**: `DT::datatable()` of `gt::gt()` in een Quarto document
-- **Python**: `pandas` tabel in een Quarto of Streamlit pagina
+The data dictionary lives alongside other metadata files, following existing package conventions:
 
-Plaats het gerenderde bestand in `docs/data_dictionary.html` of maak het beschikbaar via de app.
+- **R repos**: `inst/metadata/data_dictionary.csv` (installed with the package)
+- **Python repos**: `src/metadata/data_dictionary.csv` (accessible via `importlib.resources`)
 
-### Locatie
+The human-readable version can be a vignette (R) or a page in the app (Shiny/Streamlit).
 
-```
-project-name/
-├── metadata/
-│   └── data_dictionary.csv       # Machine-readable (verplicht)
-├── docs/
-│   ├── data_dictionary.qmd       # Quarto source (aanbevolen)
-│   └── data_dictionary.html      # Gerenderde versie
-```
+### Maintenance
 
-### Bijhouden
-
-- Update de data dictionary wanneer kolommen worden toegevoegd, verwijderd of hernoemd
-- Verwijs vanuit de `README.md` naar de data dictionary (zie [README richtlijnen](project-structure.md))
+- Update the data dictionary when columns are added, removed, or renamed
