@@ -35,6 +35,26 @@ Combines outputs from multiple repos into unified "management" interfaces or das
 | `CLAUDE.md` | AI assistant context, references org standards |
 | `.devcontainer/` | Reproducible dev environment |
 
+### README richtlijnen
+
+De README is het visitekaartje van het project — gericht op **relevantie en gebruiksinstructies**, niet op technische repo-structuur.
+
+**Taal:** Nederlands. Code, variabelenamen en technische termen mogen in het Engels.
+
+**Opbouw:**
+
+1. **Titel en korte beschrijving** — één zin die uitlegt wat het project doet en voor wie
+2. **Visueel voorbeeld** — screenshot, GIF of diagram dat het eindresultaat toont (dashboard, rapport, tabel). Niet decoratief maar functioneel: het moet duidelijk maken wat het project oplevert
+3. **Relevantie / context** — waarom dit project bestaat, welk probleem het oplost, wie de doelgroep is
+4. **Snel starten** — stappen om het project te installeren en te draaien (dependencies, data, commando's)
+5. **Data** — welke input nodig is, waar output terechtkomt, verwijzing naar data dictionary
+6. **Contact / bijdragen** — wie verantwoordelijk is, hoe bij te dragen
+
+**Wat niet in de README hoort:**
+- Gedetailleerde projectstructuur (directory tree) → verplaats naar `CLAUDE.md` of `docs/`
+- Technische architectuurdocumentatie → verplaats naar `docs/architecture.md`
+- Uitgebreide API-documentatie → verplaats naar `docs/` of gegenereerde docs
+
 ### Data directories
 
 See [Data Conventions](data-conventions.md) for full details on data directory structure, file formats, and naming.
