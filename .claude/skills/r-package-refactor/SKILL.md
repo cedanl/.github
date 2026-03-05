@@ -1,0 +1,797 @@
+---
+name: r-package-refactor
+description: Transform R projects into proper R packages with namespaces, documentation, and best practices. Use when converting scripts to packages or improving package structure.
+---
+
+# R Package Refactoring Skill
+
+You are an expert R package developer helping to refactor an existing R project into a proper R package structure with namespaces, functions, and proper exports.
+
+## Core Philosophy
+
+**Functions First, Package Second**
+1. Analyze existing code structure
+2. Convert scripts to clean, testable functions
+3. Add package infrastructure
+4. Polish with documentation and tests
+
+This approach is safer than "big bang" refactoring - we ensure code works before adding package complexity.
+
+**Key Principles**
+- **Explicit over implicit**: Use `dplyr::mutate()` not just `mutate()`
+- **Simple and readable**: Clear function names, obvious parameters
+- **Incremental progress**: One phase at a time with user approval
+- **Test continuously**: Verify each change works before proceeding
+
+## Configuration
+
+Before starting, ask the user about:
+1. **Package name** (if not already chosen)
+2. **Documentation language** (English/Dutch/other)
+3. **Current pain points** (what motivated this refactoring?)
+4. **Target audience** (internal tool vs public CRAN package)
+
+## Phase 1: Project Discovery & Analysis
+
+**Goal:** Understand the current codebase structure and design the transformation plan
+
+### Step 1: Analyze Directory Structure
+
+```r
+# Discover project layout
+rtk ls -R . | grep "\\.R$"
+```
+
+Identify:
+- **Script directories**: Are scripts organized by stage (download, prepare, analyze)?
+- **Utility functions**: Where are shared functions located?
+- **Data/config**: Where is metadata, config, or reference data stored?
+- **Tests**: Are there existing test scripts?
+- **Documentation**: README, vignettes, or markdown docs?
+
+### Step 2: Catalog Scripts and Dependencies
+
+For each R script:
+1. **Purpose**: What does it do?
+2. **Dependencies**: What packages/functions does it use?
+3. **Inputs/Outputs**: Data files? Objects? Side effects?
+4. **Execution order**: Which scripts run first?
+
+Create a visual map:
+```
+00_download/ → 01_audit/ → 02_prepare/ → 03_export/
+      ↓            ↓           ↓             ↓
+   utils/mapping_functions.R (used by all)
+```
+
+### Step 3: Identify Function Extraction Opportunities
+
+Look for:
+- **Repeated code patterns** across scripts
+- **Scripts that are really functions** (take input, return output, no side effects)
+- **Utility functions** already defined in utils/ or helper files
+- **Configuration loading** that should be packageized
+
+### Step 4: Design Package Architecture
+
+Based on analysis, propose:
+
+**Package Name**:
+- Follow R conventions: lowercase, letters/numbers/periods only
+- Short (5-10 chars), memorable, descriptive
+- Check availability with `available::available("pkgname")`
+
+**File Organization** (R/ directory):
+- `R/utils.R` - Simple helper functions
+- `R/download.R` - Download/fetch functions
+- `R/prepare.R` - Data preparation/transformation
+- `R/analysis.R` - Analysis functions
+- `R/io.R` - Read/write functions
+- `R/package.R` - Package-level documentation
+
+**Export Strategy**:
+- **Exported** (@export): Main pipeline functions, utilities users need
+- **Internal** (@keywords internal): Helper functions, low-level details
+
+**Data/Config Strategy**:
+- `inst/metadata/` - Mapping tables, reference data
+- `inst/config/` - Configuration files
+- `data/` - Example datasets (if appropriate)
+
+### Step 5: Present Analysis and Plan
+
+Create a structured plan document showing:
+1. **Current structure** (directory tree with file purposes)
+2. **Proposed package structure** (R/ file organization)
+3. **Script → Function mapping** (which scripts become which functions)
+4. **Export plan** (what users will see)
+5. **Migration strategy** (what stays, what moves, what changes)
+
+**Wait for user approval before proceeding to Phase 2**
+
+## Phase 2: Create Package Infrastructure
+
+**Goal:** Set up basic package structure without breaking existing code
+
+### Step 2.1: Initialize Package Structure
+
+```r
+# Create DESCRIPTION file
+usethis::create_package("path/to/package")
+```
+
+Or manually create `DESCRIPTION`:
+```
+Package: pkgname
+Title: One-Line Description
+Version: 0.0.1
+Authors@R: person("First", "Last", email = "email@example.com", role = c("aut", "cre"))
+Description: Longer description of what the package does.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.0
+Depends: R (>= 4.1.0)
+Imports:
+    dplyr (>= 1.1.0),
+    readr,
+    tidyr
+```
+
+### Step 2.2: Create R/ Directory
+
+```r
+# Create R/ if it doesn't exist
+dir.create("R", showWarnings = FALSE)
+```
+
+### Step 2.3: Set Up Development Tools
+
+```r
+# Create .Rbuildignore
+usethis::use_build_ignore(c("data/", "test/", "*.qmd", "*.Rproj"))
+
+# Create NAMESPACE (will be generated by roxygen2)
+# Don't edit manually - roxygen2 will manage this
+```
+
+**Verify package structure with `devtools::load_all()`**
+
+## Phase 3: Convert Utilities to Functions
+
+**Goal:** Transform utility scripts into clean, namespaced functions
+
+### Step 3.1: Start with Simple Helpers
+
+Pick the simplest utility functions first (no dependencies on other utilities).
+
+**Example transformation:**
+
+**Before** (`utils/helpers.R`):
+```r
+library(lubridate)
+library(dplyr)
+
+# Calculate academic year
+academic_year <- function(date) {
+  year <- year(date)
+  month <- month(date)
+  ifelse(month >= 9, year, year - 1)
+}
+```
+
+**After** (`R/utils.R`):
+```r
+#' Calculate academic year from date
+#' @param date Date vector
+#' @return Integer vector with academic years
+#' @keywords internal
+academic_year <- function(date) {
+  # Use explicit namespacing
+  year <- lubridate::year(date)
+  month <- lubridate::month(date)
+
+  # Explicit return
+  return(ifelse(month >= 9, year, year - 1))
+}
+```
+
+**Key changes:**
+1. ❌ Remove `library()` calls
+2. ✅ Add explicit namespace: `lubridate::year()`
+3. ✅ Add roxygen2 documentation header
+4. ✅ Use `@keywords internal` for helpers
+5. ✅ Explicit `return()` statement
+
+### Step 3.2: Test Each Function
+
+After converting each utility:
+```r
+# Load package
+devtools::load_all()
+
+# Test function
+test_date <- as.Date("2024-09-01")
+academic_year(test_date)  # Should return 2024
+```
+
+### Step 3.3: Handle External Dependencies
+
+For functions using mapping tables or config:
+
+**Before** (uses global path):
+```r
+mapping <- read.csv2(paste0(Sys.getenv("MAP_TABLE_DIR"), "mapping.csv"))
+```
+
+**After** (uses package data):
+```r
+#' Load mapping table from package
+#' @keywords internal
+load_mapping <- function(mapping_name) {
+  # Try package installation first
+  mapping_path <- system.file("metadata", "mapping_tables",
+                              paste0(mapping_name, ".csv"),
+                              package = "pkgname")
+
+  # Fallback for development
+  if (mapping_path == "") {
+    mapping_path <- file.path("metadata", "mapping_tables",
+                             paste0(mapping_name, ".csv"))
+  }
+
+  return(utils::read.csv2(mapping_path, stringsAsFactors = FALSE))
+}
+```
+
+### Step 3.4: Move Metadata to inst/
+
+```bash
+# Create inst/ directory structure
+mkdir -p inst/metadata/mapping_tables
+mkdir -p inst/config
+
+# Copy metadata
+cp -r metadata/mapping_tables/* inst/metadata/mapping_tables/
+cp config.yml inst/config/
+```
+
+## Phase 4: Convert Scripts to Functions
+
+**Goal:** Transform pipeline scripts into composable functions
+
+### Step 4.1: Identify Script Boundaries
+
+Each script typically does:
+1. **Read** data from file
+2. **Transform** data (the actual logic)
+3. **Write** data to file
+4. **Clean up** environment
+
+**Only #2 (transform) becomes the function** - separate I/O from logic!
+
+### Step 4.2: Extract Pure Logic
+
+**Before** (`02_prepare/prepare_enrollments.R`):
+```r
+# READ
+enrollments <- read_file_proj("enrollments")
+
+# TRANSFORM
+enrollments <- enrollments %>%
+  distinct() %>%
+  filter(!is.na(Studentnummer)) %>%
+  mutate(
+    Datum_inschrijving = as.Date(Datum_inschrijving, format = "%d/%m/%Y")
+  ) %>%
+  mapping_translate("Code", "Naam")
+
+# WRITE
+write_file_proj(enrollments, "enrollments_prepared")
+
+# CLEAN
+rm(enrollments)
+```
+
+**After** (`R/prepare.R`):
+```r
+#' Prepare enrollment data
+#'
+#' Transforms raw enrollment data: removes duplicates, filters invalid records,
+#' converts dates, and applies mapping tables.
+#'
+#' @param enrollments Data frame with raw enrollment data
+#' @param mapping_table Optional. Provide custom mapping table.
+#'
+#' @return Data frame with prepared enrollment data
+#' @export
+prepare_enrollments <- function(enrollments, mapping_table = NULL) {
+  # Load default mapping if not provided
+  if (is.null(mapping_table)) {
+    mapping_table <- load_mapping("Mapping_Code_Naam")
+  }
+
+  # Transform (explicit namespacing)
+  result <- enrollments %>%
+    dplyr::distinct() %>%
+    dplyr::filter(!is.na(Studentnummer)) %>%
+    dplyr::mutate(
+      Datum_inschrijving = as.Date(Datum_inschrijving, format = "%d/%m/%Y")
+    ) %>%
+    vusa::mapping_translate("Code", "Naam",
+                           mapping_table_input = mapping_table)
+
+  return(result)
+}
+```
+
+**Separate I/O wrapper** (for backward compatibility):
+```r
+#' @keywords internal
+prepare_enrollments_file <- function(input_file, output_file) {
+  enrollments <- read_file_proj(input_file)
+  result <- prepare_enrollments(enrollments)
+  write_file_proj(result, output_file)
+  return(invisible(NULL))
+}
+```
+
+### Step 4.3: Handle Configuration
+
+**Before** (uses global config):
+```r
+config <- config::get()
+year <- config$year
+brin <- config$institution$brin
+```
+
+**After** (explicit parameters):
+```r
+#' Prepare RIO data
+#'
+#' @param rio Raw RIO data frame
+#' @param year Academic year (default: 2024)
+#' @param institution_brin BRIN code (default: "21XX")
+#'
+#' @return Prepared RIO data
+#' @export
+prepare_rio <- function(rio, year = 2024, institution_brin = "21XX") {
+  # Function body with explicit parameters
+  # No global config dependency
+}
+```
+
+**Create config helper** (if needed):
+```r
+#' Load package configuration
+#' @param config_name Config name (default: "default")
+#' @export
+load_config <- function(config_name = "default") {
+  config_path <- system.file("config", "config.yml", package = "pkgname")
+
+  # Development fallback
+  if (config_path == "") {
+    config_path <- "config.yml"
+  }
+
+  return(yaml::read_yaml(config_path)[[config_name]])
+}
+```
+
+### Step 4.4: Build Pipeline Function
+
+Create a main function that orchestrates the workflow:
+
+```r
+#' Run complete data preparation pipeline
+#'
+#' Downloads, audits, prepares, and exports enrollment data.
+#'
+#' @param year Academic year
+#' @param institution_brin Institution BRIN code
+#' @param output_dir Output directory path
+#'
+#' @return List with processed datasets
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   results <- run_pipeline(year = 2024, institution_brin = "21XX")
+#' }
+run_pipeline <- function(year = 2024,
+                        institution_brin = "21XX",
+                        output_dir = "data/output") {
+
+  # Step 1: Download
+  rio <- get_rio(year = year)
+
+  # Step 2: Prepare
+  rio_prepared <- prepare_rio(rio, year = year,
+                              institution_brin = institution_brin)
+
+  # Step 3: Process enrollments
+  enrollments_raw <- read_enrollments(year = year)
+  enrollments <- prepare_enrollments(enrollments_raw)
+
+  # Step 4: Combine
+  combined <- combine_enrollments(enrollments, rio_prepared)
+
+  # Step 5: Export
+  export_results(combined, output_dir = output_dir)
+
+  return(list(
+    rio = rio_prepared,
+    enrollments = combined
+  ))
+}
+```
+
+## Phase 5: Add Documentation
+
+**Goal:** Complete roxygen2 documentation for all functions
+
+### Step 5.1: Documentation Template
+
+Use this template (adapt language as needed):
+
+```r
+#' Short one-line title
+#'
+#' Longer description explaining what the function does,
+#' when to use it, and any important details.
+#'
+#' @param param1 Description of first parameter
+#' @param param2 Description of second parameter. Default: value
+#'
+#' @return Description of return value
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   result <- my_function(data, param = "value")
+#' }
+#'
+#' @seealso \code{\link{related_function}}
+function_name <- function(param1, param2 = default) {
+  # Function body
+}
+```
+
+### Step 5.2: Language-Specific Documentation
+
+**English example:**
+```r
+#' Prepare enrollment data with mapping tables
+#'
+#' Applies mapping tables to enrollment data to translate codes into
+#' readable values.
+#'
+#' @param enrollments Data frame with raw enrollment data
+#' @return Data frame with mapped enrollment data
+#' @export
+```
+
+**Dutch example:**
+```r
+#' Bereid inschrijvingsgegevens voor met mappingtabellen
+#'
+#' Past mappingtabellen toe op inschrijvingsgegevens om codes te vertalen
+#' naar leesbare waarden.
+#'
+#' @param enrollments Data frame met ruwe inschrijvingsgegevens
+#' @return Data frame met gemapte inschrijvingsgegevens
+#' @export
+```
+
+### Step 5.3: Generate Documentation
+
+```r
+# Generate man/ files from roxygen2 comments
+devtools::document()
+
+# Check for issues
+devtools::check_man()
+
+# Preview documentation
+?pkgname::function_name
+```
+
+### Step 5.4: Package-Level Documentation
+
+Create `R/package.R`:
+```r
+#' pkgname: Brief Package Description
+#'
+#' Longer description of what this package does and who it's for.
+#'
+#' @section Main Functions:
+#' \itemize{
+#'   \item \code{\link{run_pipeline}}: Run complete data pipeline
+#'   \item \code{\link{prepare_enrollments}}: Prepare enrollment data
+#'   \item \code{\link{get_rio}}: Download RIO reference data
+#' }
+#'
+#' @docType package
+#' @name pkgname-package
+#' @keywords internal
+"_PACKAGE"
+
+## usethis namespace: start
+## usethis namespace: end
+NULL
+```
+
+## Phase 6: Testing & Validation
+
+**Goal:** Ensure package works correctly and passes R CMD check
+
+### Step 6.1: Create Test Scripts
+
+```r
+# Create test script (not formal testthat tests)
+# test_package_full.R
+
+library(pkgname)
+
+# Test pipeline with sample data
+results <- run_pipeline(
+  year = 2024,
+  institution_brin = "21XX",
+  output_dir = "test_output"
+)
+
+# Verify results
+stopifnot(nrow(results$enrollments) > 0)
+stopifnot("Naam" %in% colnames(results$enrollments))
+
+message("✓ Pipeline test passed")
+```
+
+### Step 6.2: Run R CMD check
+
+```r
+# Check package for issues
+devtools::check()
+```
+
+Common issues and fixes:
+- **Namespace warnings**: Add `@importFrom` or use `::`
+- **Undocumented exports**: Add roxygen2 headers
+- **Missing dependencies**: Add to DESCRIPTION Imports
+- **Example errors**: Use `\dontrun{}` for examples needing data
+
+### Step 6.3: Install and Test
+
+```r
+# Install package locally
+devtools::install()
+
+# Restart R session
+
+# Test in clean environment
+library(pkgname)
+?pkgname::run_pipeline
+```
+
+### Step 6.4: Update README
+
+Create or update `README.md`:
+
+```markdown
+# pkgname
+
+Brief description of what this package does.
+
+## Installation
+
+```r
+# Install from local directory
+devtools::install_local("path/to/pkgname")
+
+# Or install from GitHub
+devtools::install_github("username/pkgname")
+```
+
+## Quick Start
+
+```r
+library(pkgname)
+
+# Run complete pipeline
+results <- run_pipeline(
+  year = 2024,
+  institution_brin = "21XX"
+)
+
+# Or run individual steps
+rio <- get_rio(year = 2024)
+rio_prepared <- prepare_rio(rio, year = 2024)
+```
+
+## Functions
+
+- `run_pipeline()` - Complete data processing pipeline
+- `prepare_enrollments()` - Prepare enrollment data
+- `get_rio()` - Download RIO reference data
+
+## Configuration
+
+See `inst/config/config.yml` for configuration options.
+```
+
+## Key Transformation Patterns
+
+### Pattern 1: Script with File I/O → Pure Function
+
+**Before:**
+```r
+data <- readr::read_csv("input.csv")
+result <- transform(data)
+readr::write_csv(result, "output.csv")
+```
+
+**After:**
+```r
+#' Transform data
+#' @param data Input data frame
+#' @return Transformed data frame
+#' @export
+transform_data <- function(data) {
+  result <- transform_logic(data)
+  return(result)
+}
+```
+
+### Pattern 2: Global Config → Function Parameters
+
+**Before:**
+```r
+config <- config::get()
+process_data(data, year = config$year)
+```
+
+**After:**
+```r
+#' @param year Academic year (default: current year)
+process_data <- function(data, year = as.integer(format(Sys.Date(), "%Y"))) {
+  # Use year parameter
+}
+```
+
+### Pattern 3: Environment Variables → Package Data
+
+**Before:**
+```r
+mapping <- read.csv2(paste0(Sys.getenv("MAP_DIR"), "mapping.csv"))
+```
+
+**After:**
+```r
+mapping <- utils::read.csv2(
+  system.file("metadata", "mapping.csv", package = "pkgname")
+)
+```
+
+### Pattern 4: library() Calls → Explicit Namespacing
+
+**Before:**
+```r
+library(dplyr)
+library(readr)
+
+result <- data %>%
+  mutate(x = y + 1) %>%
+  filter(x > 0)
+```
+
+**After:**
+```r
+# No library() calls!
+
+result <- data %>%
+  dplyr::mutate(x = y + 1) %>%
+  dplyr::filter(x > 0)
+
+# Or add to roxygen2:
+#' @importFrom dplyr mutate filter %>%
+```
+
+### Pattern 5: Sourcing Scripts → Package Functions
+
+**Before:**
+```r
+source("utils/helpers.R")
+source("utils/mapping.R")
+result <- my_helper_function(data)
+```
+
+**After:**
+```r
+# Just use the function - package loading makes it available
+library(pkgname)
+result <- my_helper_function(data)
+```
+
+## Namespace Strategy
+
+### What to Export (@export)
+
+✅ **User-facing functions:**
+- Main workflow functions (`run_pipeline()`)
+- Data preparation functions (`prepare_enrollments()`)
+- Utility functions users might need (`load_config()`)
+
+❌ **Internal functions (@keywords internal):**
+- Helper functions used only within package
+- Low-level implementation details
+- File I/O wrappers for backward compatibility
+
+### Import Strategy
+
+**Option 1: Explicit :: notation** (recommended for clarity)
+```r
+result <- dplyr::mutate(data, x = y)
+```
+
+**Option 2: @importFrom** (for frequently used functions)
+```r
+#' @importFrom dplyr mutate filter select
+#' @importFrom readr read_csv write_csv
+```
+
+**Don't use:** Wholesale imports (`@import dplyr`) - makes namespace unclear
+
+## Common Challenges & Solutions
+
+### Challenge 1: Existing code uses library()
+
+**Solution:** Remove all `library()` calls, use `::` or `@importFrom`
+
+### Challenge 2: Scripts depend on file paths
+
+**Solution:**
+- Make functions accept data frames, not file paths
+- Create separate I/O functions if needed
+- Use `system.file()` for package data
+
+### Challenge 3: Global configuration
+
+**Solution:**
+- Make config explicit via function parameters
+- Provide sensible defaults
+- Create `load_config()` helper if needed
+
+### Challenge 4: Scripts modify global environment
+
+**Solution:**
+- Functions should only modify their own scope
+- Return values instead of assigning to globals
+- Remove `rm()` and `clear_environment()` calls
+
+### Challenge 5: Breaking existing workflows
+
+**Solution:**
+- Keep backward-compatible wrapper functions
+- Document migration path in README
+- Provide transition period with both approaches
+
+## Workflow Summary
+
+1. **Phase 1: Analyze** - Understand current structure, design transformation
+2. **Phase 2: Infrastructure** - Create DESCRIPTION, R/, inst/
+3. **Phase 3: Utilities** - Convert helper functions first
+4. **Phase 4: Scripts** - Transform pipeline scripts to functions
+5. **Phase 5: Document** - Add complete roxygen2 documentation
+6. **Phase 6: Validate** - Test, check, install
+
+**Always proceed incrementally with user approval between phases!**
+
+## Starting the Skill
+
+When invoked:
+1. Ask about configuration (package name, doc language, goals)
+2. Start Phase 1: Project Discovery
+3. Present analysis and wait for approval
+4. Proceed through phases one at a time
+5. Celebrate when package is complete! 🎉
