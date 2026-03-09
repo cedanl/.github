@@ -59,9 +59,9 @@ For each R script:
 
 Create a visual map:
 ```
-00_download/ → 01_audit/ → 02_prepare/ → 03_export/
-      ↓            ↓           ↓             ↓
-   utils/mapping_functions.R (used by all)
+scripts/download/ → scripts/process/ → scripts/export/
+         ↓                 ↓                 ↓
+      utils/helpers.R (used by all)
 ```
 
 ### Step 3: Identify Function Extraction Opportunities
@@ -83,9 +83,9 @@ Based on analysis, propose:
 
 **File Organization** (R/ directory):
 - `R/utils.R` - Simple helper functions
-- `R/download.R` - Download/fetch functions
-- `R/prepare.R` - Data preparation/transformation
-- `R/analysis.R` - Analysis functions
+- `R/data_import.R` - Data import/fetch functions
+- `R/data_transform.R` - Data cleaning/transformation
+- `R/analysis.R` - Analysis/modeling functions
 - `R/io.R` - Read/write functions
 - `R/package.R` - Package-level documentation
 
@@ -94,9 +94,9 @@ Based on analysis, propose:
 - **Internal** (@keywords internal): Helper functions, low-level details
 
 **Data/Config Strategy**:
-- `inst/metadata/` - Mapping tables, reference data
+- `inst/extdata/` - Reference data, lookup tables
 - `inst/config/` - Configuration files
-- `data/` - Example datasets (if appropriate)
+- `data/` - Example datasets (if appropriate for package users)
 
 ### Step 5: Present Analysis and Plan
 
@@ -221,38 +221,38 @@ For functions using mapping tables or config:
 
 **Before** (uses global path):
 ```r
-mapping <- read.csv2(paste0(Sys.getenv("MAP_TABLE_DIR"), "mapping.csv"))
+lookup_table <- read.csv(paste0(Sys.getenv("REF_DATA_DIR"), "lookup.csv"))
 ```
 
 **After** (uses package data):
 ```r
-#' Load mapping table from package
+#' Load reference data from package
 #' @keywords internal
-load_mapping <- function(mapping_name) {
+load_reference_data <- function(data_name) {
   # Try package installation first
-  mapping_path <- system.file("metadata", "mapping_tables",
-                              paste0(mapping_name, ".csv"),
-                              package = "pkgname")
+  data_path <- system.file("extdata", "reference",
+                           paste0(data_name, ".csv"),
+                           package = "pkgname")
 
   # Fallback for development
-  if (mapping_path == "") {
-    mapping_path <- file.path("metadata", "mapping_tables",
-                             paste0(mapping_name, ".csv"))
+  if (data_path == "") {
+    data_path <- file.path("inst", "extdata", "reference",
+                          paste0(data_name, ".csv"))
   }
 
-  return(utils::read.csv2(mapping_path, stringsAsFactors = FALSE))
+  return(utils::read.csv(data_path, stringsAsFactors = FALSE))
 }
 ```
 
-### Step 3.4: Move Metadata to inst/
+### Step 3.4: Move Reference Data to inst/
 
 ```bash
 # Create inst/ directory structure
-mkdir -p inst/metadata/mapping_tables
+mkdir -p inst/extdata/reference
 mkdir -p inst/config
 
-# Copy metadata
-cp -r metadata/mapping_tables/* inst/metadata/mapping_tables/
+# Copy reference data
+cp -r data/reference/* inst/extdata/reference/
 cp config.yml inst/config/
 ```
 
@@ -272,54 +272,53 @@ Each script typically does:
 
 ### Step 4.2: Extract Pure Logic
 
-**Before** (`02_prepare/prepare_enrollments.R`):
+**Before** (`scripts/process/clean_data.R`):
 ```r
 # READ
-enrollments <- read_file_proj("enrollments")
+raw_data <- read_csv("data/raw/input.csv")
 
 # TRANSFORM
-enrollments <- enrollments %>%
+clean_data <- raw_data %>%
   distinct() %>%
-  filter(!is.na(Studentnummer)) %>%
+  filter(!is.na(id)) %>%
   mutate(
-    Datum_inschrijving = as.Date(Datum_inschrijving, format = "%d/%m/%Y")
-  ) %>%
-  mapping_translate("Code", "Naam")
+    date = as.Date(date, format = "%Y-%m-%d"),
+    status = recode_status(status)
+  )
 
 # WRITE
-write_file_proj(enrollments, "enrollments_prepared")
+write_csv(clean_data, "data/processed/output.csv")
 
 # CLEAN
-rm(enrollments)
+rm(raw_data, clean_data)
 ```
 
-**After** (`R/prepare.R`):
+**After** (`R/data_transform.R`):
 ```r
-#' Prepare enrollment data
+#' Clean and prepare raw data
 #'
-#' Transforms raw enrollment data: removes duplicates, filters invalid records,
-#' converts dates, and applies mapping tables.
+#' Transforms raw data: removes duplicates, filters invalid records,
+#' converts dates, and recodes status values.
 #'
-#' @param enrollments Data frame with raw enrollment data
-#' @param mapping_table Optional. Provide custom mapping table.
+#' @param raw_data Data frame with raw input data
+#' @param status_mapping Optional. Provide custom status mapping.
 #'
-#' @return Data frame with prepared enrollment data
+#' @return Data frame with cleaned data
 #' @export
-prepare_enrollments <- function(enrollments, mapping_table = NULL) {
+clean_data <- function(raw_data, status_mapping = NULL) {
   # Load default mapping if not provided
-  if (is.null(mapping_table)) {
-    mapping_table <- load_mapping("Mapping_Code_Naam")
+  if (is.null(status_mapping)) {
+    status_mapping <- load_mapping("status_codes")
   }
 
   # Transform (explicit namespacing)
-  result <- enrollments %>%
+  result <- raw_data %>%
     dplyr::distinct() %>%
-    dplyr::filter(!is.na(Studentnummer)) %>%
+    dplyr::filter(!is.na(id)) %>%
     dplyr::mutate(
-      Datum_inschrijving = as.Date(Datum_inschrijving, format = "%d/%m/%Y")
-    ) %>%
-    vusa::mapping_translate("Code", "Naam",
-                           mapping_table_input = mapping_table)
+      date = as.Date(date, format = "%Y-%m-%d"),
+      status = recode_status(status, status_mapping)
+    )
 
   return(result)
 }
@@ -328,10 +327,10 @@ prepare_enrollments <- function(enrollments, mapping_table = NULL) {
 **Separate I/O wrapper** (for backward compatibility):
 ```r
 #' @keywords internal
-prepare_enrollments_file <- function(input_file, output_file) {
-  enrollments <- read_file_proj(input_file)
-  result <- prepare_enrollments(enrollments)
-  write_file_proj(result, output_file)
+clean_data_file <- function(input_file, output_file) {
+  raw_data <- readr::read_csv(input_file)
+  result <- clean_data(raw_data)
+  readr::write_csv(result, output_file)
   return(invisible(NULL))
 }
 ```
@@ -347,15 +346,17 @@ brin <- config$institution$brin
 
 **After** (explicit parameters):
 ```r
-#' Prepare RIO data
+#' Process data for specific period
 #'
-#' @param rio Raw RIO data frame
-#' @param year Academic year (default: 2024)
-#' @param institution_brin BRIN code (default: "21XX")
+#' @param data Raw data frame
+#' @param year Year for processing (default: current year)
+#' @param region Geographic region code (default: "NL")
 #'
-#' @return Prepared RIO data
+#' @return Processed data
 #' @export
-prepare_rio <- function(rio, year = 2024, institution_brin = "21XX") {
+process_data <- function(data,
+                        year = as.integer(format(Sys.Date(), "%Y")),
+                        region = "NL") {
   # Function body with explicit parameters
   # No global config dependency
 }
@@ -383,12 +384,12 @@ load_config <- function(config_name = "default") {
 Create a main function that orchestrates the workflow:
 
 ```r
-#' Run complete data preparation pipeline
+#' Run complete data processing pipeline
 #'
-#' Downloads, audits, prepares, and exports enrollment data.
+#' Imports, cleans, analyzes, and exports data.
 #'
-#' @param year Academic year
-#' @param institution_brin Institution BRIN code
+#' @param input_path Path to input data file or directory
+#' @param year Year for processing (default: current year)
 #' @param output_dir Output directory path
 #'
 #' @return List with processed datasets
@@ -396,32 +397,31 @@ Create a main function that orchestrates the workflow:
 #'
 #' @examples
 #' \dontrun{
-#'   results <- run_pipeline(year = 2024, institution_brin = "21XX")
+#'   results <- run_pipeline(input_path = "data/raw", year = 2024)
 #' }
-run_pipeline <- function(year = 2024,
-                        institution_brin = "21XX",
+run_pipeline <- function(input_path,
+                        year = as.integer(format(Sys.Date(), "%Y")),
                         output_dir = "data/output") {
 
-  # Step 1: Download
-  rio <- get_rio(year = year)
+  # Step 1: Import
+  raw_data <- import_data(input_path)
 
-  # Step 2: Prepare
-  rio_prepared <- prepare_rio(rio, year = year,
-                              institution_brin = institution_brin)
+  # Step 2: Clean
+  clean_data <- clean_data(raw_data)
 
-  # Step 3: Process enrollments
-  enrollments_raw <- read_enrollments(year = year)
-  enrollments <- prepare_enrollments(enrollments_raw)
+  # Step 3: Transform
+  transformed_data <- transform_data(clean_data, year = year)
 
-  # Step 4: Combine
-  combined <- combine_enrollments(enrollments, rio_prepared)
+  # Step 4: Analyze
+  analysis_results <- analyze_data(transformed_data)
 
   # Step 5: Export
-  export_results(combined, output_dir = output_dir)
+  export_results(analysis_results, output_dir = output_dir)
 
   return(list(
-    rio = rio_prepared,
-    enrollments = combined
+    clean = clean_data,
+    transformed = transformed_data,
+    results = analysis_results
   ))
 }
 ```
@@ -508,8 +508,8 @@ Create `R/package.R`:
 #' @section Main Functions:
 #' \itemize{
 #'   \item \code{\link{run_pipeline}}: Run complete data pipeline
-#'   \item \code{\link{prepare_enrollments}}: Prepare enrollment data
-#'   \item \code{\link{get_rio}}: Download RIO reference data
+#'   \item \code{\link{clean_data}}: Clean and prepare raw data
+#'   \item \code{\link{import_data}}: Import data from various sources
 #' }
 #'
 #' @docType package
@@ -600,20 +600,20 @@ library(pkgname)
 
 # Run complete pipeline
 results <- run_pipeline(
-  year = 2024,
-  institution_brin = "21XX"
+  input_path = "data/raw",
+  year = 2024
 )
 
 # Or run individual steps
-rio <- get_rio(year = 2024)
-rio_prepared <- prepare_rio(rio, year = 2024)
+raw_data <- import_data("data/raw")
+clean <- clean_data(raw_data)
 ```
 
 ## Functions
 
 - `run_pipeline()` - Complete data processing pipeline
-- `prepare_enrollments()` - Prepare enrollment data
-- `get_rio()` - Download RIO reference data
+- `clean_data()` - Clean and prepare raw data
+- `import_data()` - Import data from various sources
 
 ## Configuration
 
@@ -663,13 +663,13 @@ process_data <- function(data, year = as.integer(format(Sys.Date(), "%Y"))) {
 
 **Before:**
 ```r
-mapping <- read.csv2(paste0(Sys.getenv("MAP_DIR"), "mapping.csv"))
+lookup <- read.csv(paste0(Sys.getenv("REF_DIR"), "lookup.csv"))
 ```
 
 **After:**
 ```r
-mapping <- utils::read.csv2(
-  system.file("metadata", "mapping.csv", package = "pkgname")
+lookup <- utils::read.csv(
+  system.file("extdata", "lookup.csv", package = "pkgname")
 )
 ```
 
