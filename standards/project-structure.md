@@ -35,24 +35,25 @@ Combines outputs from multiple repos into unified "management" interfaces or das
 | `CLAUDE.md` | AI assistant context, references org standards |
 | `.devcontainer/` | Reproducible dev environment |
 
-### README richtlijnen
+### README Guidelines
 
-De README is het visitekaartje van het project — gericht op **relevantie en gebruiksinstructies**, niet op technische repo-structuur.
+The README is the project's front page — focused on **relevance and usage instructions**, not on technical repo structure.
 
-**Taal:** Nederlands. Code, variabelenamen en technische termen mogen in het Engels.
+**Language:** Dutch. Code, variable names, and technical terms may be in English.
 
-**Opbouw:**
+**Structure:**
 
-1. **Titel en korte beschrijving** — één zin die uitlegt wat het project doet en voor wie
-2. **Visueel voorbeeld** — screenshot, GIF of diagram dat het eindresultaat toont (dashboard, rapport, tabel). Niet decoratief maar functioneel: het moet duidelijk maken wat het project oplevert
-3. **Relevantie / context** — waarom dit project bestaat, welk probleem het oplost, wie de doelgroep is
-4. **Snel starten** — stappen om het project te installeren en te draaien (dependencies, data, commando's)
-5. **Data** — welke input nodig is, waar output terechtkomt, verwijzing naar data dictionary
-6. **Contact / bijdragen** — wie verantwoordelijk is, hoe bij te dragen
+1. **Title and short description** — one sentence explaining what the project does and for whom
+2. **Visual example** — screenshot, GIF, or diagram showing the end result (dashboard, report, table). Not decorative but functional: it should make clear what the project delivers
+3. **Relevance / context** — why this project exists, what problem it solves, who the target audience is
+4. **Quick start** — steps to install and run the project (dependencies, data, commands)
+5. **Data** — what input is needed, where output goes, reference to data dictionary
+6. **References** — link to other relevant files with more background on e.g. the technical architecture or other documentation
+7. **Contact / contributing** — who is responsible, how to contribute
 
-**Wat niet in de README hoort:**
-- Gedetailleerde projectstructuur (directory tree) → verplaats naar `CLAUDE.md`
-- Technische architectuurdocumentatie → verplaats naar `CLAUDE.md` of `vignettes/`
+**What does not belong in the README:**
+- Detailed project structure (directory tree) → move to `CLAUDE.md`
+- Technical architecture documentation → move to `CLAUDE.md` or `vignettes/`
 
 ### Data directories
 
