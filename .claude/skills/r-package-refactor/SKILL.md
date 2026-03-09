@@ -7,19 +7,36 @@ description: Transform R projects into proper R packages with namespaces, docume
 
 You are an expert R package developer helping to refactor an existing R project into a proper R package structure with namespaces, functions, and proper exports.
 
+## CEDA Standards
+
+This skill follows the **CEDA Technical Standards**: https://github.com/cedanl/.github/tree/main/standards
+
+Key standards to follow:
+- **[Principles](https://github.com/cedanl/.github/blob/main/standards/principles.md)** - Package-first development, functional programming, interpretability first
+- **[R Style Guide](https://github.com/cedanl/.github/blob/main/standards/r-style.md)** - Tidyverse dialect, naming conventions, code formatting with `air`
+- **[Project Structure](https://github.com/cedanl/.github/blob/main/standards/project-structure.md)** - Standard directory layout for R packages
+- **[Data Conventions](https://github.com/cedanl/.github/blob/main/standards/data-conventions.md)** - Column naming, file formats (Parquet + CSV), data dictionaries
+
+**When refactoring, ensure the resulting package conforms to these CEDA standards.**
+
 ## Core Philosophy
 
 **Functions First, Package Second**
 1. Analyze existing code structure
 2. Convert scripts to clean, testable functions
-3. Add package infrastructure
-4. Polish with documentation and tests
+3. Add package infrastructure (following CEDA structure)
+4. Add interactive mode (Shiny app)
+5. Polish with documentation and tests
 
 This approach is safer than "big bang" refactoring - we ensure code works before adding package complexity.
 
-**Key Principles**
+**Key Principles** (from CEDA standards):
+- **Package-first development**: Every repo is a proper R package (DESCRIPTION, NAMESPACE, R/, man/, tests/)
+- **Interactive mode**: Include a Shiny app in `inst/app/` that wraps package functions
+- **Functional programming**: Pure functions with explicit inputs/outputs, use `|>` pipe
+- **Interpretability first**: Write code for humans to read (tidyverse dialect)
 - **Explicit over implicit**: Use `dplyr::mutate()` not just `mutate()`
-- **Simple and readable**: Clear function names, obvious parameters
+- **Simple and readable**: Clear function names (verb + object), obvious parameters
 - **Incremental progress**: One phase at a time with user approval
 - **Test continuously**: Verify each change works before proceeding
 
@@ -27,9 +44,12 @@ This approach is safer than "big bang" refactoring - we ensure code works before
 
 Before starting, ask the user about:
 1. **Package name** (if not already chosen)
-2. **Documentation language** (English/Dutch/other)
-3. **Current pain points** (what motivated this refactoring?)
-4. **Target audience** (internal tool vs public CRAN package)
+2. **Repository type** (Ingestion or Analysis - see CEDA Project Structure)
+   - **Ingestion**: Transforms raw data sources into clean, research-ready formats
+   - **Analysis**: Produces enriched data, predictions, reports, visualizations
+3. **Documentation language** (Dutch for README, English for code/comments per CEDA standards)
+4. **Current pain points** (what motivated this refactoring?)
+5. **Interactive mode needed?** (Shiny app for user-friendly interface - recommended per CEDA standards)
 
 ## Phase 1: Project Discovery & Analysis
 
@@ -81,22 +101,41 @@ Based on analysis, propose:
 - Short (5-10 chars), memorable, descriptive
 - Check availability with `available::available("pkgname")`
 
-**File Organization** (R/ directory):
-- `R/utils.R` - Simple helper functions
-- `R/data_import.R` - Data import/fetch functions
-- `R/data_transform.R` - Data cleaning/transformation
-- `R/analysis.R` - Analysis/modeling functions
-- `R/io.R` - Read/write functions
+**File Organization** (R/ directory) - per CEDA standards:
+
+For **Ingestion repos**:
+- `R/ingest_source.R` - Read raw files
+- `R/decode_fields.R` - Parse fixed-width, apply metadata
+- `R/validate_data.R` - Quality checks
+- `R/export_data.R` - Write Parquet + CSV output
+- `R/run_app.R` - Launch Shiny app function
+- `R/package.R` - Package-level documentation
+
+For **Analysis repos**:
+- `R/prepare_data.R` - Load and merge input data
+- `R/transform_data.R` - Feature engineering, enrichment
+- `R/run_analysis.R` - Core analysis/modeling
+- `R/create_plots.R` - Visualization functions
+- `R/render_report.R` - Report generation
+- `R/run_app.R` - Launch Shiny app function
 - `R/package.R` - Package-level documentation
 
 **Export Strategy**:
-- **Exported** (@export): Main pipeline functions, utilities users need
+- **Exported** (@export): Main pipeline functions, utilities users need, `run_app()`
 - **Internal** (@keywords internal): Helper functions, low-level details
 
-**Data/Config Strategy**:
-- `inst/extdata/` - Reference data, lookup tables
-- `inst/config/` - Configuration files
-- `data/` - Example datasets (if appropriate for package users)
+**Directory Structure** (CEDA standard):
+- `inst/app/` - Shiny app (app.R, config.yml)
+- `inst/metadata/` - Mapping tables, reference data, data_dictionary.csv
+- `inst/templates/` - Report templates (Quarto .qmd files)
+- `data/` - Example datasets for demos
+  - `data/01-raw/demo/` - Sample raw data (committed to git)
+  - `data/02-prepared/demo/` - Sample processed data
+  - `data/03-output/demo/` - Sample output
+- `man/` - Auto-generated roxygen2 docs
+- `tests/testthat/` - Unit tests
+- `vignettes/` - Usage documentation
+- `main.R` - Pipeline orchestration script (NOT part of package)
 
 ### Step 5: Present Analysis and Plan
 
@@ -426,6 +465,144 @@ run_pipeline <- function(input_path,
 }
 ```
 
+## Phase 4.5: Add Interactive Mode (Shiny App)
+
+**Goal:** Create a Shiny app following CEDA standards for interactive use
+
+Per CEDA standards, every repo should include an interactive interface. The app wraps package functions - it contains **NO business logic**, only UI and function calls.
+
+### Step 4.5.1: Create Shiny App Structure
+
+```bash
+# Create app directory
+mkdir -p inst/app
+```
+
+### Step 4.5.2: Create app.R
+
+```r
+## inst/app/app.R
+
+library(shiny)
+library(pkgname)  # Your package
+
+## UI
+ui <- fluidPage(
+  titlePanel("Package Name - Interactive Mode"),
+
+  sidebarLayout(
+    sidebarPanel(
+      ## Configuration inputs
+      textInput("input_path", "Input Path:", value = "data/01-raw"),
+      numericInput("year", "Year:", value = as.integer(format(Sys.Date(), "%Y"))),
+      textInput("output_dir", "Output Directory:", value = "data/03-output"),
+      actionButton("run", "Run Pipeline", class = "btn-primary")
+    ),
+
+    mainPanel(
+      ## Results display
+      tabsetPanel(
+        tabPanel("Summary", verbatimTextOutput("summary")),
+        tabPanel("Data Preview", tableOutput("preview")),
+        tabPanel("Logs", verbatimTextOutput("logs"))
+      )
+    )
+  )
+)
+
+## Server
+server <- function(input, output, session) {
+  results <- eventReactive(input$run, {
+    ## Call package function - NO business logic here
+    run_pipeline(
+      input_path = input$input_path,
+      year = input$year,
+      output_dir = input$output_dir
+    )
+  })
+
+  output$summary <- renderPrint({
+    req(results())
+    str(results())
+  })
+
+  output$preview <- renderTable({
+    req(results())
+    head(results()$transformed, 20)
+  })
+}
+
+shinyApp(ui, server)
+```
+
+### Step 4.5.3: Create config.yml
+
+```yaml
+## inst/app/config.yml
+## Fixed config for local data paths - users only need to set paths once
+
+default:
+  data_path: "data"
+  output_path: "data/03-output"
+  metadata_path: !expr system.file("metadata", package = "pkgname")
+```
+
+### Step 4.5.4: Create run_app() function
+
+```r
+## R/run_app.R
+
+#' Launch the interactive Shiny application
+#'
+#' Opens a Shiny app that provides a user interface for the package functions.
+#'
+#' @param ... Arguments passed to [shiny::runApp()].
+#'
+#' @return Runs the Shiny app (does not return a value)
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   run_app()
+#' }
+run_app <- function(...) {
+  ## Check if shiny is installed
+  if (!requireNamespace("shiny", quietly = TRUE)) {
+    rlang::abort("Package {.pkg shiny} needed. Install: install.packages('shiny')")
+  }
+
+  ## Locate app directory
+  app_dir <- system.file("app", package = "pkgname")
+
+  if (app_dir == "") {
+    rlang::abort("Could not find app directory. Try devtools::load_all() first.")
+  }
+
+  ## Run the app
+  shiny::runApp(app_dir, ...)
+}
+```
+
+### Step 4.5.5: Update DESCRIPTION
+
+Add `shiny` to `Suggests:` (not `Imports:`) - package works without Shiny installed:
+
+```
+Suggests:
+    shiny,
+    testthat (>= 3.0.0)
+```
+
+### Step 4.5.6: Test the App
+
+```r
+## Load package
+devtools::load_all()
+
+## Launch app
+run_app()
+```
+
 ## Phase 5: Add Documentation
 
 **Goal:** Complete roxygen2 documentation for all functions
@@ -522,36 +699,99 @@ Create `R/package.R`:
 NULL
 ```
 
+### Step 5.5: Create Data Dictionary
+
+**CEDA requirement**: Every repo that produces data must include a data dictionary.
+
+Create `inst/metadata/data_dictionary.csv`:
+
+```csv
+dataset;column_name;description;type;source;example;allowed_values;sensitive
+output_2024;id;Student identifier;integer;source_system;12345;;false
+output_2024;enrollment_date;Date of enrollment;date;source_system;2024-09-01;;false
+output_2024;program;Study program name;character;source_system;Informatica;;false
+output_2024;status;Current enrollment status;character;derived;active;active;inactive;withdrawn;false
+output_2024;retention;Student retained (1=yes, 0=no);integer;derived;1;0;1;false
+```
+
+**Key columns** (per CEDA Data Conventions):
+- `dataset`: Name of the output dataset
+- `column_name`: Column name as it appears in the data
+- `description`: Clear description of the variable
+- `type`: Data type (character, integer, double, date, boolean)
+- `source`: Source system or "derived" for computed variables
+- `example`: Example value (optional)
+- `allowed_values`: Valid values or range (optional)
+- `sensitive`: `true` if contains personal data (optional)
+
+**Create human-readable version** (optional but recommended):
+
+```r
+## vignettes/data-dictionary.qmd
+
+---
+title: "Data Dictionary"
+format: html
+---
+
+```{r}
+#| echo: false
+library(DT)
+
+data_dict <- readr::read_csv2(
+  system.file("metadata", "data_dictionary.csv", package = "pkgname")
+)
+
+datatable(data_dict, options = list(pageLength = 50))
+```
+```
+
 ## Phase 6: Testing & Validation
 
 **Goal:** Ensure package works correctly and passes R CMD check
 
 ### Step 6.1: Create Test Scripts
 
+Use testthat (>= 3.0) following CEDA standards:
+
 ```r
-# Create test script (not formal testthat tests)
-# test_package_full.R
+## tests/testthat/test-transform_data.R
+## Test file mirrors source file: R/transform_data.R
 
-library(pkgname)
+test_that("transform_data returns expected columns", {
+  ## Use demo data
+  test_data <- readr::read_csv("../../data/01-raw/demo/sample.csv")
 
-# Test pipeline with sample data
-results <- run_pipeline(
-  year = 2024,
-  institution_brin = "21XX",
-  output_dir = "test_output"
-)
+  result <- transform_data(test_data)
 
-# Verify results
-stopifnot(nrow(results$enrollments) > 0)
-stopifnot("Naam" %in% colnames(results$enrollments))
+  expect_s3_class(result, "data.frame")
+  expect_true(nrow(result) > 0)
+  expect_true(all(c("id", "date", "status") %in% names(result)))
+})
 
-message("✓ Pipeline test passed")
+test_that("transform_data handles missing values", {
+  test_data <- data.frame(id = c(1, NA, 3), value = c(10, 20, 30))
+
+  result <- transform_data(test_data)
+
+  expect_equal(nrow(result), 2)  ## NA rows filtered
+})
 ```
 
-### Step 6.2: Run R CMD check
+### Step 6.2: Format Code and Run Checks
 
+**Format with air** (CEDA standard):
+```bash
+## Format all R files
+air format .
+
+## Or check without modifying
+air format --check .
+```
+
+**Run R CMD check**:
 ```r
-# Check package for issues
+## Check package for issues
 devtools::check()
 ```
 
@@ -560,6 +800,7 @@ Common issues and fixes:
 - **Undocumented exports**: Add roxygen2 headers
 - **Missing dependencies**: Add to DESCRIPTION Imports
 - **Example errors**: Use `\dontrun{}` for examples needing data
+- **Style issues**: Run `air format .` to auto-fix
 
 ### Step 6.3: Install and Test
 
@@ -576,48 +817,78 @@ library(pkgname)
 
 ### Step 6.4: Update README
 
-Create or update `README.md`:
+Create or update `README.md` following **CEDA README guidelines** (Dutch, visual-first, relevance-focused):
 
 ```markdown
-# pkgname
+# Package Name
 
-Brief description of what this package does.
+Eén zin die uitlegt wat dit package doet en voor wie.
 
-## Installation
+## Voorbeeld
+
+![Screenshot of Shiny app or output visualization]
+
+*Screenshot van de Shiny app / dashboard / resultaat*
+
+## Relevantie
+
+Waarom dit package bestaat, welk probleem het oplost, wie de doelgroep is.
+
+## Snel starten
+
+### Installatie
 
 ```r
-# Install from local directory
-devtools::install_local("path/to/pkgname")
+## Installeer dependencies
+install.packages(c("dplyr", "readr", "shiny"))
 
-# Or install from GitHub
-devtools::install_github("username/pkgname")
+## Installeer het package
+devtools::install_github("cedanl/pkgname")
 ```
 
-## Quick Start
+### Gebruik via Shiny app (interactief)
+
+```r
+library(pkgname)
+run_app()
+```
+
+### Gebruik via code (pipeline)
 
 ```r
 library(pkgname)
 
-# Run complete pipeline
-results <- run_pipeline(
-  input_path = "data/raw",
-  year = 2024
-)
+## Laad package
+devtools::load_all()
 
-# Or run individual steps
-raw_data <- import_data("data/raw")
-clean <- clean_data(raw_data)
+## Voer pipeline uit
+results <- run_pipeline(
+  input_path = "data/01-raw",
+  year = 2024,
+  output_dir = "data/03-output"
+)
 ```
 
-## Functions
+## Data
 
-- `run_pipeline()` - Complete data processing pipeline
-- `clean_data()` - Clean and prepare raw data
-- `import_data()` - Import data from various sources
+**Input**: [Beschrijf welke data nodig is, formaat, bronnen]
+- Plaats ruwe data in `data/01-raw/`
+- Demo data beschikbaar in `data/01-raw/demo/`
 
-## Configuration
+**Output**: [Beschrijf wat er geproduceerd wordt]
+- Output wordt geschreven naar `data/03-output/`
+- Formaten: Parquet (programmatisch) + CSV (Excel-compatibel)
+- Data dictionary: zie `inst/metadata/data_dictionary.csv`
 
-See `inst/config/config.yml` for configuration options.
+## Technische details
+
+Voor technische documentatie, projectstructuur en architectuur: zie `CLAUDE.md`
+
+## Contact
+
+Voor vragen: [Naam] ([email])
+
+Bijdragen welkom! Zie [CONTRIBUTING.md] of maak een issue aan.
 ```
 
 ## Key Transformation Patterns
@@ -673,7 +944,7 @@ lookup <- utils::read.csv(
 )
 ```
 
-### Pattern 4: library() Calls → Explicit Namespacing
+### Pattern 4: library() Calls → Explicit Namespacing + Base Pipe
 
 **Before:**
 ```r
@@ -685,17 +956,19 @@ result <- data %>%
   filter(x > 0)
 ```
 
-**After:**
+**After** (CEDA R style - use `|>` base pipe):
 ```r
-# No library() calls!
+## No library() calls!
 
-result <- data %>%
-  dplyr::mutate(x = y + 1) %>%
+result <- data |>
+  dplyr::mutate(x = y + 1) |>
   dplyr::filter(x > 0)
 
-# Or add to roxygen2:
-#' @importFrom dplyr mutate filter %>%
+## Or add to roxygen2:
+#' @importFrom dplyr mutate filter
 ```
+
+**Note**: Use `|>` (base pipe) not `%>%` (magrittr pipe) per CEDA R Style Guide.
 
 ### Pattern 5: Sourcing Scripts → Package Functions
 
@@ -779,19 +1052,213 @@ result <- dplyr::mutate(data, x = y)
 ## Workflow Summary
 
 1. **Phase 1: Analyze** - Understand current structure, design transformation
-2. **Phase 2: Infrastructure** - Create DESCRIPTION, R/, inst/
+2. **Phase 2: Infrastructure** - Create DESCRIPTION, R/, inst/, data/ (CEDA structure)
 3. **Phase 3: Utilities** - Convert helper functions first
 4. **Phase 4: Scripts** - Transform pipeline scripts to functions
-5. **Phase 5: Document** - Add complete roxygen2 documentation
-6. **Phase 6: Validate** - Test, check, install
+5. **Phase 4.5: Interactive Mode** - Add Shiny app in inst/app/
+6. **Phase 5: Document** - Add complete roxygen2 documentation
+7. **Phase 6: Validate** - Test, format with air, check, install
+8. **Phase 6.5: Finalize** - Create CLAUDE.md, set up renv, add demo data
+
+**CEDA Standards Checklist:**
+- ✅ Package structure (DESCRIPTION, NAMESPACE, R/, man/, tests/)
+- ✅ Shiny app in inst/app/ with run_app() function
+- ✅ Data directories (data/01-raw/, 02-prepared/, 03-output/)
+- ✅ Demo data in data/**/demo/ subdirectories
+- ✅ Metadata in inst/metadata/ (including data_dictionary.csv)
+- ✅ Use tidyverse dialect, `|>` pipe, explicit namespacing
+- ✅ Format code with `air`
+- ✅ README in Dutch with visual example
+- ✅ CLAUDE.md with tech stack and structure
+- ✅ renv for dependency management
 
 **Always proceed incrementally with user approval between phases!**
+
+## Phase 6.5: Create CLAUDE.md and Setup renv
+
+### Step 6.5.1: Create CLAUDE.md
+
+Following CEDA standards, create `CLAUDE.md` with technical documentation:
+
+```markdown
+# Package Name
+
+## Overview
+
+Brief description of what this package does and which CEDA repo type it is (Ingestion or Analysis).
+
+## Standards
+
+Follow CEDA technical standards: https://github.com/cedanl/.github/tree/main/standards/README.md
+
+## Tech Stack
+
+- **Language**: R (>= 4.1.0)
+- **Key packages**: dplyr, readr, tidyr, ggplot2, shiny
+- **Tooling**: devtools, testthat, air (code formatting), renv (dependency management)
+- **Interactive mode**: Shiny app in `inst/app/`
+
+## Project Structure
+
+```
+pkgname/
+├── R/                      # Package functions
+│   ├── ingest_data.R
+│   ├── transform_data.R
+│   ├── run_analysis.R
+│   └── run_app.R
+├── inst/
+│   ├── app/                # Shiny app
+│   │   ├── app.R
+│   │   └── config.yml
+│   ├── metadata/           # Reference data, data dictionary
+│   └── templates/          # Quarto report templates
+├── data/
+│   ├── 01-raw/demo/        # Demo raw data (committed)
+│   ├── 02-prepared/demo/   # Demo processed data
+│   └── 03-output/demo/     # Demo output
+├── man/                    # Auto-generated docs
+├── tests/testthat/         # Unit tests
+├── vignettes/              # Usage docs
+├── main.R                  # Pipeline script (not part of package)
+├── DESCRIPTION
+├── NAMESPACE
+└── renv.lock
+```
+
+## How to Run
+
+### Interactive mode (Shiny app)
+
+```r
+devtools::load_all()
+run_app()
+```
+
+### Pipeline mode (script)
+
+```r
+devtools::load_all()
+source("main.R")
+```
+
+## Data
+
+**Input**: [Describe input format, sources]
+- Place in `data/01-raw/`
+- Demo data available in `data/01-raw/demo/`
+
+**Output**: [Describe output format]
+- Written to `data/03-output/`
+- Formats: Parquet (for code) + CSV (for Excel)
+- Data dictionary: `inst/metadata/data_dictionary.csv`
+
+**Privacy**: [Note any sensitive data handling]
+```
+
+### Step 6.5.2: Setup renv for Dependency Management
+
+**Initialize renv** (CEDA standard for reproducibility):
+
+```r
+## Install renv if needed
+install.packages("renv")
+
+## Initialize renv for this project
+renv::init()
+
+## This creates:
+## - renv.lock (list of exact package versions)
+## - renv/ directory (local package library)
+## - .Rprofile (auto-loads renv on project open)
+```
+
+**After adding new packages**:
+
+```r
+## Update lockfile
+renv::snapshot()
+```
+
+**For new users cloning the repo**:
+
+```r
+## Restore exact package versions
+renv::restore()
+```
+
+**Add to .gitignore**:
+```
+renv/library/
+renv/local/
+renv/staging/
+```
+
+**Keep in git**:
+- `renv.lock` ✅
+- `renv/activate.R` ✅
+- `.Rprofile` ✅
+
+### Step 6.5.3: Add Demo Data
+
+Create synthetic demo data so the package works out-of-the-box:
+
+```r
+## Create demo directories
+dir.create("data/01-raw/demo", recursive = TRUE)
+dir.create("data/02-prepared/demo", recursive = TRUE)
+dir.create("data/03-output/demo", recursive = TRUE)
+
+## Create synthetic sample data
+demo_data <- data.frame(
+  id = 1:100,
+  date = seq.Date(as.Date("2024-01-01"), by = "day", length.out = 100),
+  value = rnorm(100, mean = 50, sd = 10)
+)
+
+## Save to demo folder (will be committed to git)
+readr::write_csv(demo_data, "data/01-raw/demo/sample_data.csv")
+```
+
+**Update .gitignore**:
+```
+## Ignore real data
+data/01-raw/*
+data/02-prepared/*
+data/03-output/*
+
+## But keep demo data
+!data/**/demo/
+!data/**/demo/*
+```
 
 ## Starting the Skill
 
 When invoked:
-1. Ask about configuration (package name, doc language, goals)
-2. Start Phase 1: Project Discovery
-3. Present analysis and wait for approval
-4. Proceed through phases one at a time
-5. Celebrate when package is complete! 🎉
+1. **Introduce CEDA standards** - Explain this refactoring follows CEDA technical standards
+2. **Ask about configuration**:
+   - Package name
+   - Repo type (Ingestion vs Analysis)
+   - Documentation language (Dutch README, English code)
+   - Interactive mode needed? (Shiny app recommended)
+3. **Start Phase 1: Project Discovery** - Analyze current structure
+4. **Present transformation plan** - Show before/after, get user approval
+5. **Execute phases incrementally** - One phase at a time with user approval
+6. **Validate against CEDA standards** - Use the checklist in Workflow Summary
+7. **Celebrate when complete!** 🎉
+
+## Quick Reference: CEDA Standards
+
+For detailed standards, see: https://github.com/cedanl/.github/tree/main/standards
+
+**Key points**:
+- Use tidyverse dialect, `|>` pipe (not `%>%`)
+- Format with `air`, not `styler`
+- Shiny app in `inst/app/` with `run_app()` function
+- Data in `data/01-raw/`, `02-prepared/`, `03-output/`
+- Demo data in `data/**/demo/` (committed to git)
+- Metadata in `inst/metadata/` including `data_dictionary.csv`
+- README in Dutch with visual example
+- CLAUDE.md with tech stack and structure
+- Use `renv` for dependency management
+- Tests with testthat (>= 3.0)
