@@ -11,9 +11,9 @@ Scaffold a new cedanl repository following CEDA technical standards.
 
 When the user invokes `/init-repo [optional: project name]`:
 
-### 1. Gather requirements
+## Starter .devcontainer templates
 
-Ask the user (skip questions where the answer is already provided):
+For every new repo, a minimal .devcontainer folder is created for Python and R:
 
 | Question | Options |
 |----------|---------|
@@ -22,19 +22,83 @@ Ask the user (skip questions where the answer is already provided):
 | Language? | R, Python |
 | One-line description? | Free text |
 
-### 2. Read the standard
-
-Read `standards/project-structure.md` from the cedanl/.github repo (or local copy) to get the correct directory tree for the chosen type + language combination.
-
-Standards location: https://github.com/cedanl/.github/tree/main/standards
-
-### 3. Create directory structure
-
-Based on type and language, create the full directory tree.
-
-#### All repos get:
-
+**.devcontainer/Dockerfile**
 ```
+FROM python:3.12-slim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git curl \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+RUN useradd -m vscode
+USER vscode
+WORKDIR /workspace
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/home/vscode/.local/bin:${PATH}"
+```
+
+**.devcontainer/devcontainer.json**
+```
+{
+  "name": "python-uv-dev",
+  "build": { "dockerfile": "Dockerfile" },
+  "extensions": [
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "anthropic.claude-code"
+  ],
+  "postCreateCommand": "uv sync",
+  "forwardPorts": [8501],
+  "remoteUser": "vscode",
+  "settings": {
+    "editor.formatOnSave": true,
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.pylintEnabled": false,
+    "python.formatting.provider": "black",
+    "python.testing.pytestEnabled": true
+  }
+}
+```
+
+### R
+
+**.devcontainer/Dockerfile**
+```
+FROM rocker/tidyverse:latest
+USER root
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    curl \
+    vim \
+    git \
+    build-essential \
+    cmake \
+    libnode-dev \
+    libffi-dev \
+    zlib1g-dev \
+    libgit2-dev \
+    && rm -rf /var/lib/apt/lists/*
+USER rstudio
+WORKDIR /workspace
+```
+
+**.devcontainer/devcontainer.json**
+```
+{
+  "name": "R Dev Container",
+  "build": { "dockerfile": "Dockerfile" },
+  "remoteUser": "rstudio",
+  "settings": {},
+  "extensions": [ "REditorSupport.r" ],
+  "postCreateCommand": "Rscript -e 'install.packages(c(\"devtools\", \"usethis\", \"pak\", \"renv\"), repos=\"https://cran.rstudio.com/\")'"
+}
+```
+
+
 project-name/
 ├── .devcontainer/
 │   └── devcontainer.json
