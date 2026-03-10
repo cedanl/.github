@@ -9,15 +9,13 @@ You are an expert R package developer helping to refactor an existing R project 
 
 ## CEDA Standards
 
-This skill follows the **CEDA Technical Standards**: https://github.com/cedanl/.github/tree/main/standards
+This skill follows the **[CEDA Technical Standards](https://github.com/cedanl/.github/tree/main/standards)**. The resulting package must conform to these standards.
 
-Key standards to follow:
-- **[Principles](https://github.com/cedanl/.github/blob/main/standards/principles.md)** - Package-first development, functional programming, interpretability first
-- **[R Style Guide](https://github.com/cedanl/.github/blob/main/standards/r-style.md)** - Tidyverse dialect, naming conventions, code formatting with `air`
-- **[Project Structure](https://github.com/cedanl/.github/blob/main/standards/project-structure.md)** - Standard directory layout for R packages
-- **[Data Conventions](https://github.com/cedanl/.github/blob/main/standards/data-conventions.md)** - Column naming, file formats (Parquet + CSV), data dictionaries
+**Related skills:**
+- Use `/check-style` to validate code against CEDA R style standards after refactoring
+- Use `/init-repo` if creating a new repo from scratch (simpler than refactoring)
 
-**When refactoring, ensure the resulting package conforms to these CEDA standards.**
+**When refactoring, ensure the package follows CEDA standards for structure, style, and conventions.**
 
 ## Core Philosophy
 
@@ -30,15 +28,13 @@ Key standards to follow:
 
 This approach is safer than "big bang" refactoring - we ensure code works before adding package complexity.
 
-**Key Principles** (from CEDA standards):
-- **Package-first development**: Every repo is a proper R package (DESCRIPTION, NAMESPACE, R/, man/, tests/)
-- **Interactive mode**: Include a Shiny app in `inst/app/` that wraps package functions
-- **Functional programming**: Pure functions with explicit inputs/outputs, use `|>` pipe
-- **Interpretability first**: Write code for humans to read (tidyverse dialect)
-- **Explicit over implicit**: Use `dplyr::mutate()` not just `mutate()`
-- **Simple and readable**: Clear function names (verb + object), obvious parameters
+**Key Principles**:
+- **Functions First, Package Second**: Ensure code works before adding package complexity
 - **Incremental progress**: One phase at a time with user approval
 - **Test continuously**: Verify each change works before proceeding
+- **Follow CEDA standards**: Package structure, tidyverse style, interactive mode (Shiny), data conventions
+
+See `standards/principles.md` and `standards/r-style.md` for detailed CEDA guidelines.
 
 ## Configuration
 
@@ -101,7 +97,9 @@ Based on analysis, propose:
 - Short (5-10 chars), memorable, descriptive
 - Check availability with `available::available("pkgname")`
 
-**File Organization** (R/ directory) - per CEDA standards:
+**File Organization** (R/ directory):
+
+See `standards/project-structure.md` for complete CEDA project structure guidelines.
 
 For **Ingestion repos**:
 - `R/ingest_source.R` - Read raw files
@@ -701,28 +699,16 @@ NULL
 
 ### Step 5.5: Create Data Dictionary
 
-**CEDA requirement**: Every repo that produces data must include a data dictionary.
+**CEDA requirement**: Every repo that produces data must include `inst/metadata/data_dictionary.csv`.
 
-Create `inst/metadata/data_dictionary.csv`:
+See `standards/data-conventions.md` for the required format and columns.
 
+Example structure:
 ```csv
 dataset;column_name;description;type;source;example;allowed_values;sensitive
 output_2024;id;Student identifier;integer;source_system;12345;;false
-output_2024;enrollment_date;Date of enrollment;date;source_system;2024-09-01;;false
-output_2024;program;Study program name;character;source_system;Informatica;;false
 output_2024;status;Current enrollment status;character;derived;active;active;inactive;withdrawn;false
-output_2024;retention;Student retained (1=yes, 0=no);integer;derived;1;0;1;false
 ```
-
-**Key columns** (per CEDA Data Conventions):
-- `dataset`: Name of the output dataset
-- `column_name`: Column name as it appears in the data
-- `description`: Clear description of the variable
-- `type`: Data type (character, integer, double, date, boolean)
-- `source`: Source system or "derived" for computed variables
-- `example`: Example value (optional)
-- `allowed_values`: Valid values or range (optional)
-- `sensitive`: `true` if contains personal data (optional)
 
 **Create human-readable version** (optional but recommended):
 
@@ -780,13 +766,13 @@ test_that("transform_data handles missing values", {
 
 ### Step 6.2: Format Code and Run Checks
 
-**Format with air** (CEDA standard):
+**Format and validate with `/check-style`** (CEDA standard):
 ```bash
-## Format all R files
-air format .
+## Use the check-style skill to validate against CEDA standards
+/check-style
 
-## Or check without modifying
-air format --check .
+## Or format with air manually
+air format .
 ```
 
 **Run R CMD check**:
@@ -800,7 +786,7 @@ Common issues and fixes:
 - **Undocumented exports**: Add roxygen2 headers
 - **Missing dependencies**: Add to DESCRIPTION Imports
 - **Example errors**: Use `\dontrun{}` for examples needing data
-- **Style issues**: Run `air format .` to auto-fix
+- **Style issues**: Use `/check-style` or run `air format .`
 
 ### Step 6.3: Install and Test
 
@@ -817,79 +803,15 @@ library(pkgname)
 
 ### Step 6.4: Update README
 
-Create or update `README.md` following **CEDA README guidelines** (Dutch, visual-first, relevance-focused):
+Create or update `README.md` following **CEDA README guidelines** (Dutch, visual-first, relevance-focused).
 
-```markdown
-# Package Name
-
-Eén zin die uitlegt wat dit package doet en voor wie.
-
-## Voorbeeld
-
-![Screenshot of Shiny app or output visualization]
-
-*Screenshot van de Shiny app / dashboard / resultaat*
-
-## Relevantie
-
-Waarom dit package bestaat, welk probleem het oplost, wie de doelgroep is.
-
-## Snel starten
-
-### Installatie
-
-```r
-## Installeer dependencies
-install.packages(c("dplyr", "readr", "shiny"))
-
-## Installeer het package
-devtools::install_github("cedanl/pkgname")
-```
-
-### Gebruik via Shiny app (interactief)
-
-```r
-library(pkgname)
-run_app()
-```
-
-### Gebruik via code (pipeline)
-
-```r
-library(pkgname)
-
-## Laad package
-devtools::load_all()
-
-## Voer pipeline uit
-results <- run_pipeline(
-  input_path = "data/01-raw",
-  year = 2024,
-  output_dir = "data/03-output"
-)
-```
-
-## Data
-
-**Input**: [Beschrijf welke data nodig is, formaat, bronnen]
-- Plaats ruwe data in `data/01-raw/`
-- Demo data beschikbaar in `data/01-raw/demo/`
-
-**Output**: [Beschrijf wat er geproduceerd wordt]
-- Output wordt geschreven naar `data/03-output/`
-- Formaten: Parquet (programmatisch) + CSV (Excel-compatibel)
-- Data dictionary: zie `inst/metadata/data_dictionary.csv`
-
-## Technische details
-
-Voor technische documentatie, projectstructuur en architectuur: zie `CLAUDE.md`
-
-## Contact
-
-Voor vragen: [Naam] ([email])
-
-Bijdragen welkom! Zie [CONTRIBUTING.md] of maak een issue aan.
-```
+See `standards/README.md` for detailed README structure. Key sections:
+- One-line description (Dutch)
+- Visual example (screenshot/diagram)
+- Relevantie (why it exists, who it's for)
+- Quick start (installation, Shiny app, pipeline usage)
+- Data (input/output formats, demo data location)
+- Link to CLAUDE.md for technical details
 
 ## Key Transformation Patterns
 
@@ -1061,16 +983,13 @@ result <- dplyr::mutate(data, x = y)
 8. **Phase 6.5: Finalize** - Create CLAUDE.md, set up renv, add demo data
 
 **CEDA Standards Checklist:**
+Use `/check-style` for comprehensive validation. Key elements:
 - ✅ Package structure (DESCRIPTION, NAMESPACE, R/, man/, tests/)
 - ✅ Shiny app in inst/app/ with run_app() function
-- ✅ Data directories (data/01-raw/, 02-prepared/, 03-output/)
-- ✅ Demo data in data/**/demo/ subdirectories
-- ✅ Metadata in inst/metadata/ (including data_dictionary.csv)
-- ✅ Use tidyverse dialect, `|>` pipe, explicit namespacing
-- ✅ Format code with `air`
-- ✅ README in Dutch with visual example
-- ✅ CLAUDE.md with tech stack and structure
-- ✅ renv for dependency management
+- ✅ Data directories and demo data
+- ✅ Data dictionary in inst/metadata/
+- ✅ README (Dutch) and CLAUDE.md
+- ✅ Format with `air`, test with `testthat`
 
 **Always proceed incrementally with user approval between phases!**
 
@@ -1244,21 +1163,21 @@ When invoked:
 3. **Start Phase 1: Project Discovery** - Analyze current structure
 4. **Present transformation plan** - Show before/after, get user approval
 5. **Execute phases incrementally** - One phase at a time with user approval
-6. **Validate against CEDA standards** - Use the checklist in Workflow Summary
+6. **Validate against CEDA standards** - Run `/check-style` to verify compliance
 7. **Celebrate when complete!** 🎉
 
 ## Quick Reference: CEDA Standards
 
 For detailed standards, see: https://github.com/cedanl/.github/tree/main/standards
 
-**Key points**:
-- Use tidyverse dialect, `|>` pipe (not `%>%`)
-- Format with `air`, not `styler`
+**Key validation**:
+- Run `/check-style` to verify R style compliance
+- Use `/init-repo` for reference on proper structure
+- See `standards/` directory for all documentation
+
+**Essential elements**:
+- Package structure (DESCRIPTION, NAMESPACE, R/, man/, tests/)
 - Shiny app in `inst/app/` with `run_app()` function
-- Data in `data/01-raw/`, `02-prepared/`, `03-output/`
-- Demo data in `data/**/demo/` (committed to git)
-- Metadata in `inst/metadata/` including `data_dictionary.csv`
-- README in Dutch with visual example
-- CLAUDE.md with tech stack and structure
-- Use `renv` for dependency management
-- Tests with testthat (>= 3.0)
+- Data conventions (numbered directories, data dictionary)
+- README in Dutch, CLAUDE.md with tech details
+- Format with `air`, test with `testthat`
