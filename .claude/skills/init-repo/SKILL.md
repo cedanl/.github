@@ -45,9 +45,10 @@ ENV PATH="/home/vscode/.local/bin:${PATH}"
   "extensions": [
     "ms-python.python",
     "ms-python.vscode-pylance",
-    "anthropic.claude-code"
+    "anthropic.claude-code",
+    "n4eth.ty-type-checker"
   ],
-  "postCreateCommand": "uv sync",
+  "postCreateCommand": "uv sync && uv pip install ty",
   "forwardPorts": [8501],
   "remoteUser": "vscode",
   "settings": {
@@ -232,7 +233,7 @@ MIT license with current year and "cedanl" as copyright holder.
 
 #### Python-specific files
 
-- **pyproject.toml**: full config with `[project]`, `[tool.uv]`, `[tool.ruff]`, `[tool.pytest]`
+- **pyproject.toml**: full config with `[project]`, `[tool.uv]`, `[tool.ruff]`, `[tool.pytest]`, `[tool.ty]` (type hints via ty)
 - **src/project_name/__init__.py**: package docstring + version
 - **app/main.py**: minimal Streamlit app skeleton calling package functions
 - **app/config.toml**: paths to data directories
@@ -255,7 +256,7 @@ Create skeleton functions:
 ### 6. Initialize tooling
 
 - R: `renv::init()` if R is available
-- Python: `uv init` and `uv sync` if uv is available
+- Python: `uv init`, `uv sync`, and `uv pip install ty` if uv is available (ty is used for checking and generating type hints, see https://github.com/n4eth/ty)
 - Git: `git init` if not already a git repo
 
 ### 7. Report result
