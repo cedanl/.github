@@ -21,8 +21,8 @@ When creating derived or computed variables, follow the naming conventions of th
 |--------|---------|---------|
 | `_cat` | Categorized/binned numeric | `hoogste_vooropleiding_soort_cat` |
 | `_code` | Numeric code for a string value | `vooropleiding_voor_ho_code` |
-| `_date` | Date field | `leeftijd_peildatum_1_oktober_date` |
-| `_scaled` | Standardized/normalized | `INS_Score_scaled` |
+| `_datum` | Date field | `leeftijd_peildatum_1_oktober_datum` |
+| `_norm` | Standardized/normalized | `INS_Score_norm` |
 
 ### Character rules
 
