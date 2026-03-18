@@ -1,0 +1,212 @@
+[
+  {
+    "name": "ed2c-python",
+    "pushed_at": "2023-06-30T07:14:39Z",
+    "description": "Python packages for ed2c"
+  },
+  {
+    "name": "1cho_ins_preparation_r",
+    "pushed_at": "2026-03-05T13:00:17Z",
+    "description": " This is a repo for the Institutional 1 Cijfer HO (1CHO) data. This repository is for preparation of this data with R."
+  },
+  {
+    "name": "1cho_nl_visualisation_tableau",
+    "pushed_at": "2023-11-21T15:42:43Z",
+    "description": "This is a repo for the Dutch (national) 1 Cijfer HO (1CHO) data. This data is only for internal use. This repository is for visualisations of this data with Tableau"
+  },
+  {
+    "name": "1cho_nl_preparation_r",
+    "pushed_at": "2023-11-21T15:54:00Z",
+    "description": "This is a repo for the Dutch (national) 1 Cijfer HO (1CHO) data. This data is only for internal use. This repository is for preparation of these files with R."
+  },
+  {
+    "name": "1cho_ins_visualisation_tableau",
+    "pushed_at": "2023-11-21T17:06:24Z",
+    "description": "This is a repo for the Institutional 1 Cijfer HO (1CHO) data. This repository is for visualisation of this data with Tableau."
+  },
+  {
+    "name": "centre_documentation",
+    "pushed_at": "2024-12-10T20:41:45Z",
+    "description": "This is a repo for mostly Quarto documentation about the ways of working within CEDA"
+  },
+  {
+    "name": "wisselstroom",
+    "pushed_at": "2025-07-14T12:46:27Z",
+    "description": "use the bekostigingsbestanden to gain insight in switching studies"
+  },
+  {
+    "name": "docker_1cho",
+    "pushed_at": "2024-12-18T09:19:14Z",
+    "description": "Docker image which prepares raw 1cho files"
+  },
+  {
+    "name": "demo-instroomprognose",
+    "pushed_at": "2024-04-24T13:50:34Z",
+    "description": null
+  },
+  {
+    "name": "studentprognose",
+    "pushed_at": "2026-03-13T17:00:20Z",
+    "description": null
+  },
+  {
+    "name": "1cho_ins_visualisation_powerbi",
+    "pushed_at": "2025-01-28T12:56:07Z",
+    "description": "A ready to use powerBI dashboard, which visualises the 1cHO_instellingsbestand as is."
+  },
+  {
+    "name": "wisselstroom_demo",
+    "pushed_at": "2025-07-14T07:04:27Z",
+    "description": "R project to demonstrate the use of  `wisselstroom` package with example script"
+  },
+  {
+    "name": "public_activities",
+    "pushed_at": "2024-09-30T14:31:16Z",
+    "description": "A repository for the presentations of CEDA"
+  },
+  {
+    "name": "eencijfer",
+    "pushed_at": "2025-01-31T15:44:20Z",
+    "description": "ETL-tools for Dutch eencijfer"
+  },
+  {
+    "name": ".github",
+    "pushed_at": "2026-03-17T12:43:28Z",
+    "description": "Readme repository for CEDA main page"
+  },
+  {
+    "name": "overzicht-landelijke-databronnen",
+    "pushed_at": "2026-02-02T13:47:39Z",
+    "description": "Een overzicht van beschikbare data in het onderwijs"
+  },
+  {
+    "name": "maak_een_hex",
+    "pushed_at": "2024-12-05T14:32:38Z",
+    "description": null
+  },
+  {
+    "name": "powerbi-vsv",
+    "pushed_at": "2024-12-18T09:30:00Z",
+    "description": "Powerbi dashboard voor voortijdig schoolverlaters MBO op basis van DUO data."
+  },
+  {
+    "name": "Uitnodigingsregel",
+    "pushed_at": "2026-03-16T11:44:12Z",
+    "description": "Python project for predicting student dropout in the first year"
+  },
+  {
+    "name": "textanalysis",
+    "pushed_at": "2025-09-18T08:55:06Z",
+    "description": "\ud83d\udea7 [IN DEVELOPMENT] - Text Analysis Streamlit Dashboard (Local). \u26a1 Runs with uv"
+  },
+  {
+    "name": "vsv_analysis",
+    "pushed_at": "2025-09-08T08:22:25Z",
+    "description": "Een repository voor het inladen en bewerken van de voortijdig school verlaters data van DUO"
+  },
+  {
+    "name": "streamlit-app-template",
+    "pushed_at": "2025-06-19T10:59:31Z",
+    "description": "\u2705 [TEMPLATE] - A production-ready template for building & deploying Streamlit apps with best practices and essential configurations. \u26a1 Runs with uv"
+  },
+  {
+    "name": "r-p3-template",
+    "pushed_at": "2025-02-18T15:33:10Z",
+    "description": "\ud83d\udea7 [IN DEVELOPMENT] - A template for structuring R projects"
+  },
+  {
+    "name": "instroomprognose-mbo",
+    "pushed_at": "2026-01-23T12:45:38Z",
+    "description": "Inladen en bewerken van data uit CAMBO om prognose te maken "
+  },
+  {
+    "name": "lta-hhs-fairnessawareness",
+    "pushed_at": "2025-03-10T14:23:27Z",
+    "description": "Repo voor het maken van fairness analyses"
+  },
+  {
+    "name": "1cijferho",
+    "pushed_at": "2026-03-18T12:09:17Z",
+    "description": "Snel en zorgvuldig aan de slag met 1cijferHO-data voor onderwijsanalyses en onderzoek."
+  },
+  {
+    "name": "student-instroom-mbo",
+    "pushed_at": "2026-02-20T01:04:16Z",
+    "description": null
+  },
+  {
+    "name": "sdp-tools",
+    "pushed_at": "2025-10-14T04:52:23Z",
+    "description": "Tools for the Surf Developer Platform"
+  },
+  {
+    "name": "Uitnodigingsregel_datapreparatie",
+    "pushed_at": "2025-10-07T14:01:28Z",
+    "description": "Data preparatie scripts voor de Uitnodigingsregel"
+  },
+  {
+    "name": "no-fairness-without-awareness",
+    "pushed_at": "2026-03-18T14:15:25Z",
+    "description": "Minimum Viable Product voor NFWA project"
+  },
+  {
+    "name": "studentjourney-mbo",
+    "pushed_at": "2026-01-09T15:02:10Z",
+    "description": "A pipeline for analyzing student journey in the Netherlands"
+  },
+  {
+    "name": "arbeidsmarkt-mbo",
+    "pushed_at": "2026-01-22T20:18:17Z",
+    "description": "Python project for labor market analysis and MBO enrollment forecasts"
+  },
+  {
+    "name": "python-uv-devcontainer",
+    "pushed_at": "2026-03-18T11:37:31Z",
+    "description": "Een minimale development container voor Python-projecten met uv als package manager."
+  },
+  {
+    "name": "r-devcontainer",
+    "pushed_at": "2026-03-18T11:37:39Z",
+    "description": "Een minimale devcontainer voor R"
+  },
+  {
+    "name": "communicatie",
+    "pushed_at": "2026-02-11T16:50:23Z",
+    "description": "Repository voor projectcommunicatie"
+  },
+  {
+    "name": "ceda-algemeen",
+    "pushed_at": "2026-02-11T16:53:01Z",
+    "description": "Project repository"
+  },
+  {
+    "name": "project_algemeen",
+    "pushed_at": "2026-02-16T12:06:32Z",
+    "description": "Verzamelplek voor alle projectmatige issues die niet bij code, communicatie of een andere specifieke repositories horen"
+  },
+  {
+    "name": "Assistentie",
+    "pushed_at": "2026-03-18T14:18:39Z",
+    "description": "Centrum Educatieve Digitale Assistentie"
+  },
+  {
+    "name": "dashboard-instroomprognose-mbo",
+    "pushed_at": "2026-03-10T08:52:53Z",
+    "description": null
+  },
+  {
+    "name": "ceda-scoop",
+    "pushed_at": "2026-03-15T20:48:54Z",
+    "description": "\u2705 [TEMPLATE] -Repository voor een R project met scoop script om eenvoudig lokaal te installeren"
+  },
+  {
+    "name": "clidev-presentaties",
+    "pushed_at": "2026-03-18T10:57:28Z",
+    "description": "Repository met alle slides van CEDA ontwikkelt met slidev"
+  },
+  {
+    "name": "prep1cho",
+    "pushed_at": "2026-03-11T10:59:14Z",
+    "description": "Repository om de 1CHO data afkomstig uit project cedanl/1cijferho te verrijken in R"
+  }
+]
