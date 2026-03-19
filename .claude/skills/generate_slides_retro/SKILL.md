@@ -33,10 +33,32 @@ Voordat je iets doet, zorg dat het clidev-presentaties project beschikbaar is:
 
 ### Stap 1: Data ophalen
 
-**BELANGRIJK: Gebruik ALTIJD de `$GITHUB_TOKEN` environment variable voor authenticatie!**
+**BELANGRIJK: GitHub Token is vereist voor authenticatie.**
 Zonder token is de rate limit 60 requests/uur — dat is niet genoeg voor alle repo's.
 Met token: 5000 requests/uur. Voeg aan ELKE `curl` call toe: `-H "Authorization: token $GITHUB_TOKEN"`.
-Als `$GITHUB_TOKEN` niet is ingesteld, waarschuw de gebruiker en stop.
+
+**Token check — voer dit uit VOORDAT je data ophaalt:**
+1. Controleer of `$GITHUB_TOKEN` is ingesteld (`echo $GITHUB_TOKEN`).
+2. Als het NIET is ingesteld, vraag de gebruiker:
+   > Je hebt een GitHub Personal Access Token nodig om door te gaan. Heb je er al een?
+   >
+   > **Zo niet, maak er een aan:**
+   > 1. Ga naar https://github.com/settings/tokens
+   > 2. Klik op **"Generate new token (classic)"**
+   > 3. Geef het een naam (bijv. "CEDA Sprint Review")
+   > 4. Selecteer minimaal de scope **`repo`** (voor toegang tot publieke en private repos) en **`read:org`** (voor organisatie-data)
+   > 5. Klik op **"Generate token"** en kopieer het token
+   >
+   > **Plak je GitHub token hier in de chat:**
+3. Zodra de gebruiker het token plakt, stel het in als environment variable:
+   ```bash
+   export GITHUB_TOKEN="<geplakt-token>"
+   ```
+4. Verifieer dat het token werkt:
+   ```bash
+   curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/user | grep login
+   ```
+   Als dit geen resultaat geeft of een foutmelding toont, meld dit aan de gebruiker en stop.
 
 1. **Bepaal de sprint-periode** automatisch:
    - Sprint duurt 2 weken, eindigend op de huidige datum.
@@ -75,6 +97,13 @@ Als `$GITHUB_TOKEN` niet is ingesteld, waarschuw de gebruiker en stop.
 
 ### Stap 3: Genereer slides
 
+**BELANGRIJK: Geen `<script>` of `<style>` tags in Slidev markdown slides!**
+Slidev compileert slides via Vue/Vite, waardoor reguliere `<script>` en `<style>` tags worden gestript en niet werken. Alle interactieve slides met JavaScript (Roulette, Hot Takes, Two Truths, etc.) MOETEN als **standalone HTML-bestanden** in `public/` worden gegenereerd en via een **fullscreen `<iframe>`** worden embedded:
+```html
+<iframe src="/bestandsnaam.html" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; z-index: 1;" />
+```
+Alleen statische HTML (divs, tables, inline styles) mag direct in de slide markdown staan.
+
 7. **Genereer `YYMMDD_sprint_review.md`** in het clidev project (met `theme: ./theme` in de frontmatter) met deze slides:
 
    - **Slide 1 — Titel**: "CEDA Sprint Review" + datum + sprint-periode. Layout van boven naar onder:
@@ -110,7 +139,7 @@ Als `$GITHUB_TOKEN` niet is ingesteld, waarschuw de gebruiker en stop.
 
    - **Slide — Open PRs & Review-tijd**: HTML tabel van alle openstaande PRs over alle actieve repo's. Kolommen: Repo, PR nummer, Titel, Auteur, Open sinds (dagen). Gebruik dezelfde kleurcodering als backlog health: hoe langer open, hoe roder. Drempel: >7 dagen = oranje, >14 dagen = rood, >30 dagen = donkerrood. Header: "Wachten op review" — dit maakt zichtbaar waar PRs vastzitten en reviewers nodig zijn.
 
-   - **Slide — PR Review Roulette** (interactief): Draaiend wiel met teamleden. Techniek:
+   - **Slide — PR Review Roulette** (interactief): Draaiend wiel met teamleden. **MOET als standalone HTML in `public/roulette.html` worden gegenereerd en via fullscreen iframe worden embedded — JavaScript direct in Slidev markdown veroorzaakt Vue/Vite compile errors.** Techniek:
      - Cirkelvormig wiel via `conic-gradient` met 1 segment per teamlid (360° / N teamleden)
      - Elke naam gepositioneerd via: `position: absolute; top: 50%; left: 50%; transform: rotate({middenhoek}deg) translateY(-95px) rotate(-{middenhoek}deg);` — dit plaatst de naam in het midden van het segment en houdt tekst rechtop
      - Middenhoek per segment = `(index * segmentgrootte) + (segmentgrootte / 2)`
@@ -125,6 +154,11 @@ Als `$GITHUB_TOKEN` niet is ingesteld, waarschuw de gebruiker en stop.
        - Genereer 8 huilende emojis (😭) met `position: fixed`, random `left` (10-90%), `top: 30-70%`, `font-size: 2-4rem`, `opacity: 0`. Animatie via `@keyframes emojiPop`: `0%: scale(0) opacity(0)` → `50%: scale(1.3) opacity(1)` → `100%: scale(1) opacity(0)`. Duur: `1.5s`, `delay: 0-0.8s` (gestaffeld).
        - Alle animatie-elementen worden in een container `<div id="confetti-container">` geplaatst die na 5 seconden wordt verwijderd via `setTimeout`.
        - De winnaar-tekst krijgt een extra groot emoji: "😭 {NAAM} 😭" met `font-size: 1.2rem`.
+
+     **Embed in de slide** via een fullscreen iframe:
+     ```html
+     <iframe src="/roulette.html" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; z-index: 1;" />
+     ```
 
    - **Slide — Two Truths One Lie** (interactief): **Persoonsgebonden** quiz als standalone HTML-pagina, embedded via iframe in de slide. Genereer `public/two-truths.html` in het clidev project.
 
@@ -163,7 +197,7 @@ Als `$GITHUB_TOKEN` niet is ingesteld, waarschuw de gebruiker en stop.
      <iframe src="/two-truths.html" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; z-index: 1;" />
      ```
 
-   - **Slide — Hot Takes Poll** (interactief): Genereer 3-5 prikkelende stellingen over de sprint op basis van de opgehaalde data (bijv. "We hadden X eerder moeten mergen", "Repo Y heeft te veel open issues"). Techniek:
+   - **Slide — Hot Takes Poll** (interactief): **MOET als standalone HTML in `public/hot-takes.html` worden gegenereerd en via fullscreen iframe worden embedded — JavaScript direct in Slidev markdown veroorzaakt Vue/Vite compile errors.** Genereer 3-5 prikkelende stellingen over de sprint op basis van de opgehaalde data (bijv. "We hadden X eerder moeten mergen", "Repo Y heeft te veel open issues"). Techniek:
      - Elke stelling in een eigen kaart met twee knoppen: `<span style="cursor:pointer; font-size:1.5rem;" onclick="...">👍</span>` en `<span style="cursor:pointer; font-size:1.5rem;" onclick="...">👎</span>`
      - Per stelling een teller-variabele en een **animated bar** die het percentage 👍 vs 👎 toont
      - Bar: twee `<div>`s naast elkaar in een flex container. Linker div (groen, `#43A047`) = % eens, rechter div (rood, `#E53935`) = % oneens. Breedte via `style.width = percentage + '%'` met `transition: width 0.5s ease`
@@ -171,6 +205,11 @@ Als `$GITHUB_TOKEN` niet is ingesteld, waarschuw de gebruiker en stop.
      - Onder de bar: `<span style="font-size: 0.6rem; color: #666;">{N} stemmen</span>`
      - Kaart-styling: `background: rgba(255,255,255,0.9); border-radius: 10px; padding: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 0.8rem;`
      - Header: "Hot Takes — Eens of oneens?" met subtitel "Klik om te stemmen"
+
+     **Embed in de slide** via een fullscreen iframe:
+     ```html
+     <iframe src="/hot-takes.html" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; z-index: 1;" />
+     ```
 
    - **Laatste slide — Afsluiting**: "Vragen?" + teamfoto's + link naar github.com/cedanl.
 
