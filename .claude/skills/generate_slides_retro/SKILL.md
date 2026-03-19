@@ -1,3 +1,8 @@
+---
+name: generate_slides_retro
+description: Genereer een Slidev sprint review presentatie voor CEDA op basis van actuele GitHub data.
+---
+
 # generate_slides_retro
 
 Genereer een Slidev sprint review presentatie voor CEDA op basis van actuele GitHub data.
