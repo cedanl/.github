@@ -27,7 +27,16 @@ Gebruik het juiste template (zie secties hieronder). Neem de input van de user a
 
 Kies labels op basis van inhoud uit de beschikbare domein- en statuslabels hieronder.
 
-### 4. Maak de issue aan via gh
+### 4. Valideer GitHub handles
+
+Wanneer `@username` in de body voorkomt:
+
+1. Haal org-leden op: `gh api orgs/cedanl/members --jq '.[].login'`
+2. Controleer of elke `@username` voorkomt in de ledenlijst (case-insensitive)
+3. Als een handle niet gevonden wordt: waarschuw de user en toon beschikbare leden als suggesties
+4. Als de user geen specifieke persoon noemt bij "Gevalideerd met" of "Sparring partner": toon de beschikbare org-leden zodat de user kan kiezen
+
+### 5. Maak de issue aan via gh
 
 ```bash
 gh issue create \
@@ -39,7 +48,7 @@ EOF
 )"
 ```
 
-### 5. Rapporteer het resultaat
+### 6. Rapporteer het resultaat
 
 Toon de issue URL die `gh issue create` teruggeeft.
 
