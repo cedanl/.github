@@ -40,17 +40,45 @@ Wanneer `@username` in de body voorkomt:
 
 ```bash
 gh issue create \
+  --repo cedanl/<repo> \
   --title "<titel>" \
   --label "<label1>,<label2>" \
+  --project "CEDA Board" \
   --body "$(cat <<'EOF'
 <geformatteerde body>
 EOF
 )"
 ```
 
-### 6. Rapporteer het resultaat
+### 6. Zet issue type via GraphQL
 
-Toon de issue URL die `gh issue create` teruggeeft.
+`gh issue create` ondersteunt (nog) geen `--type` flag. Zet het issue type na aanmaken:
+
+1. Haal het issue node ID op:
+```bash
+gh api graphql -f query='{ repository(owner: "cedanl", name: "<repo>") { issue(number: <nr>) { id } } }'
+```
+
+2. Haal het juiste issue type ID op:
+```bash
+gh api graphql -f query='{ repository(owner: "cedanl", name: "<repo>") { issueTypes(first: 10) { nodes { id name } } } }'
+```
+
+Issue type IDs voor cedanl repos (organisatie-breed):
+| Type | ID |
+|------|-----|
+| Task | `IT_kwDOCDg-4s4BLrPF` |
+| Bug | `IT_kwDOCDg-4s4BLrPI` |
+| Pitch | `IT_kwDOCDg-4s4BLrPK` |
+
+3. Zet het type:
+```bash
+gh api graphql -f query='mutation { updateIssue(input: { id: "<issue_node_id>", issueTypeId: "<type_id>" }) { issue { title issueType { name } } } }'
+```
+
+### 7. Rapporteer het resultaat
+
+Toon de issue URL die `gh issue create` teruggeeft, en bevestig dat type en project zijn gezet.
 
 ## Issue Types
 
