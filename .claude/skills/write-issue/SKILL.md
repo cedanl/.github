@@ -27,21 +27,58 @@ Gebruik het juiste template (zie secties hieronder). Neem de input van de user a
 
 Kies labels op basis van inhoud uit de beschikbare domein- en statuslabels hieronder.
 
-### 4. Maak de issue aan via gh
+### 4. Valideer GitHub handles
+
+Wanneer `@username` in de body voorkomt:
+
+1. Haal org-leden op: `gh api orgs/cedanl/members --jq '.[].login'`
+2. Controleer of elke `@username` voorkomt in de ledenlijst (case-insensitive)
+3. Als een handle niet gevonden wordt: waarschuw de user en toon beschikbare leden als suggesties
+4. Als de user geen specifieke persoon noemt bij "Gevalideerd met" of "Sparring partner": toon de beschikbare org-leden zodat de user kan kiezen
+
+### 5. Maak de issue aan via gh
 
 ```bash
 gh issue create \
+  --repo cedanl/<repo> \
   --title "<titel>" \
   --label "<label1>,<label2>" \
+  --project "CEDA Board" \
   --body "$(cat <<'EOF'
 <geformatteerde body>
 EOF
 )"
 ```
 
-### 5. Rapporteer het resultaat
+### 6. Zet issue type via GraphQL
 
-Toon de issue URL die `gh issue create` teruggeeft.
+`gh issue create` ondersteunt (nog) geen `--type` flag. Zet het issue type na aanmaken:
+
+1. Haal het issue node ID op:
+```bash
+gh api graphql -f query='{ repository(owner: "cedanl", name: "<repo>") { issue(number: <nr>) { id } } }'
+```
+
+2. Haal het juiste issue type ID op:
+```bash
+gh api graphql -f query='{ repository(owner: "cedanl", name: "<repo>") { issueTypes(first: 10) { nodes { id name } } } }'
+```
+
+Issue type IDs voor cedanl repos (organisatie-breed):
+| Type | ID |
+|------|-----|
+| Task | `IT_kwDOCDg-4s4BLrPF` |
+| Bug | `IT_kwDOCDg-4s4BLrPI` |
+| Pitch | `IT_kwDOCDg-4s4BLrPK` |
+
+3. Zet het type:
+```bash
+gh api graphql -f query='mutation { updateIssue(input: { id: "<issue_node_id>", issueTypeId: "<type_id>" }) { issue { title issueType { name } } } }'
+```
+
+### 7. Rapporteer het resultaat
+
+Toon de issue URL die `gh issue create` teruggeeft, en bevestig dat type en project zijn gezet.
 
 ## Issue Types
 
