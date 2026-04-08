@@ -237,7 +237,7 @@ Context indicator (geen waardeoordeel):
    - Bugs afgerond
    - **Ratio**: done / (done + in_progress + todo) — dit is de delivery ratio
 
-2. **Toevoegingen**: Totaal functies 20-100 regels per domein.
+2. **Iteratie Output**: Totaal functies 20-100 regels per domein.
 
 3. **Scope per pitch**: Per Pitch op het board:
    - Check de issue body voor tasklists: `- [ ]` (open) en `- [x]` (done)
@@ -265,7 +265,7 @@ Genereer `YYMMDD_sprint_review_simple.md` in het clidev project met `theme: ./th
 
 Onderaan 3 hero-getallen:
 - **Opgeleverd**: done items count + ratio badge
-- **Toevoegingen**: totaal functies 20-100 regels
+- **Iteratie Output**: totaal functies 20-100 regels
 - **Bestanden geraakt**: totaal unieke files
 
 #### Slide 2 — Uitval & Instroom
@@ -299,12 +299,13 @@ Kanban board met 4 gelijke kolommen in deze volgorde:
 
 Alle 4 kolommen `flex: 1` (even groot).
 
-#### Slide 6 — Toevoegingen
+#### Slide 6 — Iteratie Output
 
-Tabel met per domein: commits, functies 20-100r, bestanden, scope (breed/smal), top repo.
+Tabel met per domein: commits, functies 20-100r, bestanden, scope (breed/smal), top repo(s).
 - Totaalrij onderaan
-- Leeswijzer: breed = feature/integratie, smal = bugfix/refactor
+- Leeswijzer onder de tabel met per kolom een korte toelichting (domein = welke repo's, commits = op default branch, functies = 20-100r proxy, bestanden = unieke files, scope = breed/smal, top repo(s) = getal = aantal functies)
 - Geen waardeoordeel, alleen context
+- Gebruik "geen output" (niet "geen activiteit") voor domeinen zonder commits — er kan wel werk zijn maar niets opgeleverd
 
 #### Slide 7 — Afgeronde tasks
 
