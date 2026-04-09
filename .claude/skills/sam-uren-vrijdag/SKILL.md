@@ -32,7 +32,7 @@ Navigeer via osascript naar de urenregistratie pagina:
 ```applescript
 tell application "Google Chrome"
   activate
-  open location "https://sam.surf.nl/?qvAutoInloggen=yes&qvCrc=ikdtxNlAkiLjoCaa&qvId=6435843&a=b"
+  open location "https://sam.surf.nl"
 end tell
 ```
 
@@ -41,7 +41,7 @@ Wacht 2 seconden en navigeer dan direct naar urenregistratie:
 ```applescript
 tell application "Google Chrome"
   set theTab to tab 1 of window 1
-  execute theTab javascript "window.location.href = '/?qvActie=launchmureig&qvId=6435844&qvCrc=ibijfdajjkvBajtc';"
+  execute theTab javascript "window.location.href = '/?qvActie=launchmureig';"
 end tell
 ```
 
