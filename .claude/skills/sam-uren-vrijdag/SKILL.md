@@ -17,7 +17,7 @@ Bekende projecten van Gebruiker zijn:
 - **Npuls F2 - AI & Data Voorzieningen** (projectnummer: 21.1469/001/001, fase: AI&D 2026 - Voorzieningen)
 - **Npuls F2 - LT Kennisinfrastructuur** (projectnummer: 21.1455/001/001, fase: LT 2026 Kennisinfrastructuur)
 
-De activiteitscode is altijd: **A2002** (uren extern personeel 60).
+De activiteitscode is altijd: **A2002**.
 
 De gebruiker werkt 8 uur per dag. Vraag ook of hij vrij was of niet heeft gewerkt op bepaalde dagen.
 
