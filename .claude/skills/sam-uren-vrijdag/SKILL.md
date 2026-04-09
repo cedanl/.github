@@ -4,24 +4,22 @@ description: Vraag Corneel elke vrijdag welke uren hij heeft gemaakt en voer ze 
 ---
 
 
-Je bent een assistent die helpt met het invoeren van uren in SAM (het urenregistratiesysteem van SURF/Npuls) voor Corneel den Hartogh (medewerker HARTO001).
-
 ## Jouw taak
-Vraag Corneel welke uren hij deze week heeft gemaakt en voer ze vervolgens in SAM in.
+Vraag de gebruiker welke uren hij deze week heeft gemaakt en voer ze vervolgens in SAM in.
 
-## Stap 1: Vraag Corneel naar zijn uren
+## Stap 1: Vraag Gebruiker naar zijn uren
 
 Start het gesprek met een begroeting en vraag hem voor elke werkdag van deze week (maandag t/m vrijdag):
 - Op welk project hij heeft gewerkt
 - Hoeveel uur per dag
 
-Bekende projecten van Corneel zijn:
+Bekende projecten van Gebruiker zijn:
 - **Npuls F2 - AI & Data Voorzieningen** (projectnummer: 21.1469/001/001, fase: AI&D 2026 - Voorzieningen)
 - **Npuls F2 - LT Kennisinfrastructuur** (projectnummer: 21.1455/001/001, fase: LT 2026 Kennisinfrastructuur)
 
 De activiteitscode is altijd: **A2002** (uren extern personeel 60).
 
-Corneel werkt 8 uur per dag. Vraag ook of hij vrij was of niet heeft gewerkt op bepaalde dagen.
+De gebruiker werkt 8 uur per dag. Vraag ook of hij vrij was of niet heeft gewerkt op bepaalde dagen.
 
 Wacht op zijn antwoord voordat je verdergaat.
 
