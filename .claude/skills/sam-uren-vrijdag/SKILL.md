@@ -1,6 +1,6 @@
 ---
 name: sam-uren-vrijdag
-description: Vraag Corneel elke vrijdag welke uren hij heeft gemaakt en voer ze in SAM in
+description: Vraag Gebruiker elke vrijdag welke uren hij heeft gemaakt en voer ze in SAM in
 ---
 
 
@@ -45,7 +45,7 @@ tell application "Google Chrome"
 end tell
 ```
 
-**Belangrijk:** Chrome moet "Allow JavaScript from Apple Events" aan hebben staan (View → Developer → Allow JavaScript from Apple Events). Als dit niet werkt, vraag Corneel dit in te schakelen.
+**Belangrijk:** Chrome moet "Allow JavaScript from Apple Events" aan hebben staan (View → Developer → Allow JavaScript from Apple Events). Als dit niet werkt, vraag gebruiker dit in te schakelen.
 
 ## Stap 3: Lees de huidige weekstaat
 
@@ -77,7 +77,7 @@ tell application "Google Chrome"
 end tell
 ```
 
-Voor elke projectregel die Corneel heeft opgegeven:
+Voor elke projectregel die gebruiker heeft opgegeven:
 
 1. Klik op de knop voor nieuwe tabelregel (het icoontje met 3 streepjes + plusje)
 2. Vul het projectnummer in (bijv. 21.1469/001/001)
@@ -113,19 +113,18 @@ Wacht 2 seconden en verifieer dat de regels de status **Definitief** hebben.
 
 ## Stap 6: Bevestig aan Gebruiker
 
-Lees de pagina opnieuw uit en bevestig aan Corneel welke uren zijn ingevoerd, op welke projecten, en dat de weekstaat definitief is gemeld.
+Lees de pagina opnieuw uit en bevestig aan gebruiker welke uren zijn ingevoerd, op welke projecten, en dat de weekstaat definitief is gemeld.
 
 ## Foutafhandeling
 
 - **"Er zijn nog weekstaatregels niet gereedgemeld"**: Ga terug naar de betreffende week (Week achteruit bladeren) en meld die lege weekstaat gereed (zonder uren als hij niet heeft gewerkt) via `document.forms[0].submit()` wanneer de form action `vrijgevenweek` bevat.
-- **Activiteitscode niet gevonden**: Vraag Corneel contact op te nemen met de projectleider.
-- **Chrome niet reagerend**: Vraag Corneel Chrome te openen en "Allow JavaScript from Apple Events" in te schakelen.
+- **Activiteitscode niet gevonden**: Vraag gebruiker contact op te nemen met de projectleider.
+- **Chrome niet reagerend**: Vraag gebruiker Chrome te openen en "Allow JavaScript from Apple Events" in te schakelen.
 
 ## Technische context
 
-- SAM hoofdmenu URL: https://sam.surf.nl/?qvAutoInloggen=yes&qvCrc=ikdtxNlAkiLjoCaa&qvId=6435843&a=b
-- Urenregistratie directe URL: https://sam.surf.nl/?qvActie=launchmureig&qvId=6435844&qvCrc=ibijfdajjkvBajtc
-- Medewerker ID: HARTO001 (Corneel den Hartogh)
+- SAM hoofdmenu URL: https://sam.surf.nl/
+- Urenregistratie directe URL: https://sam.surf.nl/?qvActie=launchmureig
 - Chrome JavaScript via AppleScript vereist: View → Developer → Allow JavaScript from Apple Events
 - Weekstaat gereedmelden: via form submit met action `qvActie=vrijgevenweek`
 - Week achteruit: klik element met id `WekenAchteruit`
