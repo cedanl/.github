@@ -111,7 +111,7 @@ end tell
 
 Wacht 2 seconden en verifieer dat de regels de status **Definitief** hebben.
 
-## Stap 6: Bevestig aan Corneel
+## Stap 6: Bevestig aan Gebruiker
 
 Lees de pagina opnieuw uit en bevestig aan Corneel welke uren zijn ingevoerd, op welke projecten, en dat de weekstaat definitief is gemeld.
 
