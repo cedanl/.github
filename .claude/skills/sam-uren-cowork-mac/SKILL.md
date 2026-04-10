@@ -1,131 +1,108 @@
 ---
 name: sam-uren-cowork-mac
-description: Vraag Gebruiker elke vrijdag welke uren hij heeft gemaakt en voer ze in SAM in
+description: Voer wekelijks uren in SAM in voor de ingelogde gebruiker. Opent SAM via Control Chrome MCP, leest projecten dynamisch uit de weekstaat, en vraagt login + uren in één bericht.
 ---
 
-
 ## Jouw taak
-Vraag de gebruiker welke uren hij deze week heeft gemaakt en voer ze vervolgens in SAM in.
 
-## Stap 1: Vraag Gebruiker naar zijn uren
+Voer de uren van de gebruiker in SAM (urenregistratiesysteem van SURF/Npuls) in voor de huidige week.
 
-Start het gesprek met een begroeting en vraag hem voor elke werkdag van deze week (maandag t/m vrijdag):
-- Op welk project hij heeft gewerkt
-- Hoeveel uur per dag
+## Stap 1: Open SAM én vraag uren tegelijk
 
-Bekende projecten van Gebruiker zijn:
-- **Npuls F2 - AI & Data Voorzieningen** (projectnummer: 21.1469/001/001, fase: AI&D 2026 - Voorzieningen)
-- **Npuls F2 - LT Kennisinfrastructuur** (projectnummer: 21.1455/001/001, fase: LT 2026 Kennisinfrastructuur)
+Doe dit gelijktijdig — wacht niet op de pagina voordat je de gebruiker aanspreekt:
 
-De activiteitscode is altijd: **A2002**.
+1. Navigeer via het **Control Chrome MCP** naar de SAM urenregistratiepagina:
+   `https://sam.surf.nl/?qvActie=launchmureig`
 
-De gebruiker werkt 8 uur per dag. Vraag ook of hij vrij was of niet heeft gewerkt op bepaalde dagen.
+2. Stuur de gebruiker meteen dit bericht:
+   > "Goedemorgen! Ik heb SAM geopend in Chrome — log even in met tiqr als dat nog niet is gebeurd.
+   >
+   > Geef ondertussen je uren voor deze week door: hoeveel uur per dag en op welk project? Geef ook aan als je een dag niet hebt gewerkt."
 
-Wacht op zijn antwoord voordat je verdergaat.
+3. Wacht op het antwoord van de gebruiker (zowel bevestiging van login als de uren).
 
-## Stap 2: Open SAM in Chrome
+## Stap 2: Controleer of SAM is geladen
 
-Gebruik osascript (AppleScript) om SAM te openen. SAM is bereikbaar via Control Chrome of via osascript.
+Lees de paginatekst via Control Chrome. Als er een login- of tiqr-scherm zichtbaar is, wacht dan op bevestiging van de gebruiker en laad de pagina opnieuw. Ga pas verder als de weekstaatpagina zichtbaar is (herkenbaar aan "Eigen Weekstaten" of "Jaar/week" in de tekst).
 
-Navigeer via osascript naar de urenregistratie pagina:
+## Stap 3: Lees de weekstaat en projecten dynamisch uit
 
-```applescript
-tell application "Google Chrome"
-  activate
-  open location "https://sam.surf.nl"
-end tell
+Haal de bestaande projectregels op uit de tabel:
+
+```javascript
+var rows = document.querySelectorAll('#brwTable tbody tr');
+var projecten = [];
+rows.forEach(function(row, i) {
+  var cellen = row.querySelectorAll('td');
+  if (cellen.length > 3) {
+    projecten.push({
+      rij: i + 1,
+      nummer: cellen[2] ? cellen[2].innerText.trim() : '',
+      omschrijving: cellen[3] ? cellen[3].innerText.trim() : '',
+      fase: cellen[4] ? cellen[4].innerText.trim() : '',
+      activiteit: cellen[5] ? cellen[5].innerText.trim() : ''
+    });
+  }
+});
+JSON.stringify(projecten);
 ```
 
-Wacht 2 seconden en navigeer dan direct naar urenregistratie:
+Gebruik deze projectnamen en -nummers als context bij het verwerken van de opgegeven uren. Vraag om verduidelijking als een projectnaam niet overeenkomt met een bestaande rij.
 
-```applescript
-tell application "Google Chrome"
-  set theTab to tab 1 of window 1
-  execute theTab javascript "window.location.href = '/?qvActie=launchmureig';"
-end tell
+Als er nog geen projectregels bestaan, maak ze aan via "Nieuw" in het Acties-menu (projectnummer, fase, activiteitscode, uren per dag).
+
+## Stap 4: Voer uren in via inline bewerking
+
+Voor elke projectregel (browserRow1, browserRow2, etc.):
+
+**1. Activeer bewerkmode:**
+```javascript
+document.querySelector('#browserRow1 a.editMode').click()
 ```
 
-**Belangrijk:** Chrome moet "Allow JavaScript from Apple Events" aan hebben staan (View → Developer → Allow JavaScript from Apple Events). Als dit niet werkt, vraag gebruiker dit in te schakelen.
-
-## Stap 3: Lees de huidige weekstaat
-
-Lees de pagina uit om te controleren welke week het is en of er al uren zijn ingevuld:
-
-```applescript
-tell application "Google Chrome"
-  set theTab to tab 1 of window 1
-  set result to execute theTab javascript "document.body.innerText"
-  return result
-end tell
+**2. Vul uurvelden in** (h-dag-uur1 = maandag t/m h-dag-uur7 = zondag):
+```javascript
+document.getElementById('h-dag-uur1').value = '8';  // maandag
+document.getElementById('h-dag-uur2').value = '0';  // dinsdag
+// etc. — lege dagen leeg laten of '0'
 ```
 
-Controleer het jaar/week en de periode. Dit moet de huidige week zijn.
-
-## Stap 4: Voer uren in via de tabelinvoer
-
-Klik op het icoontje voor nieuwe tabelregel (id "NieuweRegel" of zoek naar het element):
-
-```applescript
-tell application "Google Chrome"
-  set theTab to tab 1 of window 1
-  -- Zoek de knop voor nieuwe regel invoer
-  execute theTab javascript "
-    var html = document.body.innerHTML;
-    var idx = html.indexOf('NieuweRegel');
-    // of zoek naar de tabel-invoer knop
-  "
-end tell
+**3. Sla op en wacht 2 seconden:**
+```javascript
+document.querySelector('#browserRow1 a.save').click()
 ```
 
-Voor elke projectregel die gebruiker heeft opgegeven:
+Herhaal voor elke rij (browserRow2, browserRow3, etc.).
 
-1. Klik op de knop voor nieuwe tabelregel (het icoontje met 3 streepjes + plusje)
-2. Vul het projectnummer in (bijv. 21.1469/001/001)
-3. Selecteer het subproject en de fase
-4. Vul activiteitscode A2002 in
-5. Vul de uren per dag in
-6. Klik op het groene vinkje om te bevestigen
+## Stap 5: Weekstaat definitief melden
 
-**Alternatief via formulier (als tabel niet werkt):**
-Klik op "Nieuw" onder Acties in het rechtermenu om een formulier te openen. Vul van boven naar beneden in: bestemming (project), projectnummer, subproject, fase, activiteitscode, uren per dag.
-
-## Stap 5: Weekstaat gereedmelden
-
-Nadat alle uren zijn ingevoerd, meld de weekstaat gereed:
-
-```applescript
-tell application "Google Chrome"
-  set theTab to tab 1 of window 1
-  -- Submit het formulier met de vrijgevenweek actie
-  execute theTab javascript "
-    var f = document.forms[0];
-    if (f && f.action && f.action.indexOf('vrijgevenweek') !== -1) {
-      f.submit();
-    } else {
-      // Klik op de link 'Weekstaat wel/niet definitief maken'
-      document.getElementById('vrijgevenweek').click();
-    }
-  "
-end tell
+```javascript
+var links = document.querySelectorAll('a');
+links.forEach(function(l) {
+  if (l.textContent.indexOf('definitief') !== -1) l.click();
+});
 ```
 
-Wacht 2 seconden en verifieer dat de regels de status **Definitief** hebben.
+Wacht 2 seconden en lees de pagina opnieuw. Controleer of de status van alle regels "Definitief" is.
 
-## Stap 6: Bevestig aan Gebruiker
+## Stap 6: Bevestig aan de gebruiker
 
-Lees de pagina opnieuw uit en bevestig aan gebruiker welke uren zijn ingevoerd, op welke projecten, en dat de weekstaat definitief is gemeld.
+Stuur een overzicht van de ingevoerde uren per project en per dag, en bevestig dat de weekstaat definitief is gemeld.
 
 ## Foutafhandeling
 
-- **"Er zijn nog weekstaatregels niet gereedgemeld"**: Ga terug naar de betreffende week (Week achteruit bladeren) en meld die lege weekstaat gereed (zonder uren als hij niet heeft gewerkt) via `document.forms[0].submit()` wanneer de form action `vrijgevenweek` bevat.
-- **Activiteitscode niet gevonden**: Vraag gebruiker contact op te nemen met de projectleider.
-- **Chrome niet reagerend**: Vraag gebruiker Chrome te openen en "Allow JavaScript from Apple Events" in te schakelen.
+- **Login- of tiqr-scherm na bevestiging**: Vraag de gebruiker de pagina te verversen en opnieuw te bevestigen.
+- **"Er zijn nog weekstaatregels niet gereedgemeld"**: Ga naar de vorige week via `WekenAchteruit` en meld die weekstaat gereed.
+- **Projectregel ontbreekt**: Maak aan via "Nieuw" in het Acties-menu.
+- **Activiteitscode niet gevonden**: Vraag de gebruiker contact op te nemen met de projectleider.
 
 ## Technische context
 
-- SAM hoofdmenu URL: https://sam.surf.nl/
-- Urenregistratie directe URL: https://sam.surf.nl/?qvActie=launchmureig
-- Chrome JavaScript via AppleScript vereist: View → Developer → Allow JavaScript from Apple Events
-- Weekstaat gereedmelden: via form submit met action `qvActie=vrijgevenweek`
-- Week achteruit: klik element met id `WekenAchteruit`
-- Week vooruit: klik element met id `WekenVooruit`
+- SAM urenregistratie: `https://sam.surf.nl/?qvActie=launchmureig`
+- Navigatie: gebruik het **Control Chrome MCP** (niet osascript)
+- Bewerkknop per rij: `#browserRowN a.editMode`
+- Uurvelden: `h-dag-uur1` (maandag) t/m `h-dag-uur7` (zondag)
+- Opslaan per rij: `#browserRowN a.save`
+- Weekstaat definitief: link met tekst "definitief" in Acties-sectie
+- Week achteruit/vooruit: `WekenAchteruit` / `WekenVooruit`
+
