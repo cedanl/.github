@@ -21,3 +21,12 @@
 - name: needs-shaping
   color: "FBCA04"
   description: Pitch die nog gevormd moet worden
+
+# Prioriteit labels
+- name: low-priority
+  color: "C5DEF5"
+  description: Lage prioriteit
+
+- name: high-priority
+  color: "B60205"
+  description: Hoge prioriteit
