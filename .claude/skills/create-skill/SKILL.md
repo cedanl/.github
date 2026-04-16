@@ -25,19 +25,32 @@ Rapporteer kort wat er al bestaat en of er overlap is. Als een bestaande skill u
 
 ### 2. Interview
 
-Stel de volgende vragen **in één bericht** — niet één voor één:
+Stel de vragen **één voor één** — wacht na elke vraag op het antwoord van de gebruiker voor je de volgende stelt.
 
-> **Nieuwe skill aanmaken**
->
-> Beantwoord de volgende vragen zodat ik een goede SKILL.md kan genereren:
->
-> 1. **Naam** — Hoe heet de skill? (kebab-case, bijv. `check-stijl` of `maak-rapport`)
-> 2. **Doel** — Wat doet de skill in één zin? Wat is de concrete output?
-> 3. **Trigger** — Wanneer moet Claude deze skill automatisch activeren? Noem 2-3 voorbeeldberichten van een gebruiker die deze skill zou moeten triggeren.
-> 4. **Input** — Wat geeft de gebruiker mee? (bijv. een bestandspad, een naam, niets)
-> 5. **Type output** — Is de output objectief (een bestand, een commit, een issue) of subjectief (een review, een advies)?
+**Vraag 1 — Naam:**
+> Hoe heet de skill? Gebruik kebab-case (bijv. `check-stijl` of `maak-rapport`).
 
-Wacht op de antwoorden van de gebruiker voor je verder gaat.
+Wacht op antwoord.
+
+**Vraag 2 — Doel:**
+> Wat doet de skill in één zin? Wat is de concrete output die de gebruiker krijgt?
+
+Wacht op antwoord.
+
+**Vraag 3 — Trigger:**
+> Wanneer moet Claude deze skill automatisch activeren? Geef 2-3 voorbeeldberichten die een gebruiker zou sturen om deze skill te triggeren.
+
+Wacht op antwoord.
+
+**Vraag 4 — Input:**
+> Wat geeft de gebruiker mee bij het aanroepen? (bijv. een bestandspad, een naam, niets)
+
+Wacht op antwoord.
+
+**Vraag 5 — Type output:**
+> Is de output objectief (een bestand, een commit, een issue) of subjectief (een review, een advies)?
+
+Wacht op antwoord voor je verder gaat naar stap 3.
 
 ### 3. Classificeer de skill
 
