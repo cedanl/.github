@@ -20,7 +20,8 @@ Read the repo and identify:
 - Existing `pyproject.toml` or `setup.py`
 - Whether a `Makefile` exists
 - Whether there's already an interactive interface
-- Config file locations
+- Config file locations and what each contains
+- Which settings overlap across files
 
 Report findings to the user before proceeding.
 
@@ -40,6 +41,8 @@ Ask if not obvious:
 | Loads prepared data, analyzes, models, reports | Type 2: Analysis |
 
 ### 4. Create migration plan
+
+**Config rule:** Each setting should exist in exactly one config file. The package config in `src/project_name/metadata/` is the single source of truth for project settings (data paths, column names, parameters, etc.). The app should read from the package config via a shared loader function — do not duplicate settings in `app/config.toml`.
 
 Present a checklist to the user:
 
@@ -80,6 +83,8 @@ Present a checklist to the user:
 
 ### Cleanup
 - [ ] Remove old directory structure
+- [ ] Remove original config files from root after migrating to package metadata
+- [ ] Verify no config values are defined in more than one file
 - [ ] Verify `uv run pytest` passes
 - [ ] Verify `ruff check .` passes
 - [ ] Run `/check-style` for final validation
@@ -120,7 +125,7 @@ path = files("project_name.metadata") / "definitions.csv"
 Use the template from `standards/python-style.md` with proper `[project]`, `[tool.uv]`, `[tool.ruff]`, `[tool.pytest]` sections.
 
 #### Create Streamlit app
-Minimal app that imports and calls package functions. No business logic.
+Minimal app that imports and calls package functions. No business logic. The app should import and use the package's config loader for all project settings. Do not create a separate config loading mechanism for settings that the package already provides.
 
 ### 6. Verify
 

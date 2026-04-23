@@ -26,9 +26,13 @@ Detect the language from the changed files:
 - Python files (`.py`) → apply Python-specific CEDA checks
 - Mixed → apply both
 
+**Skip data files**: never include or inspect files in `data/`, `Output/`, or any directory listed in `.claudeignore`. These directories contain large datasets that will cause agents to hang. Only review source code files (`.R`, `.py`, `.md`, config files).
+
 ## Phase 2: Launch Three Review Agents in Parallel
 
 Use the Agent tool to launch all three agents concurrently in a single message. Pass each agent the full diff and the detected language so it has complete context.
+
+**Important**: include the full diff content directly in each agent prompt. Do NOT instruct agents to explore the filesystem — they must work only from the diff you provide. This prevents agents from accidentally reading large data files in `data/` or `Output/`.
 
 ### Agent 1: Code Reuse Review
 
