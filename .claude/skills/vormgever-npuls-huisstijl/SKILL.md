@@ -82,13 +82,17 @@ Om Npuls lading te geven, plaatsen we zoveel mogelijk onze pay-off “Onderwijs 
 5. Vormentaal 
 Wanneer je vormen creëert ter illustratie maak je voor de herkenbaarheid gebruik van een geometrische vormentaal. De Npuls vormentaal is ontleend aan het idee van beweging en pulsen. Deze mogen in combinatie met elkaar maar ook losstaand gebruikt worden. De vormentaal is te gebruiken als een middel om one-liners of teksten te ondersteunen en te versterken. De vormentaal mag ook ingezet worden met een decoratieve functie. Door te spelen met verschillende kleuren en de vormen te gebruiken als maskers creëer je spannende layouts. Plaats de gegenereerde vormen altijd in een van de kleuren uit het pallet en een passende achtergrond.
 Vijf kernvormen:
-1. Pulse curve — golvende lijn, suggereert dynamiek
-2. Concentrische ringen — bron van impact, kenniscentrum
-3. Chevron / pijl — richting, vooruitgang
-4. Starburst — aandacht, nieuw
-5. Boog / halfcirkel — verbinding, overgang
+A. Pulse curve — golvende lijn, suggereert dynamiek
+B.  Concentrische ringen — bron van impact, kenniscentrum
+C.  Chevron / pijl — richting, vooruitgang
+D. Starburst — aandacht, nieuw
+E. Boog / halfcirkel — verbinding, overgang
+ 
+ 
 6. Fotografie 
-Wanneer je passende fotografie creëert moet je altijd op zoek naar een sterke focus in beeld. Kleuren die herleidbaar zijn naar het kleurenpalet. Mensen die actief bezig zijn en het liefst in een innovatieve setting. Kernwoorden zijn: Focus, Innovatie, Actief en Kleurrijk.
+Wanneer je passende fotografie creëert moet je altijd op zoek naar een sterke focus in beeld. Kleuren die herleidbaar zijn naar het kleurenpalet. Je kan de kernvormen uit de vormen taal eventueel gebruiken als een mask. Gebruik fotografie waar mensen actief bezig zijn en het liefst in een innovatieve setting. Kernwoorden zijn: Focus, Innovatie, Actief en Kleurrijk. Zoek en gebruik hiervoor foto's uit de de volgende twee bronnen:
+A. https://www.flickr.com/groups/cczero/pool/
+B. https://www.flickr.com/groups/publicdomain/pool/
 Wanneer je iets in Npuls-stijl maakt
  
 * Check of er een framework-specifieke skill is*(bv. `clidev` voor presentaties) — gebruik die als die bestaat
