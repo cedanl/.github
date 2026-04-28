@@ -23,11 +23,13 @@ Gebruik deze skill wanneer je:
 Relatie tot andere skills:
 `clidev` | Slidev-workflow voor CEDA/Npuls presentaties (gebruikt de assets hier)
 `slidev` | Generieke Slidev-kennis 
-`ui-designer` | ISGVO-workflow bij de V — Verbeelding (Visueel ontwerp), Hoe ziet het eruit? Gebruikt de zes elementen hier)
+`ui-designer` | ISGVO-workflow bij de V — Verbeelding (Visueel ontwerp), Hoe ziet het eruit? Gebruikt de vijf elementen hier)
  
 Als iemand een: 
 * presentatie wil maken → start met `clidev`. Die skill gebruikt de Npuls Huisstijl uit deze skill.
 * webapps, landingspagina's, software-interfaces wil maken → start met`ui-designer`. Die skill gebruikt de Npuls Huisstijl uit deze skill.
+HUISSTIJL ELEMENTEN:
+ 
 1. Kleurenpallet
 Npuls wordt ondersteund door een kleurenpalet dat fris, modern en speels is. De primaire kleuren worden gebruikt als basiskleuren van communicatie-uitingen. Gebruik de primaire kleuren actief, afwisselend en doordacht door het hele ontwerp. Een goed Npuls-ontwerp bevat altijd minimaal 3 primaire kleuren die zichtbaar een rol spelen.
 Primaire kleuren:
@@ -58,6 +60,8 @@ Hier de combinaties die mogelijk zijn: Blauwe achtergrond: blauw + geel, blauw +
  
 In totaal zijn dat 18 toegestane kleurencombinaties. Niet elke kleur mag met elke andere kleur gecombineerd mag worden — zo zie je bijvoorbeeld geen geel op groen of groen op blauw.
  
+De kleur 'npuls-zwart:  #000000' mag alleen gebruikt worden voor typografie.
+ 
  
  
  
@@ -77,9 +81,7 @@ Cooper Light is een secundair font wat alleen gebruikt mak worden voor introduct
  
 3. Iconen
 Voor digitale middelen maken we gebruik van een iconenset genaamd fontawesome, laad via CDN. Daaruit gebruiken we alleen de solid sharp versie. Plaats iconen altijd in een van de kleuren uit het pallet en een passende achtergrond. Wissel icoonkleurparen af. Deze iconen sluiten door hun vorm en vulling goed aan bij de overige huisstijl elementen.
-4. Pay-off
-Om Npuls lading te geven, plaatsen we zoveel mogelijk onze pay-off “Onderwijs bewegen.”. We schrijven dit altijd in de volgende wijze “Onderwijs bewegen.” in het lettertype General Sans, Semibold.
-5. Vormentaal 
+4. Vormentaal 
 Wanneer je vormen creëert ter illustratie maak je voor de herkenbaarheid gebruik van een geometrische vormentaal. De Npuls vormentaal is ontleend aan het idee van beweging en pulsen. Deze mogen in combinatie met elkaar maar ook losstaand gebruikt worden. De vormentaal is te gebruiken als een middel om one-liners of teksten te ondersteunen en te versterken. De vormentaal mag ook ingezet worden met een decoratieve functie. Door te spelen met verschillende kleuren en de vormen te gebruiken als maskers creëer je spannende layouts. Plaats de gegenereerde vormen altijd in een van de kleuren uit het pallet en een passende achtergrond.
 Vijf kernvormen:
 A. Pulse curve — golvende lijn, suggereert dynamiek
@@ -89,7 +91,7 @@ D. Starburst — aandacht, nieuw
 E. Boog / halfcirkel — verbinding, overgang
  
  
-6. Fotografie 
+5. Fotografie 
 Wanneer je passende fotografie creëert moet je altijd op zoek naar een sterke focus in beeld. Kleuren die herleidbaar zijn naar het kleurenpalet. Je kan de kernvormen uit de vormen taal eventueel gebruiken als een mask. Gebruik fotografie waar mensen actief bezig zijn en het liefst in een innovatieve setting. Kernwoorden zijn: Focus, Innovatie, Actief en Kleurrijk. Zoek en gebruik hiervoor foto's uit de de volgende twee bronnen:
 A. https://www.flickr.com/groups/cczero/pool/
 B. https://www.flickr.com/groups/publicdomain/pool/
