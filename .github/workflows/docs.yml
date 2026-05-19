@@ -14,10 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
+      - uses: astral-sh/setup-uv@v5
 
-      - run: pip install mkdocs-material mkdocs-include-markdown-plugin
-
-      - run: mkdocs gh-deploy --force
+      - run: uv run --with mkdocs-material --with mkdocs-include-markdown-plugin mkdocs gh-deploy --force
