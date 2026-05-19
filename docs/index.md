@@ -10,7 +10,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
 <div class="grid cards" markdown>
 
--   :material-chart-line: **Instroomprognose**
+-   :material-chart-line:{ .lg .middle } __Instroomprognose__
 
     ---
 
@@ -18,7 +18,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/studentprognose)
 
--   :material-swap-horizontal: **Wisselstroom**
+-   :material-swap-horizontal:{ .lg .middle } __Wisselstroom__
 
     ---
 
@@ -26,7 +26,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: Package](https://github.com/cedanl/wisselstroom) · [:octicons-mark-github-16: Demo](https://github.com/cedanl/wisselstroom_demo)
 
--   :material-chat-processing: **Onderwijsdata Chat**
+-   :material-chat-processing:{ .lg .middle } __Onderwijsdata Chat__
 
     ---
 
@@ -34,7 +34,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/onderwijsdata-chat)
 
--   :material-account-school: **Uitnodigingsregel**
+-   :material-account-school:{ .lg .middle } __Uitnodigingsregel__
 
     ---
 
@@ -42,7 +42,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/Uitnodigingsregel)
 
--   :material-scale-balance: **No Fairness Without Awareness**
+-   :material-scale-balance:{ .lg .middle } __No Fairness Without Awareness__
 
     ---
 
@@ -56,7 +56,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
 <div class="grid cards" markdown>
 
--   :material-microsoft-excel: **1CHO Institutionele Visualisatie**
+-   :material-microsoft-excel:{ .lg .middle } __1CHO Institutionele Visualisatie__
 
     ---
 
@@ -64,7 +64,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/1cho_ins_visualisation_powerbi)
 
--   :material-text-search: **Text Analysis Dashboard**
+-   :material-text-search:{ .lg .middle } __Text Analysis Dashboard__
 
     ---
 
@@ -72,7 +72,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/textanalysis)
 
--   :material-school: **VSV Power BI Dashboard**
+-   :material-school:{ .lg .middle } __VSV Power BI Dashboard__
 
     ---
 
@@ -86,7 +86,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
 <div class="grid cards" markdown>
 
--   :material-database: **1cijferHO**
+-   :material-database:{ .lg .middle } __1cijferHO__
 
     ---
 
@@ -94,7 +94,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/1cijferho)
 
--   :material-tools: **1CijferHO ETL Tools**
+-   :material-tools:{ .lg .middle } __1CijferHO ETL Tools__
 
     ---
 
@@ -102,7 +102,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/eencijfer)
 
--   :material-map-marker: **RIO Onderwijsdata**
+-   :material-map-marker:{ .lg .middle } __RIO Onderwijsdata__
 
     ---
 
@@ -110,7 +110,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/rio-onderwijsdata)
 
--   :material-chart-bar: **CBS Onderwijsdata**
+-   :material-chart-bar:{ .lg .middle } __CBS Onderwijsdata__
 
     ---
 
@@ -124,7 +124,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
 <div class="grid cards" markdown>
 
--   :material-application: **Streamlit App Template**
+-   :material-application:{ .lg .middle } __Streamlit App Template__
 
     ---
 
@@ -132,7 +132,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/streamlit-app-template)
 
--   :material-language-python: **Python uv Devcontainer**
+-   :material-language-python:{ .lg .middle } __Python uv Devcontainer__
 
     ---
 
@@ -140,7 +140,7 @@ CEDA ontwikkelt samen met mbo, hbo en wo tools en analyses waarmee onderwijsinst
 
     [:octicons-mark-github-16: GitHub](https://github.com/cedanl/python-uv-devcontainer)
 
--   :material-language-r: **R Devcontainer**
+-   :material-language-r:{ .lg .middle } __R Devcontainer__
 
     ---
 
