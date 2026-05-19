@@ -1,0 +1,51 @@
+site_name: CEDA
+site_url: https://cedanl.github.io/.github/
+site_description: Center for Educational Data Analytics — van data naar betrouwbare inzichten voor het onderwijs.
+repo_url: https://github.com/cedanl
+repo_name: cedanl
+
+docs_dir: docs
+
+theme:
+  name: material
+  language: nl
+  features:
+    - navigation.tabs
+    - navigation.top
+    - navigation.sections
+    - search.highlight
+    - search.suggest
+    - content.tabs.link
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Standards:
+    - Overzicht: standards/index.md
+    - Principes: standards/principles.md
+    - Projectstructuur: standards/project-structure.md
+    - Dataconventies: standards/data-conventions.md
+    - Python stijl: standards/python-style.md
+    - R stijl: standards/r-style.md
+  - Guides:
+    - Azure AI modellen: guides/azure-ai.md
+
+plugins:
+  - search:
+      lang: nl
+  - include-markdown
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
