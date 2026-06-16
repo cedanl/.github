@@ -269,8 +269,10 @@ De presentatie opent op http://localhost:3030
 
 ## Installatie
 
+De skill staat in de centrale skills-repo van de organisatie (`cedanl/.github`):
+
 ```bash
-npx skills add cedanl/clidev-presentaties
+npx skills add cedanl/.github
 ```
 
 Vereist ook de slidev skill voor basiskennis:
@@ -278,3 +280,5 @@ Vereist ook de slidev skill voor basiskennis:
 ```bash
 npx skills add slidevjs/slidev
 ```
+
+De presentaties en het designsysteem (`style.css`, `_template.md`, achtergronden) staan in `cedanl/clidev-presentaties`; die repo wordt tijdens de projectsetup gekloond.
