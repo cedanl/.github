@@ -25,11 +25,11 @@ npx skills add slidevjs/slidev
 
 ### 2. Zoek het project op de machine
 
-Zoek naar een directory die de kenmerken heeft van het clidev project — aanwezigheid van `_template.md`, een `theme/` map en een `public/npuls/` structuur:
+Zoek naar een directory die de kenmerken heeft van het clidev project — aanwezigheid van `_template.md`, een `style.css` en een `public/npuls/` structuur:
 
 ```bash
 find ~ -type f -name "_template.md" 2>/dev/null | xargs -I{} dirname {} | while read dir; do
-  [ -d "$dir/theme" ] && [ -d "$dir/public/npuls" ] && echo "$dir"
+  [ -f "$dir/style.css" ] && [ -d "$dir/public/npuls" ] && echo "$dir"
 done | head -3
 ```
 
@@ -57,33 +57,40 @@ Naamconventie: `YYMMDD_onderwerp.md` — bijv. `260311_leeranalytics.md`
 clidev-presentaties/
 ├── YYMMDD_onderwerp.md
 ├── _template.md
-├── theme/
+├── style.css                        # Globaal designsysteem (np-* classes)
 └── public/
     ├── npuls/
     │   ├── powerpoint_slides/        # Achtergronden (Slide1-19.PNG)
     │   ├── powerpoint_illustrations/ # SVG-iconen
     │   ├── npuls_logo.jpg
     │   └── Npuls_lettertype/
+    ├── shots/                        # Screenshots voor in de slides
     ├── ceda_contributors/
     └── presentations/YYMMDD_onderwerp/
 ```
 
-## Thema
+## Thema en designsysteem
 
-Elke presentatie gebruikt `theme: ./theme`. Hierdoor zijn fonts, kleuren, logo en overlay-verwijdering al geregeld. Geen `<style>` blok nodig in presentatiebestanden.
+Elke presentatie gebruikt `theme: default` in de frontmatter. De huisstijl komt uit `style.css` in de projectroot: Slidev laadt dat bestand automatisch voor elke presentatie. Geen `<style>` blok in presentatiebestanden, geen `theme:`-map.
+
+`style.css` definieert de Npuls-fonts, kleurtokens, een opgeschoonde achtergrondlaag en een complete componentbibliotheek met `np-`-classes (kaarten, grids, badges, pipelines, enz.). Bouw slides altijd met die classes, zodat presentaties er consistent uitzien. Pas de huisstijl alleen in `style.css` aan, nooit per presentatie.
+
+> Verouderd: oudere presentaties gebruiken `theme: ./theme` met `<img>`-achtergronden en `--npuls-*` variabelen. Dat is vervangen door `theme: default` + `style.css`. Volg voor nieuwe presentaties altijd het nieuwe systeem.
 
 ## Npuls Huisstijl
 
 ### Kleuren
 
-| Gebruik | Kleur | Hex |
-|---------|-------|-----|
-| H1, H2 | Oranje | `#DD784B` |
-| H3-H6, body | Zwart | `#000000` |
-| Bold, links | Blauw | `#3D68EC` |
-| Accenten | Groen, Geel, Roze | `#00AF81`, `#F4D74B`, `#F4D9DC` |
+Gebruik de CSS-tokens uit `style.css`, niet de losse hex-waarden.
 
-CSS-variabelen: `var(--npuls-blue)`, `var(--npuls-orange)`, `var(--npuls-green)`
+| Gebruik | Token | Hex |
+|---------|-------|-----|
+| H1, H2 | `var(--np-orange)` | `#DD784B` |
+| H3 (kop in kaart) | `var(--np-dark-blue)` | `#1B2A6B` |
+| Bold, links | `var(--np-blue)` | `#3D68EC` |
+| Body / titeltekst | `var(--np-ink)`, `var(--np-dark-gray)` | `#1A1A2E`, `#374151` |
+| Gedempte tekst | `var(--np-mid-gray)` | `#6B7280` |
+| Accenten | `var(--np-green)`, `var(--np-yellow)`, `var(--np-pink)` | `#00AF81`, `#F4D74B`, `#F4D9DC` |
 
 **Mermaid-diagrammen:**
 - Primaire nodes: `fill:#3D68EC,stroke:#DD784B,color:#fff`
@@ -98,16 +105,12 @@ CSS-variabelen: `var(--npuls-blue)`, `var(--npuls-orange)`, `var(--npuls-green)`
 | General Sans Semi-Bold | 600 | H1, H2, H3 |
 | Cooper Light BT | 300 | Citaten |
 
-Logo verschijnt automatisch rechtsonder via het thema.
-
 ## Achtergronden
 
-Gebruik altijd de `<img>` methode. Nooit `background:` in frontmatter.
+Gebruik altijd de `.np-bg` class met `background-image`. Die laag staat al op `z-index: -1` en de overlays uit de default-theme zijn weggehaald, zodat de plaat scherp doorkomt. Nooit `background:` in de frontmatter zetten.
 
 ```html
-<div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;">
-  <img src="/npuls/powerpoint_slides/Slide3.PNG" style="width: 100%; height: 100%; object-fit: cover;" />
-</div>
+<div class="np-bg" style="background-image: url(/npuls/powerpoint_slides/Slide3.PNG);"></div>
 ```
 
 | Bestand | Gebruik | Bijzonderheden |
@@ -119,40 +122,71 @@ Gebruik altijd de `<img>` methode. Nooit `background:` in frontmatter.
 | `Slide13.PNG` / `Slide14.PNG` / `Slide15.PNG` | Hoofdstukdividers | Witte tekst verplicht |
 | `Slide17.PNG` | Afsluitslide | Geen tekst |
 
-## Centrering
+## Content centreren
 
-**Titelslide** — gebruik de `.title-center` themaklasse:
-
-```html
-<div class="title-center">
-
-# Titel
-
-## Ondertitel
-
-<div class="mt-2 title-subtitle">
-<strong>CEDA</strong> - Centre for Educational Data Analytics
-</div>
-</div>
-```
-
-**Content slides** — wikkel content in een gecentreerde flex-wrapper:
+**Content slides** — wikkel de inhoud in `.fill`. Die class vult de hele slide en centreert verticaal (`position: absolute; inset: 0; flex; justify-content: center; padding: 2.2rem 3rem`):
 
 ```html
-<div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 2rem 4rem; z-index: 1;">
+<div class="np-bg" style="background-image: url(/npuls/powerpoint_slides/Slide3.PNG);"></div>
+
+<div class="fill">
 
 # Slidetitel
+
+<p class="np-subtitle">Een ondertitel die de slide samenvat.</p>
 
 content hier
 
 </div>
 ```
 
-**Agenda slide** (Slide2.PNG, tekst rechts):
+**Titel-, divider- en agenda-slides** wijken af van `.fill`; gebruik de patronen uit `_template.md` (gecentreerde flex-wrapper voor de titel, `flex items-center justify-center h-full` voor dividers, `margin-left: 42%` voor de agenda rechts).
+
+**Hoofdstukdivider** (Slide13/14/15) — witte tekst, met eyebrow:
 
 ```html
-<div style="margin-left: 50%; padding-left: 2rem; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+<div class="np-bg" style="background-image: url(/npuls/powerpoint_slides/Slide14.PNG);"></div>
+
+<div class="flex items-center justify-center h-full">
+  <div style="text-align: center;">
+    <p class="eyebrow" style="color: rgba(255,255,255,0.85);">Deel 1</p>
+    <h1 style="color: #FFFFFF !important; font-size: 3rem;">Hoofdstuktitel</h1>
+  </div>
+</div>
 ```
+
+## Componentbibliotheek
+
+`style.css` levert de bouwstenen waarmee elke slide is opgebouwd. Combineer ze; verzin geen losse inline-stijlen waar een class bestaat.
+
+**Tekst-helpers**
+- `.eyebrow` — klein oranje kapitaaltjeslabel boven een titel
+- `.np-subtitle` — ondertitel direct onder de `#` titel
+- `.muted` — gedempte (grijze) tekst
+
+**Kaarten** — `.np-card` met een accentrand bovenaan:
+```html
+<div class="np-card accent-blue">
+  <span class="np-badge blue">Label</span>
+  <h3 style="margin-top: 0.5rem;">Kop</h3>
+  <p class="muted" style="font-size: 0.84rem; margin: 0;">Tekst.</p>
+</div>
+```
+Accenten: `accent-blue`, `accent-orange`, `accent-green`, `accent-yellow`, `accent-pink`.
+
+**Grids** — `.np-grid-2`, `.np-grid-3`, `.np-grid-4` voor kolommen met gelijke breedte (zet vaak `align-items: start`).
+
+**Badges** — `.np-badge` met kleur `blue` / `orange` / `green` / `yellow` / `pink` / `ghost` (ghost = wit op een donkere achtergrond).
+
+**Pipeline / proces** — `.np-pipeline` met `.np-step` (kleur `blue`/`orange`/`green`) en `.np-arrow` ertussen. In een step: `<strong>` als titel, `<small>` als toelichting.
+
+**Bewijsstrip** — `.np-proof-strip` met `.np-proof-item` (icoon `.np-proof-check`) en `.np-proof-divider` ertussen, voor een rij korte keurmerken.
+
+**Bottomline** — `.np-bottomline`, een blauw-oranje verloopbalk met de kernboodschap; `<strong>` daarin wordt geel.
+
+**Genummerde chips** — `.np-num` (ronde gekleurde cijferchip) voor agenda's en stappenlijsten; geef volgende chips een andere `background` via inline-stijl.
+
+**Screenshotframe** — `.np-frame` of een `<img>` met `border-radius: 8px` en een zachte `box-shadow`, voor screenshots uit `public/shots/`.
 
 ## Illustraties
 
@@ -171,7 +205,9 @@ ls public/npuls/powerpoint_illustrations/ | grep -i "zoekwoord"
 
 Dit zijn de dingen die echt stuk gaan als je ze negeert:
 
-- **Achtergronden**: altijd `<img>` methode, nooit `background:` in frontmatter
+- **Theme**: `theme: default` in de frontmatter, niet `theme: ./theme`. De huisstijl komt uit `style.css`, dat Slidev automatisch laadt
+- **Achtergronden**: altijd `<div class="np-bg" style="background-image: ...">`, nooit `background:` in de frontmatter
+- **Content**: wikkel in `.fill` (of een van de titel/divider-patronen), zodat alles netjes verticaal gecentreerd staat
 - **Hoofdstukslides** (Slide13/14/15): altijd witte tekst (`color: #FFFFFF`)
 - **Afsluitslide** (Slide17): geen tekst, alleen achtergrond
 - **Agenda slide** (Slide2): content rechts plaatsen, niet links
@@ -191,16 +227,18 @@ Houd scale laag (0.5–0.6) en labels kort om overflow te voorkomen.
 
 ## Slide layouts in de template
 
-De template bevat werkende voorbeelden van:
+`_template.md` bevat werkende voorbeelden in het nieuwe designsysteem:
 
-- Titelslide
-- Agenda (tekst rechts)
-- Hoofdstukdivider (witte tekst)
-- Content met bullets
-- Twee kolommen
-- Drie kolommen
+- Titelslide (gecentreerd)
+- Agenda (genummerde chips, tekst rechts)
+- Hoofdstukdivider (eyebrow + witte tekst)
+- Content met bullets + accentkaart
+- Drie kaarten met badges + bottomline
+- Pipeline / proces met bewijsstrip
+- Twee kolommen met kaarten
 - Citaat / highlight
 - Code demo
+- Screenshot (uit `public/shots/`)
 - Tabel
 - Illustratie + tekst
 - Afsluitslide
@@ -231,8 +269,10 @@ De presentatie opent op http://localhost:3030
 
 ## Installatie
 
+De skill staat in de centrale skills-repo van de organisatie (`cedanl/.github`):
+
 ```bash
-npx skills add cedanl/clidev-presentaties
+npx skills add cedanl/.github
 ```
 
 Vereist ook de slidev skill voor basiskennis:
@@ -240,3 +280,5 @@ Vereist ook de slidev skill voor basiskennis:
 ```bash
 npx skills add slidevjs/slidev
 ```
+
+De presentaties en het designsysteem (`style.css`, `_template.md`, achtergronden) staan in `cedanl/clidev-presentaties`; die repo wordt tijdens de projectsetup gekloond.

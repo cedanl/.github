@@ -1,0 +1,252 @@
+/* @theme npuls */
+@import 'default';
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+
+@font-face {
+  font-family: 'General Sans';
+  src: local('General Sans Regular'), local('GeneralSans-Regular');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'General Sans';
+  src: local('General Sans Semibold'), local('GeneralSans-Semibold');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cooper Light BT';
+  src: local('Cooper Light BT'), local('CooperLightBT');
+  font-weight: 300;
+  font-style: normal;
+}
+
+:root {
+  --npuls-orange: #DD784B;
+  --npuls-black: #000000;
+  --npuls-pink: #F4D9DC;
+  --npuls-blue: #3D68EC;
+  --npuls-yellow: #F4D74B;
+  --npuls-green: #00AF81;
+  --npuls-white: #FFFFFF;
+
+  --npuls-green-light: #CCEEE6;
+  --npuls-blue-light: #D6E2FD;
+  --npuls-pink-light: #FAEAEA;
+  --npuls-orange-light: #FFE4D8;
+  --npuls-yellow-light: #FCF5D4;
+}
+
+section {
+  font-family: 'General Sans', 'Plus Jakarta Sans', Arial, Helvetica, sans-serif;
+  font-size: 25px;
+  color: var(--npuls-black);
+  background-color: var(--npuls-white);
+  padding: 40px 50px;
+}
+
+/* Headings */
+
+section h1 {
+  color: var(--npuls-orange);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+section h2 {
+  color: var(--npuls-orange);
+  font-weight: 600;
+}
+
+section h3,
+section h4,
+section h5,
+section h6 {
+  color: var(--npuls-black);
+  font-weight: 600;
+}
+
+/* Typography */
+
+section a {
+  color: var(--npuls-blue);
+  text-decoration: none;
+}
+
+section a:hover {
+  color: var(--npuls-orange);
+}
+
+section strong {
+  color: var(--npuls-blue);
+  font-weight: 600;
+}
+
+section blockquote {
+  font-family: 'Cooper Light BT', 'Plus Jakarta Sans', Georgia, serif;
+  font-weight: 300;
+  border-left: 4px solid var(--npuls-orange);
+  padding: 0.5em 1em;
+  margin: 1em 0;
+  background-color: var(--npuls-orange-light);
+  color: var(--npuls-black);
+  font-size: 0.9em;
+}
+
+/* Tables */
+
+section table {
+  font-size: 0.85em;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+section table th {
+  background-color: var(--npuls-blue);
+  color: var(--npuls-white);
+  font-weight: 600;
+  padding: 0.4em 0.6em;
+  text-align: left;
+}
+
+section table td {
+  padding: 0.4em 0.6em;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+section table tr:nth-child(even) {
+  background-color: var(--npuls-blue-light);
+}
+
+/* Code blocks */
+
+section pre {
+  text-align: center;
+  border-left: 4px solid var(--npuls-blue);
+  border-radius: 0.5rem;
+  background-color: #f8f9fa;
+}
+
+section pre code {
+  display: inline-block;
+  text-align: left;
+}
+
+section code {
+  color: var(--npuls-blue);
+}
+
+/* Layout utilities */
+
+section .columns {
+  display: flex;
+  gap: 2em;
+}
+
+section .col {
+  flex: 1;
+}
+
+/* Slide variants */
+
+section.divider {
+  background-color: var(--npuls-orange);
+  color: var(--npuls-white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+section.divider h1 {
+  color: var(--npuls-white);
+  font-size: 2.5em;
+}
+
+section.divider h2 {
+  color: var(--npuls-white);
+  font-weight: 400;
+}
+
+section.title {
+  background-color: var(--npuls-blue);
+  color: var(--npuls-white);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+section.title h1 {
+  color: var(--npuls-white);
+}
+
+section.title h2 {
+  color: var(--npuls-pink);
+  font-weight: 400;
+}
+
+section.accent {
+  background-color: var(--npuls-green);
+  color: var(--npuls-white);
+}
+
+section.accent h1 {
+  color: var(--npuls-white);
+}
+
+/* Light background variants */
+
+section.light-blue { background-color: var(--npuls-blue-light); }
+section.light-pink { background-color: var(--npuls-pink-light); }
+section.light-green { background-color: var(--npuls-green-light); }
+section.light-orange { background-color: var(--npuls-orange-light); }
+section.light-yellow { background-color: var(--npuls-yellow-light); }
+
+/* Helper classes */
+
+section .big-impact {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--npuls-orange);
+  line-height: 1.1;
+  text-align: center;
+}
+
+section .medium-impact {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--npuls-blue);
+  text-align: center;
+}
+
+section .highlight-box {
+  background: linear-gradient(135deg, var(--npuls-blue) 0%, var(--npuls-orange) 100%);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  color: white;
+  text-align: center;
+}
+
+section .highlight-box h3 {
+  color: white;
+}
+
+/* Density helpers */
+
+section.dense-table table { font-size: 0.70em; }
+section.dense-code pre { font-size: 0.70em; }
+section.dense table,
+section.dense pre,
+section.dense blockquote { font-size: 0.70em; }
+
+/* Pagination */
+
+section::after {
+  color: var(--npuls-blue);
+  font-size: 0.7em;
+}

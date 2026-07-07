@@ -1,0 +1,282 @@
+[
+  {
+    "name": ".github",
+    "pushed_at": "2026-05-19T09:29:05Z",
+    "description": "Readme repository for CEDA main page"
+  },
+  {
+    "name": "1cho_ins_preparation_r",
+    "pushed_at": "2026-03-05T13:00:17Z",
+    "description": " This is a repo for the Institutional 1 Cijfer HO (1CHO) data. This repository is for preparation of this data with R."
+  },
+  {
+    "name": "1cho_ins_visualisation_powerbi",
+    "pushed_at": "2025-01-28T12:56:07Z",
+    "description": "A ready to use powerBI dashboard, which visualises the 1cHO_instellingsbestand as is."
+  },
+  {
+    "name": "1cho_ins_visualisation_tableau",
+    "pushed_at": "2023-11-21T17:06:24Z",
+    "description": "This is a repo for the Institutional 1 Cijfer HO (1CHO) data. This repository is for visualisation of this data with Tableau."
+  },
+  {
+    "name": "1cho_nl_preparation_r",
+    "pushed_at": "2023-11-21T15:54:00Z",
+    "description": "This is a repo for the Dutch (national) 1 Cijfer HO (1CHO) data. This data is only for internal use. This repository is for preparation of these files with R."
+  },
+  {
+    "name": "1cho_nl_visualisation_tableau",
+    "pushed_at": "2023-11-21T15:42:43Z",
+    "description": "This is a repo for the Dutch (national) 1 Cijfer HO (1CHO) data. This data is only for internal use. This repository is for visualisations of this data with Tableau"
+  },
+  {
+    "name": "1cijferho",
+    "pushed_at": "2026-05-21T08:06:07Z",
+    "description": "Snel en zorgvuldig aan de slag met 1cijferHO-data voor onderwijsanalyses en onderzoek."
+  },
+  {
+    "name": "AI-Alignment",
+    "pushed_at": "2026-04-28T13:57:55Z",
+    "description": "This project explores tracking the alignment (that the models follow our values) of AI models used within Dutch education using a community-developed scorecard derived from benchmarks. "
+  },
+  {
+    "name": "Assistentie",
+    "pushed_at": "2026-05-21T09:44:36Z",
+    "description": "Centrum Educatieve Digitale Assistentie"
+  },
+  {
+    "name": "Uitnodigingsregel",
+    "pushed_at": "2026-05-20T18:59:02Z",
+    "description": "Python project for predicting student dropout in the first year"
+  },
+  {
+    "name": "Uitnodigingsregel_datapreparatie",
+    "pushed_at": "2025-10-07T14:01:28Z",
+    "description": "Data preparatie scripts voor de Uitnodigingsregel"
+  },
+  {
+    "name": "arbeidsmarkt-mbo",
+    "pushed_at": "2026-04-13T05:53:38Z",
+    "description": "Python project for labor market analysis and MBO enrollment forecasts"
+  },
+  {
+    "name": "cbs-onderwijsdata",
+    "pushed_at": "2026-04-24T08:56:45Z",
+    "description": "CBS OData client en catalogus voor Nederlandse onderwijsdata"
+  },
+  {
+    "name": "ceda-algemeen",
+    "pushed_at": "2026-02-11T16:53:01Z",
+    "description": "Project repository"
+  },
+  {
+    "name": "ceda-store",
+    "pushed_at": "2026-04-26T21:56:30Z",
+    "description": "\u2705 [TEMPLATE] -Repository voor een R project met scoop script om eenvoudig lokaal te installeren"
+  },
+  {
+    "name": "centre_documentation",
+    "pushed_at": "2024-12-10T20:41:45Z",
+    "description": "This is a repo for mostly Quarto documentation about the ways of working within CEDA"
+  },
+  {
+    "name": "clidev-presentaties",
+    "pushed_at": "2026-04-14T09:31:16Z",
+    "description": "Repository met alle slides van CEDA ontwikkelt met slidev"
+  },
+  {
+    "name": "communicatie",
+    "pushed_at": "2026-03-25T11:54:41Z",
+    "description": "Repository voor projectcommunicatie"
+  },
+  {
+    "name": "dashboard-instroomprognose-mbo",
+    "pushed_at": "2026-03-10T08:52:53Z",
+    "description": null
+  },
+  {
+    "name": "demo-instroomprognose",
+    "pushed_at": "2024-04-24T13:50:34Z",
+    "description": null
+  },
+  {
+    "name": "dev-dots",
+    "pushed_at": "2026-05-22T06:01:38Z",
+    "description": null
+  },
+  {
+    "name": "docker_1cho",
+    "pushed_at": "2024-12-18T09:19:14Z",
+    "description": "Docker image which prepares raw 1cho files"
+  },
+  {
+    "name": "duo-mbo-datafiles",
+    "pushed_at": "2026-05-23T11:39:36Z",
+    "description": "Parsers en analyse voor DUO MBO bestandsformaten (H15 RO, H16 TBGI, H17 GRONDSLAG_IP)"
+  },
+  {
+    "name": "ed2c-python",
+    "pushed_at": "2023-06-30T07:14:39Z",
+    "description": "Python packages for ed2c"
+  },
+  {
+    "name": "eencijfer",
+    "pushed_at": "2025-01-31T15:44:20Z",
+    "description": "ETL-tools for Dutch eencijfer"
+  },
+  {
+    "name": "evaluatietool-selectie",
+    "pushed_at": "2026-03-20T08:47:36Z",
+    "description": "Deze repository is tbv de evaluatietool van selectie"
+  },
+  {
+    "name": "instroomprognose-mbo",
+    "pushed_at": "2026-01-23T12:45:38Z",
+    "description": "Inladen en bewerken van data uit CAMBO om prognose te maken "
+  },
+  {
+    "name": "lta-hhs-fairnessawareness",
+    "pushed_at": "2025-03-10T14:23:27Z",
+    "description": "Repo voor het maken van fairness analyses"
+  },
+  {
+    "name": "maak_een_hex",
+    "pushed_at": "2024-12-05T14:32:38Z",
+    "description": null
+  },
+  {
+    "name": "no-fairness-without-awareness",
+    "pushed_at": "2026-05-18T06:39:03Z",
+    "description": "Minimum Viable Product voor NFWA project"
+  },
+  {
+    "name": "onderwijsdata-chat",
+    "pushed_at": "2026-05-21T09:21:10Z",
+    "description": "Chat met open Nederlandse onderwijsdata (CBS + RIO)"
+  },
+  {
+    "name": "onderwijsdata-synthese",
+    "pushed_at": "2026-05-20T13:15:57Z",
+    "description": "Genereer privacyveilige synthetische onderwijsdata met behoud van statistische verbanden"
+  },
+  {
+    "name": "overzicht-landelijke-databronnen",
+    "pushed_at": "2026-04-03T07:58:50Z",
+    "description": "Een overzicht van beschikbare data in het onderwijs"
+  },
+  {
+    "name": "powerbi-vsv",
+    "pushed_at": "2024-12-18T09:30:00Z",
+    "description": "Powerbi dashboard voor voortijdig schoolverlaters MBO op basis van DUO data."
+  },
+  {
+    "name": "prep1cho",
+    "pushed_at": "2026-03-23T13:46:07Z",
+    "description": "Repository om de 1CHO data afkomstig uit project cedanl/1cijferho te verrijken in R"
+  },
+  {
+    "name": "project_algemeen",
+    "pushed_at": "2026-04-14T11:39:42Z",
+    "description": "Verzamelplek voor alle projectmatige issues die niet bij code, communicatie of een andere specifieke repositories horen"
+  },
+  {
+    "name": "public_activities",
+    "pushed_at": "2024-09-30T14:31:16Z",
+    "description": "A repository for the presentations of CEDA"
+  },
+  {
+    "name": "python-uv-devcontainer",
+    "pushed_at": "2026-05-11T08:31:32Z",
+    "description": "Een minimale development container voor Python-projecten met uv als package manager."
+  },
+  {
+    "name": "r-devcontainer",
+    "pushed_at": "2026-05-11T08:31:36Z",
+    "description": "Een minimale devcontainer voor R"
+  },
+  {
+    "name": "r-p3-template",
+    "pushed_at": "2025-02-18T15:33:10Z",
+    "description": "\ud83d\udea7 [IN DEVELOPMENT] - A template for structuring R projects"
+  },
+  {
+    "name": "regiobijeenkomst-tool",
+    "pushed_at": "2026-05-26T07:09:32Z",
+    "description": "Interactieve workshop-tool voor CEDA-regiobijeenkomsten (hbo/wo/mbo). Live samenwerking via WebSocket-relay, geen externe afhankelijkheden."
+  },
+  {
+    "name": "rio-onderwijsdata",
+    "pushed_at": "2026-04-24T08:56:44Z",
+    "description": "Python package en catalogussite voor de RIO LOD API v2 \u2014 het dagelijks bijgewerkte register van Nederlandse onderwijsinstellingen en opleidingen"
+  },
+  {
+    "name": "samenwijzer",
+    "pushed_at": "2026-05-25T16:03:52Z",
+    "description": "Python app die AI en Data gebruikt om studenten te ondersteunen bij het leren"
+  },
+  {
+    "name": "sdp-tools",
+    "pushed_at": "2025-10-14T04:52:23Z",
+    "description": "Tools for the Surf Developer Platform"
+  },
+  {
+    "name": "staat-van-onderwijsinstelling",
+    "pushed_at": "2026-05-13T13:58:20Z",
+    "description": "Repository voor preparatie code voor 'Staat van [Onderwijsinstelling]`"
+  },
+  {
+    "name": "streamlit-app-template",
+    "pushed_at": "2025-06-19T10:59:31Z",
+    "description": "\u2705 [TEMPLATE] - A production-ready template for building & deploying Streamlit apps with best practices and essential configurations. \u26a1 Runs with uv"
+  },
+  {
+    "name": "student-instroom-mbo",
+    "pushed_at": "2026-02-20T01:04:16Z",
+    "description": null
+  },
+  {
+    "name": "student-signal",
+    "pushed_at": "2026-04-20T14:52:10Z",
+    "description": "Domain library for student dropout prediction: data preparation, ranking, and evaluation"
+  },
+  {
+    "name": "studentjourney-mbo",
+    "pushed_at": "2026-01-09T15:02:10Z",
+    "description": "A pipeline for analyzing student journey in the Netherlands"
+  },
+  {
+    "name": "studentprognose",
+    "pushed_at": "2026-05-26T07:57:27Z",
+    "description": null
+  },
+  {
+    "name": "synthetische-onderwijsdata",
+    "pushed_at": "2026-05-18T10:45:46Z",
+    "description": "Modulair Python-package voor het genereren van synthetische relationele onderwijsdata (1cijferHO/CBS) met behoud van referenti\u00eble integriteit en longitudinale structuur"
+  },
+  {
+    "name": "textanalysis",
+    "pushed_at": "2026-04-24T08:59:47Z",
+    "description": "\ud83d\udea7 [IN DEVELOPMENT] - Text Analysis Streamlit Dashboard (Local). \u26a1 Runs with uv"
+  },
+  {
+    "name": "uitnodigingsregel-benchmark",
+    "pushed_at": "2026-05-06T12:26:29Z",
+    "description": "Benchmarking harness for the uitnodigingsregel dropout prediction methodology"
+  },
+  {
+    "name": "vsv_analysis",
+    "pushed_at": "2025-09-08T08:22:25Z",
+    "description": "Een repository voor het inladen en bewerken van de voortijdig school verlaters data van DUO"
+  },
+  {
+    "name": "wisselstroom",
+    "pushed_at": "2025-07-14T12:46:27Z",
+    "description": "use the bekostigingsbestanden to gain insight in switching studies"
+  },
+  {
+    "name": "wisselstroom_demo",
+    "pushed_at": "2025-07-14T07:04:27Z",
+    "description": "R project to demonstrate the use of  `wisselstroom` package with example script"
+  }
+]
