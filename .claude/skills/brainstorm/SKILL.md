@@ -1,6 +1,6 @@
 ---
 name: brainstorm
-description: Structureer een brainstorm van idee naar getoetst besluit vóór implementatie, met een beslis-samenvatting en aanbevelingen — geen code of bestanden. Gebruik bij cedanl-werk wanneer iemand een idee wil uitwerken of een besluit wil voorbereiden voordat er code of een plan komt.
+description: Structureer een brainstorm van idee naar getoetst besluit vóór implementatie, met een beslis-samenvatting en aanbevelingen — geen code of bestanden. Wanneer iemand een idee wil uitwerken of een besluit wil voorbereiden voordat er code of een plan komt.
 ---
 
 # Brainstorm
@@ -31,11 +31,11 @@ Before asserting anything, read the relevant files, docs, and recent commits. Wh
 
 ### 2. Scope check
 
-Multiple independent parts? Say so, propose a split, and brainstorm only the first part. Out-of-scope ideas: park as deferred ("Dat is een eigen onderwerp, zal ik het noteren?").
+Multiple independent parts are fine.
 
 ### 3. Assumptions first
 
-No questionnaire. Analyse first, then present assumptions the user only has to correct. Per assumption: what (with file reference), evidence, what breaks if it is wrong, confidence (Zeker / Waarschijnlijk / Onzeker). Ask only when something is genuinely not derivable or confidence is Onzeker; then one question per turn, multiple-choice where possible, no checklist grind. Problem first, solution space after.
+No questionnaire. Analyse first, then present assumptions where the user only has to correct. Per assumption: what (with file reference), evidence, what breaks if it is wrong, confidence (Zeker / Waarschijnlijk / Onzeker). Ask only when something is genuinely not derivable or confidence is Onzeker; then one question per turn, multiple-choice where possible, no checklist grind. Problem first, solution space after.
 
 ### 4. Explore approaches
 
