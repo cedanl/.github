@@ -3,69 +3,71 @@ name: voorspellen-classificatie
 description: Bouw voorspelmodellen voor categorische uitkomsten (ja/nee of meerdere klassen) waar per individu een correcte voorspelling telt — bijv. "voorspel of een student uitvalt", "classificeer aanvragen als goedgekeurd/afgekeurd", "predict churn yes/no". Gebruik deze skill bij elke classificatietaak. LET OP — als het doel is een lijst te sorteren op risico en de top-N te selecteren (beperkte capaciteit, uitnodigingslijst, prioritering), gebruik dan de skill voorspellen-ranking in plaats van deze.
 ---
 
-# Voorspellen: classificatie
+# Prediction: classification
 
-Doel: per rij een klasse voorspellen (uitval ja/nee, categorie A/B/C). Evaluatie op de kwaliteit van individuele voorspellingen.
+Goal: predict a class per row (dropout yes/no, category A/B/C). Evaluated on the quality of individual predictions. The user is non-technical: address them in Dutch and keep explanations in plain language.
 
 ## Workflow
 
-When the user invokes `/voorspellen-classificatie [optioneel: bestandspad of doelvariabele]`:
+When the user invokes `/voorspellen-classificatie [optional: file path or target variable]`:
 
-## Stap 0 — Check: is dit wel classificatie?
+## Step 0 — Check: is this actually classification?
 
-Twee checks voordat je begint:
-1. **Ranking?** Vraag bij een binaire doelvariabele altijd eerst: gaat het om **harde ja/nee-beslissingen per individu**, of om **sorteren op risico en de top-N selecteren** (bijv. wie nodig je uit bij beperkte capaciteit)? In het tweede geval: gebruik de skill `/voorspellen-ranking`. Klassieke classificatie optimaliseert een beslisgrens bij 0,5 en negeert de volgorde binnen groepen; voor prioriteringslijsten is dat de verkeerde optimalisatie.
-2. **Tijdreeks?** Gaat het om het voorspellen van toekomstige gebeurtenissen over de tijd waarbij rijen tijdstippen zijn (bijv. "wordt volgende maand een piek")? Dan is dit forecasting, geen rij-gebaseerde classificatie — meld dat en gebruik een forecasting-aanpak. Bij data over meerdere jaren (paneldata): splits op tijd (train op eerdere jaren, test op het laatste jaar) in plaats van random.
+Two checks before you start:
+1. **Ranking?** For a binary target, always ask first: is this about **hard yes/no decisions per individual**, or about **sorting by risk and selecting the top-N** (e.g. who to invite under limited capacity)? In the second case: use the skill `/voorspellen-ranking`. Classic classification optimises a decision boundary at 0.5 and ignores the ordering within groups; for prioritisation lists that is the wrong optimisation.
+2. **Time series?** Is this about predicting future events over time where rows are timestamps (e.g. "will there be a peak next month")? Then this is forecasting, not row-based classification — say so and use a forecasting approach. For data across multiple years (panel data): split on time (train on earlier years, test on the most recent year) instead of random.
 
-## Stap 1 — Intake (altijd eerst vragen, niet zelf aannemen)
+## Step 1 — Intake (always ask first, do not assume)
 
-1. **Interpreteerbaar of black box?**
-   - Interpreteerbaar = uitlegbaar waarom (Logistische regressie, Lasso-logistiek, kleine beslisboom).
-   - Black box mag = vaak nauwkeuriger (Random Forest, Gradient Boosting, XGBoost, SVM). Geen deep learning.
-2. **Instellingen automatisch fijnslijpen of standaardinstellingen?** (vraag het in deze gewone taal, niet met termen als hyperparameters of cross-validatie)
-   - Standaard = snel, prima eerste versie.
-   - Fijnslijpen = het model probeert veel combinaties van instellingen uit en kiest de beste. Duurt langer. Technisch: zie `references/hyperparameters.md`.
-3. **Meerdere algoritmes benchmarken of één aanbeveling?**
-   - Benchmark = train alle passende algoritmes, één vergelijkingstabel (aanpak van cedanl/uitnodigingsregel-benchmark: RF, Lasso/LogReg, SVM, Gradient Boosting, XGBoost).
-   - Aanbeveling = beoordeel zelf de case en beveel één algoritme aan met korte motivering. Weeg mee: aantal rijen (logistische regressie sterk bij weinig data; boosting bij veel data), klassenbalans, veel categorische features (bomen), verwachte niet-lineariteit, en de interpretatie-eis uit vraag 1. Geen vaste default hardcoden.
+Ask these in plain Dutch. Skip a question only if the answer is already in the conversation.
 
-## Stap 2 — Data
+1. **Interpretable or black box?**
+   - Interpretable = you can explain why (logistic regression, Lasso-logistic, small decision tree).
+   - Black box allowed = often more accurate (Random Forest, Gradient Boosting, XGBoost, SVM). No deep learning.
+2. **Automatically fine-tune settings or use default settings?** (ask this in plain language, not with terms like hyperparameters or cross-validation)
+   - Default = fast, fine first version.
+   - Fine-tune = the model tries many combinations of settings and picks the best. Takes longer. Technical detail: see `references/hyperparameters.md`.
+3. **Benchmark multiple algorithms or one recommendation?**
+   - Benchmark = train all suitable algorithms, one comparison table (the cedanl/uitnodigingsregel-benchmark approach: RF, Lasso/LogReg, SVM, Gradient Boosting, XGBoost).
+   - Recommendation = assess the case yourself and recommend one algorithm with a short rationale. Weigh: number of rows (logistic regression strong with little data; boosting with lots of data), class balance, many categorical features (trees), expected non-linearity, and the interpretability requirement from question 1. Do not hardcode a fixed default.
 
-Is de data nog niet voorbereid, volg dan eerst de skill `/voorspellen-dataprep` (overzicht, leakage-check, missings, encoding, split). Kern, ook als die skill niet beschikbaar is:
-- Splits 80/20 stratified op de doelkolom (random_state=42) vóór preprocessing; alles in een sklearn Pipeline (geen leakage).
-- Missings imputeren (mediaan/modus), one-hot met handle_unknown="ignore", StandardScaler alleen voor logistische regressie en SVM.
-- Check klassenbalans. Bij scheve verdeling (< ~20% minderheidsklasse): rapporteer dit, gebruik class_weight="balanced" waar mogelijk en leun niet op accuracy.
+## Step 2 — Data
 
-## Stap 3 — Algoritmes
+If the data is not yet prepared, first follow the skill `/voorspellen-dataprep` (overview, leakage check, missings, encoding, split). Core, also if that skill is unavailable:
+- Split 80/20 stratified on the target column (random_state=42) before preprocessing; everything in an sklearn Pipeline (no leakage).
+- Impute missings (median/mode), one-hot with handle_unknown="ignore", StandardScaler only for logistic regression and SVM.
+- Check class balance. For a skewed distribution (< ~20% minority class): report it, use class_weight="balanced" where possible and do not rely on accuracy.
 
-| Algoritme | Interpreteerbaar | Scaling |
+## Step 3 — Algorithms
+
+| Algorithm | Interpretable | Scaling |
 |---|---|---|
-| Logistische regressie | ja | ja |
-| Kleine beslisboom | ja | nee |
-| Random Forest | nee | nee |
-| Gradient Boosting | nee | nee |
-| XGBoost | nee | nee |
-| SVM (rbf, probability=True) | nee | ja |
+| Logistic regression | yes | yes |
+| Small decision tree | yes | no |
+| Random Forest | no | no |
+| Gradient Boosting | no | no |
+| XGBoost | no | no |
+| SVM (rbf, probability=True) | no | yes |
 
-Geen neurale netwerken / deep learning.
+No neural networks / deep learning.
 
-Bij tunen: gebruik de grids uit `references/hyperparameters.md` (scoring: "f1" of "roc_auc" bij onbalans). De zoekmethode kies je zelf (staat in dat bestand); val de gebruiker er niet mee lastig.
+When tuning: use the grids from `references/hyperparameters.md` (scoring: "f1" or "roc_auc" for imbalance). Choose the search method yourself (it is described in that file); do not bother the user with it.
 
-## Stap 4 — Evaluatie en rapportage
+## Step 4 — Evaluation and reporting
 
-Rapporteer op de testset: accuracy, precision, recall, F1 (per klasse bij multiclass), confusion matrix, en ROC-AUC bij binaire uitkomst. Geef een baseline (meerderheidsklasse) ter context.
+Report on the test set: accuracy, precision, recall, F1 (per class for multiclass), confusion matrix, and ROC-AUC for a binary outcome. Give a baseline (majority class) for context.
 
-Bij benchmark: één tabel, sorteer op F1 (of AUC bij onbalans), benoem de winnaar.
+For a benchmark: one table, sort by F1 (or AUC for imbalance), name the winner.
 
-Bij interpreteerbare modellen: coëfficiënten/odds-ratio's tonen. Bij ensembles: feature importances, met kanttekening dat dit geen causaliteit is.
+For interpretable models: show coefficients/odds ratios. For ensembles: feature importances, with the caveat that this is not causality.
 
-Lever op: (1) samenvatting in gewone taal, (2) herdraaibare code, (3) joblib-model op verzoek.
+Deliver: (1) a summary in plain Dutch, (2) reproducible code, (3) a joblib model on request.
 
 ## Important
 
-- Doel is sorteren op risico en top-N selecteren? Gebruik `/voorspellen-ranking`, niet deze skill.
-- Data nog niet voorbereid? Eerst `/voorspellen-dataprep`.
-- Intake (Stap 1) altijd eerst vragen — niet zelf aannemen; geen vast default-algoritme hardcoden.
-- Geen neurale netwerken / deep learning.
-- Splits altijd vóór preprocessing, alles in een sklearn Pipeline (geen leakage).
-- De gebruiker is niet technisch: leg keuzes uit in gewone taal, zonder jargon.
+- Goal is to sort by risk and select the top-N? Use `/voorspellen-ranking`, not this skill.
+- Data not yet prepared? First `/voorspellen-dataprep`.
+- Intake (Step 1) always ask first — do not assume; do not hardcode a fixed default algorithm.
+- No neural networks / deep learning.
+- Always split before preprocessing, everything in an sklearn Pipeline (no leakage).
+- The user is non-technical: all output and questions to the user are in Dutch; explain choices in plain language, no jargon.

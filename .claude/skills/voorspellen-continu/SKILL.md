@@ -3,73 +3,73 @@ name: voorspellen-continu
 description: Bouw voorspelmodellen voor continue (numerieke) doelvariabelen zoals cijfers, studiepunten, aantallen of bedragen. Gebruik deze skill altijd wanneer de gebruiker een getal wil voorspellen op basis van data (regressie), ook als het woord "regressie" niet valt — bijv. "voorspel het eindcijfer", "schat het aantal EC", "predict grade/score/amount". NIET gebruiken voor ja/nee-uitkomsten (classificatie) of het rangschikken op risico (ranking).
 ---
 
-# Voorspellen: continue doelvariabele (regressie)
+# Prediction: continuous target (regression)
 
-Doel: een model dat een getal voorspelt per rij (student, klant, ...). Evaluatie op afwijking tussen voorspelling en werkelijkheid.
+Goal: a model that predicts a number per row (student, customer, ...). Evaluated on the deviation between prediction and reality. The user is non-technical: address them in Dutch and keep explanations in plain language.
 
 ## Workflow
 
-When the user invokes `/voorspellen-continu [optioneel: bestandspad of doelvariabele]`:
+When the user invokes `/voorspellen-continu [optional: file path or target variable]`:
 
-## Stap 0 — Check: is dit geen tijdreeks-forecasting?
+## Step 0 — Check: is this not time-series forecasting?
 
-Als het doel is **toekomstige waarden over de tijd** te voorspellen (instroom volgend jaar, omzet per maand, bezetting per week) en de rijen zijn tijdstippen in plaats van individuen, dan is dit tijdreeks-forecasting, geen rij-gebaseerde regressie. Meld dat aan de gebruiker en gebruik deze skill dan niet: een random 80/20-split lekt dan toekomst in de training en de metrics worden misleidend. Gebruik een forecasting-aanpak (lag-features + temporele split, of een forecasting-skill als die beschikbaar is). Twijfelgeval (paneldata: individuen gevolgd over jaren): rij-gebaseerd modelleren mag, maar splits dan op tijd (train op eerdere jaren, test op het laatste jaar).
+If the goal is to predict **future values over time** (enrolment next year, revenue per month, occupancy per week) and the rows are timestamps instead of individuals, then this is time-series forecasting, not row-based regression. Tell the user and do not use this skill: a random 80/20 split then leaks the future into training and the metrics become misleading. Use a forecasting approach (lag features + temporal split, or a forecasting skill if available). Edge case (panel data: individuals followed across years): row-based modelling is allowed, but split on time then (train on earlier years, test on the most recent year).
 
-## Stap 1 — Intake (altijd eerst vragen, niet zelf aannemen)
+## Step 1 — Intake (always ask first, do not assume)
 
-Stel deze drie vragen aan de gebruiker voordat je gaat modelleren. Kort en in gewone taal. Sla vragen alleen over als het antwoord al in het gesprek staat.
+Ask the user these three questions before modelling. Short and in plain Dutch. Skip a question only if the answer is already in the conversation.
 
-1. **Interpreteerbaar of black box?**
-   - Interpreteerbaar = je kunt uitleggen waarom het model iets voorspelt (Lasso, lineaire regressie, kleine beslisboom). Nodig als resultaten verantwoord moeten worden aan bijv. examencommissie of studenten.
-   - Black box mag = vaak nauwkeuriger (Random Forest, Gradient Boosting, XGBoost, SVR). Geen deep learning.
-2. **Instellingen automatisch fijnslijpen of standaardinstellingen?** (vraag het in deze gewone taal, niet met termen als hyperparameters of cross-validatie)
-   - Standaard = snel, meestal prima als eerste versie.
-   - Fijnslijpen = het model probeert veel combinaties van instellingen uit en kiest de beste. Duurt langer, vaak iets betere scores. Technisch: zie `references/hyperparameters.md`.
-3. **Meerdere algoritmes benchmarken of één aanbeveling?**
-   - Benchmark = train alle passende algoritmes, vergelijk in één tabel.
-   - Aanbeveling = beoordeel zelf de case en beveel één algoritme aan met korte motivering. Weeg mee: aantal rijen (SVR traag en linear vaak beter bij < ~500 rijen; boosting wint meestal bij veel data), aantal features vs rijen, veel categorische features (bomen), verwachte niet-lineariteit, en de interpretatie-eis uit vraag 1. Geen vaste default hardcoden.
+1. **Interpretable or black box?**
+   - Interpretable = you can explain why the model predicts something (Lasso, linear regression, small decision tree). Needed when results must be justified to e.g. an exam board or students.
+   - Black box allowed = often more accurate (Random Forest, Gradient Boosting, XGBoost, SVR). No deep learning.
+2. **Automatically fine-tune settings or use default settings?** (ask this in plain language, not with terms like hyperparameters or cross-validation)
+   - Default = fast, usually fine as a first version.
+   - Fine-tune = the model tries many combinations of settings and picks the best. Takes longer, often slightly better scores. Technical detail: see `references/hyperparameters.md`.
+3. **Benchmark multiple algorithms or one recommendation?**
+   - Benchmark = train all suitable algorithms, compare in one table.
+   - Recommendation = assess the case yourself and recommend one algorithm with a short rationale. Weigh: number of rows (SVR slow and linear often better at < ~500 rows; boosting usually wins with lots of data), features vs rows, many categorical features (trees), expected non-linearity, and the interpretability requirement from question 1. Do not hardcode a fixed default.
 
-## Stap 2 — Data
+## Step 2 — Data
 
-Is de data nog niet voorbereid, volg dan eerst de skill `/voorspellen-dataprep` (overzicht, leakage-check, missings, encoding, split). Kern, ook als die skill niet beschikbaar is:
-- Doelkolom moet numeriek en continu zijn. Binair (0/1)? Verwijs naar `/voorspellen-classificatie` of `/voorspellen-ranking`.
-- Splits 80/20 (random_state=42) vóór alle preprocessing; alles in een sklearn Pipeline (geen leakage).
-- Missings imputeren (mediaan/modus), one-hot met handle_unknown="ignore", StandardScaler alleen voor Lasso/lineair/SVR.
+If the data is not yet prepared, first follow the skill `/voorspellen-dataprep` (overview, leakage check, missings, encoding, split). Core, also if that skill is unavailable:
+- The target column must be numeric and continuous. Binary (0/1)? Refer to `/voorspellen-classificatie` or `/voorspellen-ranking`.
+- Split 80/20 (random_state=42) before all preprocessing; everything in an sklearn Pipeline (no leakage).
+- Impute missings (median/mode), one-hot with handle_unknown="ignore", StandardScaler only for Lasso/linear/SVR.
 
-## Stap 3 — Algoritmes
+## Step 3 — Algorithms
 
-Kies uit (afhankelijk van intake-antwoord 1):
+Choose from (depending on intake answer 1):
 
-| Algoritme | Interpreteerbaar | Scaling |
+| Algorithm | Interpretable | Scaling |
 |---|---|---|
-| Lasso | ja | ja |
-| Lineaire regressie (Ridge/ElasticNet) | ja | ja |
-| Kleine beslisboom | ja | nee |
-| Random Forest Regressor | nee | nee |
-| Gradient Boosting Regressor | nee | nee |
-| XGBoost Regressor | nee | nee |
-| SVR | nee | ja |
+| Lasso | yes | yes |
+| Linear regression (Ridge/ElasticNet) | yes | yes |
+| Small decision tree | yes | no |
+| Random Forest Regressor | no | no |
+| Gradient Boosting Regressor | no | no |
+| XGBoost Regressor | no | no |
+| SVR | no | yes |
 
-Geen neurale netwerken / deep learning gebruiken.
+Do not use neural networks / deep learning.
 
-Bij tunen: gebruik de grids uit `references/hyperparameters.md`. De zoekmethode kies je zelf (staat in dat bestand); val de gebruiker er niet mee lastig.
+When tuning: use the grids from `references/hyperparameters.md`. Choose the search method yourself (it is described in that file); do not bother the user with it.
 
-## Stap 4 — Evaluatie en rapportage
+## Step 4 — Evaluation and reporting
 
-Rapporteer op de testset: RMSE, MAE, R². Geef ook een baseline (voorspel altijd het gemiddelde) zodat de scores context hebben.
+Report on the test set: RMSE, MAE, R². Also give a baseline (always predict the mean) so the scores have context.
 
-Bij benchmark: één vergelijkingstabel, sorteer op RMSE, benoem de winnaar en of het verschil praktisch relevant is.
+For a benchmark: one comparison table, sort by RMSE, name the winner and whether the difference is practically relevant.
 
-Bij interpreteerbare modellen: toon coëfficiënten (Lasso: welke features vallen weg). Bij boom-ensembles: feature importances, met de kanttekening dat dit richtinggevend is, geen causaliteit.
+For interpretable models: show coefficients (Lasso: which features drop out). For tree ensembles: feature importances, with the caveat that this is indicative, not causality.
 
-Lever op: (1) korte samenvatting in gewone taal, (2) code die de gebruiker kan herdraaien, (3) opgeslagen model (joblib) als daarom gevraagd wordt.
+Deliver: (1) a short summary in plain Dutch, (2) code the user can re-run, (3) a saved model (joblib) if requested.
 
 ## Important
 
-- Alleen voor continue (numerieke) doelvariabelen. Ja/nee → `/voorspellen-classificatie`; sorteren op risico → `/voorspellen-ranking`.
-- Tijdreeks-forecasting (rijen = tijdstippen)? Niet deze skill; meld het en splits op tijd.
-- Data nog niet voorbereid? Eerst `/voorspellen-dataprep`.
-- Intake (Stap 1) altijd eerst vragen — niet zelf aannemen; geen vast default-algoritme hardcoden.
-- Geen neurale netwerken / deep learning.
-- Splits altijd vóór preprocessing, alles in een sklearn Pipeline (geen leakage).
-- De gebruiker is niet technisch: leg keuzes uit in gewone taal, zonder jargon.
+- Only for continuous (numeric) targets. Yes/no → `/voorspellen-classificatie`; sorting by risk → `/voorspellen-ranking`.
+- Time-series forecasting (rows = timestamps)? Not this skill; say so and split on time.
+- Data not yet prepared? First `/voorspellen-dataprep`.
+- Intake (Step 1) always ask first — do not assume; do not hardcode a fixed default algorithm.
+- No neural networks / deep learning.
+- Always split before preprocessing, everything in an sklearn Pipeline (no leakage).
+- The user is non-technical: all output and questions to the user are in Dutch; explain choices in plain language, no jargon.
