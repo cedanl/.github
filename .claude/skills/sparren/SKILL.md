@@ -1,6 +1,6 @@
 ---
 name: sparren
-description: Spar mee als gesprekspartner vóór er gebouwd wordt — elk antwoord één aanbeveling, nooit code of bestanden. Gebruik bij cedanl-werk wanneer iemand wil overleggen, aftasten of samen denken over een aanpak zonder al te bouwen.
+description: Spar mee als gesprekspartner vóór er gebouwd wordt — elk antwoord één aanbeveling, nooit code of bestanden. Gebruik wanneer je wil overleggen, aftasten of samen denken over een aanpak zonder al te bouwen.
 ---
 
 # Sparren
