@@ -22,14 +22,14 @@ Two checks before you start:
 Ask these in plain Dutch. Skip a question only if the answer is already in the conversation.
 
 1. **Interpretable or black box?**
-   - Interpretable = you can explain why (logistic regression, Lasso-logistic, small decision tree).
-   - Black box allowed = often more accurate (Random Forest, Gradient Boosting, XGBoost, SVM). No deep learning.
+   - Interpretable = you can explain why (e.g. logistic regression, Lasso-logistic, small decision tree, Random Forest) often appropriate for education.
+   - Black box allowed = often more accurate (e.g.g Gradient Boosting, XGBoost, SVM).
 2. **Automatically fine-tune settings or use default settings?** (ask this in plain language, not with terms like hyperparameters or cross-validation)
    - Default = fast, fine first version.
-   - Fine-tune = the model tries many combinations of settings and picks the best. Takes longer. Technical detail: see `references/hyperparameters.md`.
+   - Fine-tune = the model tries many combinations of settings and picks the best. Takes a lot longer. Technical detail: see `references/hyperparameters.md`.
 3. **Benchmark multiple algorithms or one recommendation?**
-   - Benchmark = train all suitable algorithms, one comparison table (the cedanl/uitnodigingsregel-benchmark approach: RF, Lasso/LogReg, SVM, Gradient Boosting, XGBoost).
-   - Recommendation = assess the case yourself and recommend one algorithm with a short rationale. Weigh: number of rows (logistic regression strong with little data; boosting with lots of data), class balance, many categorical features (trees), expected non-linearity, and the interpretability requirement from question 1. Do not hardcode a fixed default.
+   - Benchmark = train all suitable algorithms, one comparison table (e.g. cedanl/uitnodigingsregel-benchmark approach: RF, Lasso/LogReg, SVM, Gradient Boosting, XGBoost).
+   - Recommendation = llm assess the case and recommend one algorithm with a short rationale. Weigh: number of rows (logistic regression strong with little data; boosting with lots of data), class balance, many categorical features (trees), expected non-linearity, and the interpretability requirement from question 1. Do not hardcode a fixed default.
 
 ## Step 2 — Data
 
@@ -44,12 +44,11 @@ If the data is not yet prepared, first follow the skill `/voorspellen-dataprep` 
 |---|---|---|
 | Logistic regression | yes | yes |
 | Small decision tree | yes | no |
-| Random Forest | no | no |
+| Random Forest | yes | no |
 | Gradient Boosting | no | no |
 | XGBoost | no | no |
 | SVM (rbf, probability=True) | no | yes |
 
-No neural networks / deep learning.
 
 When tuning: use the grids from `references/hyperparameters.md` (scoring: "f1" or "roc_auc" for imbalance). Choose the search method yourself (it is described in that file); do not bother the user with it.
 
@@ -68,6 +67,5 @@ Deliver: (1) a summary in plain Dutch, (2) reproducible code, (3) a joblib model
 - Goal is to sort by risk and select the top-N? Use `/voorspellen-ranking`, not this skill.
 - Data not yet prepared? First `/voorspellen-dataprep`.
 - Intake (Step 1) always ask first — do not assume; do not hardcode a fixed default algorithm.
-- No neural networks / deep learning.
 - Always split before preprocessing, everything in an sklearn Pipeline (no leakage).
 - The user is non-technical: all output and questions to the user are in Dutch; explain choices in plain language, no jargon.
