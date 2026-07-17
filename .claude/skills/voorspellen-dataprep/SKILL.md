@@ -67,4 +67,3 @@ StandardScaler in the pipeline, applied only for linear models and SVM (the foll
 - Always split before fitting the imputer/encoder/scaler — otherwise test information leaks into training.
 - The leakage check (Step 4) is the most important step and cannot be fully automated: always ask the user for confirmation before removing columns.
 - The user is non-technical: all output and questions to the user are in Dutch; explain each choice in one plain-language sentence, no jargon without explanation.
-- cedanl use only: row-based prediction, not time-series forecasting.
