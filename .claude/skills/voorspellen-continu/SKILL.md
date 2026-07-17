@@ -20,14 +20,14 @@ If the goal is to predict **future values over time** (enrolment next year, reve
 Ask the user these three questions before modelling. Short and in plain Dutch. Skip a question only if the answer is already in the conversation.
 
 1. **Interpretable or black box?**
-   - Interpretable = you can explain why the model predicts something (Lasso, linear regression, small decision tree). Needed when results must be justified to e.g. an exam board or students.
-   - Black box allowed = often more accurate (Random Forest, Gradient Boosting, XGBoost, SVR). No deep learning.
+   - Interpretable = you can explain why the model predicts something (e.g. Lasso, linear regression, small decision tree, Random Forest). Needed when results must be justified to e.g. an exam board or students.
+   - Black box allowed = often more accurate (e.g. Gradient Boosting, XGBoost, SVR). 
 2. **Automatically fine-tune settings or use default settings?** (ask this in plain language, not with terms like hyperparameters or cross-validation)
    - Default = fast, usually fine as a first version.
-   - Fine-tune = the model tries many combinations of settings and picks the best. Takes longer, often slightly better scores. Technical detail: see `references/hyperparameters.md`.
+   - Fine-tune = the model tries many combinations of settings and picks the best. Takes a lot longer, often slightly better scores. Technical detail: see `references/hyperparameters.md`.
 3. **Benchmark multiple algorithms or one recommendation?**
    - Benchmark = train all suitable algorithms, compare in one table.
-   - Recommendation = assess the case yourself and recommend one algorithm with a short rationale. Weigh: number of rows (SVR slow and linear often better at < ~500 rows; boosting usually wins with lots of data), features vs rows, many categorical features (trees), expected non-linearity, and the interpretability requirement from question 1. Do not hardcode a fixed default.
+   - Recommendation = llm assess the case and recommend one algorithm with a short rationale. Weigh: number of rows (SVR slow and linear often better at < ~500 rows; boosting usually wins with lots of data), features vs rows, many categorical features (trees), expected non-linearity, and the interpretability requirement from question 1. Do not hardcode a fixed default.
 
 ## Step 2 — Data
 
@@ -45,12 +45,11 @@ Choose from (depending on intake answer 1):
 | Lasso | yes | yes |
 | Linear regression (Ridge/ElasticNet) | yes | yes |
 | Small decision tree | yes | no |
-| Random Forest Regressor | no | no |
+| Random Forest Regressor | yes | no |
 | Gradient Boosting Regressor | no | no |
 | XGBoost Regressor | no | no |
 | SVR | no | yes |
 
-Do not use neural networks / deep learning.
 
 When tuning: use the grids from `references/hyperparameters.md`. Choose the search method yourself (it is described in that file); do not bother the user with it.
 
@@ -70,6 +69,5 @@ Deliver: (1) a short summary in plain Dutch, (2) code the user can re-run, (3) a
 - Time-series forecasting (rows = timestamps)? Not this skill; say so and split on time.
 - Data not yet prepared? First `/voorspellen-dataprep`.
 - Intake (Step 1) always ask first — do not assume; do not hardcode a fixed default algorithm.
-- No neural networks / deep learning.
 - Always split before preprocessing, everything in an sklearn Pipeline (no leakage).
 - The user is non-technical: all output and questions to the user are in Dutch; explain choices in plain language, no jargon.
