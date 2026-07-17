@@ -1,6 +1,6 @@
 # Hyperparameter-grids (bipartite ranking)
 
-Tune altijd op rangorde: scoring="roc_auc" (classifier-route) of een custom AUC-scorer op de scores (regressor-route). Zoekmethode (interne keuze, nooit aan de gebruiker vragen): GridSearchCV bij ≤ ~60 combinaties, anders RandomizedSearchCV(n_iter=50). cv=5 (stratified), n_jobs=-1, random_state=42.
+Tune altijd op rangorde: scoring="roc_auc" (classifier-route) of een custom AUC-scorer op de scores (regressor-route). Zoekmethode (default, niet aan de gebruiker vragen, gebruiker mag wel wijzigen): GridSearchCV bij ≤ ~60 combinaties, anders RandomizedSearchCV(n_iter=50). cv=5 (stratified), n_jobs=-1, random_state=42.
 
 Er zijn twee sets. Standaard: set B (lokaal). Set A alleen als de gebruiker zelf CEDA, de benchmark of vergelijkbaarheid tussen instellingen noemt. Geen technische keuzevraag aan de gebruiker stellen.
 
