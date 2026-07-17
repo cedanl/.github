@@ -1,6 +1,6 @@
 # Hyperparameter-grids (classificatie)
 
-Werkbare zoekruimtes voor algemene classificatie. Zoekmethode (interne keuze, nooit aan de gebruiker vragen): GridSearchCV als de grid ≤ ~60 combinaties telt, anders RandomizedSearchCV(n_iter=50). Altijd cv=5 (StratifiedKFold), n_jobs=-1, random_state=42; scoring="f1" of "roc_auc" bij onbalans, anders "accuracy" of "f1_macro" (multiclass).
+Werkbare zoekruimtes voor algemene classificatie. Zoekmethode (default, niet aan de gebruiker vragen, maar gebruiker kan wijzigen): GridSearchCV als de grid ≤ ~60 combinaties telt, anders RandomizedSearchCV(n_iter=50). Altijd cv=5 (StratifiedKFold), n_jobs=-1, random_state=42; scoring="f1" of "roc_auc" bij onbalans, anders "accuracy" of "f1_macro" (multiclass).
 
 ```python
 PARAM_GRIDS = {
