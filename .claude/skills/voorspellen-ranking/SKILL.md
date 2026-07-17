@@ -19,15 +19,15 @@ If the question is how a count or percentage develops **over time** (e.g. "how m
 
 1. **What is the capacity (N or k)?** How many people can be invited/handled? Needed for precision@k. Unknown: report at multiple k's (e.g. 5%, 10%, 20% of the population).
 2. **Interpretable or black box?**
-   - Interpretable = explainable why someone scores high (Lasso, logistic regression). Often required for decisions about students.
-   - Black box allowed = often better ranking (Random Forest, Gradient Boosting, XGBoost, SVM). No deep learning.
+   - Interpretable = explainable why someone scores high (e.g. Lasso, logistic regression, Random Forest). Often required for decisions about students.
+   - Black box allowed = often better ranking (e.g. Gradient Boosting, XGBoost, SVM). 
 3. **Automatically fine-tune settings or use default settings?** (ask this in plain language, not with terms like hyperparameters, AUC or grids)
    - Default = fast, fine first version.
-   - Fine-tune = the model tries many combinations of settings and picks the best. Takes longer.
-   - Internal, do not put to the user: tune on scoring="roc_auc" (ranking, not accuracy); use the local grids from `references/hyperparameters.md` by default; only if the user themselves mentions CEDA, the benchmark or comparability between settings, the CEDA grids.
+   - Fine-tune = the model tries many combinations of settings and picks the best. Takes a lot longer.
+   - Internal, do not put to the user: tune on scoring="roc_auc" (ranking, not accuracy); use the local grids from `references/hyperparameters.md` by default; only if the user themselves mentions the CEDA benchmark or comparability between settings, the CEDA grids.
 4. **Test and compare multiple models, or follow one recommendation?** (ask in plain language)
    - Compare = the cedanl/uitnodigingsregel-benchmark approach: Random Forest, Lasso, SVM, Gradient Boosting, XGBoost side by side, one table.
-   - Recommendation = assess the case yourself and recommend one algorithm with a short rationale. Weigh: number of rows and features, prevalence of the positive class, expected non-linearity, and the interpretability requirement from question 2. Do not hardcode a fixed default. cedanl benchmark results may serve as context, not as an automatic answer.
+   - Recommendation = llm assess the case and recommend one algorithm with a short rationale. Weigh: number of rows and features, prevalence of the positive class, expected non-linearity, and the interpretability requirement from question 2. Do not hardcode a fixed default. cedanl benchmark results may serve as context, not as an automatic answer.
 
 ## Step 2 — Data
 
@@ -69,6 +69,5 @@ Deliver: (1) a sorted list with scores and rank (top-N marked), (2) a summary in
 - **Never** use `predict()` with the 0.5 threshold as the final result; output is always score → sort → rank.
 - Do not report accuracy or a confusion matrix; evaluate on ranking (AUC, precision@k).
 - Intake (Step 1) always ask first — do not assume; do not hardcode a fixed default algorithm.
-- No neural networks / deep learning.
 - For decisions about people: the list is a prioritisation aid, not a judgement per individual.
 - The user is non-technical: all output and questions to the user are in Dutch; explain choices in plain language, no jargon.
