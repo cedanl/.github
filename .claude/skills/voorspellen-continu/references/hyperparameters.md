@@ -1,6 +1,6 @@
 # Hyperparameter-grids (regressie)
 
-Werkbare zoekruimtes voor algemene regressie. Zoekmethode (interne keuze, nooit aan de gebruiker vragen): GridSearchCV als de grid ≤ ~60 combinaties telt, anders RandomizedSearchCV(n_iter=50). Altijd cv=5, n_jobs=-1, random_state=42, scoring="neg_root_mean_squared_error".
+Werkbare zoekruimtes voor algemene regressie. Zoekmethode (default, niet aan de gebruiker vragen, gebruiker mag wel wijzigen): GridSearchCV als de grid ≤ ~60 combinaties telt, anders RandomizedSearchCV(n_iter=50). Altijd cv=5, n_jobs=-1, random_state=42, scoring="neg_root_mean_squared_error".
 
 ```python
 PARAM_GRIDS = {
