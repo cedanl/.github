@@ -9,6 +9,12 @@ CEDA repos ship a Dockerfile + docker-compose per repo. Match the existing
 conventions (grounded in `text-analysis/Dockerfile` and `docs/gitlab.md`); read
 the target repo's current Dockerfile first.
 
+## When this applies
+
+This is a **knowledge skill** — it loads (explicitly via `/docker`, or
+automatically) when you add or edit a `Dockerfile` / `docker-compose.yml`, or
+debug a container build in a CEDA repo. It is reference/convention.
+
 ## Image conventions
 - **Base:** `python:3.12-slim` (multi-arch: `FROM --platform=${BUILDPLATFORM} ...`).
 - **Security updates:** `apt-get update && apt-get -y upgrade`, install only what's
@@ -35,7 +41,7 @@ hadolint Dockerfile
 
 ## docker-compose (local dev)
 - Env comes from a **`.env`** file (gitignored); compose references
-  `${VAR}` (e.g. `MINIO_*`, `SURFDRIVE_*` — see [[surfdrive]]).
+  `${VAR}` (e.g. `MINIO_*`, `SURFDRIVE_*` — see /surfdrive).
 - Bind-mount `src/` for live editing during dev.
 - Common commands:
   ```bash
@@ -45,7 +51,11 @@ hadolint Dockerfile
   docker exec -ti <svc> bash # shell in; -u root for maintenance
   ```
 
-## Honesty
-A local `docker compose up` validates the image builds and starts — it does not
-prove the deployed behavior on SDP (that's Flux/GitLab CI; see [[surf-sdp-helm-flux]]).
-Verify the container actually serves before calling it done.
+## Important
+- **Match the repo's existing Dockerfile** (uv vs pip, base image) rather than
+  imposing a different toolchain.
+- **Run the service as a non-root user** and pin apt package versions.
+- A local `docker compose up` validates the image builds and starts — it does NOT
+  prove deployed behavior on SDP (that's Flux/GitLab CI; see /surf-sdp-helm-flux).
+  Verify the container actually serves before calling it done.
+- Applies to cedanl repos.

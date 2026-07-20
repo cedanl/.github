@@ -8,11 +8,17 @@ description: Integrate SurfDrive into a CEDA data pipeline — download a CSV fr
 CEDA ETL repos ingest source data from **SurfDrive public shares**. The pattern
 comes from `instroom-etl-ho/src/transport.py`.
 
+## When this applies
+
+This is a **knowledge skill** — it loads (explicitly via `/surfdrive`, or
+automatically) when you wire SurfDrive ingest, set `SURFDRIVE_*` config, or debug
+a SurfDrive download step. It is reference/convention.
+
 ## Config (env vars)
 - `SURFDRIVE_SHARE_TOKEN` — the public-share token (the id in the share URL).
 - `SURFDRIVE_PASSWORD` — the share's password.
 Both are provided via `.env` locally (compose reads `${SURFDRIVE_*}`) and via
-SOPS-encrypted secrets in deployed environments — see [[sdp-secrets-management]].
+SOPS-encrypted secrets in deployed environments — see /sdp-secrets-management.
 Never commit them in plaintext.
 
 ## Usage pattern (transport.py)
@@ -38,6 +44,12 @@ the module's internals (auth mechanism, WebDAV vs public-share API), locate the
 package rather than assuming; this skill covers the *usage contract*
 (`download_surfdrive_csv(filename) -> DataFrame | None`), not its implementation.
 
-## Related
-This ingest step is part of the ETL container flow — see [[etl-pipeline]] and
-[[docker]]. MinIO handoff pairs with the `minio-file` package.
+## Important
+- `SURFDRIVE_SHARE_TOKEN` / `SURFDRIVE_PASSWORD` are **secrets** — never commit in
+  plaintext (SOPS in deployed envs; see /sdp-secrets-management).
+- The `surfdrive`/`minio_file` modules are **not vendored** in the ETL repos —
+  this skill covers the *usage contract* (`download_surfdrive_csv(filename) ->
+  DataFrame | None`), not the implementation. Locate the package for internals.
+- A failed download returns `None` — the step must raise, not proceed silently.
+- Part of the ETL container flow — see /etl-pipeline and /docker.
+- Applies to cedanl repos.

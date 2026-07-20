@@ -9,6 +9,12 @@ CEDA apps authenticate users against **SURF SRAM** using standard **OIDC**
 through the SRAM proxy. Grounded in `text-analysis/src/auth.py` +
 `text-analysis/manifests/*/config.yaml`.
 
+## When this applies
+
+This is a **knowledge skill** — it loads (explicitly via `/sram-oidc`, or
+automatically) when you wire SRAM authentication, edit `OIDC_*` config, or debug
+an SRAM login flow. It is reference/convention.
+
 ## Config (env / ConfigMap)
 ```
 OIDC_PROVIDER: SRAM
@@ -22,7 +28,7 @@ CLIENT_ID / CLIENT_SECRET   # the SRAM OIDC client creds (secret — SOPS)
 - `REDIRECT_URI` = `SERVER_URL` + optional `SERVER_REDIRECT`.
 - Scopes: `openid email profile`.
 - `CLIENT_ID`/`CLIENT_SECRET` are **secrets** — store via SOPS
-  ([[sdp-secrets-management]]), never in the ConfigMap or git.
+  (/sdp-secrets-management), never in the ConfigMap or git.
 
 ## Flow (authlib + Streamlit)
 Uses `authlib.integrations.requests_client.OAuth2Session`:
@@ -51,6 +57,13 @@ require_authentication()   # st.stop()s on the login page if not authed
   redirect exactly (`SERVER_URL` + `SERVER_REDIRECT`).
 - "not configured properly" → `CLIENT_ID`/`CLIENT_SECRET` missing from env.
 
-## Related
-Lives in the Streamlit frontend ([[streamlit]]); creds via [[sdp-secrets-management]];
-URLs/ingress via [[sdp-onboard]].
+## Important
+- **`CLIENT_ID`/`CLIENT_SECRET` are secrets** — store via SOPS
+  (/sdp-secrets-management), never in the ConfigMap or git.
+- Auth is **opt-in**: no `OIDC_PROVIDER` → app runs open, so local dev needs no
+  login and nothing to stub.
+- The session token is **not signed** — it's session continuity, not a security
+  boundary; don't treat it as tamper-proof.
+- `REDIRECT_URI` must exactly match the client's registered redirect.
+- Lives in the Streamlit frontend (/streamlit); URLs/ingress via /sdp-onboard.
+- Applies to cedanl repos.
