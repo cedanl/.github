@@ -1,8 +1,8 @@
 ---
 name: surf-sdp-helm-flux
 description: >-
-  Conventions and troubleshooting for Helm/Flux deployments on the SURF SDP
-  platform (GitLab CI → OCI chart in Harbor cr.surf.nl → FluxCD HelmRelease).
+  Deploy and troubleshoot Helm/Flux workloads on the SURF SDP platform
+  (GitLab CI → OCI chart in Harbor cr.surf.nl → FluxCD HelmRelease).
   Use this skill whenever the user works on GitLab CI pipelines that package
   or deploy Helm charts, debugs a failing or stuck HelmRelease, sees Flux
   reconciliation problems, hits 401/404 errors pulling charts from an OCI
@@ -18,6 +18,14 @@ How deployments work on the SURF SDP (Kubernetes) platform, and how to
 diagnose them when they don't. Read this fully before proposing fixes to a
 pipeline log or Flux error someone pastes — most failures here are known
 patterns with known one-line fixes, and generic Helm/Flux advice wastes time.
+
+## When this applies
+
+This is a **knowledge skill** — it loads (explicitly via `/surf-sdp-helm-flux`,
+or automatically) whenever you work on GitLab CI that packages/deploys Helm
+charts, debug a stuck/failing HelmRelease, hit 401/404 pulling charts from
+Harbor OCI, see Flux reconciliation problems, or paste a pipeline log / kubectl
+output. It is reference + troubleshooting, not a procedure to run.
 
 ## Repo layout & local preview
 
@@ -226,3 +234,14 @@ suspend/resume, checking Kustomization sync, job log retrieval), read
 - `scripts/hr-status.sh <helmrelease> <namespace>` — one-shot health
   summary: HelmRelease conditions, history, HelmRepository status, recent
   jobs in the namespace.
+
+## Important
+- **The pipeline never runs `helm upgrade` directly** — it pushes a chart and
+  waits for Flux. Classify a "deploy problem" as (a) chart not published,
+  (b) Flux can't fetch it, or (c) release fails — before acting.
+- **Don't hand-edit Flux resources** (HelmRepository/HelmRelease) in-cluster —
+  the next sync reverts them; fix the source repo instead.
+- Check the `+`↔`_` OCI-tag spelling before assuming a chart is missing.
+- Deploy by **image digest**, not floating tags.
+- This is a **GitLab/SDP** skill — use `glab`/kubectl, not `gh` or GitHub Actions.
+- Applies to cedanl / SURF SDP repos.

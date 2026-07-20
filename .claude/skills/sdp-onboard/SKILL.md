@@ -10,6 +10,11 @@ distilled from the CEDA runbook (`text-analysis/docs/{access,gitlab,streamlit-se
 in that repo — read the current version there for full detail).
 Several steps need **SDP-admin approval** — flag those; you can't self-merge them.
 
+## Workflow
+
+When the user invokes `/sdp-onboard [optional: app name]`, walk these steps in
+order (prereqs first):
+
 ## Prereqs / access (docs/access.md)
 - SURF account (`@surf.nl`), on the **SURF VPN (eduVPN)**.
 - GitLab is `https://git.ia.surfsara.nl/surf-internal/npuls/ceda/` — **not** github.com.
@@ -81,7 +86,7 @@ Flux resource: <app>
 `manifests/base/` holds Flux `helmrelease.yaml` + `helmrepo.yaml` +
 `kustomization.yaml` + `values-base.yaml`; each env dir has a `kustomization.yaml`
 that patches base with its `values.yaml`. **Flux** syncs; deploy = commit + MR
-triggering the GitLab pipeline. See [[gitlab-ci]], [[surf-sdp-helm-flux]], [[sdp-secrets-management]].
+triggering the GitLab pipeline. See /gitlab-ci, /surf-sdp-helm-flux, /sdp-secrets-management.
 
 ## Cluster access & inspection (read-only)
 ```bash
@@ -92,7 +97,12 @@ kubectl logs <pod> -n services-<app>
 ```
 Health probes hit `/healthz`. Never mutate a cluster by hand — deploys go via CI.
 
-## Honesty
-Steps 1–2 depend on SDP admins; say so and don't claim "done" until merged/granted.
-The template-copy rename is mechanical — verify `grep -ri <template-name>` comes back
-clean (except Chart.yaml). See the principle of verifying work actually runs before calling it done.
+## Important
+- **Steps 1–2 depend on SDP admins** (repo creation MR + tenant request) — flag
+  this and don't claim "done" until merged/granted; you can't self-merge them.
+- **Never mutate a cluster by hand** — deploys go via GitLab CI / Flux
+  (see /gitlab-ci, /surf-sdp-helm-flux).
+- After the template-copy rename, verify `grep -ri <template-name>` comes back
+  clean (except `Chart.yaml`, which is edited manually).
+- These are **GitLab** repos — use `glab`/the web UI, not `gh`.
+- Applies to cedanl / SURF SDP repos.

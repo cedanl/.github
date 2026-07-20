@@ -7,7 +7,15 @@ description: Author and debug GitLab CI for the CEDA/SURF config repos (*-config
 
 The `*-config` GitOps repos (`instroom-config`, `1cijfer-config`, …) deploy via
 **GitLab CI built on SURF's shared SDP components**. This is a different world
-from the GitHub Actions repos (see [[actions-ci]]).
+from the GitHub Actions repos (see /actions-ci).
+
+## When this applies
+
+This is a **knowledge skill** — it loads (explicitly via `/gitlab-ci`, or
+automatically) when you edit a `.gitlab-ci.yml`, a `.gitlab/*.yaml` component, or
+debug a GitLab pipeline in a `*-config` repo. It is reference/convention, not a
+step-by-step procedure. For deploy/Flux troubleshooting see /surf-sdp-helm-flux;
+for GitHub repos see /actions-ci.
 
 ## Branch → cluster mapping (workflow.rules)
 `.gitlab-ci.yml` sets `ENVIRONMENT_CLUSTER` from the trigger:
@@ -39,7 +47,7 @@ run `kubectl apply`/`helm upgrade` by hand.
 
 ## Chart / values layout
 `charts/<app>/` + `manifests/<env>/values.yaml` over `manifests/base/values-base.yaml`.
-See [[surf-sdp-helm-flux]] for the full layout and SOPS secret handling.
+See /surf-sdp-helm-flux for the full layout and SOPS secret handling.
 
 ## Local component structure (authoring)
 Repo-local components live in `.gitlab/*.yaml` with a `spec: inputs:` header
@@ -48,8 +56,14 @@ Match that shape when adding one.
 
 ## Debugging
 - Use `glab` (GitLab CLI) or the GitLab web UI for MRs/pipelines — **not** `gh`.
-- Read pipeline logs before retrying; avoid guess-and-check (see the principle of verifying work actually runs before calling it done).
+- Read pipeline logs before retrying; avoid guess-and-check loops.
 - Secrets are SOPS-encrypted (`.sops.yaml`); never print or commit plaintext.
 
-## Reference
-See the CEDA repo split (GitLab *-config repos vs GitHub app repos) for which repos are GitLab-config vs GitHub-app.
+## Important
+- These are **GitLab** repos — use `glab`/the web UI, never `gh` or GitHub-Actions
+  patterns (those live in /actions-ci).
+- **Prefer wiring an existing SDP shared component** over writing bespoke job YAML.
+- Deploys run through the pipeline (diff → dry-run → verify) — this skill does NOT
+  run `kubectl apply`/`helm upgrade` by hand.
+- Secrets stay SOPS-encrypted; never print or commit plaintext (see /sdp-secrets-management).
+- Applies to cedanl `*-config` repos on GitLab.

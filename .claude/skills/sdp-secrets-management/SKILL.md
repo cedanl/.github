@@ -1,8 +1,8 @@
 ---
 name: sdp-secrets-management
 description: >-
-  Secrets handling conventions for SURF SDP projects: SOPS + AGE encrypted
-  Kubernetes secrets in Git (instroom-config style), .sops.yaml creation
+  Manage SOPS + AGE encrypted Kubernetes secrets for SURF SDP projects
+  (instroom-config style): .sops.yaml creation
   rules, key management for teams, GitLab CI integration, and the decision
   tree for when to use Ansible Vault, SOPS+AGE, or a secret server
   (OpenBao/Infisical). Use this skill whenever the user encrypts or decrypts
@@ -19,6 +19,13 @@ Secrets for SDP Kubernetes deployments are **encrypted in Git** with SOPS
 using AGE keys. No secret server is involved in the standard flow. Follow
 these conventions; read `references/sops-errors.md` for the full error
 catalogue before improvising fixes.
+
+## When this applies
+
+This is a **knowledge skill** — it loads (explicitly via `/sdp-secrets-management`,
+or automatically) when you encrypt/decrypt a secret, edit a `*.secret.yaml` /
+`secret_orig.yaml`, hit a SOPS error, rotate/add AGE keys, or ask where a
+credential should live. It is reference + a decision tree, not a procedure to run.
 
 ## Which tool for which secret — decision tree
 
@@ -137,3 +144,15 @@ Full diagnostic walk-throughs: `references/sops-errors.md`.
   recipient match) and optionally test-decrypts a file.
 - `scripts/rekey-all.sh <path-regex-root>` — runs `sops updatekeys` over
   all encrypted files after a recipient change in `.sops.yaml`.
+
+## Important
+- **Never commit plaintext secrets.** Only `secret.yaml` (encrypted) is committed;
+  `*_orig.yaml` plaintext working copies must be gitignored — stage by name.
+- **Never print decrypted values** in a way that persists (logs, artifacts, chat).
+- **Re-key after changing recipients** — editing `.sops.yaml` alone changes
+  nothing for existing files (`sops updatekeys` / `scripts/rekey-all.sh`).
+- Keep **≥2 recipients per repo** — losing all private keys means the secrets are
+  gone.
+- Prefer SOPS+AGE; propose a secret server only when SOPS demonstrably falls short,
+  not by default.
+- Applies to cedanl / SURF SDP repos.
