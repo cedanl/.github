@@ -9,6 +9,13 @@ Package and publish a Python project matching the modern CEDA convention
 (`1cijferho`/`eencijferho`). Read the target repo's existing `pyproject.toml`
 first and match it; don't invent a different toolchain.
 
+## When this applies
+
+This is a **knowledge skill** — it loads (explicitly via `/pypi-project`, or
+automatically) when you make a repo pip-installable, add/edit a release or
+TestPyPI workflow, or cut a PyPI release. It is reference/convention plus a short
+release ritual, not a wizard.
+
 ## Toolchain (modern house style)
 - **Build backend:** setuptools. **Env/deps:** uv. **Layout:** `src/<pkg>/`.
 - **Publishing:** GitHub Actions + **Trusted Publishing (OIDC)** — no API tokens
@@ -84,9 +91,19 @@ each build is unique.
 3. Commit, then tag `vX.Y.Z` and push the tag — the workflow runs; approve the
    `pypi` environment when prompted.
 4. Confirm the release on PyPI; don't call it "published" until the run + approval
-   complete. See the principle of verifying work actually runs before calling it done.
+   complete — verify, don't assume.
 
 ## Related
-CI matrix / test conventions: [[actions-ci]]. gh auth: the gh auth note (an invalid $GITHUB_TOKEN can shadow the gh login; prefix gh commands with `unset GITHUB_TOKEN &&`).
-Legacy quartet repos (`eencijfer`,`minio-file`,`sdp-tools`) use poetry+tox in
-`preview.yml`/`release.yml` — match the repo you're in rather than converting.
+CI matrix / test conventions: /actions-ci.
+
+## Important
+- **Match the repo's existing toolchain.** Modern repos use setuptools + uv;
+  legacy quartet repos (`eencijfer`, `minio-file`, `sdp-tools`) use poetry + tox
+  in `preview.yml`/`release.yml`. Don't convert one to the other unasked.
+- **Trusted Publishing needs a one-time PyPI-side setup** (linking repo/workflow/
+  environment) that can't be done from code — flag it to the user.
+- Don't call a release "published" until the workflow run + environment approval
+  complete.
+- **gh auth**: prefix `gh` with `unset GITHUB_TOKEN &&` (an invalid token may
+  shadow the login).
+- Applies to cedanl repos.

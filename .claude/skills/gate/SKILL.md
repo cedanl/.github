@@ -8,11 +8,10 @@ description: Decode and fix a failing SonarCloud or CodeQL quality gate on a PR.
 A failing quality gate usually mixes real issues with metric artifacts. Decode it
 before touching code, and never game a metric silently.
 
-## Auth
-Prefix `gh` with `unset GITHUB_TOKEN &&` (an invalid token may shadow the login).
-SonarCloud has a public API for public projects — no token needed for reads.
+## Workflow
 
-## Steps
+When the user invokes `/gate [optional: PR number]`:
+
 1. Get the gate status and per-condition breakdown:
    `curl -s "https://sonarcloud.io/api/qualitygates/project_status?projectKey={KEY}&pullRequest={N}"`
 2. Pull the ACTUAL issues, don't reason from ratings alone:
@@ -34,6 +33,11 @@ SonarCloud has a public API for public projects — no token needed for reads.
 6. Report any remaining red condition as an explicit judgment call to the user —
    don't over-exclude to force a pass.
 
-## Principle
-Distinguish "real security/correctness problem" from "metric hygiene". Report the
-distinction honestly; fix what's genuinely worth fixing.
+## Important
+- Distinguish "real security/correctness problem" from "metric hygiene"; report
+  the distinction honestly and fix what's genuinely worth fixing.
+- **Never game a metric** (e.g. over-broad coverage exclusions) just to force a
+  green gate — report a remaining red condition as an explicit judgment call.
+- **gh auth**: prefix `gh` with `unset GITHUB_TOKEN &&` (an invalid token may
+  shadow the login). SonarCloud's read API needs no token for public projects.
+- Applies to cedanl repos.

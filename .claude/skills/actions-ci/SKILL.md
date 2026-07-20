@@ -8,6 +8,14 @@ description: Author and debug GitHub Actions workflows, automated tests, and CI 
 CEDA GitHub repos use uv-based Python CI. There are **two generations** — match
 the one the repo already uses rather than mixing them.
 
+## When this applies
+
+This is a **knowledge skill** — it loads (explicitly via `/actions-ci`, or
+automatically) when you add or fix a GitHub Actions workflow, a test job, a
+coverage/security-scan step, or a release workflow in a CEDA GitHub repo. It is
+reference/convention, not a step-by-step procedure. For the GitLab config repos,
+use /gitlab-ci instead.
+
 ## Which generation is this repo on?
 - **Modern / orchestrated** (e.g. `1cijferho`): a thin `ci.yml` that calls
   reusable workflows via `uses: ./.github/workflows/<name>.yml` + `workflow_call`.
@@ -41,7 +49,7 @@ the one the repo already uses rather than mixing them.
 - Integration tests needing services: start MinIO via `docker run`, Postgres via
   a `services:` container; install extras with `uv sync --group dev --extra minio --extra postgres`.
 - Merge unit+integration coverage with `--cov-append` before uploading to Sonar/Codecov.
-- See [[gate]] for reading a failing SonarCloud/CodeQL gate.
+- See /gate for reading a failing SonarCloud/CodeQL gate.
 
 ## Security scanning (modern repos)
 - **bandit** (`bandit[sarif]`, `--severity-level medium`), **semgrep**, **codeql**,
@@ -65,5 +73,15 @@ the one the repo already uses rather than mixing them.
 
 ## GitLab note
 The `*-config` GitOps repos use **GitLab CI** (`.gitlab-ci.yml`, reusable
-`.gitlab/*.yaml` with `spec.inputs`), not Actions — see [[surf-sdp-helm-flux]]/[[gitlab-ci]].
+`.gitlab/*.yaml` with `spec.inputs`), not Actions — see /surf-sdp-helm-flux and /gitlab-ci.
 Don't apply Actions patterns there.
+
+## Important
+- **Match the repo's existing generation** (modern orchestrated vs legacy
+  quartet); don't rewrite one style into the other unless asked.
+- This skill covers **GitHub Actions only** — it does NOT apply to the GitLab
+  config repos (use /gitlab-ci there).
+- Reproduce CI failures locally where possible; avoid guess-and-check loops.
+- **gh auth**: prefix `gh` with `unset GITHUB_TOKEN &&` (an invalid token may
+  shadow the login).
+- Applies to cedanl repos.
