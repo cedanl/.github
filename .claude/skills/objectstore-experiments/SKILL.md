@@ -61,12 +61,14 @@ uv run --with boto3,requests python3 experiment_*.py
 5. **Multipart ETag** of a completed object is `<hash>-<numparts>` (e.g. `...-5`) —
    the `-N` suffix marks a multipart object; it is not an MD5 of the whole object.
 
-## Reference scripts (in object-store-evaluation)
-- `functionality/versioning/experiment_versioning.py` — versioning + restore + presigned GET
-- `functionality/bucket-lifecycle-policies/experiment_lifecycle.py` — policy round-trip (+ deferred `check`)
-- `functionality/multipart-upload/experiment_multipart.py` — parts, abort, sha256 integrity
-- `security/sse/experiment_sse_c.py` — SSE-C enforcement + service-managed probe
-- `functionality/presigned-urls/experiment_presigned_put.py` — presigned PUT, SigV2 vs SigV4
+## Reference scripts (bundled in `scripts/`)
+Runnable against the `object-store` profile; each creates and cleans up its own
+bucket. Also mirrored as notebooks in the `object-store-evaluation` repo.
+- `scripts/experiment_versioning.py` — versioning + restore + presigned GET
+- `scripts/experiment_lifecycle.py` — policy round-trip (+ deferred `check`)
+- `scripts/experiment_multipart.py` — parts, abort, sha256 integrity
+- `scripts/experiment_sse_c.py` — SSE-C enforcement + service-managed probe
+- `scripts/experiment_presigned_put.py` — presigned PUT, SigV2 vs SigV4
 
 ## Important
 - Use the **non-root `object-store` profile** for all of this — never the root
