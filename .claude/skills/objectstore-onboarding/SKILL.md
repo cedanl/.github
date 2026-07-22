@@ -74,7 +74,7 @@ The AWS-managed `AmazonS3FullAccess` ARN works on Ceph RGW.
 
 ## 6. Configure the working profile — name it `object-store`
 The `object-store-evaluation` notebooks call `boto3.Session(profile_name="object-store")`,
-so use that exact name and they (and [[objectstore-experiments]]) work unchanged.
+so use that exact name and they (and /objectstore-experiments) work unchanged.
 ```bash
 aws configure --profile object-store set aws_access_key_id     <NONROOT_ID>
 aws configure --profile object-store set aws_secret_access_key <NONROOT_SECRET>
@@ -82,7 +82,7 @@ aws configure --profile object-store set region                us-east-1
 aws configure --profile object-store set endpoint_url          https://objectstore.surf.nl
 aws --profile object-store s3 mb s3://<username>-test-bucket && aws --profile object-store s3 ls
 ```
-Success here = onboarding done. Hand off to [[objectstore-experiments]] to
+Success here = onboarding done. Hand off to /objectstore-experiments to
 exercise features.
 
 ## 7. Legacy Keystone path (only if you were NOT given an S3 key)
@@ -119,4 +119,4 @@ Docs: `https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/112591313/`
 - **Personal vs project accounts**: a personal test account is not for production
   data — request a separate account for a real project.
 - For Ceph-vs-AWS behavioural quirks and runnable feature demos, see
-  [[objectstore-experiments]].
+  /objectstore-experiments.

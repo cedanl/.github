@@ -17,7 +17,7 @@ This is a **knowledge skill** — it loads (explicitly via `/objectstore-experim
 or automatically) when you test Object Store features, write boto3 against
 `objectstore.surf.nl`, or need to know whether an S3 feature behaves the same as
 on AWS. It is reference/convention. For getting access + profiles first, see
-[[objectstore-onboarding]].
+/objectstore-onboarding.
 
 ## Setup (shared by every experiment)
 ```python
@@ -72,7 +72,7 @@ bucket. Also mirrored as notebooks in the `object-store-evaluation` repo.
 
 ## Important
 - Use the **non-root `object-store` profile** for all of this — never the root
-  profile (see [[objectstore-onboarding]]).
+  profile (see /objectstore-onboarding).
 - Experiments **create and delete buckets** — each script cleans up after itself.
   Bucket names must be lowercase and unique within the store; parameterise them so
   reruns don't collide on an existing name.
