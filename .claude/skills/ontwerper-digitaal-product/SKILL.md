@@ -104,6 +104,10 @@ Beschikbaar:
 - `references/componenten/dashboard.md` — wanneer je een dashboard met datavisualisaties ontwerpt.
 - `references/componenten/popup.md` — wanneer je een popup, modal, lightbox of overlay overweegt.
 - `references/componenten/slider.md` — wanneer je een slider overweegt om een waarde of bereik te kiezen.
+- `references/componenten/menu.md` — wanneer je een navigatiemenu ontwerpt (desktop, mobiel, tabs of hamburger).
+- `references/componenten/loading.md` — wanneer je een loading state ontwerpt (spinner, skeleton, voortgangsbalk).
+- `references/componenten/inputfield.md` — wanneer je een tekstinvoerveld ontwerpt (label, placeholder, validatie).
+- `references/componenten/login.md` — wanneer je een login-, registratie- of wachtwoord-vergeten-flow ontwerpt.
 
 Bestaat er nog geen bestand voor het element dat je wilt gebruiken, val dan terug op het ISGVO-model en de diagnostische lenzen hierboven.
 
