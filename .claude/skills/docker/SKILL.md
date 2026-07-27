@@ -6,8 +6,8 @@ description: Containerize a CEDA app the house way — a uv-based Python image, 
 # docker
 
 CEDA repos ship a Dockerfile + docker-compose per repo. Match the existing
-conventions (grounded in `text-analysis/Dockerfile` and `docs/gitlab.md`); read
-the target repo's current Dockerfile first.
+conventions (grounded in the GitLab `text-analysis` repo's `Dockerfile` and its
+`docs/gitlab.md`); read the target repo's current Dockerfile first.
 
 ## When this applies
 
