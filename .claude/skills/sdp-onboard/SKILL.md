@@ -19,7 +19,9 @@ order (prereqs first):
 - SURF account (`@surf.nl`), on the **SURF VPN (eduVPN)**.
 - GitLab is `https://git.ia.surfsara.nl/surf-internal/npuls/ceda/` — **not** github.com.
 - SSH: Ed25519 key (`ssh-keygen -t ed25519`), add pubkey to GitLab (Authentication & Signing).
-- Tools: `brew install hadolint yamllint k9s kubectl kubectx kubelogin kustomize helm flux sops`.
+- Tools (install via your OS package manager — `brew` on macOS, or the Linux
+  equivalent): `hadolint`, `yamllint`, `k9s`, `kubectl`, `kubectx`, `kubelogin`,
+  `kustomize`, `helm`, `flux`, `sops`.
 
 ## 1. Create the GitLab repo (needs SDP-admin merge)
 The repo is declared as **Terraform** in the `surf-internal/gitlab-config` repo:
@@ -62,13 +64,17 @@ GitHub repo — follow docs/streamlit-setup.md carefully; don't improvise a
 `reset --hard` without reading it.)
 
 ## 4. Copy GitLab scaffolding from a template repo
-Pull the deployment machinery from an existing repo (e.g. `text-analysis`) and rename:
+Pull the deployment machinery from an existing repo and rename. **`1cijfer-ho` is
+the most complete example** — it has all five environments (test, development,
+playground, staging, production), a `manifests/base/kustomizeconfig.yaml` with
+`nameReference`, and full CI wiring all the SDP components. Prefer it over a
+lighter repo:
 ```bash
 GITLAB_FILES="requirements.txt manifests Dockerfile docker-compose.yml charts .gitlab-ci.yml .gitlab"
-git fetch <template-remote> HEAD:<branch>
+git fetch <template-remote> HEAD:<branch>       # e.g. the 1cijfer-ho repo
 git checkout <branch> -- $GITLAB_FILES
-find $GITLAB_FILES -type f | xargs perl -pi -e 's/text-analysis/<app>/g'
-git mv charts/text-analysis charts/<app>   # Chart.yaml name field is manual
+find $GITLAB_FILES -type f | xargs perl -pi -e 's/1cijfer-ho/<app>/g'
+git mv charts/1cijfer-ho charts/<app>           # Chart.yaml name field is manual
 ```
 `python-fastapi-template` is the from-scratch SDP starting template.
 
