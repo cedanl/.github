@@ -62,8 +62,16 @@ Op basis van de antwoorden: bepaal het type skill.
 | **Review** | Beoordeelt iets (code, stijl, structuur) | Workflow met criteria-tabellen + bevindingen-format |
 | **Generatie** | Produceert tekst of inhoud (notities, slides, docs) | Workflow met templates + draft → bevestig → publiceer |
 | **Wizard** | Begeleidt door een proces via vragen | Workflow met interview → classificatie → uitvoer |
+| **Kennis** | Legt conventies/feiten vast die Claude's aanpak sturen; geen procedure om uit te voeren | `## When this applies` i.p.v. `## Workflow` (zie hieronder) |
 
 Noteer intern: welk type is dit? Dit bepaalt de structuur van de gegenereerde SKILL.md.
+
+**Actie/Review/Generatie/Wizard** zijn *workflow-skills* — je roept ze aan om een
+procedure uit te voeren. **Kennis** is anders: het is reference/convention die
+Claude meestal **impliciet** laadt (op basis van de `description`) wanneer je in
+dat gebied werkt — bijv. een SDP/Helm-error plakken, of een Dockerfile bewerken.
+Er is geen procedure om te "runnen"; de waarde is dat Claude's volgende actie
+juist is. Forceer bij zo'n skill geen `## Workflow`.
 
 ### 4. Draft de SKILL.md
 
@@ -96,6 +104,33 @@ When the user invokes `/<naam> [optional: ...]`:
 
 ### 2. <Volgende stap>
 ...
+
+## Important
+
+- <Kritieke randvoorwaarden>
+- <Wat de skill expliciet NIET doet>
+```
+
+#### Structuur — kennis-skill
+
+Voor een **Kennis**-skill is er geen procedure. Vervang `## Workflow` door
+`## When this applies` (wanneer/waarom Claude deze kennis laadt) en houd de rest
+van de body als reference (conventies, tabellen, troubleshooting). `## Important`
+blijft verplicht.
+
+```markdown
+# <Naam in plain language>
+
+<2-3 zinnen: welke conventies/feiten legt deze skill vast, en waarom.>
+
+## When this applies
+
+This is a **knowledge skill** — it loads (explicitly via `/<naam>`, or
+automatically) when <situatie waarin de kennis relevant is>. It is
+reference/convention, not a step-by-step procedure.
+
+## <Inhoudelijke secties>
+<conventies, feiten, troubleshooting — de eigenlijke kennis>
 
 ## Important
 
