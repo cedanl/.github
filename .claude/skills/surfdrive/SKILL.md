@@ -21,6 +21,19 @@ Both are provided via `.env` locally (compose reads `${SURFDRIVE_*}`) and via
 SOPS-encrypted secrets in deployed environments — see /sdp-secrets-management.
 Never commit them in plaintext.
 
+## Create the public share (where the token + password come from)
+When a new source file needs to be ingested, create the share by hand in the
+SurfDrive web UI (there is no API step in the CEDA flow):
+1. Log in at `https://surfdrive.surf.nl/` and drag-and-drop the CSV to upload it.
+2. Select the file → **Public Links** tab → **Create public link**. Give it a
+   descriptive name (e.g. `instroom-csv-ho`) and set a **password**.
+3. **Copy to clipboard** yields a URL like
+   `https://surfdrive.surf.nl/files/index.php/s/flr4TPVH6io9JEn`.
+The trailing id (`flr4TPVH6io9JEn`) is `SURFDRIVE_SHARE_TOKEN`; the password you
+set is `SURFDRIVE_PASSWORD`. Put both into the deployment secret via SOPS (see
+/sdp-secrets-management) — not into any committed file. Source:
+`instroom-config/docs/transport.md`.
+
 ## Usage pattern (transport.py)
 ```python
 import surfdrive
