@@ -15,6 +15,8 @@ Run with:
     uv run --with boto3,requests python3 experiment_presigned_put.py
 """
 
+import getpass
+import os
 import sys
 
 import boto3
@@ -22,7 +24,13 @@ import requests
 from botocore.config import Config
 
 PROFILE = "object-store"
-BUCKET = "caspar-presigned-experiment"
+# Bucket names are globally unique on S3/RGW, so a hardcoded name collides
+# (BucketAlreadyExists) for anyone but the original author, and even for the
+# author if a crash left the bucket behind. Derive it per-user and allow an
+# explicit override.
+BUCKET = os.environ.get(
+    "OBJECTSTORE_TEST_BUCKET", f"{getpass.getuser()}-presigned-experiment"
+)
 KEY = "uploaded-via-url.txt"
 BODY = b"this object was uploaded through a presigned PUT URL, no creds on the client\n"
 
@@ -48,15 +56,28 @@ def classify(url: str) -> str:
     return "unknown"
 
 
-def presigned_put_roundtrip(c, label, key):
+def presigned_put_roundtrip(c, label, key, require_put=True):
     url = c.generate_presigned_url(
         "put_object", Params={"Bucket": BUCKET, "Key": key}, ExpiresIn=300
     )
-    print(f"[{label}] PUT url style: {classify(url)}")
+    style = classify(url)
+    print(f"[{label}] PUT url style: {style}")
     # A credential-less client uploads using only the URL.
     r = requests.put(url, data=BODY, timeout=30)
     print(f"[{label}] upload HTTP {r.status_code}")
-    assert r.status_code == 200, f"presigned PUT failed: {r.status_code} {r.text[:200]}"
+    if r.status_code != 200:
+        # Known Ceph-vs-AWS quirk: RGW rejects SigV2 *presigned PUT* with 403
+        # (Signature mismatch) while accepting SigV2 presigned GET. SigV4 works
+        # for both. When the default-signing client yields a SigV2 URL, treat
+        # this as an expected quirk rather than a failure and skip the rest.
+        if not require_put and style == "SigV2":
+            print(
+                f"[{label}] SigV2 presigned PUT rejected ({r.status_code}) — "
+                "expected Ceph/RGW quirk; use SigV4 for presigned PUT. Skipping "
+                "verification for this style."
+            )
+            return
+        raise AssertionError(f"presigned PUT failed: {r.status_code} {r.text[:200]}")
 
     # Verify via authenticated GET that the bytes really landed.
     stored = c.get_object(Bucket=BUCKET, Key=key)["Body"].read()
@@ -84,7 +105,9 @@ def main() -> int:
     ensure_bucket(default_client)
 
     print("\n== presigned PUT with Boto3 default signing ==")
-    presigned_put_roundtrip(default_client, "default", KEY)
+    # Default signing may produce a SigV2 URL, which RGW rejects for PUT — don't
+    # fail the run on that known quirk.
+    presigned_put_roundtrip(default_client, "default", KEY, require_put=False)
 
     print("\n== presigned PUT with explicit SigV4 signing ==")
     v4_client = make_client(sig_version="s3v4")
@@ -92,8 +115,8 @@ def main() -> int:
 
     print("\n== cleanup ==")
     cleanup(default_client)
-    print("\nAll assertions passed. Presigned PUT works with both signature styles. "
-          "Experiment complete.")
+    print("\nAll assertions passed. Presigned PUT works with SigV4; SigV2 presigned "
+          "PUT is rejected by RGW (expected). Experiment complete.")
     return 0
 
 

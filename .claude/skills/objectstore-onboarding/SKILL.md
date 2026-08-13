@@ -37,20 +37,48 @@ Keystone/`openstack` entirely and follow steps 2–6. Quickstart:
 `https://servicedesk.surf.nl/wiki/spaces/WIKI/pages/302481491/`
 
 ## 2. Install aws-cli
+Install AWS CLI **v2** for your OS (official installer:
+`https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html`).
+Common routes:
 ```bash
-brew install awscli   # the FORMULA — there is no awscli cask; installing a "cask" installs nothing
-aws --version         # want v2.13+; it honors endpoint_url in config, so no per-command --endpoint-url
+# macOS (Homebrew): the FORMULA — there is no awscli cask; a "cask" installs nothing
+brew install awscli
+# Linux (x86_64):
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip && \
+  unzip awscliv2.zip && sudo ./aws/install
+# Windows: run the MSI from the docs link above.
+
+aws --version   # want v2.13+; it honors endpoint_url in config, so no per-command --endpoint-url
 ```
 
 ## 3. Configure the root profile (privileged — manage users only)
 Name it for the project, e.g. `ceda-root`. **Never** name it `default`.
+
+> ⚠️ **Never paste secret keys into the chat.** If Claude is running this skill,
+> it must **not** ask the user to type the access/secret key into the
+> conversation — anything in chat is logged and effectively leaked. Instead have
+> the **user** run the commands themselves in their own terminal, or load the
+> values from a local `.env` that is never committed or shared. Keep the region
+> and endpoint (non-secret) as literals; keep only the keys out of chat.
+
+Preferred: put the two keys in a local `.env` (add it to `.gitignore`), then
+source them so the values live only in the shell, never in chat or history:
 ```bash
-aws configure --profile ceda-root set aws_access_key_id     <ACCESS_KEY>
-aws configure --profile ceda-root set aws_secret_access_key <SECRET_KEY>
+cat > .env <<'EOF'   # you type the real values into this file, not into chat
+OBJECTSTORE_ACCESS_KEY=...
+OBJECTSTORE_SECRET_KEY=...
+EOF
+chmod 600 .env
+set -a; source .env; set +a
+
+aws configure --profile ceda-root set aws_access_key_id     "$OBJECTSTORE_ACCESS_KEY"
+aws configure --profile ceda-root set aws_secret_access_key "$OBJECTSTORE_SECRET_KEY"
 aws configure --profile ceda-root set region                us-east-1     # dummy; RGW ignores it
 aws configure --profile ceda-root set endpoint_url          https://objectstore.surf.nl
 aws --profile ceda-root s3 ls        # empty output = authenticated OK
 ```
+Alternatively run `aws configure --profile ceda-root` (no `set`) and enter the
+keys at its interactive prompt — the input is not echoed and stays out of chat.
 
 ## 4. Rotate the emailed key
 The key travelled over email + a one-time link, so replace it. **Order matters:

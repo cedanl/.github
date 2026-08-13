@@ -19,6 +19,7 @@ Run with:
     uv run --with boto3 python3 experiment_sse_c.py
 """
 
+import getpass
 import os
 import sys
 from base64 import b64encode
@@ -28,7 +29,11 @@ import boto3
 from botocore.exceptions import ClientError
 
 PROFILE = "object-store"
-BUCKET = "caspar-sse-experiment"
+# Globally-unique bucket name: a hardcoded one collides (BucketAlreadyExists)
+# for other users. Derive per-user; override with OBJECTSTORE_TEST_BUCKET.
+BUCKET = os.environ.get(
+    "OBJECTSTORE_TEST_BUCKET", f"{getpass.getuser()}-sse-experiment"
+)
 KEY = "secret.bin"
 
 CUSTOMER_KEY = os.urandom(32)   # 256-bit key; os.urandom fine for a demo

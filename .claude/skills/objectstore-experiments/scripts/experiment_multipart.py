@@ -12,6 +12,7 @@ Run with:
     uv run --with boto3 python3 experiment_multipart.py
 """
 
+import getpass
 import hashlib
 import os
 import sys
@@ -19,7 +20,11 @@ import sys
 import boto3
 
 PROFILE = "object-store"
-BUCKET = "caspar-multipart-experiment"
+# Globally-unique bucket name: a hardcoded one collides (BucketAlreadyExists)
+# for other users. Derive per-user; override with OBJECTSTORE_TEST_BUCKET.
+BUCKET = os.environ.get(
+    "OBJECTSTORE_TEST_BUCKET", f"{getpass.getuser()}-multipart-experiment"
+)
 KEY = "multipart.bin"
 
 # 40 MiB total, 8 MiB parts -> 5 parts. Small enough to run fast, large enough

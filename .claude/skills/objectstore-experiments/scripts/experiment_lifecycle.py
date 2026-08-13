@@ -16,13 +16,20 @@ Run with:
     uv run --with boto3 python3 experiment_lifecycle.py cleanup   # remove bucket
 """
 
+import getpass
 import json
+import os
 import sys
 
 import boto3
 
 PROFILE = "object-store"
-BUCKET = "caspar-lifecycle-experiment"
+# Globally-unique bucket name: hardcoding one collides (BucketAlreadyExists) for
+# other users. Stable per-user default so the check/cleanup subcommands still
+# target the same bucket across runs; override with OBJECTSTORE_TEST_BUCKET.
+BUCKET = os.environ.get(
+    "OBJECTSTORE_TEST_BUCKET", f"{getpass.getuser()}-lifecycle-experiment"
+)
 KEY = "object.bin"
 
 POLICY = {

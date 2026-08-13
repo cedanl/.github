@@ -18,16 +18,19 @@ The experiment:
   8. Clean up (delete all versions, remove bucket)
 """
 
+import getpass
+import os
 import sys
 
 import boto3
 import requests
 
 PROFILE = "object-store"
-# A per-run-ish unique suffix without needing wall-clock randomness: derive from
-# the two object bodies so reruns that change content get a new-ish name, but
-# keep it simple and lowercase to satisfy S3 bucket naming rules.
-BUCKET = "caspar-versioning-experiment"
+# Globally-unique bucket name: a hardcoded one collides (BucketAlreadyExists)
+# for other users. Derive per-user; override with OBJECTSTORE_TEST_BUCKET.
+BUCKET = os.environ.get(
+    "OBJECTSTORE_TEST_BUCKET", f"{getpass.getuser()}-versioning-experiment"
+)
 KEY = "note.txt"
 
 BODY_V1 = b"version one: hello from the SURF Object Store experiment\n"
