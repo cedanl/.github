@@ -1,10 +1,10 @@
 ---
-name: sessie-reflectie
+name: sessie-terugblik
 description: Legt vast hoe een sessie ging — vaste vragenset over de werkwijze, antwoorden in de woorden van de deelnemer. Gebruik bij "reflectie", "terugblik", "hoe ging dit", "wat ging goed", "blinde vlekken" — ook halverwege, niet alleen aan het eind. LET OP — een sprint review met slides hoort bij `generate-slides-retro-simple`; niet voor een automatische samenvatting van wat er gebeurde.
 allowed-tools: Read Grep Glob Write Bash
 compatibility: Requires git, python3 and the gh CLI with write access to cedanl/repo-context-as-data
 metadata:
-  ceda-id: ceda.sessie-reflectie
+  ceda-id: ceda.sessie-terugblik
   ceda-version: "0.4.0"
   ceda-type: workflow
   ceda-subtype: ""
@@ -18,12 +18,12 @@ metadata:
   ceda-verifies: measurable
 ---
 
-# Sessie-reflectie
+# Sessie-terugblik
 
-Reflecteert op **het proces, niet op het product**: hoe er gewerkt is, wat er gebruikt is, wat
+Kijkt terug op **het proces, niet op het product**: hoe er gewerkt is, wat er gebruikt is, wat
 goed ging en wat iemand nu pas ziet. De uitkomst is één markdownbestand in de data-repo
-`cedanl/repo-context-as-data`, met een frontmatter die de reflectie aan de commits van die
-sessie knoopt. Reflecteren mag op elk moment — halverwege een sessie net zo goed als aan het
+`cedanl/repo-context-as-data`, met een frontmatter die de terugblik aan de commits van die
+sessie knoopt. Terugblikken mag op elk moment — halverwege een sessie net zo goed als aan het
 eind.
 
 De waarde zit in de antwoorden van de deelnemer, niet in jouw samenvatting van de sessie. Vul
@@ -31,7 +31,7 @@ niets voor iemand in; wat jij zag krijgt een eigen sectie.
 
 ## Workflow
 
-Bij `/sessie-reflectie [optioneel: andere data-repo]`:
+Bij `/sessie-terugblik [optioneel: andere data-repo]`:
 
 ### 1. Haal de context uit git log
 
@@ -52,7 +52,7 @@ Geen remote? Vul dan alleen de repositorynaam in.
 
 Hieruit komt de naam (`%an` van de eigen commits), waar aan gewerkt is, de commit-range en de
 checkpoint-id's als die er zijn. Geen zoektocht door statusbestanden, planningsdocumenten of
-het transcript — die zijn per project anders en de reflectie hoort niet van jouw reconstructie
+het transcript — die zijn per project anders en de terugblik hoort niet van jouw reconstructie
 af te hangen.
 
 Geen git-repo, of geen commits vandaag? Stel dan één vraag: *"Waar heb je aan gewerkt deze
@@ -62,7 +62,7 @@ Commit-range blijft dan leeg — dat is een geldige uitkomst, geen reden om iets
 ### 2. Tel het verbruik
 
 ```bash
-python3 .claude/skills/sessie-reflectie/scripts/sessie-tokens.py
+python3 .claude/skills/sessie-terugblik/scripts/sessie-tokens.py
 ```
 
 Geeft YAML-regels terug die zo in de frontmatter kunnen. Vraag de gebruiker hier niets over en
@@ -78,18 +78,18 @@ Heeft de gebruiker een vraag al beantwoord in zijn openingsbericht, stel 'm dan 
 
 ### 4. Bouw het bestand
 
-Pad — de datum is de dag van de reflectie, `<repo>` de repositorynaam uit stap 1, `<naam>` in
+Pad — de datum is de dag van de terugblik, `<repo>` de repositorynaam uit stap 1, `<naam>` in
 kebab-case:
 
 ```text
-data/<YYYY-MM-DD>/<repo>/sessie-reflectie-<naam>.md
+data/<YYYY-MM-DD>/<repo>/sessie-terugblik-<naam>.md
 ```
 
 Frontmatter, altijd deze sleutels, leeg laten kan maar weglaten niet:
 
 ```yaml
 ---
-type: sessie-reflectie
+type: sessie-terugblik
 repo: <owner>/<repo>   # uit de remote; alleen <repo> als er geen remote is
 datum: <YYYY-MM-DD>
 naam: <volledige naam uit git>
@@ -120,19 +120,19 @@ akkoord. Schrijf niets naar de data-repo voor hij akkoord geeft.
 
 ### 6. Schrijf het weg
 
-Bestaat het pad al — tweede reflectie op dezelfde dag door dezelfde persoon — hang er dan
-`-2`, `-3` aan. **Nooit overschrijven**: een reflectie is een waarneming op een moment, en een
-overschreven reflectie is een verloren waarneming.
+Bestaat het pad al — tweede terugblik op dezelfde dag door dezelfde persoon — hang er dan
+`-2`, `-3` aan. **Nooit overschrijven**: een terugblik is een waarneming op een moment, en een
+overschreven terugblik is een verloren waarneming.
 
 ```bash
 unset GITHUB_TOKEN
 DATA_REPO=cedanl/repo-context-as-data          # of het argument
-PAD="data/$(date +%F)/<repo>/sessie-reflectie-<naam>.md"
+PAD="data/$(date +%F)/<repo>/sessie-terugblik-<naam>.md"
 
 gh api "repos/$DATA_REPO/contents/$PAD" --jq .sha 2>/dev/null   # leeg = vrij, sha = kies -2
 
 gh api --method PUT "repos/$DATA_REPO/contents/$PAD" \
-  -f message="reflectie: <repo> — <naam>, $(date +%F)" \
+  -f message="terugblik: <repo> — <naam>, $(date +%F)" \
   -f content="$(base64 -i <lokaal-conceptbestand> | tr -d '\n')"
 ```
 
@@ -162,7 +162,7 @@ zichtbaar blijft. De regels staan in `references/vragenset.md`.
 ## Let op: het tokengetal dekt één sessie, niet één werkdag
 
 Het script telt het nieuwste transcript van deze werkdirectory op — dus de lopende sessie.
-Heeft iemand vandaag in drie sessies aan hetzelfde project gewerkt en reflecteert hij in de
+Heeft iemand vandaag in drie sessies aan hetzelfde project gewerkt en kijkt iemand in de
 derde, dan staan alleen de tokens van die derde in de frontmatter.
 
 Dat is geen defect, maar wel iets om niet verkeerd op te tellen bij analyse. Het veld
@@ -184,7 +184,7 @@ Twee dingen gaan hier mis:
 
 ## Let op: de data-repo is privé, en dat is geen vrijbrief
 
-`cedanl/repo-context-as-data` is privé, dus een eerlijke reflectie mag er echt in staan. Wat er
+`cedanl/repo-context-as-data` is privé, dus een eerlijke terugblik mag er echt in staan. Wat er
 alsnog niet in hoort:
 
 - inhoud uit bronsystemen: studentgegevens, DUO-leveringen, tokens, wachtwoorden
@@ -192,15 +192,15 @@ alsnog niet in hoort:
   liep stroef"), niet naar de persoon
 
 Twijfel je bij een passage, laat 'm in het concept staan en vraag er expliciet naar. Niet
-stilletjes weglaten — dan verdwijnt de scherpte die de reflectie waardevol maakt.
+stilletjes weglaten — dan verdwijnt de scherpte die de terugblik waardevol maakt.
 
 ## Verificatie
 
-`ceda-verifies: measurable` — de reflectie is weggeschreven als dit exit 0 geeft en het pad
+`ceda-verifies: measurable` — de terugblik is weggeschreven als dit exit 0 geeft en het pad
 teruggeeft dat je in stap 7 rapporteerde:
 
 ```bash
-gh api "repos/cedanl/repo-context-as-data/contents/data/$(date +%F)/<repo>/sessie-reflectie-<naam>.md" --jq .path
+gh api "repos/cedanl/repo-context-as-data/contents/data/$(date +%F)/<repo>/sessie-terugblik-<naam>.md" --jq .path
 ```
 
 En inhoudelijk: de frontmatter draagt elke sleutel uit stap 4, `commits` bevat twee volledige
@@ -217,12 +217,12 @@ geparafraseerd.
 ## Important
 
 - Deze skill stelt vragen en legt antwoorden vast. Hij lost niets op: een probleem dat uit de
-  reflectie komt wordt een regel in `## Acties`, geen commit in deze sessie.
+  terugblik komt wordt een regel in `## Acties`, geen commit in deze sessie.
 - Veronderstel geen technische kennis bij de gebruiker. Draai zelf de git-commando's, gebruik
   geen jargon in de vragen, en vraag hem nooit iets in een terminal te typen behalve `/cost`.
-- Verander de vragenset niet per sessie. Reflecties zijn alleen vergelijkbaar over de tijd als
+- Verander de vragenset niet per sessie. Terugblikken zijn alleen vergelijkbaar over de tijd als
   de vragen hetzelfde blijven; een betere vraag hoort in `references/vragenset.md`, in een PR.
-- Schrijf niets naar de projectrepo — geen `reflectie.md`, geen commit daar. De reflectie leeft
+- Schrijf niets naar de projectrepo — geen `reflectie.md`, geen commit daar. De terugblik leeft
   in de data-repo, naast de andere contextsnapshots van dat project.
 - Raak `metadata.json` in de data-repo niet aan. Die wordt door
   `scripts/collect_repo_context.py` gegenereerd; met de hand bijwerken loopt uit de pas met de

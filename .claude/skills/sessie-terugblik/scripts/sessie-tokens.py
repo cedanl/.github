@@ -4,7 +4,7 @@
 Draaien, niet lezen. Zonder argument pakt hij het nieuwste transcript van de
 huidige werkdirectory; geef anders een pad naar een .jsonl mee.
 
-Output is YAML, klaar om in de frontmatter van een reflectie te plakken.
+Output is YAML, klaar om in de frontmatter van een terugblik te plakken.
 """
 
 import json
@@ -31,7 +31,7 @@ def transcript_voor_cwd() -> Path | None:
 def main() -> int:
     pad = Path(sys.argv[1]) if len(sys.argv) > 1 else transcript_voor_cwd()
     if pad is None or not pad.is_file():
-        # Geen transcript: geen reden om de reflectie te blokkeren.
+        # Geen transcript: geen reden om de terugblik te blokkeren.
         print("sessie-id: \"\"")
         for _, naam in VELDEN:
             print(f"{naam}: 0")

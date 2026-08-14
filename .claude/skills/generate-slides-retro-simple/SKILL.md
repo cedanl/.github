@@ -1,6 +1,6 @@
 ---
 name: generate-slides-retro-simple
-description: Genereer een compacte, inhoudelijke Slidev sprint review presentatie voor CEDA, georganiseerd per domein (instroom/uitval/tech/project) met substantiemetriek op basis van commits, functies en het CEDA Board. LET OP — gaat het om een persoonlijke terugblik op de eigen werkwijze in plaats van een presentatie over wat het team opleverde, gebruik dan `sessie-reflectie`.
+description: Genereer een compacte, inhoudelijke Slidev sprint review presentatie voor CEDA, georganiseerd per domein (instroom/uitval/tech/project) met substantiemetriek op basis van commits, functies en het CEDA Board. LET OP — gaat het om een persoonlijke terugblik op de eigen werkwijze in plaats van een presentatie over wat het team opleverde, gebruik dan `sessie-terugblik`.
 ---
 
 # generate-slides-retro-simple

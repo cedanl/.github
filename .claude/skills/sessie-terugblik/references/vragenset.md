@@ -16,7 +16,7 @@ keer doet die niet meer mee. Noteer wat er gezegd is en ga verder.
 
 > Hoe heb je dit aangepakt — je werkwijze en je interactie met de agent tijdens dit project?
 
-**Waarom:** dit is het enige dat de reflectie onderscheidt van een voortgangsverslag. De vraag
+**Waarom:** dit is het enige dat de terugblik onderscheidt van een voortgangsverslag. De vraag
 gaat over volgorde, over wanneer iemand ingreep en wanneer die liet lopen — niet over wat er
 gebouwd is.
 
@@ -35,7 +35,7 @@ deelnemer het benoemen zoals die het kent.
 > Wat ging goed?
 
 **Waarom:** wat werkt hoort net zo hard vastgelegd als wat niet werkt, anders wordt de
-reflectiereeks een klachtenlijst en stopt iemand ermee.
+reeks terugblikken een klachtenlijst en stopt iemand ermee.
 
 Er is geen verplichting iets goeds te melden. Een sessie waarin niets opviel is een geldige
 uitkomst; die leeg laten is beter dan er iets bij verzinnen.
@@ -66,7 +66,7 @@ alles wat je niet aan een concreet moment in deze sessie kunt ophangen. Geen waa
 de sectie weg.
 
 Leg het voor voordat je wegschrijft, samen met de acties. De deelnemer mag regels schrappen —
-dit is diens reflectie, niet jouw beoordeling.
+dit is diens terugblik, niet jouw beoordeling.
 
 ## Wat je met de antwoorden doet
 
@@ -81,7 +81,7 @@ dit is diens reflectie, niet jouw beoordeling.
 
 ## Tussentijds versus aan het eind
 
-Dezelfde vier vragen. Bij een tussentijdse reflectie voeg je één regel toe boven de eerste
-sectie: waar in het werk iemand nu staat. Kort de vragen niet in — een tussentijdse reflectie
+Dezelfde vier vragen. Bij een tussentijdse terugblik voeg je één regel toe boven de eerste
+sectie: waar in het werk iemand nu staat. Kort de vragen niet in — een tussentijdse terugblik
 met twee vragen is niet vergelijkbaar met de rest van de reeks, en vergelijkbaarheid is het
 hele punt.
