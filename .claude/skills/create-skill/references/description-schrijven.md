@@ -75,6 +75,14 @@ runners. Alle drie kloppen ze niet buiten SDP. Wat er hoort te staan:
 Vuistregel: kan iemand met een *vergelijkbaar maar ander* systeem deze skill per ongeluk
 binnenhalen? Dan hoort vorm (b) erin, met de aannames die dan wegvallen.
 
+**De validator toetst deze twee vormen, en alleen deze twee.** Vorm (a) telt pas als de clause
+de andere skill daadwerkelijk *noemt* — in backticks of als `skill <naam>`. "Gebruik dan deze
+skill" wijst naar zichzelf en verbreedt de trigger in plaats van hem te begrenzen; dat is geen
+clause. Vorm (b) telt pas met een scope erachter: `niet voor X`, niet een kale "niet
+gebruiken". Reden: met losse trefwoorden matchte de check ook op "buiten**wereld**" en op
+"fill in the template **instead** of leaving it blank", en verzweeg hij daardoor het enige
+paar in de collectie met een byte-identieke description.
+
 ## Vorm
 
 ```

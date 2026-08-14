@@ -72,10 +72,29 @@ STOPWORDS = {
     "skill", "skills", "claude", "ceda", "cedanl", "repo", "repos",
 }
 
-EXCLUSION_MARKERS = (
-    "let op", "in plaats", "niet gebruiken", "gebruik dan", "gebruik niet", "niet voor",
-    "instead", "not for", "do not use", "don't use", "rather than", "tenzij", "buiten",
+# An exclusion-clause takes one of two documented forms (references/description-schrijven.md):
+# bounding ("niet voor X") or referring ("gebruik dan `andere-skill`"). Matching the marker
+# words as bare substrings recognised neither reliably: `buiten` fired inside "buitenwereld",
+# "gebruik dan" fired on "gebruik dan deze skill" (which widens the trigger instead of
+# bounding it), and "instead" fired on "fill in the template instead of leaving it blank".
+# That mattered: it suppressed the overlap warning on the one pair in the collection whose
+# descriptions are byte-identical. So the bounding form needs a scope word after it, and the
+# referring form has to actually name another skill.
+BOUNDING_CLAUSE = re.compile(
+    r"\bniet(?: te)? gebruiken (?:voor|bij|als)\b|\bniet voor\b|\bnooit voor\b|"
+    r"\bgebruik niet\b|\bnot for\b|\bdo(?:n't| not) use (?:for|when|this)\b",
+    re.IGNORECASE,
 )
+REFERRING_MARKER = re.compile(
+    r"\blet op\b|\bin plaats\b|\bgebruik(?: dan| je)?\b|\binstead\b|\brather than\b|\btenzij\b",
+    re.IGNORECASE,
+)
+# A backticked name, or "skill <naam>" — but not "deze/dit/this skill", which points at itself.
+NAMES_OTHER_SKILL = re.compile(
+    r"`[a-z0-9][a-z0-9_-]*`|(?<!deze )(?<!dit )(?<!this )\bskill\s+[a-z0-9][a-z0-9_-]*\b",
+    re.IGNORECASE,
+)
+CLAUSE_WINDOW = 120
 
 NO_VERIFY_MOTIVATION = re.compile(r"geen verificatie|no verification", re.IGNORECASE)
 
@@ -157,6 +176,7 @@ class Result:
     warnings: list[str] = field(default_factory=list)
     legacy: bool = False
     description: str = ""
+    declared_name: str = ""
 
     def err(self, msg: str) -> None:
         self.errors.append(msg)
@@ -171,8 +191,13 @@ def trigger_tokens(description: str) -> set[str]:
 
 
 def has_exclusion_clause(description: str) -> bool:
-    low = (description or "").lower()
-    return any(marker in low for marker in EXCLUSION_MARKERS)
+    desc = description or ""
+    if BOUNDING_CLAUSE.search(desc):
+        return True
+    return any(
+        NAMES_OTHER_SKILL.search(desc[m.start(): m.start() + CLAUSE_WINDOW])
+        for m in REFERRING_MARKER.finditer(desc)
+    )
 
 
 # --------------------------------------------------------------------------- #
@@ -201,6 +226,7 @@ def validate_skill(skill_dir: Path) -> Result:
 
     # --- spec: name -----------------------------------------------------------
     name = fm.get("name") or ""
+    res.declared_name = name
     res.description = fm.get("description") or ""
     if not name:
         res.err("`name` ontbreekt")
@@ -337,6 +363,29 @@ def validate_skill(skill_dir: Path) -> Result:
     return res
 
 
+def check_duplicate_names(results: list[Result]) -> None:
+    """Two directories claiming the same `name` in their frontmatter.
+
+    The per-skill name!=directory rule catches this only by accident, and only
+    on the copy that was renamed. Stating it as its own error names the actual
+    problem: there are two artefacts competing for one identity, so `ceda-id`,
+    the evaluation and every cross-reference land on whichever one wins.
+    """
+    by_declared: dict[str, list[Result]] = {}
+    for r in results:
+        if r.declared_name:
+            by_declared.setdefault(r.declared_name, []).append(r)
+    for declared, group in by_declared.items():
+        if len(group) < 2:
+            continue
+        dirs = ", ".join(f"`{r.name}`" for r in group)
+        for r in group:
+            r.err(
+                f"`name: {declared}` wordt door meerdere directories geclaimd ({dirs}) — "
+                "twee kopieën van één identiteit; voeg samen of deprecate, zie `dedup-skills`"
+            )
+
+
 def check_overlap(results: list[Result]) -> None:
     """Overlapping trigger words without an exclusion-clause on either side.
 
@@ -394,6 +443,7 @@ def main(argv: list[str]) -> int:
 
     results = [validate_skill(d) for d in dirs]
     if cross:
+        check_duplicate_names(results)
         check_overlap(results)
 
     n_err = n_warn = n_legacy = 0
