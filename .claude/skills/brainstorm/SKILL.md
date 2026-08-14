@@ -1,6 +1,6 @@
 ---
 name: brainstorm
-description: Structureer een brainstorm van idee naar getoetst besluit vóór implementatie, met een beslis-samenvatting en aanbevelingen — geen code of bestanden. Wanneer iemand een idee wil uitwerken of een besluit wil voorbereiden voordat er code of een plan komt.
+description: Structureer een brainstorm van idee naar getoetst besluit vóór implementatie, met een beslis-samenvatting en aanbevelingen — geen code of bestanden. Wanneer iemand een idee wil uitwerken of een besluit wil voorbereiden voordat er code of een plan komt. LET OP — ná de go hoort `plan`, niet dit.
 ---
 
 # Brainstorm
@@ -64,8 +64,21 @@ Go? Dan [plan maken / bouwen wat hierboven staat].
 
 Wait for an explicit go. On corrections: adjust, self-review again, present again.
 
+### 8. After the go
+
+The brainstorm ends here; it does not turn into building. On an explicit go, hand over:
+
+| Scope of what was agreed | Next step |
+|---|---|
+| Multiple steps or multiple files | `/plan` — write the implementation plan first |
+| The diff fits in one sentence | Build it directly, no plan |
+
+Say which one it is and why in one line, then start. Do not ask the user to choose between
+planning and building when the criterion above already decides it.
+
 ## Important
 
-- Building starts only after an explicit go; the only follow-up is planning or building what was agreed.
+- Building starts only after an explicit go; the only follow-up is `/plan` or building what
+  was agreed.
 - All user-facing output is in Dutch; keep it terse and recommendation-first.
 - Avoid the anti-patterns: working through a checklist of questions; asking what you can read yourself; premature constraints (narrowing the solution before the problem is clear); reopening locked decisions; listing options without a recommendation; multiple follow-ups without priority (one primary suggestion, alternatives secondary).
