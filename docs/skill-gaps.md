@@ -11,7 +11,7 @@ Analyse van de skill-collectie in `cedanl/.github/.claude/skills`, inclusief ope
 | PR #46 app-integration | 5 (`docker`, `streamlit`, `surfdrive`, `etl-pipeline`, `sram-oidc`) |
 | PR #43 sdp-platform | 4 (`sdp-onboard`, `sdp-secrets-management`, `gitlab-ci`, `surf-sdp-helm-flux`) |
 | PR #42 workflow | 6 (`ship`, `pr-reply`, `branch-pr`, `gate`, `actions-ci`, `pypi-project`) |
-| PR #47 create-skill | 0 nieuwe skills; voegt skill-type "Kennis" toe aan de conventies |
+| PR #47 create-skill (gemerged) | 0 nieuwe skills; voegde het skill-type "Kennis" toe. Inmiddels vervangen: dat heet nu `type: reference` + `subtype: knowledge` |
 | branch `skills/datascience` | 2 (`data-cleaner`, `data-scientist`) — **geen PR geopend** |
 
 Totaal ~53 skills, waarvan 19 nog niet beschikbaar voor het team.
@@ -126,7 +126,7 @@ Dit is ook de gap met het grootste afbreukrisico: een fout hier is niet een bug 
 
 ## Gap 6 — Skill-lifecycle
 
-**Wat er is:** `create-skill` (aanmaken), PR #47 (skill-type "Kennis" toevoegen aan de conventies).
+**Wat er is:** `create-skill` v2 (aanmaken, inclusief extern-eerst, herkomst-gate en machinale validatie), de reference-skill `skills-ontology` (het model) en `validate-skill.py` (de regels als code).
 
 **Waarom.** Aanmaken is gedekt, de rest van de levensloop niet. Concrete symptomen nu al zichtbaar:
 
@@ -140,7 +140,7 @@ Twee onderdelen van de levensloop die we tot nu toe helemaal niet benoemd hadden
 
 **Herkomst van de inhoud.** De grootste kwaliteitsvariabele bij het aanmaken is niet de vorm maar waar de inhoud vandaan komt. Een skill die je een model laat verzinnen uit algemene kennis levert generieke instructies op ("ga zorgvuldig om met fouten"); een skill gedestilleerd uit een echt uitgevoerde taak levert de specifieke conventies, valkuilen en correcties op die hem waardevol maken. Bruikbare bronnen: een sessie waarin je de taak daadwerkelijk hebt gedaan mét jouw correcties, bestaande interne documentatie en runbooks, code-review-commentaar, en git-historie van fixes.
 
-Dit weegt in onze context zwaarder dan in de bronnen waar het vandaan komt. Bij onderwijsdata — DUO-leveringen, 1CHO-definities, SIS-eigenaardigheden — heeft het model weinig achtergrond, dus is verzonnen inhoud slecht herkenbaar als verzonnen. `create-skill` hoort daarom een verplichte stap te krijgen: *waar komt deze inhoud vandaan?*, met `self` als expliciete claim in plaats van stilzwijgende default.
+Dit weegt in onze context zwaarder dan in de bronnen waar het vandaan komt. Bij onderwijsdata — DUO-leveringen, 1CHO-definities, SIS-eigenaardigheden — heeft het model weinig achtergrond, dus is verzonnen inhoud slecht herkenbaar als verzonnen. **Opgelost:** `create-skill` v2 heeft een blokkerende herkomst-gate (stap 3), met `ceda-source` als expliciete claim — `self`, een pad, een publieke url of `intern:<vindplaats>` — in plaats van een stilzwijgende default.
 
 **Auditen van skills en skill-chains.** Met `origin: external` in de ontologie moedigen we aan om generieke skills over te nemen. Dat is de juiste volgorde, maar op dit moment zonder controlepunt. Een overgenomen skill draait met onze rechten en onze data; hij hoort nagelopen te worden op wat hij aanraakt (`allowed-tools`), of hij externe netwerkbronnen benadert, en welke andere skills hij aanroept. Dat laatste is het punt dat we nog nergens dekken: een chain is een pad, en een pad kan rechten optellen die geen enkele losse skill heeft. Bij een keten die extern materiaal inleest en daarna schrijfrechten gebruikt, hoort een scheiding — het deel dat onvertrouwde inhoud verwerkt krijgt geen schrijfrechten.
 
@@ -152,7 +152,7 @@ Dit weegt in onze context zwaarder dan in de bronnen waar het vandaan komt. Bij 
 | `dedup-skills` | Workflow | Detecteer overlappende skills, voeg samen of deprecate |
 | `audit-skill` | Workflow | Loop een externe of gewijzigde skill na: tools, netwerkoproepen, gebundelde scripts, en de chains waar hij in zit |
 
-Een vierde ontbrekend stuk van de levensloop — meten of een skill überhaupt iets toevoegt ten opzichte van géén skill — staat apart uitgewerkt in `cedanl/.github#49`. Dat is het instrument onder `dedup-skills`: zonder baseline is "deze skill is overbodig" een mening.
+Een vierde ontbrekend stuk van de levensloop — meten of een skill überhaupt iets toevoegt ten opzichte van géén skill — blijkt niet gebouwd te hoeven worden: `claude plugin eval --ablation with-without <naam>` draait testgevallen mét en zonder de skill en rapporteert de delta. Wat resteert is het schrijven van de testgevallen. Dat is het instrument onder `dedup-skills`: zonder baseline is "deze skill is overbodig" een mening.
 
 **Prioriteit: hoog.** Niet omdat het inhoudelijk het belangrijkst is, maar omdat het de andere gaps blokkeert: zonder doorstroming landt nieuw werk niet.
 
