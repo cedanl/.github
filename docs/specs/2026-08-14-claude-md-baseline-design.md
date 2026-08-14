@@ -106,6 +106,13 @@ taak over meerdere berichten) blijft in dezelfde sessie.
 
 Reden: lange sessies stapelen verouderde context op → tragere, slechtere output.
 
+## Bestandsverwijzingen
+Verwijs naar een bestand altijd als aanklikbare markdown-link, relatief vanaf de
+root van de workspace: `[naam](pad/naar/bestand.md)`, een regel met `#L42`. Nooit
+een kaal pad tussen backticks — dat kan de gebruiker niet openen. Dit geldt net
+zo goed in de chat als in markdown-bestanden. Werk je in een worktree onder
+`.claude/worktrees/<naam>/`, dan hoort dat stuk in het pad.
+
 ## Bij compacteren
 Bewaar altijd: de lijst gewijzigde bestanden, de testcommando's en openstaande
 beslissingen.
@@ -124,6 +131,7 @@ Ingevuld is dat ongeveer 45 regels.
 
 - **`/write-issue` in plaats van `gh issue create`** — zonder die zin doet Claude uit zichzelf `gh issue create`. Weglaten veroorzaakt een fout, dus het blijft.
 - **Gericht testen** — anders draait Claude standaard de volledige suite.
+- **Aanklikbare bestandsverwijzingen** — zonder die regel levert Claude kale paden tussen backticks, die de gebruiker niet kan openen. Tijdens deze brainstorm zelf misgegaan.
 - **Lege valkuilen-sectie** — de plek waar het bestand per repo mag groeien, op bewijs.
 
 ### Wat er bewust níet in staat
