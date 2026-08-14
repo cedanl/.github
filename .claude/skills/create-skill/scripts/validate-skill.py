@@ -40,6 +40,25 @@ NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 NAME_MAX = 64
 DESCRIPTION_MAX = 1024
 DESCRIPTION_MIN = 80
+# Een aangeroepen skill heeft een herkenningsteken nodig, geen handleiding: de gebruiker typt
+# `/naam` of de projectinstructies verwijzen ernaar, dus het triggeroppervlak doet weinig werk.
+# Een ambient skill moet vuren op geplakte foutmeldingen die niemand aankondigt en mag het volle
+# spec-budget gebruiken. Vandaar twee grenzen in plaats van één.
+DESCRIPTION_MAX_AANGEROEPEN = 400
+ACTIVATION_AANGEROEPEN = {"command", "chained"}
+# Mechaniek in een description: paden, bestandsnamen, vlaggen, placeholders. Dit verandert
+# zonder dat de trigger verandert, en het staat élke sessie in context.
+# Let op: schuine strepen alleen zijn géén pad. `type/origin/scope`, `connector/command` en
+# `skill/hook` zijn opsommingen die in een goede description thuishoren. Daarom geen generieke
+# slash-regel maar echte signalen: een bekende directorynaam, een placeholder, een
+# bestandsextensie of een vlag.
+MECHANIEK_PATRONEN = (
+    r"(?:^|[\s`(])\.?/?(?:data|docs|src|tests?|scripts|references|assets|\.claude|\.github)/",
+    r"[a-z0-9_-]+/<[a-z-]+>",           # repo/<naam>
+    r"\.(md|py|json|ya?ml|toml|sh)\b",  # bestandsnamen
+    r"\s--[a-z-]{2,}",                  # --flags
+    r"<[a-z-]+>",                       # <repo>, <naam>
+)
 COMPATIBILITY_MAX = 500
 BODY_MAX_LINES = 500
 BUNDLE_DIRS = ("references", "assets", "scripts")
@@ -207,6 +226,13 @@ def validate_skill(skill_dir: Path) -> Result:
             res.warn(f"`description` is {len(desc)} tekens — kort; noem expliciete triggerwoorden")
         if re.search(r"\bnieuwe manier\b|\bvanaf nu\b|\bnog steeds\b", desc, re.I):
             res.warn("`description` lijkt tijdsgebonden geformuleerd — dat veroudert stil")
+        mechaniek = [m for m in MECHANIEK_PATRONEN if re.search(m, desc)]
+        if mechaniek:
+            res.warn(
+                "`description` bevat mechaniek (paden, bestandsnamen, vlaggen of "
+                "placeholders) — dat verandert zonder dat de trigger verandert en hoort "
+                "in de body"
+            )
 
     # --- spec: allowed-tools / compatibility ----------------------------------
     tools = fm.get("allowed-tools")
@@ -262,6 +288,17 @@ def validate_skill(skill_dir: Path) -> Result:
         res.err("`ceda-scope: user` mag alleen `presentation` dragen, nooit `knowledge`")
     if source == "self" and scope == "project":
         res.err("`ceda-source: self` hoort op `ceda-scope: org` — is de skill de bron, dan is hij gedeeld")
+
+    if (
+        meta.get("ceda-activation") in ACTIVATION_AANGEROEPEN
+        and len(res.description) > DESCRIPTION_MAX_AANGEROEPEN
+    ):
+        res.warn(
+            f"`description` is {len(res.description)} tekens bij "
+            f"`ceda-activation: {meta.get('ceda-activation')}` (richtlijn "
+            f"{DESCRIPTION_MAX_AANGEROEPEN}) — een aangeroepen skill heeft een "
+            "herkenningsteken nodig, geen handleiding; verplaats de mechaniek naar de body"
+        )
 
     if meta.get("ceda-binding") == "hard" and meta.get("ceda-activation") != "hook":
         res.err("`ceda-binding: hard` zonder `ceda-activation: hook` — zonder afdwinging is dit `default` met een mooie titel")

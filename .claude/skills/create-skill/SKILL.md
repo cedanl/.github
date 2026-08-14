@@ -1,6 +1,6 @@
 ---
 name: create-skill
-description: Bouwt een nieuwe CEDA Claude skill volgens de skills-ontologie — zoekt eerst of er een generieke skill bestaat, toetst waar de inhoud vandaan komt, classificeert type/origin/scope, schrijft spec-conforme frontmatter en valideert het resultaat machinaal. Gebruik wanneer iemand een nieuwe /skill wil aanmaken voor cedanl, een bestaand proces wil codificeren als skill, een skill wil herzien of migreren naar het frontmatter-schema, of vraagt hoe je een skill bouwt. LET OP — gaat het om het classificeren of begrijpen van een bestaande skill zonder er een te schrijven, gebruik dan `skills-ontology`; gaat het alleen om het openen van de PR, gebruik dan `branch-pr`.
+description: Bouwt een nieuwe CEDA Claude skill — zoekt eerst of er al een generieke bestaat, toetst de herkomst, classificeert en valideert. Gebruik wanneer iemand een skill wil aanmaken voor cedanl, een proces wil codificeren als skill, of een bestaande wil herzien. LET OP — alleen classificeren zonder te schrijven hoort bij `skills-ontology`; alleen de PR openen bij `branch-pr`.
 allowed-tools: Read Write Edit Grep Glob Bash AskUserQuestion Skill
 compatibility: Requires python3, git and the gh CLI; npx and the claude CLI for the search step
 metadata:
@@ -190,8 +190,13 @@ elkaar, dan laten staan.
 Lees `references/description-schrijven.md`.
 
 De description is het enige veld dat activeert. Schrijf 'm in de derde persoon, met de
-letterlijke triggerwoorden uit vraag 3, een exclusion-clause uit vraag 4, en binnen ~1024
-tekens.
+letterlijke triggerwoorden uit vraag 3 en een exclusion-clause uit vraag 4.
+
+De lengte hangt aan `ceda-activation`, niet aan het spec-plafond: bij `command` of `chained`
+≤400 tekens — die skill wordt aangeroepen, dus de description is een herkenningsteken. Bij
+`ambient` mag het volle budget van 1024. Mechaniek hoort er nooit in: paden, repo- en
+bestandsnamen, vlaggen, het interne schema. Toets: verandert het zonder dat de trigger
+verandert, dan staat het in de body.
 
 **Taal: volg de gebruiker, vertaal niet uit principe.** Schrijf de description in de taal
 waarin de triggers gesteld zijn. Twee varianten neem je alleen op als het team het onderwerp
