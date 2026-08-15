@@ -50,6 +50,11 @@ Is there none of these, then this skill is too early: run `/brainstorm` first an
 after the go. A decision that only exists in the chat scrollback is not an input — the plan is
 written for someone who was not there, and that includes you after a context reset.
 
+Standing in the session that produced the brainstorm — no `/clear` in between? Then work from
+the file anyway, and say so. A hole in the summary that you fill in from memory is a hole the
+executor hits later. Is the file missing something the chat does have, then repair the file
+first.
+
 Does the spec cover several independent subsystems? Then propose one plan per subsystem. Each
 plan must produce working, testable software on its own.
 
