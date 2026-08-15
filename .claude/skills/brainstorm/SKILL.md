@@ -2,6 +2,7 @@
 name: brainstorm
 description: Structureer een brainstorm van idee naar getoetst besluit vóór implementatie, en leg dat besluit na de go vast als document dat het plan daarna kan lezen — geen code. Wanneer iemand een idee wil uitwerken of een besluit wil voorbereiden voordat er code of een plan komt. LET OP — ná de go hoort `plan`, niet dit.
 allowed-tools: Read Write Grep Glob Bash AskUserQuestion Skill
+license: MIT — afgeleid van superpowers (© 2025 Jesse Vincent)
 metadata:
   ceda-id: ceda.brainstorm
   ceda-version: "0.2.0"
@@ -21,17 +22,10 @@ metadata:
 
 Structured brainstorming from an idea to a tested decision, before any implementation or plan. The output is a decision summary with recommendations — never code. Respond to the user in Dutch, caveman-terse.
 
-`ceda-origin: extended` records the maintenance link with `superpowers:brainstorming`: the
-spine is the same (hard gate, "too simple" does not exist, 2-3 approaches, present in sections,
-self-review, hand off to the plan), so an upstream change to that spine is worth reading here.
-The text is CEDA's own — written in-house, Dutch, assumptions-first with confidence levels —
-so there is no MIT attribution line, unlike `plan` and `worktree`, which are ports.
-
-What upstream carries and this skill deliberately does not: the reviewer-subagent prompt
-(upstream abandoned it themselves — their own `SKILL.md` says the self-review is inline, "not
-a subagent dispatch") and the browser-based visual companion (a bundled node server; visual
-questions belong with `ui-designer` and `vormgever-npuls-huisstijl`, and a bundled server needs
-its own `externe-skill-audit`).
+Shares its spine with `superpowers:brainstorming` (MIT, © 2025 Jesse Vincent). Changed for
+CEDA: Dutch and caveman-terse, assumptions-first with confidence levels instead of a question
+round, and the summary lands in `docs/specs/` as the input for `/plan`. Which parts of upstream
+are deliberately not here, and why: [`.claude/skills/README.md`](../README.md).
 
 ## Workflow
 
@@ -110,22 +104,36 @@ date — to `docs/specs/YYYY-MM-DD-<onderwerp>.md` and commit it.
 
 This is not bookkeeping. `plan` reads this file: it needs a decision that was already made,
 and after a context reset, a new session, or a `/worktree` in between, the chat summary is
-gone. Whatever is not in the file does not reach the plan. Say where you saved it.
+gone. Whatever is not in the file does not reach the plan.
 
-Does the repo have no `docs/` at all, then say so and keep the summary in the chat — do not
-create a documentation structure on your own initiative.
+Does the repo have no `docs/specs/` yet? Then propose creating it — one line, with the path
+you intend to use — and create it once the user agrees. Say no, and the summary stays in the
+chat; then also say what that costs: `plan` has no input and the decision has to be repeated
+by hand.
 
-### 9. After the go
+### 9. Hand over
 
-The brainstorm ends here; it does not turn into building. Hand over:
+The brainstorm ends here; it does not turn into building. Two routes:
 
 | Scope of what was agreed | Next step |
 |---|---|
-| Multiple steps or multiple files | `/plan docs/specs/<bestand>.md` — write the implementation plan first |
+| Multiple steps or multiple files | `/plan` on the spec — write the implementation plan first |
 | The diff fits in one sentence | Build it directly, no plan |
 
-Say which one it is and why in one line, then start. Do not ask the user to choose between
-planning and building when the criterion above already decides it.
+Say which one it is and why in one line. Close with the literal command, path filled in, so
+the user can copy it or say go:
+
+> Besluit staat in `docs/specs/2026-08-15-<onderwerp>.md`. Meerdere bestanden, dus eerst een
+> plan:
+>
+> ```
+> /plan docs/specs/2026-08-15-<onderwerp>.md
+> ```
+>
+> Zal ik dat draaien?
+
+Do not ask the user to choose between planning and building when the criterion above already
+decides it — the only question is whether you start now.
 
 ## Verificatie
 
