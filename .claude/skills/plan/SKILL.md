@@ -26,11 +26,8 @@ which files, which code, which command, what output to expect.
 
 Derived from `superpowers:writing-plans` (MIT, © 2025 Jesse Vincent). Changed for CEDA: plans
 live in `docs/plans/`, the input is the brainstorm summary in `docs/specs/`, and the tasks land
-as issues via `/write-issue` instead of in a loose checklist.
-
-Upstream also ships `plan-document-reviewer-prompt.md`, a subagent that reviews the finished
-plan. Not ported: upstream's own `SKILL.md` no longer dispatches it and says the check is a
-"checklist you run yourself — not a subagent dispatch". That checklist is step 6 here.
+as issues via `/write-issue` instead of in a loose checklist. Which parts of upstream are
+deliberately not here, and why: [`.claude/skills/README.md`](../README.md).
 
 ## Workflow
 
