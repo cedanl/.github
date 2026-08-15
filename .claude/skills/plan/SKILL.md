@@ -1,7 +1,7 @@
 ---
 name: plan
-description: Zet een genomen besluit om in een uitvoerbaar implementatieplan — bestandsindeling, taken die elk hun eigen testcyclus dragen, exacte paden en commando's, en per taak een issue op het CEDA-board. Gebruik na een go, bij "maak een plan" of "hoe pakken we dit aan", of bij werk over meerdere stappen of bestanden. LET OP — vóór de go hoort `brainstorm`, niet dit.
-allowed-tools: Read Write Edit Grep Glob Bash AskUserQuestion Skill
+description: Zet een genomen besluit om in een uitvoerbaar implementatieplan — bestandsindeling, taken met eigen testcyclus, exacte paden en commando's, een issue per taak — en voert dat plan daarna taak voor taak uit. Gebruik na een go, bij "maak een plan" of "hoe pakken we dit aan", of bij werk over meerdere stappen of bestanden. LET OP — vóór de go hoort `brainstorm`, niet dit.
+allowed-tools: Read Write Edit Grep Glob Bash Task AskUserQuestion Skill
 license: MIT — afgeleid van superpowers (© 2025 Jesse Vincent)
 metadata:
   ceda-id: ceda.plan
@@ -25,21 +25,41 @@ this codebase, this toolset, or this problem domain. Everything they need is in 
 which files, which code, which command, what output to expect.
 
 Derived from `superpowers:writing-plans` (MIT, © 2025 Jesse Vincent). Changed for CEDA: plans
-live in `docs/plans/`, and the tasks land as issues via `/write-issue` instead of in a loose
-checklist.
+live in `docs/plans/`, the input is the brainstorm summary in `docs/specs/`, and the tasks land
+as issues via `/write-issue` instead of in a loose checklist.
+
+Upstream also ships `plan-document-reviewer-prompt.md`, a subagent that reviews the finished
+plan. Not ported: upstream's own `SKILL.md` no longer dispatches it and says the check is a
+"checklist you run yourself — not a subagent dispatch". That checklist is step 6 here.
 
 ## Workflow
 
 When the user invokes `/plan [optional: subject or path to a spec]`:
 
+Create a todo per numbered step below and work them off in order. The steps that get skipped
+under time pressure — the self-review in step 6 and the file structure in step 2 — are exactly
+the ones that cost an execution round.
+
 ### 1. Check the input
 
-A plan needs a decision that has already been made — a spec, a brainstorm summary, an issue
-with an agreed approach. Is there none, then this skill is too early: run `/brainstorm` first
-and come back after the go.
+A plan needs a decision that has already been made. In order of preference:
+
+1. A brainstorm summary in `docs/specs/YYYY-MM-DD-<onderwerp>.md` — what `/brainstorm` leaves
+   behind after the go. Was no path given, look there for the most recent file and name which
+   one you are using.
+2. An issue with an agreed approach, or a spec somewhere else in the repo.
+
+Is there none of these, then this skill is too early: run `/brainstorm` first and come back
+after the go. A decision that only exists in the chat scrollback is not an input — the plan is
+written for someone who was not there, and that includes you after a context reset.
 
 Does the spec cover several independent subsystems? Then propose one plan per subsystem. Each
 plan must produce working, testable software on its own.
+
+**Isolated workspace.** Is the work going to touch the repo you are standing in, and are you
+on `main` or in a worktree that belongs to something else? Then run `/worktree` before you
+write the plan. The execution in step 8 commits per task, and those commits need a branch of
+their own.
 
 ### 2. Map the file structure first
 
@@ -72,6 +92,11 @@ Header:
 ```markdown
 # <Onderwerp> — implementatieplan
 
+> **Uitvoering:** taak voor taak, een verse subagent per taak, één commit per taak. De stappen
+> zijn aanvinkbaar (`- [ ]`); wie dit plan oppakt hoeft de sessie waarin het geschreven is niet
+> gezien te hebben.
+
+**Bron:** <pad naar de spec of brainstorm-samenvatting waar dit plan uit volgt>
 **Doel:** <één zin: wat dit oplevert>
 **Aanpak:** <2-3 zinnen>
 **Stack:** <talen, frameworks, package manager>
@@ -175,8 +200,20 @@ Never call `gh issue create` directly; `/write-issue` owns the template and the 
 
 ### 8. Execute
 
-Execute task by task, in order, with a commit per task. Show the result after each task and
-wait before starting the next one — that check is what makes the small tasks worth their cost.
+One task at a time, in order, a commit per task. Dispatch a **fresh subagent per task**: it
+gets the plan file and the task number, nothing else — no scrollback, no memory of why a
+choice was made. That is the whole point of writing exact paths, complete code and literal
+commands: the plan gets tested by the only reader who cannot fill in the gaps from memory.
+Executing everything yourself in the session that wrote the plan hides exactly the holes step 6
+is looking for.
+
+After each task: read the diff, run the test the task names, show the result, and wait before
+starting the next one. A subagent that got stuck or improvised is a defect in the plan — repair
+the plan first, then re-dispatch.
+
+Is a task too small to be worth a subagent (one line, one file)? Then do it inline and say so.
+
+Handing the plan to a new session instead is equally valid; the file is written for that.
 
 ## Let op: het plan is voor iemand zonder context
 
@@ -194,8 +231,10 @@ task, no placeholder patterns remain, and the names in later tasks match the ear
 
 ## Important
 
-- No code before the plan is agreed. Is there no decision yet, then `brainstorm` comes first.
+- No code before the plan is agreed. Is there no decision yet, then `brainstorm` comes first,
+  and its summary in `docs/specs/` is the input here.
 - Issues only via `/write-issue`, and only after the user says yes — a plan of ten tasks is ten
   issues on a shared board.
-- This skill writes the plan and executes it. Reviewing and landing the result is `ship`, the
-  pull request is `branch-pr`.
+- This skill writes the plan and drives its execution, a fresh subagent per task. The isolated
+  workspace is `worktree`, reviewing and landing the result is `ship`, the pull request is
+  `branch-pr`.

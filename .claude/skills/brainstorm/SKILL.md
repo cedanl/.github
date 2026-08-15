@@ -1,15 +1,45 @@
 ---
 name: brainstorm
-description: Structureer een brainstorm van idee naar getoetst besluit vóór implementatie, met een beslis-samenvatting en aanbevelingen — geen code of bestanden. Wanneer iemand een idee wil uitwerken of een besluit wil voorbereiden voordat er code of een plan komt. LET OP — ná de go hoort `plan`, niet dit.
+description: Structureer een brainstorm van idee naar getoetst besluit vóór implementatie, en leg dat besluit na de go vast als document dat het plan daarna kan lezen — geen code. Wanneer iemand een idee wil uitwerken of een besluit wil voorbereiden voordat er code of een plan komt. LET OP — ná de go hoort `plan`, niet dit.
+allowed-tools: Read Write Grep Glob Bash AskUserQuestion Skill
+metadata:
+  ceda-id: ceda.brainstorm
+  ceda-version: "0.2.0"
+  ceda-type: workflow
+  ceda-subtype: ""
+  ceda-origin: extended
+  ceda-upstream: superpowers:brainstorming
+  ceda-source: https://github.com/obra/superpowers/blob/main/skills/brainstorming/SKILL.md
+  ceda-activation: command
+  ceda-binding: default
+  ceda-execution: inline
+  ceda-scope: org
+  ceda-verifies: observable
 ---
 
 # Brainstorm
 
-Structured brainstorming from an idea to a tested decision, before any implementation or plan. The output is a decision summary with recommendations — never code, files, or commits. Respond to the user in Dutch, caveman-terse.
+Structured brainstorming from an idea to a tested decision, before any implementation or plan. The output is a decision summary with recommendations — never code. Respond to the user in Dutch, caveman-terse.
+
+`ceda-origin: extended` records the maintenance link with `superpowers:brainstorming`: the
+spine is the same (hard gate, "too simple" does not exist, 2-3 approaches, present in sections,
+self-review, hand off to the plan), so an upstream change to that spine is worth reading here.
+The text is CEDA's own — written in-house, Dutch, assumptions-first with confidence levels —
+so there is no MIT attribution line, unlike `plan` and `worktree`, which are ports.
+
+What upstream carries and this skill deliberately does not: the reviewer-subagent prompt
+(upstream abandoned it themselves — their own `SKILL.md` says the self-review is inline, "not
+a subagent dispatch") and the browser-based visual companion (a bundled node server; visual
+questions belong with `ui-designer` and `vormgever-npuls-huisstijl`, and a bundled server needs
+its own `externe-skill-audit`).
 
 ## Workflow
 
 When the user invokes `/brainstorm [optioneel: onderwerp]`:
+
+Create a todo per numbered step below and work them off in order. Steps that do not
+apply — no real choice in step 4, for instance — you close with one line saying why.
+The todo list is what keeps the gate from being skipped on a topic that feels simple.
 
 ### Hard gate
 
@@ -18,6 +48,9 @@ Until an explicit go:
 - No code, no files, no commits or pushes
 - No scaffolding, no installing dependencies, no "quick POC"
 - Do not start other skills or plan mode; the only follow-up after go is planning or building what was agreed
+
+The go lifts the gate for exactly one file: the decision summary from step 7. Nothing else
+gets written, ever, by this skill.
 
 "Too simple to brainstorm" does not exist: for simple topics the summary is a few lines, but it always comes.
 
@@ -31,7 +64,13 @@ Before asserting anything, read the relevant files, docs, and recent commits. Wh
 
 ### 2. Scope check
 
-Multiple independent parts are fine.
+Does the idea cover several independent subsystems — parts that could be built, tested and
+used without each other? Say so before you ask anything else, and decompose first: name the
+parts, say how they relate, propose an order. Then brainstorm the first part through the rest
+of this workflow. Each part gets its own summary and its own `/plan`.
+
+Do not spend questions on the details of something that has to be split anyway. `plan` splits
+the same way (one plan per subsystem); deciding it here saves the round trip.
 
 ### 3. Assumptions first
 
@@ -64,21 +103,42 @@ Go? Dan [plan maken / bouwen wat hierboven staat].
 
 Wait for an explicit go. On corrections: adjust, self-review again, present again.
 
-### 8. After the go
+### 8. Write the summary down
 
-The brainstorm ends here; it does not turn into building. On an explicit go, hand over:
+Only after the go. Save the same summary — unchanged, plus a `# <onderwerp>` heading and the
+date — to `docs/specs/YYYY-MM-DD-<onderwerp>.md` and commit it.
+
+This is not bookkeeping. `plan` reads this file: it needs a decision that was already made,
+and after a context reset, a new session, or a `/worktree` in between, the chat summary is
+gone. Whatever is not in the file does not reach the plan. Say where you saved it.
+
+Does the repo have no `docs/` at all, then say so and keep the summary in the chat — do not
+create a documentation structure on your own initiative.
+
+### 9. After the go
+
+The brainstorm ends here; it does not turn into building. Hand over:
 
 | Scope of what was agreed | Next step |
 |---|---|
-| Multiple steps or multiple files | `/plan` — write the implementation plan first |
+| Multiple steps or multiple files | `/plan docs/specs/<bestand>.md` — write the implementation plan first |
 | The diff fits in one sentence | Build it directly, no plan |
 
 Say which one it is and why in one line, then start. Do not ask the user to choose between
 planning and building when the criterion above already decides it.
 
+## Verificatie
+
+`ceda-verifies: observable` — the brainstorm is done when the decision summary exists as a
+file and a reader who was not part of this conversation can tell from it what was decided,
+what is an assumption, and what the next step is. Concretely: `docs/specs/<datum>-<onderwerp>.md`
+is committed, every locked decision in the chat is in it, and it names `/plan` or the one-line
+build as the follow-up.
+
 ## Important
 
 - Building starts only after an explicit go; the only follow-up is `/plan` or building what
-  was agreed.
+  was agreed. The one file this skill writes is the summary in `docs/specs/`, and only after
+  the go.
 - All user-facing output is in Dutch; keep it terse and recommendation-first.
 - Avoid the anti-patterns: working through a checklist of questions; asking what you can read yourself; premature constraints (narrowing the solution before the problem is clear); reopening locked decisions; listing options without a recommendation; multiple follow-ups without priority (one primary suggestion, alternatives secondary).
