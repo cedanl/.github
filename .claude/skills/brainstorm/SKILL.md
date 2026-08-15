@@ -120,20 +120,23 @@ The brainstorm ends here; it does not turn into building. Two routes:
 | Multiple steps or multiple files | `/plan` on the spec — write the implementation plan first |
 | The diff fits in one sentence | Build it directly, no plan |
 
-Say which one it is and why in one line. Close with the literal command, path filled in, so
-the user can copy it or say go:
+Say which one it is and why in one line. Close with the literal command, path filled in, and
+send the user to a clean session for it:
 
 > Besluit staat in `docs/specs/2026-08-15-<onderwerp>.md`. Meerdere bestanden, dus eerst een
-> plan:
+> plan. Draai `/clear` en daarna:
 >
 > ```
 > /plan docs/specs/2026-08-15-<onderwerp>.md
 > ```
->
-> Zal ik dat draaien?
+
+Do not offer to run `/plan` yourself in this session. The plan has to be written from the file,
+by a reader without this conversation in context — that is the test of whether the summary is
+complete, and running it here skips exactly that test. The same reason the plan itself is
+executed by a fresh subagent per task.
 
 Do not ask the user to choose between planning and building when the criterion above already
-decides it — the only question is whether you start now.
+decides it.
 
 ## Verificatie
 
