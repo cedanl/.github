@@ -1,6 +1,6 @@
 ---
 name: actions-ci
-description: Author and debug GitHub Actions workflows, automated tests, and CI pipelines the CEDA way. Covers the reusable-workflow orchestration pattern, the uv + matrix test setup, security scanning (bandit/semgrep/codeql/sonarcloud), and release/publish. Use when adding or fixing a workflow, test job, or pipeline in a GitHub repo.
+description: Author and debug GitHub Actions workflows, automated tests, and CI pipelines the CEDA way. Covers the reusable-workflow orchestration pattern, the uv + matrix test setup, object-store (MinIO/S3/SURF) integration jobs, security scanning (bandit/semgrep/codeql/sonarcloud), and release/publish. Use when adding or fixing a workflow, test job, object-store CI, or pipeline in a GitHub repo.
 ---
 
 # actions-ci
@@ -50,6 +50,33 @@ use /gitlab-ci instead.
   a `services:` container; install extras with `uv sync --group dev --extra minio --extra postgres`.
 - Merge unit+integration coverage with `--cov-append` before uploading to Sonar/Codecov.
 - See /gate for reading a failing SonarCloud/CodeQL gate.
+
+## Object-store backends in CI (MinIO stand-in + real SURF)
+When a repo has a pluggable object-store backend (`STORAGE_BACKEND=minio|s3`,
+S3-compatible), CI runs the integration suite against a **MinIO container as an
+S3 stand-in** — same S3 API, no VPN, no secrets. A real-SURF job is kept
+**separate and secret-gated**, because of a hard network boundary (below).
+- **MinIO-as-S3 leaf** (e.g. `s3.yml`): `docker run` MinIO, then
+  `uv sync --group dev --extra s3 --extra minio`. The `--extra minio` is needed
+  even for the boto3/`s3` backend when `conftest.py` guards the whole integration
+  dir with a module-level `import minio` (skips the dir if absent). Point the
+  suite at it with `S3_TEST_ENDPOINT`/`S3_TEST_ACCESS_KEY`/… and path-style
+  addressing (`S3_TEST_PATH_STYLE=true`) — RADOS-Gateway/MinIO need path-style.
+- **Real-SURF leaf** (e.g. `s3-surf.yml`): a `check-secrets` job gates on a
+  `SURF_S3_*` secret being present, so it no-ops on forks and when unconfigured.
+  Trigger on `push: [main]` + `workflow_dispatch` only (secret-bearing) — not on
+  arbitrary branches, and never from fork PRs (secrets are withheld there).
+- **VPN gotcha (important):** GitHub-hosted runners have a public cloud IP and no
+  VPN, so they **cannot reach a VPN/firewall-gated store** like
+  `objectstore.surf.nl` → `EndpointConnectionError` after a long hang. Two
+  consequences: (1) give the S3 client a short `connect_timeout` + capped
+  `retries` (`max_attempts` ~2) so it fails in ~30s instead of hanging for hours;
+  (2) **document in the repo + PR that CI does not test against the real store**
+  for this reason — verify the real backend locally (from inside the VPN) instead.
+- **Least-privilege CI creds:** never a root key. Use the root/admin key once to
+  mint a non-root, S3-only IAM user + a dedicated CI bucket, store *that* user's
+  key as the secret. See /objectstore-onboarding for the account/profile setup and
+  provisioning the working profile.
 
 ## Security scanning (modern repos)
 - **bandit** (`bandit[sarif]`, `--severity-level medium`), **semgrep**, **codeql**,
