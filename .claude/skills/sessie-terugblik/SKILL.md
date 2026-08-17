@@ -5,7 +5,7 @@ allowed-tools: Read Grep Glob Write Bash
 compatibility: Requires git, python3 and the gh CLI with write access to cedanl/repo-context-as-data
 metadata:
   ceda-id: ceda.sessie-terugblik
-  ceda-version: "0.4.0"
+  ceda-version: "0.5.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -96,19 +96,17 @@ naam: <volledige naam uit git>
 commits: <eerste-sha>..<laatste-sha>
 commit-aantal: <n>
 entire-checkpoints: []
-skill-versie: "0.4.0"
+skill-versie: "0.5.0"
 <de regels uit stap 2: sessie-id, sessie-berichten, tokens-in, tokens-uit,
  tokens-cache-schrijf, tokens-cache-lees>
 ---
 ```
 
 Daaronder de secties `## Werkwijze`, `## Gebruikt`, `## Ging goed` en `## Blinde vlekken` —
-in de woorden van de deelnemer. Dan `## Wat de agent zag` met jouw eigen waarnemingen uit deze
-sessie (weglaten als je er geen hebt), en tot slot `## Acties` als checklist.
+in de woorden van de deelnemer. En tot slot `## Acties` als checklist.
 
-De regels voor die twee laatste secties staan in `references/vragenset.md`. Kern: jouw
-waarnemingen komen ná de antwoorden en staan apart, en acties komen uit wat er gezegd is plus
-wat van jouw waarnemingen is blijven staan — nooit uit wat jij er zelf bij bedenkt.
+De regels voor `## Acties` staan in `references/vragenset.md`. Kern: acties komen uit wat er
+gezegd is, nooit uit wat jij er zelf bij bedenkt.
 
 Wil de deelnemer acties toewijzen aan iemand, verwijs dan naar `write-issue`; deze skill maakt
 geen issues aan.
@@ -154,10 +152,10 @@ zijn. Nooit benaderen, nooit "ongeveer deze periode". Een verkeerde SHA is erger
 Wat deze skill **niet** doet: de sessie machinaal reconstrueren. Geen transcript-analyse, geen
 samenvatting van tool-gebruik, geen tokens-per-stap. Die laag hoort bij de checkpoint-tooling.
 
-Wat wél mag is `## Wat de agent zag`: een handvol waarnemingen die je kunt aanwijzen — een
-skill die niet vuurde terwijl die had gepast, een correctie die nodig was, een omweg. Dat is
-geen reconstructie maar een aanvulling, en hij staat apart van de antwoorden zodat het verschil
-zichtbaar blijft. De regels staan in `references/vragenset.md`.
+Die machinale laag hoort nu bij `ceda-reflect`: correcties, toolfouten en afgewezen tool-calls
+landen als `agent-observaties-*.md` in dezelfde data-repo, met dezelfde frontmatter-sleutels.
+Beide bestanden wijzen naar dezelfde commits, dus ze zijn achteraf samen te brengen. Zie
+`cedanl/ceda-skills-library`, `plugins/ceda-reflect/`.
 
 ## Let op: het tokengetal dekt één sessie, niet één werkdag
 
