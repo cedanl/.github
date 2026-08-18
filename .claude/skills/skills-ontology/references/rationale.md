@@ -159,6 +159,7 @@ stilletjes veel context binnen).
 
 Intern: `cedanl/ceda-workshop-starter` (KPI-blokken per skill, hooks voor afdwinging,
 subagents voor review — bron van de binding-splitsing en de execution-as),
-`docs/skill-gaps.md` (gap-analyse van de collectie tegen dit model),
+`cedanl/.github#59` en `#60` (de gap-analyse van de collectie tegen dit model, verhuisd van
+`docs/skill-gaps.md` naar issues),
 `cedanl/.github#49` (openstaande stappen), `cedanl/project_algemeen#41` (kennisarchitectuur,
 zelfde bronze/gold-patroon op grotere schaal).

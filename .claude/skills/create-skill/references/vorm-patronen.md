@@ -8,6 +8,48 @@ moet er doorheen lezen en vindt niets.
 Elk patroon verwijst naar een skill in de collectie die het al goed doet. Lees die als
 voorbeeld in plaats van het patroon na te bouwen uit deze beschrijving.
 
+## Eerst: welke vorm hoort bij welk soort falen
+
+Voor je een patroon kiest, benoem wat er misgaat als de skill er niet is. De vorm die het ene
+soort falen dichttimmert, maakt het andere aantoonbaar erger.
+
+| Wat de agent zonder skill doet | Vorm die werkt | Vorm die averechts werkt |
+|---|---|---|
+| kent de regel en slaat 'm over onder druk | verbod, plus een tabel met de smoezen en het antwoord erop | zachte sturing ("overweeg", "bij voorkeur") |
+| doet het wel, maar de output heeft de verkeerde vorm | recept: benoem waar de output **uit bestaat**, in volgorde | verbodenlijst ("niet samenvatten", "geen inleiding") |
+| laat een verplicht onderdeel weg uit iets dat hij toch al maakt | structureel: een verplicht veld of slot in de template | een herinnering in proza bij de template |
+| moet zich anders gedragen afhankelijk van de situatie | conditie op iets waarneembaars ("staat er een `SKILL.md` in de diff, dan…") | één regel met uitzonderingsclausules |
+
+Waarom een verbod averechts werkt bij een vormprobleem: onder een concurrerende prikkel gaat
+een model onderhandelen met "doe X niet". Een recept laat niets te onderhandelen over — de
+output heeft de beschreven vorm of niet. Twee vervolgregels, ongeacht welke vorm je kiest:
+
+- **Geen nuanceclausule.** "Doe X niet, tenzij het uitmaakt" heropent de onderhandeling.
+  Is er een echte uitzondering, schrijf die dan als eigen conditie op een waarneembaar signaal.
+- **Uitzonderingen begrenzen niet.** "Deze limiet geldt niet voor codeblokken" onderdrukt de
+  codeblokken alsnog. Moet een deel van de output erbuiten vallen, herstructureer dan zo dat
+  de regel er niet bij kan.
+
+Herkomst: `superpowers:writing-skills`, de upstream van deze skill. Daar staat het als uitkomst
+van één head-to-head vergelijking, niet als wet — behandel het zo.
+
+## Toets je formulering vóór je 'm uitrolt — met een control
+
+Wil je weten of een formulering iets doet, dan is er één ding dat je niet mag overslaan: een
+run **zonder** de guidance.
+
+> Vertoont de control het probleem niet, dan is er niets te repareren. Schrijf de guidance
+> dan niet.
+
+Dat is de goedkoopste rem op skill-inflatie die er is, en het is precies de fout die anders
+gemaakt wordt: je schrijft op wat jij denkt dat er misgaat in plaats van wat er misgaat.
+
+Hoe: vijf of meer losse runs per variant met een verse context, de skill als systeemprompt en
+een taak die tot het falen verleidt. Lees elke treffer met de hand na — geciteerde
+tegenvoorbeelden en echo's van de template tellen automatisch mee als je alleen telt. En
+behandel spreiding als uitkomst: vijf runs die vijf kanten op gaan betekent dat de formulering
+niet bindt, en dan help je jezelf niet met méér woorden maar met een strakkere vorm.
+
 ## Kopjes die het feit noemen
 
 **Toelatingsvraag:** is er één specifiek feit dat de lezer moet vinden terwijl hij iets
