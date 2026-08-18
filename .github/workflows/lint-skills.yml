@@ -1,0 +1,22 @@
+name: Lint skills
+
+on:
+  pull_request:
+    paths:
+      - ".claude/skills/**"
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-skills:
+    name: Validate CEDA skills
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run skill linter
+        run: python3 .claude/skills/create-skill/scripts/validate-skill.py .claude/skills
