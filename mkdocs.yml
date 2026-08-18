@@ -38,6 +38,7 @@ nav:
     - Devcontainer: werkafspraken/devcontainer.md
     - Presentaties: werkafspraken/presentaties.md
     - Pitches: werkafspraken/pitches.md
+    - Gebruikersrechten: werkafspraken/gebruikersrechten.md
   - Guides:
     - Azure AI modellen: guides/azure-ai.md
 

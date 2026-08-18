@@ -11,6 +11,7 @@ Doelgroep is het CEDA-kernteam.
 | [Devcontainer](https://github.com/cedanl/.github/blob/main/werkafspraken/devcontainer.md) | Verplicht | [@Tomeriko96](https://github.com/Tomeriko96) |
 | [Presentaties](https://github.com/cedanl/.github/blob/main/werkafspraken/presentaties.md) | Verplicht | [@EdwinLieftink](https://github.com/EdwinLieftink) |
 | [Pitches](https://github.com/cedanl/.github/blob/main/werkafspraken/pitches.md) | Verplicht | [@CorneeldH](https://github.com/CorneeldH) |
+| [Gebruikersrechten](https://github.com/cedanl/.github/blob/main/werkafspraken/gebruikersrechten.md) | Verplicht | [@Tomeriko96](https://github.com/Tomeriko96) |
 
 ## Niveaus
 
