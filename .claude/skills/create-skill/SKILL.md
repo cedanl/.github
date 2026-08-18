@@ -1,6 +1,6 @@
 ---
 name: create-skill
-description: Bouwt een nieuwe CEDA Claude skill volgens de skills-ontologie — zoekt eerst of er een generieke skill bestaat, toetst waar de inhoud vandaan komt, classificeert type/origin/scope, schrijft spec-conforme frontmatter en valideert het resultaat machinaal. Gebruik wanneer iemand een nieuwe /skill wil aanmaken voor cedanl, een bestaand proces wil codificeren als skill, een skill wil herzien of migreren naar het frontmatter-schema, of vraagt hoe je een skill bouwt. LET OP — gaat het om het classificeren of begrijpen van een bestaande skill zonder er een te schrijven, gebruik dan `skills-ontology`; gaat het alleen om het openen van de PR, gebruik dan `branch-pr`.
+description: Bouwt een nieuwe CEDA Claude skill — zoekt eerst of er al een generieke bestaat, toetst de herkomst, classificeert en valideert. Gebruik wanneer iemand een skill wil aanmaken voor cedanl, een proces wil codificeren als skill, of een bestaande wil herzien. LET OP — alleen classificeren zonder te schrijven hoort bij `skills-ontology`; alleen de PR openen bij `branch-pr`.
 allowed-tools: Read Write Edit Grep Glob Bash AskUserQuestion Skill
 compatibility: Requires python3, git and the gh CLI; npx and the claude CLI for the search step
 metadata:
@@ -190,8 +190,13 @@ elkaar, dan laten staan.
 Lees `references/description-schrijven.md`.
 
 De description is het enige veld dat activeert. Schrijf 'm in de derde persoon, met de
-letterlijke triggerwoorden uit vraag 3, een exclusion-clause uit vraag 4, en binnen ~1024
-tekens.
+letterlijke triggerwoorden uit vraag 3 en een exclusion-clause uit vraag 4.
+
+De lengte hangt aan `ceda-activation`, niet aan het spec-plafond: bij `command` of `chained`
+≤400 tekens — die skill wordt aangeroepen, dus de description is een herkenningsteken. Bij
+`ambient` mag het volle budget van 1024. Mechaniek hoort er nooit in: paden, repo- en
+bestandsnamen, vlaggen, het interne schema. Toets: verandert het zonder dat de trigger
+verandert, dan staat het in de body.
 
 **Taal: volg de gebruiker, vertaal niet uit principe.** Schrijf de description in de taal
 waarin de triggers gesteld zijn. Twee varianten neem je alleen op als het team het onderwerp
@@ -254,6 +259,24 @@ python3 .claude/skills/create-skill/scripts/validate-skill.py .claude/skills
 
 Bestaande skills die nog geen CEDA-metadata dragen komen langs als `LEGACY` — dat is verwacht
 en niet jouw probleem in deze PR.
+
+## Let op: het totale aantal overlap-waarschuwingen is geen maat
+
+De overlapcheck gooit eerst woorden weg die in meer dan `int(0.12 × aantal skills)`
+descriptions voorkomen, want die dragen geen triggersignaal. Die drempel is dus
+corpusafhankelijk: bij 56 skills is het `>6`, bij 59 skills `>7`. Eén skill toevoegen kan de
+drempel laten verspringen, waarna woorden die eerst wegvielen weer meetellen en er
+waarschuwingen bijkomen tussen paren waar jij niets mee te maken hebt.
+
+Gemeten: 56 skills gaf 61 waarschuwingen, dezelfde collectie plus drie nieuwe skills gaf er 86
+— en geen van die 25 noemde een van de nieuwe skills.
+
+Vergelijk daarom **niet** de totalen. Kijk of jouw skillnaam voorkomt in een waarschuwing:
+
+```bash
+python3 .claude/skills/create-skill/scripts/validate-skill.py .claude/skills \
+  | awk '/^(OK|LEGACY|FOUT|WAARSCHUWING)/{cur=$2} /overlappende/{if($0 ~ /<naam>/) print cur": "$0}'
+```
 
 ### 9. Toon de draft en wacht op akkoord
 
@@ -322,8 +345,12 @@ leest de body.
 python3 .claude/skills/create-skill/scripts/validate-skill.py .claude/skills/<naam>
 ```
 
-exit code 0 geeft, en de collectie-brede run geen nieuwe overlap-waarschuwing oplevert die er
-voor deze PR niet was.
+exit code 0 geeft, en de collectie-brede run geen nieuwe overlap-waarschuwing oplevert **waarin
+de nieuwe skill genoemd wordt**.
+
+Die laatste formulering is precies bedoeld. Zie de gotcha hieronder: het totale aantal
+waarschuwingen verschuift ook als jouw skill nergens bij betrokken is, dus "minder
+waarschuwingen dan eerst" is geen bruikbare drempel.
 
 ## Gebundelde bestanden
 
@@ -343,6 +370,6 @@ voor deze PR niet was.
   `scope: project` schrijf je in de projectrepo zelf.
 - Genereer nooit een skill die automatisch deployt, publiceert of force-pusht zonder
   expliciete bevestigingsstap in de gegenereerde skill.
-- Deze skill maakt en herziet skills. Voor het *beoordelen* van een skill-PR van iemand
-  anders, het opruimen van duplicaten of het auditen van een externe skill bestaan nog geen
-  workflows — zie `docs/skill-gaps.md`, Gap 6.
+- Deze skill maakt en herziet skills. Voor het *beoordelen* van een skill-PR van iemand anders
+  is er `review-skill`, voor het opruimen van duplicaten `dedup-skills`, en voor het nalopen
+  van een overgenomen skill de reference `externe-skill-audit`.

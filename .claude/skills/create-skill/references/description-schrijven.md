@@ -5,7 +5,32 @@ van álle skills tegelijk. De rest van de skill bestaat op dat moment nog niet. 
 deze skill relevant" wordt volledig op deze ene regel gemaakt. Een uitstekende skill met een
 vage description vuurt nooit.
 
-Budget: 1024 tekens, hard begrensd door de spec.
+Budget: 1024 tekens, hard begrensd door de spec — maar dat is een plafond, geen streefwaarde.
+
+## Hoeveel triggeroppervlak heb je nodig? Kijk naar `ceda-activation`
+
+| Activation | Wat de description moet doen | Richtlijn |
+|---|---|---|
+| `ambient` | vuren op iets wat niemand aankondigt: een geplakte foutmelding, een bestand dat iemand opent | het volle budget als het nodig is |
+| `command`, `chained` | herkend worden als iemand `/naam` typt of de projectinstructies ernaar verwijzen | ≤400 tekens |
+
+Bij `ambient` is onder-triggeren het grootste risico; formuleer daar bij twijfel iets te
+opdringerig. Bij een aangeroepen skill werkt dat averechts: de activatie is al geregeld, en
+elk extra woord concurreert alleen nog met de descriptions van álle andere skills.
+
+De validator waarschuwt boven de 400 tekens bij `command` of `chained`.
+
+## Wat er niet in hoort
+
+Mechaniek. Concreet: bestemmingen en paden (`data/<datum>/<repo>/`), repo- en bestandsnamen,
+tool- en stapnamen, vlaggen, bestandsformaten, het interne schema.
+
+De toets: **verandert dit zonder dat de trigger verandert, dan hoort het in de body.** Verhuist
+de output morgen naar een andere repo, dan is dat geen reden om de description aan te raken —
+staat het pad erin, dan is het dat wel, en betaal je die regel intussen in élke sessie.
+
+De validator waarschuwt op paden, bestandsnamen, `--vlaggen` en `<placeholders>` in de
+description.
 
 ## Vier eisen
 
@@ -23,8 +48,8 @@ Budget: 1024 tekens, hard begrensd door de spec.
    budget en vuurt nergens op.
 4. **Niet tijdsgebonden.** Geen "de nieuwe manier om…" — dat veroudert stil.
 
-Bij twijfel: iets te opdringerig formuleren. Onder-triggeren is in de praktijk vaker het
-probleem, en een skill die te vaak afgaat merk je meteen.
+Bij twijfel — en alleen bij `ambient` — iets te opdringerig formuleren. Onder-triggeren is
+daar in de praktijk vaker het probleem, en een skill die te vaak afgaat merk je meteen.
 
 ## De exclusion-clause heeft twee vormen
 
@@ -49,6 +74,14 @@ runners. Alle drie kloppen ze niet buiten SDP. Wat er hoort te staan:
 
 Vuistregel: kan iemand met een *vergelijkbaar maar ander* systeem deze skill per ongeluk
 binnenhalen? Dan hoort vorm (b) erin, met de aannames die dan wegvallen.
+
+**De validator toetst deze twee vormen, en alleen deze twee.** Vorm (a) telt pas als de clause
+de andere skill daadwerkelijk *noemt* — in backticks of als `skill <naam>`. "Gebruik dan deze
+skill" wijst naar zichzelf en verbreedt de trigger in plaats van hem te begrenzen; dat is geen
+clause. Vorm (b) telt pas met een scope erachter: `niet voor X`, niet een kale "niet
+gebruiken". Reden: met losse trefwoorden matchte de check ook op "buiten**wereld**" en op
+"fill in the template **instead** of leaving it blank", en verzweeg hij daardoor het enige
+paar in de collectie met een byte-identieke description.
 
 ## Vorm
 
