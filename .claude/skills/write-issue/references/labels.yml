@@ -110,9 +110,9 @@
   color: "D93F0B"
   description: "Inhoud: instroom en instroomprognose"
 
-- name: uitval
+- name: studiesucces
   color: "D93F0B"
-  description: "Inhoud: uitval, vsv en studiesucces"
+  description: "Inhoud: studiesucces, uitval en vsv"
 
 - name: arbeidsmarkt
   color: "D93F0B"
