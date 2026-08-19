@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/labels.yml'
+      - '.claude/skills/write-issue/references/labels.yml'
   workflow_dispatch:
   schedule:
     # Wekelijks op maandag om 6:00 UTC
@@ -24,8 +24,8 @@ jobs:
           # Get all repos in cedanl org
           repos=$(gh repo list cedanl --json name --jq '.[].name')
 
-          # Read labels from labels.yml as JSON array
-          labels=$(yq eval -o=json '.' .github/labels.yml)
+          # Read labels from the skill's reference as JSON array
+          labels=$(yq eval -o=json '.' .claude/skills/write-issue/references/labels.yml)
 
           for repo in $repos; do
             echo "Syncing labels to cedanl/$repo..."

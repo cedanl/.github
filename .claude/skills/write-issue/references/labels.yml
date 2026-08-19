@@ -1,0 +1,128 @@
+# CEDA Labels — de machine-bron van namen, kleuren en beschrijvingen.
+#
+# BRON VAN WAARHEID: dit bestand in cedanl/.github. Alleen daar draait
+# .github/workflows/sync-labels.yml, die de set wekelijks naar alle cedanl-repos
+# duwt (create/update; verwijdert nooit). Kom je dit bestand tegen in een andere
+# repo, dan is dat een kopie van `npx skills add` en doet het niets — bewerk het
+# origineel.
+#
+# De indeling, de condities per categorie en de regels voor uitbreiden staan in
+# labels.md, hiernaast. Eén kleur per categorie.
+#
+# Priority en Iteration zijn GEEN labels: dat zijn velden op het CEDA Board.
+
+# --- soort — welk type werk is dit (blauw) --------------------------------
+- name: intern
+  color: "1D4ED8"
+  description: "Soort: intern werk aan de eigen organisatie en werkwijze"
+
+- name: impact
+  color: "1D4ED8"
+  description: "Soort: werk dat bij instellingen of in de sector landt"
+
+- name: tech
+  color: "1D4ED8"
+  description: "Soort: technische verbetering aan platform, tooling of code"
+
+- name: core
+  color: "1D4ED8"
+  description: "Soort: werk aan de eigen data-, model- of analysepraktijk"
+
+# --- intern — alleen bij soort intern (groen) -----------------------------
+- name: project
+  color: "0E8A16"
+  description: "Intern: projectorganisatie, planning, rapportage"
+
+- name: skills
+  color: "0E8A16"
+  description: "Intern: Claude skills, prompts en agentwerk"
+
+- name: way-of-working
+  color: "0E8A16"
+  description: "Intern: werkwijze, conventies, samenwerking"
+
+# --- tech — alleen bij soort tech (paars) ---------------------------------
+- name: gui
+  color: "5319E7"
+  description: "Tech: interface, app of dashboard"
+
+- name: sdp
+  color: "5319E7"
+  description: "Tech: SURF Developer Platform, deployment, CI/CD"
+
+- name: object-store
+  color: "5319E7"
+  description: "Tech: SURF Object Store en dataopslag"
+
+- name: research-cloud
+  color: "5319E7"
+  description: "Tech: SURF Research Cloud"
+
+# --- impact — alleen bij soort impact (magenta) --------------------------
+- name: bijeenkomst
+  color: "BF3989"
+  description: "Impact: regiobijeenkomst, workshop, sessie met instellingen"
+
+- name: presentatie
+  color: "BF3989"
+  description: "Impact: slides, keynote, demo voor een publiek"
+
+- name: publicatie
+  color: "BF3989"
+  description: "Impact: blog, artikel, rapport of update naar buiten"
+
+- name: adoptie
+  color: "BF3989"
+  description: "Impact: uitrol, ambassadeurs en gebruik bij instellingen"
+
+# --- werk — alleen bij soort core (turquoise) -----------------------------
+- name: data
+  color: "0FA3A3"
+  description: "Werk: databronnen, pipelines, datakwaliteit"
+
+- name: ml
+  color: "0FA3A3"
+  description: "Werk: modellen, voorspellen, evaluatie"
+
+- name: governance
+  color: "0FA3A3"
+  description: "Werk: privacy, AVG, security, fairness, beheer"
+
+- name: visuals
+  color: "0FA3A3"
+  description: "Werk: visualisatie, rapportage, presentatie"
+
+- name: chat
+  color: "0FA3A3"
+  description: "Werk: LLM-toepassingen, chat, agents op onderwijsdata"
+
+# --- aspect — dwars door alles heen, bij elk soort (grijs) ----------------
+- name: docs
+  color: "6E7781"
+  description: "Aspect: documentatie van wat we bouwen, voor wie het gebruikt"
+
+- name: ux
+  color: "6E7781"
+  description: "Aspect: interactie, flow, formulering en vormgeving voor de gebruiker"
+
+# --- inhoud — optioneel, meestal bij impact of core (oranje) --------------
+- name: instroom
+  color: "D93F0B"
+  description: "Inhoud: instroom en instroomprognose"
+
+- name: uitval
+  color: "D93F0B"
+  description: "Inhoud: uitval, vsv en studiesucces"
+
+- name: arbeidsmarkt
+  color: "D93F0B"
+  description: "Inhoud: aansluiting onderwijs-arbeidsmarkt"
+
+- name: flexibilisering
+  color: "D93F0B"
+  description: "Inhoud: flexibilisering en leven lang ontwikkelen"
+
+# --- status (geel) --------------------------------------------------------
+- name: needs-shaping
+  color: "FBCA04"
+  description: "Status: pitch die nog gevormd moet worden"

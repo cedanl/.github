@@ -1,42 +1,170 @@
 ---
 name: write-issue
-description: Writing and maintaining GitHub issues and pull requests for cedanl repositories. Use when creating new issues, editing issue titles/bodies, creating PRs, or cleaning up issue metadata.
+description: Maakt en onderhoudt GitHub issues in cedanl-repos via een interview — vraagt de gebruiker per templateveld om de inhoud en vult zelf niets in. Gebruik bij "maak een issue", "schrijf hier een issue van", een bug, task of pitch opvoeren, of het bijwerken van een titel, body of labels. LET OP — gaat het om een pull request, gebruik dan `branch-pr`; om code- of stijlcontrole vooraf, `check-style`.
+allowed-tools: Read Grep Glob Bash AskUserQuestion
+compatibility: Requires the gh CLI, authenticated with access to the cedanl org and its projects
+metadata:
+  ceda-id: ceda.write-issue
+  ceda-version: "2.0.0"
+  ceda-type: workflow
+  ceda-subtype: ""
+  ceda-origin: own
+  ceda-upstream: ""
+  ceda-source: .github/ISSUE_TEMPLATE/
+  ceda-activation: command
+  ceda-binding: default
+  ceda-execution: inline
+  ceda-scope: org
+  ceda-verifies: observable
 ---
 
-# Writing and maintaining GitHub issues and PRs
+# Issues schrijven voor cedanl
 
-Standards for issues and pull requests in cedanl repositories.
+Maakt een issue in een cedanl-repo op basis van wat de gebruiker zégt — niet op basis van wat
+jij erbij bedenkt. De skill doet het interview, de vorm en het `gh`-werk; de inhoud komt van
+de gebruiker.
+
+## De regel: de gebruiker levert de inhoud, jij levert de vorm
+
+Elke zin in de body heeft precies één van deze drie herkomsten:
+
+| Herkomst | Voorbeeld |
+|---|---|
+| Letterlijk wat de gebruiker in dit gesprek zei | zijn beschrijving, zijn acceptatiecriterium |
+| Een suggestie die hij in dit gesprek heeft aangewezen | jij bood drie criteria aan, hij koos er twee |
+| Een verwijzing die je zelf hebt gezien en die hij goedkeurde | `#42`, `src/app.py:88`, een commit-sha |
+
+Wat geen van drieën is, komt niet in de body. Een lege sectie is beter dan een ingevulde
+sectie die de gebruiker niet herkent: hij moet zijn eigen issue over een week nog herkennen,
+en een verzonnen reproductiestap kost een collega een middag.
+
+Wat dat concreet betekent:
+
+- **Optioneel templateveld zonder antwoord → laat het weg.** Niet "n.v.t.", niet een aanname,
+  niet een alinea die de leegte opvult.
+- **Verplicht veld zonder antwoord → vraag opnieuw.** Maak de issue niet aan zolang het
+  ontbreekt.
+- **"Vul maar aan met context uit de code" is geen vrijbrief.** Zoek, toon wat je vond met pad
+  en regelnummer, en vraag of het erin mag. Nooit stilzwijgend samenvatten.
+- **Suggesties zijn kort en meervoudig.** Bied er twee tot vier als bullets aan, zodat kiezen
+  goedkoper is dan corrigeren. Een suggestie staat pas in de body nadat hij hem heeft
+  aangewezen.
+- **Schrijf niets mooier dan het gezegd is.** Zijn zin van één regel blijft één regel.
+
+Zo ziet het verschil eruit:
+
+> **Gebruiker:** "de streamlit-app crasht als je een leeg bestand upload."
+>
+> **Wel:** Beschrijving = die zin. Reproductiestappen = daar vraag je naar.
+>
+> **Niet:** drie verzonnen reproductiestappen, een alinea "verwacht gedrag", een
+> omgevingstabel, of een acceptatiecriterium over foutafhandeling dat hij nooit noemde.
 
 ## Workflow
 
-When the user invokes `/write-issue [description]`:
+When the user invokes `/write-issue [beschrijving]`:
 
-### 1. Bepaal issue type op basis van input
+### 1. Repo en type
 
-| Input bevat | Type |
-|-------------|------|
-| Bug, fout, broken, kapot, error | Bug |
-| Groot werk, meerdere dagen, architectuur, evaluatie | Pitch |
-| Al het andere | Task |
+Doelrepo: die van de huidige werkmap. Werkt de gebruiker aan iets anders, vraag het — raad
+het niet uit de tekst.
 
-### 2. Formateer de issue body
+Stel het type voor op basis van zijn woorden en laat het bevestigen via een keuzemenu
+(`AskUserQuestion`). Voorstellen mag, kiezen doet de gebruiker.
 
-Gebruik het juiste template (zie secties hieronder). Neem de input van de user als basis en vul aan met context uit de codebase waar nodig.
+| Type | Waarvoor | Issue type-ID (cedanl, org-breed) |
+|---|---|---|
+| Bug | Er gaat iets kapot dat zou moeten werken | `IT_kwDOCDg-4s4BLrPI` |
+| Task | Taak, item of werkeenheid | `IT_kwDOCDg-4s4BLrPF` |
+| Pitch | Shape Up-pitch voor groter werk dat afstemming vraagt | `IT_kwDOCDg-4s4BLrPK` |
 
-### 3. Bepaal labels
+Werkt een ID niet meer, haal ze dan opnieuw op:
 
-Kies labels op basis van inhoud uit de beschikbare domein- en statuslabels hieronder.
+```bash
+gh api graphql -f query='{ repository(owner: "cedanl", name: "<repo>") { issueTypes(first: 10) { nodes { id name } } } }'
+```
 
-### 4. Valideer GitHub handles
+### 2. Lees de templates van de doelrepo
 
-Wanneer `@username` in de body voorkomt:
+```bash
+ls .github/ISSUE_TEMPLATE/
+cat .github/ISSUE_TEMPLATE/<type>.yml
+```
 
-1. Haal org-leden op: `gh api orgs/cedanl/members --jq '.[].login'`
-2. Controleer of elke `@username` voorkomt in de ledenlijst (case-insensitive)
-3. Als een handle niet gevonden wordt: waarschuw de user en toon beschikbare leden als suggesties
-4. Als de user geen specifieke persoon noemt bij "Gevalideerd met" of "Sparring partner": toon de beschikbare org-leden zodat de user kan kiezen
+De velden in dat bestand zijn de waarheid — inclusief welke `required: true` zijn. Wijkt de
+repo af van wat je hier verwacht, dan volg je de repo. Ontbreken de templates, val dan terug
+op de vaste velden onderaan deze skill.
 
-### 5. Maak de issue aan via gh
+### 3. Interview — één veld tegelijk
+
+Loop de templatevelden af in de volgorde van het bestand. Per veld één vraag in de chat, met
+het `label` van het veld en de `placeholder` als voorbeeld. Wacht op antwoord voor je de
+volgende stelt.
+
+- Meerdere vragen in één bericht levert antwoord op de eerste en stilte op de rest. Doe het niet.
+- Zegt de gebruiker "sla over": optioneel veld valt weg, verplicht veld vraag je één keer
+  opnieuw — blijft het leeg, dan maak je de issue niet aan en zeg je dat.
+- Vrije tekst vraag je in de chat. Keuzes met een vaste set (type, appetite, labels, handles)
+  vraag je via `AskUserQuestion`.
+- Gaf de gebruiker bij het aanroepen al een beschrijving mee, gebruik die dan als antwoord op
+  het eerste veld en zeg dat je 'm daar hebt neergezet — herhaal de vraag niet.
+
+### 4. Labels — leg de indeling voor
+
+Lees `references/labels.md`. Vraag de labels in de volgorde van de indeling, met
+`AskUserQuestion` en steeds "geen" als geldige optie:
+
+1. **soort** — `intern` · `impact` · `tech` · `core`
+2. de tweede categorie die daaruit volgt: `intern` → intern-labels, `impact` → impact-labels,
+   `tech` → tech-labels, `core` → werk-labels
+3. **aspect** — `docs` · `ux`, optioneel en los van de soort
+4. **inhoud** — optioneel, meestal bij `impact` of `core`
+5. **status** — alleen als het van toepassing is (`needs-shaping` bij een ongevormde pitch)
+
+Alles is optioneel, ook de soort: de indeling maakt kiezen makkelijker, ze is geen
+invulplicht. Toon per categorie de waarden die er echt zijn:
+
+```bash
+gh label list --repo cedanl/<repo>
+```
+
+Wil de gebruiker een label dat niet bestaat, verzin het niet ter plekke: vraag onder welke
+categorie het hoort, en noem de route uit `references/labels.md` — toevoegen aan
+`references/labels.yml` met de kleur van die categorie. Een los label buiten de indeling maakt de
+kleur betekenisloos.
+
+### 5. Boardvelden — optioneel, en alleen op verzoek
+
+Priority en Iteration zijn velden op het CEDA Board, geen labels. Vraag ze één keer, met
+"laat leeg" als eerste optie. Vul ze nooit zelf in: een prioriteit die de gebruiker niet
+koos, stuurt andermans planning.
+
+| Veld | Field-ID | Opties |
+|---|---|---|
+| Priority | `PVTSSF_lADOCDg-4s4BOMC2zhBPZ0s` | High · Medium · Low |
+| Iteration | `PVTIF_lADOCDg-4s4BOMC2zg8-YWo` | wisselt — altijd opvragen |
+
+```bash
+gh api graphql -f query='{ organization(login:"cedanl"){ projectV2(number:2){ id
+  fields(first:30){ nodes{
+    ... on ProjectV2SingleSelectField { id name options { id name } }
+    ... on ProjectV2IterationField { id name configuration { iterations { id title } } } } } } }'
+```
+
+Vereist project-scope: `gh auth refresh -s project`. Lukt dat niet, meld het en laat de velden
+leeg — dat blokkeert het aanmaken niet.
+
+### 6. Toon de volledige body en wacht op akkoord
+
+Verplicht, ook bij een issue van drie regels. Toon titel, type, labels, boardvelden en de body
+letterlijk zoals die aangemaakt wordt, en benoem apart welke regels uit een suggestie van jou
+komen.
+
+> Klopt dit? Zeg wat je wil aanpassen, of geef akkoord om aan te maken.
+
+Geen akkoord, geen `gh issue create`.
+
+### 7. Maak de issue aan en zet type en boardvelden
 
 ```bash
 gh issue create \
@@ -50,191 +178,93 @@ EOF
 )"
 ```
 
-### 6. Zet issue type via GraphQL
+Zet daarna het type met het ID uit stap 1:
 
-`gh issue create` ondersteunt (nog) geen `--type` flag. Zet het issue type na aanmaken:
-
-1. Haal het issue node ID op:
 ```bash
-gh api graphql -f query='{ repository(owner: "cedanl", name: "<repo>") { issue(number: <nr>) { id } } }'
-```
-
-2. Haal het juiste issue type ID op:
-```bash
-gh api graphql -f query='{ repository(owner: "cedanl", name: "<repo>") { issueTypes(first: 10) { nodes { id name } } } }'
-```
-
-Issue type IDs voor cedanl repos (organisatie-breed):
-| Type | ID |
-|------|-----|
-| Task | `IT_kwDOCDg-4s4BLrPF` |
-| Bug | `IT_kwDOCDg-4s4BLrPI` |
-| Pitch | `IT_kwDOCDg-4s4BLrPK` |
-
-3. Zet het type:
-```bash
+gh api graphql -f query='{ repository(owner: "cedanl", name: "<repo>") { issue(number: <nr>) { id projectItems(first: 5) { nodes { id } } } } }'
 gh api graphql -f query='mutation { updateIssue(input: { id: "<issue_node_id>", issueTypeId: "<type_id>" }) { issue { title issueType { name } } } }'
 ```
 
-### 7. Rapporteer het resultaat
+Koos de gebruiker in stap 5 een Priority of Iteration, zet die op het project-item:
 
-Toon de issue URL die `gh issue create` teruggeeft, en bevestig dat type en project zijn gezet.
-
-## Issue Types
-
-| Type | Use for |
-|------|---------|
-| Bug | Rapporteer een bug of probleem |
-| Task | Taak, item of werk unit |
-| Pitch | Shape Up pitch voor een groter stuk werk |
-
-## Issue Templates
-
-### Bug
-
-Simpel template voor bug reports.
-
-```markdown
-### Beschrijving
-
-**Wat gaat er mis?**
-...
-
-**Stappen om te reproduceren:**
-1. ...
-
-**Screenshots / Logs (optioneel):**
-...
+```bash
+gh api graphql -f query='mutation { updateProjectV2ItemFieldValue(input: {
+  projectId: "PVT_kwDOCDg-4s4BOMC2", itemId: "<project_item_id>",
+  fieldId: "<field_id>", value: { singleSelectOptionId: "<option_id>" } }) { projectV2Item { id } } }'
 ```
 
-### Task
+Voor Iteration is de waarde `{ iterationId: "<iteration_id>" }`.
 
-Voor taken en werk items.
+### 8. Rapporteer
 
-```markdown
-### Beschrijving
+De issue-URL, plus welke labels, welk type en welke boardvelden gezet zijn.
 
-Wat moet er gedaan worden?
+## Een bestaande issue bijwerken
 
-### Acceptatiecriteria
+Dezelfde regel, en één toevoeging: raak alleen de velden aan die de gebruiker noemt. Haal de
+huidige body op (`gh issue view <nr> --repo cedanl/<repo> --json title,body,labels`), toon oud
+naast nieuw, wacht op akkoord, en pas dan `gh issue edit`. Het en passant "beter maken" van
+tekst waar hij niet om vroeg is precies het probleem dat deze skill oplost.
 
-- [ ] ...
-- [ ] ...
+## Let op: `gh issue create` slaat de issue-templates over
+
+De templates in `.github/ISSUE_TEMPLATE/` dragen zelf al `type:` en `projects: cedanl/2`, maar
+alleen de web-UI leest ze. Via `gh` krijg je een blanco issue. Daarom neem je de velden in
+stap 2 zelf over, geef je `--project "CEDA Board"` mee, en zet je het type in stap 7.
+
+## Titels
+
+Specifiek en beschrijvend, zinskapitaal, geen prefix als `[FEATURE]` — daar zijn labels voor.
+
+| Goed | Slecht |
+|---|---|
+| `Add export functionality for enrollment data` | `Bug` |
+| `Data pipeline fails when processing empty CSV files` | `Fix thing` |
+| `Verbeter dagstart workflow met GitHub integratie` | `NEW FEATURE` |
+
+## Velden per type, als de repo geen templates heeft
+
+- **Bug** — Beschrijving (verplicht): wat gaat er mis, stappen om te reproduceren, optioneel
+  screenshots/logs.
+- **Task** — Beschrijving (verplicht), Acceptatiecriteria (optioneel, checkboxes).
+- **Pitch** — Problem / Opportunity (verplicht), Appetite: Small (1-2 dagen) | Medium (3-4
+  dagen) | Large (5-6 dagen) (verplicht), Solution, Risks / Rabbit holes, No-Gos, Gevalideerd
+  met, Sparring partner (alle vijf optioneel).
+
+Bij "Gevalideerd met" en "Sparring partner" vul je nooit zelf iemand in. Handles toets je
+tegen de echte ledenlijst:
+
+```bash
+gh api orgs/cedanl/members --jq '.[].login'
 ```
 
-### Pitch (Shape Up)
+## Verificatie
 
-Voor grotere stukken werk die planning en afstemming nodig hebben.
+`ceda-verifies: observable` — na afloop klopt dit, na te lopen door de gebruiker:
 
-```markdown
-### Problem / Opportunity
+- Elke alinea in de body is terug te voeren op iets wat de gebruiker zei of aanwees.
+- Geen enkel templateveld is ingevuld zonder antwoord van de gebruiker.
+- De volledige body is vóór aanmaken getoond en er is akkoord gegeven.
+- Elk label bestaat in de repo en past in de indeling; elke `@handle` bestaat in de org.
+- Priority en Iteration staan alleen gevuld als de gebruiker ze koos.
 
-Wat is het echte probleem? Voor wie? Evidence, voorbeelden, context.
+## Gebundelde bestanden
 
-### Appetite (timebox)
-
-Kies uit: Small (1-2 dagen) | Medium (3-4 dagen) | Large (5-6 dagen)
-
-### Solution
-
-High-level aanpak, misschien enkele key elements.
-
-### Risks / Rabbit holes
-
-Welke valkuilen moeten we vermijden?
-
-### No-Gos
-
-Wat doen we expliciet NIET in deze versie?
-
-### Gevalideerd met
-
-@username
-
-### Sparring partner
-
-@username
-```
-
-## Labels
-
-### Domein labels
-
-| Label | Beschrijving |
-|-------|--------------|
-| `instroom` | Instroomprognose MBO |
-| `uitval` | Uitval analyses |
-| `tech` | Technische verbeteringen |
-| `project` | Project organisatie |
-
-### Status labels
-
-| Label | Beschrijving |
-|-------|--------------|
-| `needs-shaping` | Pitch die nog gevormd moet worden |
-
-## Pull Request Template
-
-When creating PRs, use this structure:
-
-```markdown
-## Type of Change
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Enhancement
-- [ ] Documentation update
-
-## Description of Changes
-
-## Related Issues
-<!-- Link using #issue-number -->
-
-## Before / After
-
-### Before:
-
-### After:
-
-## Checklist
-- [ ] I have tested these changes locally
-- [ ] My code follows the project's coding standards
-```
-
-## Title Standards
-
-- Be specific and descriptive
-- Use sentence case
-- No prefixes like [FEATURE], [BUG] - use labels instead
-
-### Good titles
-
-- `Add export functionality for enrollment data`
-- `Data pipeline fails when processing empty CSV files`
-- `Verbeter dagstart workflow met GitHub integratie`
-
-### Bad titles
-
-- `Bug` (vague)
-- `Fix thing` (vague)
-- `NEW FEATURE` (vague, all caps)
-
-## Repository Configuration
-
-- **Blank issues zijn uitgeschakeld** - gebruik altijd een template
-- **CEDA Board**: https://github.com/orgs/cedanl/projects/2
-- Issues worden automatisch aan het project board toegevoegd
-
-## R-specific validation
-
-For R projects, ensure before submitting PRs:
-- Run `styler::style_active_file()` on modified files
-- Follow tidyverse style guide
-- Use `|>` pipe operator
-- Use snake_case naming
+- `references/labels.md` — lees bij stap 4, of zodra iemand een label wil dat niet bestaat: de
+  categorieën, wat er per soort bij hoort, en hoe je de lijst uitbreidt zonder de indeling te
+  slopen
+- `references/labels.yml` — niet lezen om labels voor te stellen (gebruik `gh label list`);
+  bewerken als er een label bij moet. Dit is de machine-bron die `sync-labels.yml` naar alle
+  cedanl-repos duwt
 
 ## Important
 
-- Never include "Generated with Claude Code" in issues/PRs unless directly relevant
-- Link related issues using `#issue-number` syntax
-- Provide context - explain the "why" not just the "what"
-- Gebruik `@username` voor validatie en sparring partners in pitches
+- **Verzin niets.** Bij twijfel minder tekst, niet meer. Een issue die de gebruiker niet
+  herkent is erger dan een issue die te kort is.
+- **Nooit aanmaken zonder getoonde body en expliciet akkoord.**
+- Alleen voor cedanl-repos; blanco issues staan uit, dus gebruik altijd een van de drie types.
+- Priority, Iteration en Status zijn boardvelden — nooit labels. Zie je `high-priority` of
+  `on-hold` op oude issues, kopieer dat niet.
+- Voor pull requests: `branch-pr`.
+- Zet nooit "Generated with Claude Code" in een issue, en link gerelateerd werk met
+  `#issue-nummer`.
