@@ -66,8 +66,11 @@ When the user invokes `/write-issue [beschrijving]`:
 
 ### 1. Repo en type
 
-Doelrepo: die van de huidige werkmap. Werkt de gebruiker aan iets anders, vraag het — raad
-het niet uit de tekst.
+Doelrepo: die van de huidige werkmap, maar alleen als de issue daar ook over gaat. Komt het
+verzoek van buiten de code — een mail, een afspraak, iets org-breeds — vraag de repo dan via
+`AskUserQuestion` met je eigen voorstel als eerste optie. Raad hem niet uit de tekst.
+`cedanl/project_algemeen` is de verzamelplek voor projectmatige issues die bij geen enkele
+codebase horen.
 
 Stel het type voor op basis van zijn woorden en laat het bevestigen via een keuzemenu
 (`AskUserQuestion`). Voorstellen mag, kiezen doet de gebruiker.
@@ -151,8 +154,30 @@ gh api graphql -f query='{ organization(login:"cedanl"){ projectV2(number:2){ id
     ... on ProjectV2IterationField { id name configuration { iterations { id title } } } } } } }'
 ```
 
-Vereist project-scope: `gh auth refresh -s project`. Lukt dat niet, meld het en laat de velden
-leeg — dat blokkeert het aanmaken niet.
+Vereist project-scope: `gh auth refresh -s project`. De standaardlogin heeft
+`gist, read:org, repo, workflow` en struikelt met `missing required scopes [read:project]`;
+`read:project` is niet genoeg, want het iteration-veld wordt geschreven. De refresh vraagt om
+browserbevestiging, dus de gebruiker moet hem zelf draaien. Lukt dat niet, meld het en laat de
+velden leeg — dat blokkeert het aanmaken niet.
+
+Iteraties duren twee weken en de ID's roteren mee, dus onthoud ze niet. Lopende en toekomstige
+staan in `iterations`, afgeronde in `completedIterations`:
+
+```bash
+command gh api graphql -f query='{ node(id: "PVTIF_lADOCDg-4s4BOMC2zg8-YWo") {
+  ... on ProjectV2IterationField { configuration {
+    iterations { id title startDate duration }
+    completedIterations { id title startDate } } } } }'
+```
+
+Zegt de gebruiker "volgende iteratie", reken dat dan uit met de `startDate`s in plaats van te
+tellen vanaf een nummer dat je ergens zag staan — en laat in stap 6 zien welke iteratie en
+welke datums je gekozen hebt, zodat hij de aanname kan corrigeren.
+
+**rtk-valkuil.** Bij grote of diep geneste `gh api graphql`-output vervangt rtk het antwoord
+door een schemasamenvatting (`{id: string, title: string} (3)`) in plaats van de waarden. Draai
+daarom `command gh` (of `rtk proxy`) zodra je de echte veld-ID's nodig hebt. Hetzelfde geldt
+voor `command grep` wanneer rtk's grep je flags niet accepteert.
 
 ### 6. Toon de volledige body en wacht op akkoord
 
@@ -194,6 +219,13 @@ gh api graphql -f query='mutation { updateProjectV2ItemFieldValue(input: {
 ```
 
 Voor Iteration is de waarde `{ iterationId: "<iteration_id>" }`.
+
+Staat de issue nog niet op het board — `projectItems` is leeg omdat `--project` niet aansloeg —
+haal het item-ID dan op door hem alsnog toe te voegen:
+
+```bash
+command gh project item-add 2 --owner cedanl --url <issue-url> --format json
+```
 
 ### 8. Rapporteer
 
