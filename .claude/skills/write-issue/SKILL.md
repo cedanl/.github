@@ -46,9 +46,9 @@ Wat dat concreet betekent:
   ontbreekt.
 - **"Vul maar aan met context uit de code" is geen vrijbrief.** Zoek, toon wat je vond met pad
   en regelnummer, en vraag of het erin mag. Nooit stilzwijgend samenvatten.
-- **Suggesties zijn kort en meervoudig.** Bied er twee tot vier als bullets aan, zodat kiezen
-  goedkoper is dan corrigeren. Een suggestie staat pas in de body nadat hij hem heeft
-  aangewezen.
+- **Suggesties zijn kort en meervoudig.** Bied er twee tot vier aan, zodat kiezen goedkoper is
+  dan corrigeren — vier is ook het maximum dat `AskUserQuestion` toont. Een suggestie staat pas
+  in de body nadat hij hem heeft aangewezen.
 - **Schrijf niets mooier dan het gezegd is.** Zijn zin van één regel blijft één regel.
 
 Zo ziet het verschil eruit:
@@ -107,8 +107,15 @@ volgende stelt.
 - Meerdere vragen in één bericht levert antwoord op de eerste en stilte op de rest. Doe het niet.
 - Zegt de gebruiker "sla over": optioneel veld valt weg, verplicht veld vraag je één keer
   opnieuw — blijft het leeg, dan maak je de issue niet aan en zeg je dat.
-- Vrije tekst vraag je in de chat. Keuzes met een vaste set (type, appetite, labels, handles)
-  vraag je via `AskUserQuestion`.
+- **De vorm van je vraag bepaalt het middel, niet de veldsoort.** Vraag je open naar tekst die
+  alleen de gebruiker heeft (beschrijving, probleem), dan doe je dat in de chat. Zet je zelf
+  een lijstje neer waar hij uit kiest, dan is dat een keuzelijst — ook bij een vrij-tekstveld
+  als acceptatiecriteria — en hoort hij in `AskUserQuestion` met `multiSelect: true`. Anders
+  moet hij jouw bullets corrigeren in plaats van aanvinken, en dat is precies het verschil dat
+  deze skill wil wegnemen.
+- **Grenzen van `AskUserQuestion`.** Maximaal vier opties; "Other" vangt eigen tekst, dus dat
+  hoeft geen eigen optie. Houd vraag en labels kort — lange regels breken de weergave. Past je
+  set daar niet in, snoei dan tot de vier die er het meest toe doen, of ga terug naar de chat.
 - Gaf de gebruiker bij het aanroepen al een beschrijving mee, gebruik die dan als antwoord op
   het eerste veld en zeg dat je 'm daar hebt neergezet — herhaal de vraag niet.
 
@@ -136,7 +143,44 @@ categorie het hoort, en noem de route uit `references/labels.md` — toevoegen a
 `references/labels.yml` met de kleur van die categorie. Een los label buiten de indeling maakt de
 kleur betekenisloos.
 
-### 5. Boardvelden — optioneel, en alleen op verzoek
+### 5. Assignees — wie pakt dit op
+
+Een issue zonder eigenaar blijft liggen. Vraag de assignees expliciet, met een concreet
+voorstel als eerste optie.
+
+| Type | Minimum |
+|---|---|
+| Pitch | twee — shape-up werk vraagt afstemming, één persoon alleen is geen pitch |
+| Task | één |
+| Bug | één |
+
+**Meestal is de gebruiker zelf de eerste assignee.** Hij brengt de issue in, dus stel hem voor
+en laat hem bevestigen — dat is een suggestie die hij aanwijst, geen invulling. Uitzondering:
+staat er in zijn verzoek uitdrukkelijk voor wie de issue is ("issue voor Piet en Henk"), dan
+zijn dat de assignees en stel je jezelf niet als alternatief voor.
+
+Zijn eigen handle haal je op, raad hem niet uit de accountnaam:
+
+```bash
+gh api user --jq .login
+```
+
+De rest kies je uit de echte ledenlijst, nooit uit een naam die je ergens zag staan:
+
+```bash
+gh api orgs/cedanl/members --jq '.[].login'
+```
+
+Vraag met `AskUserQuestion` en `multiSelect: true`, met de gebruiker zelf als eerste optie.
+Blijft het aantal onder het minimum, vraag dan één keer door wie er nog bij hoort. Houdt hij
+vol, maak de issue dan wel aan en meld in stap 9 expliciet dat hij onder het minimum blijft —
+dat is zijn keuze, maar hij moet hem zien.
+
+Assignee is iets anders dan "Gevalideerd met" en "Sparring partner" in de pitch: die twee zijn
+bodyvelden waar je nooit zelf iemand invult (zie onderaan). De assignee mag je voorstellen,
+mits hij bevestigt.
+
+### 6. Boardvelden — optioneel, en alleen op verzoek
 
 Priority en Iteration zijn velden op het CEDA Board, geen labels. Vraag ze één keer, met
 "laat leeg" als eerste optie. Vul ze nooit zelf in: een prioriteit die de gebruiker niet
@@ -179,23 +223,24 @@ door een schemasamenvatting (`{id: string, title: string} (3)`) in plaats van de
 daarom `command gh` (of `rtk proxy`) zodra je de echte veld-ID's nodig hebt. Hetzelfde geldt
 voor `command grep` wanneer rtk's grep je flags niet accepteert.
 
-### 6. Toon de volledige body en wacht op akkoord
+### 7. Toon de volledige body en wacht op akkoord
 
-Verplicht, ook bij een issue van drie regels. Toon titel, type, labels, boardvelden en de body
-letterlijk zoals die aangemaakt wordt, en benoem apart welke regels uit een suggestie van jou
-komen.
+Verplicht, ook bij een issue van drie regels. Toon titel, type, labels, assignees, boardvelden
+en de body letterlijk zoals die aangemaakt wordt, en benoem apart welke regels uit een suggestie
+van jou komen.
 
 > Klopt dit? Zeg wat je wil aanpassen, of geef akkoord om aan te maken.
 
 Geen akkoord, geen `gh issue create`.
 
-### 7. Maak de issue aan en zet type en boardvelden
+### 8. Maak de issue aan en zet type en boardvelden
 
 ```bash
 gh issue create \
   --repo cedanl/<repo> \
   --title "<titel>" \
   --label "<label1>,<label2>" \
+  --assignee "<handle1>,<handle2>" \
   --project "CEDA Board" \
   --body "$(cat <<'EOF'
 <geformatteerde body>
@@ -210,7 +255,7 @@ gh api graphql -f query='{ repository(owner: "cedanl", name: "<repo>") { issue(n
 gh api graphql -f query='mutation { updateIssue(input: { id: "<issue_node_id>", issueTypeId: "<type_id>" }) { issue { title issueType { name } } } }'
 ```
 
-Koos de gebruiker in stap 5 een Priority of Iteration, zet die op het project-item:
+Koos de gebruiker in stap 6 een Priority of Iteration, zet die op het project-item:
 
 ```bash
 gh api graphql -f query='mutation { updateProjectV2ItemFieldValue(input: {
@@ -227,9 +272,10 @@ haal het item-ID dan op door hem alsnog toe te voegen:
 command gh project item-add 2 --owner cedanl --url <issue-url> --format json
 ```
 
-### 8. Rapporteer
+### 9. Rapporteer
 
-De issue-URL, plus welke labels, welk type en welke boardvelden gezet zijn.
+De issue-URL, plus welke labels, welk type, welke assignees en welke boardvelden gezet zijn.
+Blijft het aantal assignees onder het minimum uit stap 5, zeg dat er dan bij.
 
 ## Een bestaande issue bijwerken
 
@@ -258,13 +304,15 @@ Specifiek en beschrijvend, zinskapitaal, geen prefix als `[FEATURE]` — daar zi
 
 - **Bug** — Beschrijving (verplicht): wat gaat er mis, stappen om te reproduceren, optioneel
   screenshots/logs.
-- **Task** — Beschrijving (verplicht), Acceptatiecriteria (optioneel, checkboxes).
+- **Task** — Beschrijving (verplicht), Acceptatiecriteria (optioneel, checkboxes, maximaal
+  vier). Meer dan vier criteria betekent meestal dat er twee taken in één issue zitten.
 - **Pitch** — Problem / Opportunity (verplicht), Appetite: Small (1-2 dagen) | Medium (3-4
   dagen) | Large (5-6 dagen) (verplicht), Solution, Risks / Rabbit holes, No-Gos, Gevalideerd
   met, Sparring partner (alle vijf optioneel).
 
-Bij "Gevalideerd met" en "Sparring partner" vul je nooit zelf iemand in. Handles toets je
-tegen de echte ledenlijst:
+Bij "Gevalideerd met" en "Sparring partner" vul je nooit zelf iemand in — anders dan bij de
+assignees in stap 5, waar je de gebruiker zelf wél mag voorstellen. Handles toets je tegen de
+echte ledenlijst:
 
 ```bash
 gh api orgs/cedanl/members --jq '.[].login'
@@ -278,6 +326,8 @@ gh api orgs/cedanl/members --jq '.[].login'
 - Geen enkel templateveld is ingevuld zonder antwoord van de gebruiker.
 - De volledige body is vóór aanmaken getoond en er is akkoord gegeven.
 - Elk label bestaat in de repo en past in de indeling; elke `@handle` bestaat in de org.
+- De issue heeft assignees die de gebruiker aanwees — twee bij een pitch, één bij een task of
+  bug — of het rapport benoemt waarom niet.
 - Priority en Iteration staan alleen gevuld als de gebruiker ze koos.
 
 ## Gebundelde bestanden
@@ -295,6 +345,8 @@ gh api orgs/cedanl/members --jq '.[].login'
   herkent is erger dan een issue die te kort is.
 - **Nooit aanmaken zonder getoonde body en expliciet akkoord.**
 - Alleen voor cedanl-repos; blanco issues staan uit, dus gebruik altijd een van de drie types.
+- **Nooit aanmaken zonder assignee.** Wie het oppakt hoort erbij; blijft het onder het minimum,
+  dan is dat een expliciete keuze van de gebruiker die je meldt.
 - Priority, Iteration en Status zijn boardvelden — nooit labels. Zie je `high-priority` of
   `on-hold` op oude issues, kopieer dat niet.
 - Voor pull requests: `branch-pr`.
