@@ -22,11 +22,11 @@ draagt `labels.yml` mee, maar daar draait geen sync — daar is het dood gewicht
 | **tech** | paars | alleen bij `tech` | `gui` · `sdp` · `object-store` · `research-cloud` |
 | **werk** | turquoise | alleen bij `core` | `data` · `ml` · `governance` · `visuals` · `chat` |
 | **aspect** | grijs | bij elk soort, optioneel | `docs` · `ux` |
-| **inhoud** | oranje | meestal bij `impact` of `core` | `instroom` · `uitval` · `arbeidsmarkt` · `flexibilisering` |
+| **inhoud** | oranje | meestal bij `impact` of `core` | `instroom` · `studiesucces` · `arbeidsmarkt` · `flexibilisering` |
 | **status** | geel | zelden | `needs-shaping` |
 
 De soort bepaalt welke tweede categorie in beeld komt. Bij `impact` komt daar meestal ook
-`inhoud` bij: de vorm (een bijeenkomst) en het onderwerp (uitval) zijn twee verschillende
+`inhoud` bij: de vorm (een bijeenkomst) en het onderwerp (studiesucces) zijn twee verschillende
 vragen.
 
 **`aspect` staat los van de soort**, en dat is het verschil met `werk`. De werk-labels zijn
