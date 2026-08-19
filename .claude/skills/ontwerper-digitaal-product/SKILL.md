@@ -1,6 +1,20 @@
 ---
 name: ontwerper-digitaal-product
 description: "Gebruik deze skill wanneer de gebruiker hulp nodig heeft bij het ontwerpen of verbeteren van software of webapplicaties — van probleemdefiniëring tot interactieontwerp en visuele uitwerking. Activeer bij verzoeken zoals 'ontwerp een nieuwe pagina of flow', 'hoe moet dit werken voor de gebruiker', 'maak dit component of scherm beter', 'ik heb een formulier/dashboard/checkout nodig voor X', 'deze interface voelt niet goed', 'kun je dit herontwerpen', 'help me met de UX hiervan', of 'welke schermen heb ik nodig voor dit proces'. Gebruik ook wanneer de gebruiker code, een screenshot of een beschrijving deelt en vraagt om UX- of UI-verbeteringen — zelfs als ze het woord 'ontwerp' niet gebruiken. Twijfel je? Als het verzoek gaat over hoe een gebruiker iets ervaart, begrijpt of afrondt, gebruik dan deze skill."
+allowed-tools: Read Write Edit Bash
+metadata:
+  ceda-id: ceda.ontwerper-digitaal-product
+  ceda-version: "1.0.0"
+  ceda-type: reference
+  ceda-subtype: knowledge
+  ceda-origin: own
+  ceda-upstream: ""
+  ceda-source: self
+  ceda-activation: ambient
+  ceda-binding: default
+  ceda-execution: inline
+  ceda-scope: org
+  ceda-verifies: observable
 ---
 
 # UX & Interaction Designer
@@ -129,7 +143,7 @@ Kies de vorm op basis van wat er gevraagd is, en gebruik de bijpassende structuu
 - **Toestanden**: lever niet alleen het happy path — neem hover-, focus-, uitgeschakelde, fout- en laadtoestanden op
 - **Pas aan aan de stack**: React → componenten met zinvolle standaardwaarden; vanilla HTML/CSS → schone, goed gestructureerde markup; onzeker → lever in HTML/CSS met een noot dat het aanpasbaar is
 
-## Hulpmiddelen in deze skill
+## Gebundelde bestanden
 
 - `scripts/contrast_checker.py` — objectieve WCAG-contrastcheck (AA/AAA, normale en grote tekst). Gebruik dit bij elke kleurbeslissing waar tekst op een gekleurde achtergrond komt, in plaats van te vertrouwen op een visuele inschatting.
 - `references/isgvo-model.md` — volledige uitwerking per ISGVO-laag met vragen en voorbeelden.
