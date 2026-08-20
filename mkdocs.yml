@@ -39,8 +39,10 @@ nav:
     - Presentaties: werkafspraken/presentaties.md
     - Pitches: werkafspraken/pitches.md
     - Gebruikersrechten: werkafspraken/gebruikersrechten.md
+    - Entire: werkafspraken/entire.md
   - Guides:
     - Azure AI modellen: guides/azure-ai.md
+    - Entire CLI: guides/entire-cli.md
 
 plugins:
   - search:
