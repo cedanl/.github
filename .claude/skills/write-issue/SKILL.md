@@ -50,6 +50,9 @@ Wat dat concreet betekent:
   dan corrigeren — vier is ook het maximum dat `AskUserQuestion` toont. Een suggestie staat pas
   in de body nadat hij hem heeft aangewezen.
 - **Schrijf niets mooier dan het gezegd is.** Zijn zin van één regel blijft één regel.
+- **Je mag taal corrigeren zonder de betekenis te veranderen.** Typo's fixen
+  ("pyhton" → "python"), hoofdletters zetten, en zinnen inkorten waar de betekenis hetzelfde
+  blijft. Verander de inhoud nooit.
 
 Zo ziet het verschil eruit:
 
