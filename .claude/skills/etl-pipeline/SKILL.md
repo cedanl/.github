@@ -51,6 +51,21 @@ Built image is deployed via the GitLab/SDP flow (cross-pipeline trigger hands th
 image digest to the config repo). See /gitlab-ci and /surf-sdp-helm-flux
 (deploy by **image digest**, not floating tags).
 
+### Wire the cross-pipeline trigger (one-time, per new ETL repo)
+The ETL repo's pipeline triggers the **config** repo's pipeline. Set this up once:
+1. In the **config repo** (e.g. `instroom-config`): Settings → CI/CD → **Pipeline
+   trigger tokens** → *Add new token*. Describe it (e.g. `etl-ho-build`), no
+   expiration → **Create pipeline trigger token**.
+2. In the **ETL repo** (e.g. `instroom-etl-ho`): Settings → CI/CD → **Variables**
+   → *Add variable*. Key `INSTROOM_CONFIG_TRIGGER_TOKEN`, value = the token,
+   available for all environments, visible. The `.gitlab-ci.yml` trigger step
+   then works.
+Source: `instroom-config/docs/transport.md`. The token is a **secret** — it lives
+as a CI variable, never in a committed file.
+
+> Bootstrapping a brand-new ETL repo (copy + regex-rename from an existing one,
+> secret/config setup) is also documented in `instroom-config/docs/transport.md`.
+
 ## Important
 - **Verify a run actually lands the file in MinIO** (list the bucket) before
   calling it done — a silent download failure returns `None`, which the step must
