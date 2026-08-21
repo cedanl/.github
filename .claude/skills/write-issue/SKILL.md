@@ -5,7 +5,7 @@ allowed-tools: Read Grep Glob Bash AskUserQuestion
 compatibility: Requires the gh CLI, authenticated with access to the cedanl org and its projects
 metadata:
   ceda-id: ceda.write-issue
-  ceda-version: "2.0.0"
+  ceda-version: "2.1.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -36,7 +36,7 @@ Elke zin in de body heeft precies één van deze drie herkomsten:
 
 Wat geen van drieën is, komt niet in de body. Een lege sectie is beter dan een ingevulde
 sectie die de gebruiker niet herkent: hij moet zijn eigen issue over een week nog herkennen,
-en een verzonnen reproductiestap kost een collega een middag.
+en een verzonnen stap kost een collega een middag.
 
 Wat dat concreet betekent:
 
@@ -46,9 +46,9 @@ Wat dat concreet betekent:
   ontbreekt.
 - **"Vul maar aan met context uit de code" is geen vrijbrief.** Zoek, toon wat je vond met pad
   en regelnummer, en vraag of het erin mag. Nooit stilzwijgend samenvatten.
-- **Suggesties zijn kort en meervoudig.** Bied er twee tot vier aan, zodat kiezen goedkoper is
-  dan corrigeren — vier is ook het maximum dat `AskUserQuestion` toont. Een suggestie staat pas
-  in de body nadat hij hem heeft aangewezen.
+- **Suggesties zijn kort en meervoudig.** Bied er twee tot vier aan in `AskUserQuestion`,
+  zodat kiezen goedkoper is dan corrigeren — vier is ook het maximum dat het menu toont. Een
+  suggestie staat pas in de body nadat hij hem heeft aangewezen.
 - **Schrijf niets mooier dan het gezegd is.** Zijn zin van één regel blijft één regel.
 - **Je mag taal corrigeren zonder de betekenis te veranderen.** Typo's fixen
   ("pyhton" → "python"), hoofdletters zetten, en zinnen inkorten waar de betekenis hetzelfde
@@ -66,6 +66,10 @@ Zo ziet het verschil eruit:
 ## Workflow
 
 When the user invokes `/write-issue [beschrijving]`:
+
+Vragen stel je via `AskUserQuestion`, gebundeld in rondes van maximaal vier — dat scheelt de
+gebruiker beurten wachten. Heb je voor een veld geen eerlijke opties, vraag het dan gewoon in
+de chat.
 
 ### 1. Repo en type
 
@@ -101,24 +105,26 @@ De velden in dat bestand zijn de waarheid — inclusief welke `required: true` z
 repo af van wat je hier verwacht, dan volg je de repo. Ontbreken de templates, val dan terug
 op de vaste velden onderaan deze skill.
 
-### 3. Interview — één veld tegelijk
+### 3. Interview — in rondes van vier via `AskUserQuestion`
 
-Loop de templatevelden af in de volgorde van het bestand. Per veld één vraag in de chat, met
-het `label` van het veld en de `placeholder` als voorbeeld. Wacht op antwoord voor je de
-volgende stelt.
+Loop de templatevelden af in de volgorde van het bestand en bundel ze per ronde in één
+`AskUserQuestion`-aanroep van maximaal vier vragen. Meer velden dan vier: meerdere rondes, in
+de volgorde van het template.
 
-- Meerdere vragen in één bericht levert antwoord op de eerste en stilte op de rest. Doe het niet.
+- **Ook een vrij-tekstveld kan in het menu.** Zet twee tot vier korte opties neer die uit zijn
+  eigen woorden komen of uit code die je hem toont met pad en regelnummer; "Other" vangt zijn
+  eigen tekst op, dus dat hoeft geen aparte optie. Bij velden waar meerdere antwoorden naast
+  elkaar kunnen staan (acceptatiecriteria): `multiSelect: true`.
+- **Verzin geen opties om de vier vol te maken.** Heb je voor een veld niets eerlijks aan te
+  bieden, vraag het dan open in de chat. Opties zijn suggesties: pas nadat hij er een aanwijst
+  staat hij in de body, en je selecteert nooit iets voor.
+- **Grenzen van `AskUserQuestion`.** Maximaal vier vragen per aanroep en vier opties per vraag;
+  `header` van hooguit twaalf tekens, labels van een paar woorden. Lange regels breken de
+  weergave. Past je set niet in vier opties, snoei dan tot de vier die er het meest toe doen.
+- Losse vragen in de chat stel je één tegelijk: vier vragen in één tekstbericht levert antwoord
+  op de eerste en stilte op de rest.
 - Zegt de gebruiker "sla over": optioneel veld valt weg, verplicht veld vraag je één keer
   opnieuw — blijft het leeg, dan maak je de issue niet aan en zeg je dat.
-- **De vorm van je vraag bepaalt het middel, niet de veldsoort.** Vraag je open naar tekst die
-  alleen de gebruiker heeft (beschrijving, probleem), dan doe je dat in de chat. Zet je zelf
-  een lijstje neer waar hij uit kiest, dan is dat een keuzelijst — ook bij een vrij-tekstveld
-  als acceptatiecriteria — en hoort hij in `AskUserQuestion` met `multiSelect: true`. Anders
-  moet hij jouw bullets corrigeren in plaats van aanvinken, en dat is precies het verschil dat
-  deze skill wil wegnemen.
-- **Grenzen van `AskUserQuestion`.** Maximaal vier opties; "Other" vangt eigen tekst, dus dat
-  hoeft geen eigen optie. Houd vraag en labels kort — lange regels breken de weergave. Past je
-  set daar niet in, snoei dan tot de vier die er het meest toe doen, of ga terug naar de chat.
 - Gaf de gebruiker bij het aanroepen al een beschrijving mee, gebruik die dan als antwoord op
   het eerste veld en zeg dat je 'm daar hebt neergezet — herhaal de vraag niet.
 
@@ -178,6 +184,10 @@ Vraag met `AskUserQuestion` en `multiSelect: true`, met de gebruiker zelf als ee
 Blijft het aantal onder het minimum, vraag dan één keer door wie er nog bij hoort. Houdt hij
 vol, maak de issue dan wel aan en meld in stap 9 expliciet dat hij onder het minimum blijft —
 dat is zijn keuze, maar hij moet hem zien.
+
+Assignees, de losse labelcategorieën uit stap 4 (aspect, inhoud, status) en de boardvelden uit
+stap 6 hangen niet van elkaar af — die passen samen in één aanroep. Alleen soort →
+subcategorie in stap 4 moet na elkaar, want de tweede vraag volgt uit het eerste antwoord.
 
 Assignee is iets anders dan "Gevalideerd met" en "Sparring partner" in de pitch: die twee zijn
 bodyvelden waar je nooit zelf iemand invult (zie onderaan). De assignee mag je voorstellen,
