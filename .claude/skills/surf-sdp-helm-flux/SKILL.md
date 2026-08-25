@@ -7,8 +7,10 @@ description: >-
   or deploy Helm charts, debugs a failing or stuck HelmRelease, sees Flux
   reconciliation problems, hits 401/404 errors pulling charts from an OCI
   registry, encounters chart version mismatches in deploy verification, sets
-  up cross-pipeline triggers, or mentions SDP, Harbor, cr.surf.nl, FluxCD,
-  HelmRepository, or HelmRelease — even if they only paste a pipeline log or
+  up cross-pipeline triggers, work on a Kubernetes CronJob or on-demand Job Helm
+  template for scheduled/triggered batch runs, or mentions SDP, Harbor,
+  cr.surf.nl, FluxCD, HelmRepository, or HelmRelease — even if they only paste a
+  pipeline log or
   kubectl output without an explicit question.
 ---
 
@@ -208,6 +210,59 @@ Protected ✓). If a job stays "pending" with a runner that is online and
 correctly tagged, check this flag before anything else — the symptom looks
 exactly like a tagging problem but isn't.
 
+## Batch workloads: scheduled CronJob + on-demand Job
+
+ETL/ML steps run as batch workloads, not long-lived Deployments. The `instroom`
+chart (`instroom-config/charts/instroom/templates/{etl,ml}/`) is the reference:
+per service (`etlwo`, `etlho`, `ml`) it ships **two** templates, each gated by its
+own `.Values.<svc>` flag:
+
+- **`cron_<svc>.yaml`** — `kind: CronJob`, gated by `.Values.<svc>.cronJob.enabled`,
+  with `schedule` (e.g. `"0 2 * * *"`), `concurrencyPolicy`, history limits and
+  deadlines. This is the *scheduled* path.
+- **`job_<svc>.yaml`** — `kind: Job`, gated by `.Values.<svc>.job.enabled`. This is
+  the **on-demand** path: the pipeline flips `job.enabled=true` (via
+  `HELM_UPGRADE_ARGS --set <svc>.job.enabled=true`, see cross-pipeline triggers
+  above) and a fresh Job runs.
+
+### On-demand = unique Job name per release
+
+A plain `kind: Job` is immutable once created, so re-applying with the same name
+does nothing. The chart makes each Helm release spawn a **new** Job by suffixing
+the name with the release revision + random string:
+
+```yaml
+metadata:
+  name: {{ include "instroom.fullname" . }}-<svc>-job-{{ .Release.Revision }}-{{ randAlphaNum 8 | lower }}
+```
+
+That is the whole "on-demand (unscheduled) cron job" mechanism from the notes:
+a trigger → Helm upgrade → new revision → new Job name → it runs once.
+
+### Both pull image by digest and env from the config/secret
+
+The job containers select the image by `sha256:` digest when the tag is a digest
+(same digest-not-tag rule as Deployments), and take MinIO/etc. config from the
+Flux-managed ConfigMap + Secret (`envFrom` a `configMapRef`/`secretRef`, or
+`valueFrom` on `existingConfigMap`/`existingSecret`). See `/sdp-secrets-management`
+for where those come from.
+
+### Known bugs in the reference chart (fix if you touch it)
+
+The `instroom` templates have field errors worth correcting before reuse:
+
+- **`cron_<svc>.yaml`** sets `successfulJobsHistoryLimit` **twice** (a duplicate
+  YAML key — the second silently wins), and sets
+  `ttlSecondsAfterFinished` from `activeDeadlineSeconds`, which conflates
+  "how long the finished object lingers" with "how long the run may take". Set
+  `ttlSecondsAfterFinished` from its own value.
+- **`job_<svc>.yaml`** carries `successfulJobsHistoryLimit` /
+  `failedJobsHistoryLimit` — these are **CronJob-only** fields and are invalid on
+  a `kind: Job`. Drop them from the Job spec.
+
+Validate any change with `helm template` / `kustomize build` (see *local preview*
+above) before committing.
+
 ## Troubleshooting quick reference
 
 | Symptom | Likely cause | First action |
@@ -243,5 +298,10 @@ suspend/resume, checking Kustomization sync, job log retrieval), read
   the next sync reverts them; fix the source repo instead.
 - Check the `+`↔`_` OCI-tag spelling before assuming a chart is missing.
 - Deploy by **image digest**, not floating tags.
+- **Batch runs** = scheduled `CronJob` + on-demand `Job`; on-demand relies on a
+  unique Job name per release (`{{ .Release.Revision }}-{{ randAlphaNum 8 }}`).
+  The reference `instroom` chart has field bugs (duplicate
+  `successfulJobsHistoryLimit`, wrong `ttlSecondsAfterFinished`, CronJob-only keys
+  on a `Job`) — fix them if you reuse it.
 - This is a **GitLab/SDP** skill — use `glab`/kubectl, not `gh` or GitHub Actions.
 - Applies to cedanl / SURF SDP repos.
