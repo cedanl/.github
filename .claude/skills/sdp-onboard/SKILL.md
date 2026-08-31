@@ -23,22 +23,6 @@ order (prereqs first):
   equivalent): `hadolint`, `yamllint`, `k9s`, `kubectl`, `kubectx`, `kubelogin`,
   `kustomize`, `helm`, `flux`, `sops`.
 
-## Devcontainer / headless setup (no sudo, no brew)
-In a devcontainer or headless container, tool install differs from a laptop:
-
-- **No brew** — download release binaries to `~/.local/bin` (owned by the dev
-  user, no sudo). e.g. `kubelogin`, `helm`, `kubectl` via their GitHub release
-  tarballs/zips; make sure `~/.local/bin` is on `PATH`.
-- **Read-only `.gitconfig`**: if the mounted `.gitconfig` can't be written,
-  switch to a per-shell config instead of fighting the mount:
-  ```bash
-  export GIT_CONFIG_GLOBAL=~/.gitconfig-local
-  git config --global user.name "Your Name"
-  git config --global user.email "you@surf.nl"
-  ```
-- **Headless OIDC login**: kubelogin's browser flow needs a keyboard fallback in
-  a container — see `/surf-sdp-operations` for the `authcode-keyboard` grant flow.
-
 ## 1. Create the GitLab repo (needs SDP-admin merge)
 The repo is declared as **Terraform** in the `surf-internal/gitlab-config` repo:
 ```bash
