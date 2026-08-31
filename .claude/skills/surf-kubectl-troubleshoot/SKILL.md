@@ -33,7 +33,10 @@ What's the issue you're seeing?
 4. SOPS secret won't decrypt (can't read encrypted values.yaml, "permission denied")
 5. Ingress has no external IP or shows error
 6. "flux" command not found or wrong binary (returns unknown flags)
-7. Something else — describe it briefly
+7. Ingress 404/504 but pod is healthy
+8. Platform-provisioned Postgres/MinIO secrets unused
+9. App worked on SQLite but breaks on Postgres
+10. Something else — describe it briefly
 ```
 
 Wait for their choice. For "something else", ask them to paste the error message
@@ -229,6 +232,81 @@ kubectl annotate helmrelease <name> \
 
 ---
 
+#### **Symptom 7: Ingress 404/504 but pod is healthy**
+
+**Diagnostics:**
+
+```bash
+kubectl get pods -n services-<app>     # confirm 1/1 Running
+kubectl get ingress -n services-<app> -o jsonpath='{.metadata.annotations.traefik\.ingress\.kubernetes\.io/router\.middlewares}'
+# Instant 404 → the middleware annotation doesn't resolve; strip it to isolate:
+kubectl annotate ingress <name> -n services-<app> traefik.ingress.kubernetes.io/router.middlewares-
+# ~30s 504 (and 404 is gone) → cross-namespace NetworkPolicy blocks Traefik→app:
+kubectl auth can-i create networkpolicies -n services-<app> # should be "yes"
+```
+
+**Interpret the output:**
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Instant `404 page not found` (Go's default, not a timeout) | Traefik `router.middlewares` annotation references a Middleware that doesn't resolve (misnamed, only `kubectl apply`-ed, or a platform-injected `infra-traefik-*` middleware absent on that cluster) | Strip the annotation to isolate; a missing platform-injected middleware is a platform gap — report it (no RBAC to inspect: `kubectl get middleware -n infra-traefik-internal` → `Forbidden`) |
+| Hang then `504` after ~30s; `port-forward` works | SDP default-deny NetworkPolicy blocks the `infra-traefik-*` → `services-<app>` hop (TLS completes because Traefik answers) | Commit a namespaced ingress `NetworkPolicy` allowing the `infra-traefik-external`/`infra-traefik-internal` namespaces (see `/surf-sdp-helm-flux`) |
+
+Note the two are different problems: **instant 404 = middleware annotation, ~30s 504 = network policy.** An egress-only policy does not fix inbound traffic — the rule must be `Ingress`.
+
+---
+
+#### **Symptom 8: Platform-provisioned Postgres/MinIO secrets unused**
+
+**Diagnostics:**
+
+```bash
+kubectl get secrets -n services-<app>
+# Look for:
+# - <app>-app                 (basic-auth type: host/port/dbname/user/password/uri — CloudNativePG shape)
+# - minio-<app>-app-credentials
+```
+
+**Interpret the output:**
+
+| Secret found | Meaning | Fix |
+|---|---|---|
+| `<app>-app` with `uri` key | Platform already provisioned Postgres for the tenant | Wire it into the app instead of assuming "no DB yet": `valueFrom.secretKeyRef: {name: <app>-app, key: uri}` in the deployment/values |
+| `minio-<app>-app-credentials` | Platform already provisioned MinIO access | Reference it in the app config; don't create a new bucket/account |
+
+Platform-provisioned secrets can sit unused for weeks if `manifests/<env>/values.yaml` never sets the env wiring. Check for them **before** assuming a database or object store "isn't set up yet."
+
+---
+
+#### **Symptom 9: App worked on SQLite but breaks on Postgres**
+
+**Symptom:** after `POSTGRES_URI` is wired up, API calls 500 with
+`AttributeError: 'psycopg2.extensions.connection' object has no attribute 'execute'`.
+Everything worked before, when the app was quietly running on SQLite.
+
+**Cause:** `sqlite3.Connection` has a convenience `.execute()` that runs a
+query on the connection (implicit cursor); psycopg2 requires an explicit
+`.cursor()`. Second trap: SQLite uses `?` placeholders, Postgres uses `%s`.
+The bug can sit dormant for a long time if the app only ever ran in SQLite
+mode — it surfaces the moment `POSTGRES_URI` is set.
+
+**Fix:** branch once per driver and route all call sites through it
+(`RealDictCursor` keeps Postgres rows dict-convertible like `sqlite3.Row`):
+```python
+def _execute(conn, sql, params=()):
+    if _USE_POSTGRES:
+        import psycopg2.extras
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(sql.replace("?", "%s"), params)
+        return cur
+    return conn.execute(sql, params)
+```
+Prevention: grep the repo for `conn.execute(` and confirm every call site
+is guarded for both drivers — don't assume "it works" because SQLite-mode
+tests pass.
+
+---
+
 ### Step 3: Suggest a fix
 
 Based on the diagnostics output the user shared, offer a targeted fix. Examples:
@@ -237,6 +315,8 @@ Based on the diagnostics output the user shared, offer a targeted fix. Examples:
 - **ImagePullBackOff:** "The image digest is wrong. Check the HelmRelease spec; push a new git commit with the correct digest."
 - **SOPS decryption:** "Your AGE key is missing or wrong. Run `sops-doctor` to diagnose, or regenerate the key."
 - **Ingress pending:** "The LoadBalancer isn't provisioning. Check cluster capacity with `kubectl top nodes`."
+- **Ingress 404/504, pod healthy:** "Instant 404 = the `router.middlewares` annotation doesn't resolve (strip it to isolate). ~30s 504 with a healthy pod = cross-namespace NetworkPolicy block (add an ingress `NetworkPolicy` for the `infra-traefik-*` namespaces)."
+- **Postgres breaks after SQLite:** "Driver mismatch — use an explicit `cursor()` and `%s` placeholders for psycopg2; route all call sites through one guarded helper."
 
 ### Step 4: Apply the fix and re-verify
 
@@ -264,6 +344,8 @@ Reference these scripts in diagnostic output (assume they're available in the us
 - **Use kubectl annotate as the flux CLI fallback.** If the flux binary isn't available (or is the InfluxDB one), the kubectl workaround always works.
 - **SOPS keys are per-environment.** Ensure the user is decrypting the right file with the right AGE key (check `.sops.yaml`).
 - **Check cluster capacity first for Pending pods.** `kubectl top nodes` and `kubectl describe nodes` reveal over-capacity issues.
+- **Ingress 404 vs 504 are two different problems.** Instant 404 with a healthy pod = Traefik middleware annotation that doesn't resolve; an ~30s 504 with a working `port-forward` = cross-namespace NetworkPolicy block (fix with an `Ingress`-type `NetworkPolicy` for the `infra-traefik-*` namespaces).
+- **Check for platform-provisioned secrets before assuming "no DB/MinIO".** `<app>-app` (Postgres) and `minio-<app>-app-credentials` can exist unused for weeks if `values.yaml` never wires them in.
 - **Logs are your friend.** Pod logs (`kubectl logs`), controller logs (`kubectl logs -n flux-system`), and Kubernetes events (`kubectl get events`) tell the full story.
 - This is a **GitLab/SDP** skill — use `kubectl`, `glab`, `git`, not `gh`.
 - Applies to cedanl / SURF SDP repos.
