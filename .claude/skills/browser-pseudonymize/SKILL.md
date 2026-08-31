@@ -138,7 +138,11 @@ MinIO object (keyed by a derived UUID) is a separate pattern — see
   pseudonyms for a known BSN (the BSN space is small and brute-forceable). The
   browser password (Fernet) is fine client-side because it's the user's own.
 - **Enforce a strong key** — the server-side pseudonymization key must be
-  ≥64 bytes (HMAC-SHA256 block size); `load_key()` raises below that.
+  ≥64 bytes; `load_key()` raises below that. This is a CEDA floor, *not* an HMAC
+  requirement: HMAC takes any key length (shorter is zero-padded to the 64-byte
+  block size, longer is hashed down to 32 — RFC 2104). What matters is **entropy**,
+  so generate with `secrets.token_bytes(64)` — a 64-*character* hex string carries
+  only 32 bytes of entropy, and a passphrase far less.
 - **Latch `st_js_blocking` in `session_state`** — gating on `st.button()` drops
   the async result; always guard the result parse.
 - Keep JS in **separate template files** injected via a helper, not one inline

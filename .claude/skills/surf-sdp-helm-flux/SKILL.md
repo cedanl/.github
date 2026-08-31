@@ -7,11 +7,10 @@ description: >-
   or deploy Helm charts, debugs a failing or stuck HelmRelease, sees Flux
   reconciliation problems, hits 401/404 errors pulling charts from an OCI
   registry, encounters chart version mismatches in deploy verification, sets
-  up cross-pipeline triggers, work on a Kubernetes CronJob or on-demand Job Helm
+  up cross-pipeline triggers, works on a Kubernetes CronJob or on-demand Job Helm
   template for scheduled/triggered batch runs, or mentions SDP, Harbor,
   cr.surf.nl, FluxCD, HelmRepository, or HelmRelease — even if they only paste a
-  pipeline log or
-  kubectl output without an explicit question.
+  pipeline log or kubectl output without an explicit question.
 ---
 
 # SURF SDP Helm/Flux Deployment Conventions
@@ -408,7 +407,10 @@ The `instroom` templates have field errors worth correcting before reuse:
   YAML key — the second silently wins), and sets
   `ttlSecondsAfterFinished` from `activeDeadlineSeconds`, which conflates
   "how long the finished object lingers" with "how long the run may take". Set
-  `ttlSecondsAfterFinished` from its own value.
+  `ttlSecondsAfterFinished` from its own value — and keep it generous: the TTL
+  deletes the Job **and its pods**, taking `kubectl logs` with them. A nightly ETL
+  that fails at 02:00 under a short TTL has no logs left by morning, so allow at
+  least a working day (or ship logs off-cluster).
 - **`job_<svc>.yaml`** carries `successfulJobsHistoryLimit` /
   `failedJobsHistoryLimit` — these are **CronJob-only** fields and are invalid on
   a `kind: Job`. Drop them from the Job spec.
