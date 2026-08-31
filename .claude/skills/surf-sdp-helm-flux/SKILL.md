@@ -110,6 +110,25 @@ tenant namespace. A HelmRepository with a completely **empty `Status:`
 section and no events** in `kubectl describe` is the classic sign it never
 successfully connected at all.
 
+**Blanket rule: always set `secretRef.namespace: flux-system` explicitly.**
+The Harbor credentials secret lives in the `flux-system` namespace, not in
+the tenant namespace. A `secretRef` without `namespace:` defaults to the
+HelmRepository's own namespace, so Flux fails authentication and you get a
+plain 404 on the registry API (`GET /v2/.../tags/list` → 404) — which looks
+exactly like "chart doesn't exist." Check the secretRef namespace before
+chasing the chart path:
+
+```yaml
+spec:
+  interval: 1m
+  provider: generic
+  secretRef:
+    name: sdp-harbor-credentials
+    namespace: flux-system   # ← required; secret lives in flux-system
+  type: oci
+  url: oci://cr.surf.nl/<project>/<chart>
+```
+
 ## Deploy verification: stuck vs. slow
 
 The verify job fails with something like:
@@ -152,6 +171,140 @@ kubectl annotate helmrelease <name> \
 ```
 
 (`--overwrite` is required; the annotation usually already exists.)
+
+## Deployment is fine but the pipeline/ingress fails
+
+Several failures look like the deployment broke when the HelmRelease is
+actually healthy. Establish the HelmRelease state *before* acting on any of
+these.
+
+### `kubernetes:verify-up` fails on every run — known false-negative
+
+**Symptom:** `kubernetes:verify-up` fails with `Kubernetes namespace  does
+not exist` (note the double space — the namespace variable resolved to
+empty) on every single pipeline run, regardless of whether the deploy
+succeeded. `diff`, `dry-run`, `helm:publish`, `docker:docker-build` are all
+green.
+
+**Cause:** the component's namespace variable isn't set for the job — a
+defect in the component wiring, not in your deployment. It has no relation
+to whether the HelmRelease reached Ready.
+
+**Action:** don't chase it. Verify deployment state directly:
+```bash
+kubectl get helmrelease <name> -n <ns>   # Ready=True?
+kubectl get kustomization -n flux-system  # Ready=True?
+```
+Optionally give the job `allow_failure: true`, or set the missing namespace
+variable, so it stops being a red herring on every pipeline.
+
+### `kubernetes:diff` fails — ENVIRONMENT_NAME vs ENVIRONMENT_CLUSTER
+
+**Symptom:** `Environment 'development', does not have Flux Resource or
+Kubernetes namespace.` You *did* configure the environment.
+
+**Cause:** the workspace sets `ENVIRONMENT_CLUSTER` (the logical cluster
+name, e.g. `development`) but the Flux components look up the environment by
+its *provisioned* GitLab name (which may differ, e.g. `odw-chat-development`).
+
+**Fix:** set both variables in `workflow.rules`, mapping the logical cluster
+to the provisioned environment name:
+```yaml
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      variables:
+        ENVIRONMENT_CLUSTER: "development"
+        ENVIRONMENT_NAME: "odw-chat-development"   # must match provisioned env
+```
+
+### Ingress instant 404 despite healthy pod (middleware annotation)
+
+**Symptom:** `curl https://<app>.<env>.sdp.surf.nl/` returns an instant
+`404 page not found` (Go's `http.NotFound`) — not a timeout. Pod/Service
+are healthy (verify with a debug pod curling the Service inside the
+namespace).
+
+**Cause:** the Ingress's `traefik.ingress.kubernetes.io/router.middlewares`
+annotation references a Middleware Traefik can't resolve — misnamed,
+never created (only applied ad-hoc, not committed to `manifests/`), or it
+is a *platform-injected* middleware (e.g. `infra-traefik-<class>-global-ratelimit`,
+auto-added by the platform's admission webhook) that doesn't exist on that
+specific cluster. Same-namespace refs use the short object name — Traefik
+computes the `<namespace>-<name>@kubernetescrd` prefix itself:
+```bash
+kubectl get ingress <name> -n services-<app> -o jsonpath='{.metadata.annotations.traefik\.ingress\.kubernetes\.io/router\.middlewares}'
+```
+**Isolate** by stripping the annotation entirely:
+```bash
+kubectl annotate ingress <name> -n services-<app> traefik.ingress.kubernetes.io/router.middlewares-
+```
+If the route then resolves, the middleware chain was the fault. A missing
+platform-provided middleware is a platform-side gap — report it; you have
+no RBAC to inspect/confirm the injected middleware (`kubectl get middleware
+-n infra-traefik-internal` → `Forbidden`).
+
+### Cross-namespace ingress 504 / hang (NetworkPolicy block)
+
+**Symptom:** `curl https://<app>.<env>.sdp.surf.nl/` hangs and 504s after
+~30s. Pod is `1/1 Running`, HelmRelease Ready, Service endpoints healthy,
+and `kubectl port-forward` to the pod works fine. The 504 only happens via
+the real ingress URL. TLS handshake completes (Traefik answers) but the
+backend never responds.
+
+**Cause:** SDP enforces cross-namespace default-deny (Cilium). Traefik runs
+in `infra-traefik-external`/`infra-traefik-internal`, your app in
+`services-<app>` — the hop between them is silently dropped. Tenants have
+**no RBAC** over Cilium's own CRDs (`kubectl auth can-i create
+ciliumnetworkpolicies -n services-<app>` → no), but standard
+`networking.k8s.io/v1` `NetworkPolicy` is allowed and is purely additive —
+an allow rule can never make things more restrictive.
+
+**Self-service fix:** commit a namespaced `NetworkPolicy` allowing ingress
+from the Traefik namespaces (GitOps-tracked so Flux doesn't prune it):
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: <app>-allow-traefik-ingress
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infra-traefik-external
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infra-traefik-internal
+      ports:
+        - protocol: TCP
+          port: <container-port>
+```
+An **egress-only** policy (`policyTypes: [Egress]`) does NOT cause or fix
+this — it has no bearing on inbound traffic. The rule must be `Ingress`.
+
+### Container startup `ModuleNotFoundError` — Dockerfile COPY gap
+
+**Symptom:** pod in CrashLoopBackOff; `kubectl logs --previous` shows
+`ModuleNotFoundError: No module named 'core'` (or any app module) at import
+time. The image built fine — it just misses runtime modules.
+
+**Cause:** a Dockerfile `COPY` is missing app module directories, or the
+build lacks a system package uv needs for git dependencies:
+```dockerfile
+COPY pyproject.toml uv.lock ./
+COPY server.py ./
+COPY core/ ./core/            # ← often omitted
+COPY routes/ ./routes/
+...
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libpq-dev git   # ← git required when uv.lock has git deps
+```
+Fix the Dockerfile and push a new commit (new build number bypasses the
+poisoned release).
 
 ## Pipeline conventions
 
@@ -268,13 +421,17 @@ above) before committing.
 | Symptom | Likely cause | First action |
 |---|---|---|
 | 401 pulling chart from cr.surf.nl | HelmRepository missing/wrong `secretRef` | `kubectl describe helmrepository <n> -n <ns>`; check secret exists |
-| 404 / HEAD error for chart that exists | `+` vs `_` tag mismatch | `scripts/check-oci-tag.sh` |
+| 404 / HEAD error for chart that exists | `+` vs `_` tag mismatch **or** secretRef without `namespace: flux-system` | `scripts/check-oci-tag.sh`; check secretRef namespace |
 | HelmRepository has empty `Status:` | Never connected (auth/URL) | Fix secretRef/URL in source repo, reconcile source |
 | Verify job: version mismatch + timeout | In progress **or** rolled back | `kubectl get hr <n> -n <ns>`; check for `UpgradeFailed` |
 | HelmRelease stuck after failures | Remediation retries exhausted | New build, or `scripts/force-reconcile.sh` |
 | `flux: unknown shorthand flag 'n'` | InfluxDB flux binary | Use kubectl annotate fallback |
 | Protected-branch job never picked up | Runner missing Protected flag | GitLab Admin → Runners → Protected ✓ |
 | Ingress `either defaultBackend or rules must be specified` | Component enabled with empty ingress values | Disable component or supply ingress host in values |
+| verify-up fails with `Kubernetes namespace  does not exist` (double space) | Known false-negative: namespace variable empty | Don't trust it; verify HelmRelease status directly |
+| Cross-namespace ingress 504 / hang, port-forward works | SDP default-deny NetworkPolicy blocks Traefik→app | Add namespaced `NetworkPolicy` allowing ingress from `infra-traefik-*` |
+| Ingress instant 404 despite healthy pod | Traefik middleware annotation doesn't resolve | Strip the middleware annotation to isolate |
+| `kubernetes:diff` "does not have Flux Resource or Kubernetes namespace" | ENVIRONMENT_NAME doesn't match provisioned env name | Map `ENVIRONMENT_CLUSTER` → actual env via `ENVIRONMENT_NAME` |
 
 For the full diagnostic command runbook (describe/get/watch sequences,
 suspend/resume, checking Kustomization sync, job log retrieval), read
@@ -303,5 +460,16 @@ suspend/resume, checking Kustomization sync, job log retrieval), read
   The reference `instroom` chart has field bugs (duplicate
   `successfulJobsHistoryLimit`, wrong `ttlSecondsAfterFinished`, CronJob-only keys
   on a `Job`) — fix them if you reuse it.
+- **`secretRef.namespace: flux-system` is mandatory** on HelmRepository — without
+  it Flux auths in the wrong namespace and you get a 404 that looks like a
+  missing chart.
+- **`kubernetes:verify-up` has a known false-negative** (empty namespace var) —
+  before acting on it, check the HelmRelease/Kustomization status directly.
+- **Ingress 404 (instant) ≠ 504 (timeout):** instant 404 = middleware annotation
+  that doesn't resolve; ~30s 504 with healthy pod = cross-namespace NetworkPolicy
+  block. Add an `Ingress`-type namespaced `NetworkPolicy` for the Traefik
+  namespaces; an egress-only policy won't fix inbound traffic.
+- **ENVIRONMENT_NAME must map to the provisioned env name** when
+  `ENVIRONMENT_CLUSTER` differs (see `kubernetes:diff` failures).
 - This is a **GitLab/SDP** skill — use `glab`/kubectl, not `gh` or GitHub Actions.
 - Applies to cedanl / SURF SDP repos.
