@@ -17,7 +17,7 @@ order (prereqs first):
 
 ## Prereqs / access (docs/access.md)
 - SURF account (`@surf.nl`), on the **SURF VPN (eduVPN)**.
-- GitLab is `https://git.ia.surfsara.nl/surf-internal/npuls/ceda/` — **not** github.com.
+- GitLab is `https://git.ia.surf.nl/surf-internal/npuls/ceda/` — **not** github.com.
 - SSH: Ed25519 key (`ssh-keygen -t ed25519`), add pubkey to GitLab (Authentication & Signing).
 - Tools (install via your OS package manager — `brew` on macOS, or the Linux
   equivalent): `hadolint`, `yamllint`, `k9s`, `kubectl`, `kubectx`, `kubelogin`,
@@ -26,7 +26,7 @@ order (prereqs first):
 ## 1. Create the GitLab repo (needs SDP-admin merge)
 The repo is declared as **Terraform** in the `surf-internal/gitlab-config` repo:
 ```bash
-git clone git@git.ia.surfsara.nl:surf-internal/gitlab-config.git
+git clone git@git.ia.surf.nl:surf-internal/gitlab-config.git
 cd gitlab-config && git checkout -b create_repository_ceda_<app>
 # edit terraform/npuls/ceda/main.tf — add a module block:
 ```
@@ -57,7 +57,7 @@ Infra tweaks (e.g. Ingress port propagation, which environments) may need an MR 
 
 ## 3. Point your code at the new repo
 ```bash
-git remote set-url origin git@git.ia.surfsara.nl:surf-internal/npuls/ceda/<app>.git
+git remote set-url origin git@git.ia.surf.nl:surf-internal/npuls/ceda/<app>.git
 ```
 (The runbook has a full rebase dance to start `main` clean when migrating from a
 GitHub repo — follow docs/streamlit-setup.md carefully; don't improvise a
@@ -81,12 +81,23 @@ git mv charts/1cijfer-ho charts/<app>           # Chart.yaml name field is manua
 ## 5. Wire up environments (GitLab web UI)
 For each of development/testing/staging/playground, in **Operate → Environments → edit**:
 ```
-External URL: https://<app>.<env>.sdp.surf.nl   (dev uses .dev., test uses .test.)
+External URL: https://<app>.<subdomain>.sdp.surf.nl
 GitLab agent: <env>
 Kubernetes namespace: services-<app>
 Flux resource: <app>
 ```
 (Note: this is web-UI-only — there is currently no code-based way to set it.)
+
+**Manifest directory names do NOT equal the URL subdomain.** Map them explicitly —
+`manifests/development` → `.dev.` and `manifests/staging` → `.stage.` are the two common traps.
+
+| `manifests/` dir | URL subdomain | Example URL |
+|---|---|---|
+| `development`  | `.dev.` | `https://<app>.dev.sdp.surf.nl` |
+| `test`         | `.test.` | `https://<app>.test.sdp.surf.nl` |
+| `staging`      | `.stage.` | `https://<app>.stage.sdp.surf.nl` |
+| `playground`   | `.playground.` | `https://<app>.playground.sdp.surf.nl` |
+| `production`   | (none) | `https://<app>.sdp.surf.nl` |
 
 ## Deploy model: Flux + Kustomize (corrects plain-Helm assumptions)
 `manifests/base/` holds Flux `helmrelease.yaml` + `helmrepo.yaml` +
