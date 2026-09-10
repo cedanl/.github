@@ -10,10 +10,11 @@ Lees dit bestand wanneer je een uiting maakt waarin het logo, de vormentaal of f
 - Ruimte rondom het logo: minimaal zo groot als de letter "N" — laat het logo ademen, vooral naast kantlijnen of tekst.
 - De pay-off "Onderwijs bewegen." staat altijd apart van het logo (niet eraan vast), hoek is vrij te kiezen afhankelijk van het medium.
 - Bij events/initiatieven mag een gekleurd label aan het logo gekoppeld worden.
+- Een indicatief beeldmerk (pulserende stippen, licht + donker) staat in `assets/logos/`. Dit is een benadering — vervang het door het officiële bestand uit de communicatiekit zodra beschikbaar, en pas het niet zelf aan.
 
 ## Vormentaal — toepassing
 
-De vijf kernvormen (zie design-tokens.json voor de lijst) verbeelden beweging en pulseren. Gebruik ze op twee manieren:
+De vijf kernvormen (zie design-tokens.json voor de lijst; kant-en-klare SVG's in `assets/shapes/`) verbeelden beweging en pulseren. Gebruik ze op twee manieren:
 
 1. **Ondersteunend**: naast een one-liner of statement, om de boodschap kracht bij te zetten (bijv. een pijl bij "vooruit helpen", een boog bij "verbinding").
 2. **Decoratief**: als maskers over foto's of kleurvlakken, door vormen en kleuren te combineren tot een spannende layout (zie de programmaboekjes-covers in het huisstijlhandboek als voorbeeld).
