@@ -94,8 +94,8 @@ geen Notion. Anders heb je de drift terug, alleen omgekeerd. Vandaar: `source: s
 org-scope, en wijzigen gaat via review.
 
 Zonder deze verwijzing drift een reference ten opzichte van z'n bron en ontstaan er stille
-varianten die niemand samenvoegt. Het duplicaat `vormgever-npuls-huisstijl` / `-2` is precies
-die failure mode.
+varianten die niemand samenvoegt. Het inmiddels samengevoegde `vormgever-npuls-huisstijl` (dat
+een tijd naast een `-2`-variant bestond) is precies die failure mode.
 
 **Bewust niet toegevoegd:** een `source_checked`-datum met een validator die klaagt na N
 maanden. Bij een externe url is drift niet machinaal te detecteren, dus zou je onderhoud

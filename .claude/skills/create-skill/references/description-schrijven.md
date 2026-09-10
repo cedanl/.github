@@ -110,8 +110,8 @@ naar de bestaande wijst, en de bestaande krijgt er een die terugwijst — in dez
 dat niet, dan groeit de collectie en verslechtert de activatie tegelijk.
 
 Bekende overlappen in de huidige collectie, bruikbaar als testgeval:
-`vormgever-npuls-huisstijl` / `-2`, `generate_slides_retro` / `generate-slides-retro-simple`,
-`write-issue` / `write-issue-cowork`.
+`vormgever-npuls-huisstijl` (had een tijd een `-2`-duplicaat, inmiddels samengevoegd),
+`generate_slides_retro` / `generate-slides-retro-simple`, `write-issue` / `write-issue-cowork`.
 
 ## Toetsen voor je verder gaat
 

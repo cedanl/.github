@@ -111,8 +111,9 @@ Werkvolgorde is dus **extern eerst, opinioneren als tweede stap**.
 `source` nooit leeg laten: leeg betekent tegelijk "geen bron" en "nog niet ingevuld", en een
 validator kan die twee niet onderscheiden. `self` is een expliciete claim, met consequentie:
 dan mag dezelfde inhoud nergens anders staan — geen wiki, geen README-sectie — en de skill
-hoort op `scope: org` met wijziging via review. Het duplicaat `vormgever-npuls-huisstijl` /
-`-2` is precies de failure mode die hiermee wordt afgevangen.
+hoort op `scope: org` met wijziging via review. Het inmiddels samengevoegde
+`vormgever-npuls-huisstijl` (dat een tijd naast een `-2`-variant bestond) is precies de
+failure mode die hiermee wordt afgevangen.
 
 ## Waar dit alles in de frontmatter landt
 
