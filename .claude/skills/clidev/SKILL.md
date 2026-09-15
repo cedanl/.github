@@ -106,7 +106,8 @@ Gebruik altijd de `.np-bg` class met `background-image`. Nooit `background:` in 
 | `Slide10.PNG` | Data / statistieken | Wit links voor content, decoratief kleurenpaneel rechts in background — beperk content-grid tot `max-width: 62%` |
 | `Slide11.PNG` | Genummerd proces / lijst | Oranje golf links als decoratie, 4 horizontale balken rechts; layout: titel links 38%, genummerde stap-kaarten rechts 62% |
 | `Slide12.PNG` | Visueel intermezzo | Decoratieve achtergrond met overlappende kleurvlakken; minimale tekst of geen tekst |
-| `Slide13.PNG` / `Slide14.PNG` / `Slide15.PNG` | Hoofdstukdividers | **Witte tekst verplicht** (`color: var(--np-white, #fff)`) — geel / oranje / blauw achtergrond |
+| `Slide13.PNG` | Hoofdstukdivider (geel) | **Donkere tekst verplicht** (`color: var(--np-ink)`) — geel achtergrond, witte tekst heeft te weinig contrast |
+| `Slide14.PNG` / `Slide15.PNG` | Hoofdstukdividers (oranje / blauw) | **Witte tekst verplicht** (`color: var(--np-white, #fff)`) — oranje of blauw achtergrond |
 | `Slide16.PNG` | Over ons / contact | Wit links 60% voor content, roze paneel rechts met Npuls logo |
 | `Slide17.PNG` | Afsluitslide | Kleurrijk mozaïek, geen tekst |
 
@@ -271,7 +272,7 @@ Loop door elke slide in het `.md` bestand:
 2. **Content gewrapped?** — content-slides gebruiken `.fill`, dividers hun eigen wrapper
 3. **Capaciteitslimiet?** — tel bullets, kaartregels en woorden; splits de slide als de limiet overschreden is
 4. **Geen hardcoded kleuren?** — zoek op `#` gevolgd door 3 of 6 hex-tekens; vervang door `var(--np-*)`
-5. **Witte tekst op dividers?** — Slide13/14/15 vereisen `color: var(--np-white, #fff)` op titels
+5. **Tekstkleur op dividers?** — Slide14/15 (oranje/blauw): `color: var(--np-white, #fff)`. Slide13 (geel): `color: var(--np-ink)` — witte tekst op geel heeft onvoldoende contrast
 6. **Mermaid schaal?** — elk mermaid-blok heeft `{scale: 0.5}` of lager
 7. **Illustratienamen?** — controleer exacte bestandsnaam als je niet zeker bent
 
@@ -368,7 +369,7 @@ Controleer of de `allowed_combinations` ongewijzigd zijn. Werk verder met de waa
 - **Achtergronden**: altijd `<div class="np-bg" style="background-image: ...">`, nooit `background:` in de frontmatter
 - **Kleuren**: altijd `var(--np-*)`, nooit een losse hex-waarde
 - **Content**: wikkel in `.fill` (of een van de titel/divider-patronen)
-- **Hoofdstukslides** (Slide13/14/15): altijd `color: var(--np-white, #fff)` op titels
+- **Hoofdstukslides** Slide14/15 (oranje/blauw): `color: var(--np-white, #fff)` op titels. Slide13 (geel): `color: var(--np-ink)` — witte tekst op geel heeft onvoldoende contrast
 - **Afsluitslide** (Slide17): geen tekst, alleen achtergrond
 - **Agenda slide** (Slide2): content rechts plaatsen, niet links
 - **Code highlighting**: `{1|2-3|all}` syntax niet in een `v-click` wrapper
