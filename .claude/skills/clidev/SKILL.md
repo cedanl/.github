@@ -372,6 +372,7 @@ Controleer of de `allowed_combinations` ongewijzigd zijn. Werk verder met de waa
 - **Hoofdstukslides** Slide14/15 (oranje/blauw): `color: var(--np-white, #fff)` op titels. Slide13 (geel): `color: var(--np-ink)` — witte tekst op geel heeft onvoldoende contrast
 - **Afsluitslide** (Slide17): geen tekst, alleen achtergrond
 - **Agenda slide** (Slide2): content rechts plaatsen, niet links
+- **Bulletlijsten in HTML-blokken**: gebruik **nooit** markdown `- item` syntax binnen een `<div>`. Gebruik in plaats daarvan altijd expliciete `<ul><li>item</li></ul>` HTML. Markdown bullets worden door Vue omgezet naar `<li>` elementen zonder sluitende tag, wat de dev-server breekt
 - **Code highlighting**: `{1|2-3|all}` syntax niet in een `v-click` wrapper
 - **Overflow**: splits slide als content niet past; verklein font pas als laatste redmiddel (min `0.8rem`)
 
