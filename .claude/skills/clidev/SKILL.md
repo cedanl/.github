@@ -93,14 +93,22 @@ Gebruik altijd de `.np-bg` class met `background-image`. Nooit `background:` in 
 <div class="np-bg" style="background-image: url(/npuls/powerpoint_slides/Slide3.PNG);"></div>
 ```
 
-| Bestand | Gebruik | Bijzonderheden |
-|---------|---------|----------------|
-| `Slide1.PNG` | Titelslide | |
-| `Slide2.PNG` | Agenda / Over ons | Tekst RECHTS (afbeelding links) |
-| `Slide3.PNG` | Standaard contentslide | |
-| `Slide4.PNG`–`Slide12.PNG` | Varianten content | Vrij te gebruiken |
-| `Slide13.PNG` / `Slide14.PNG` / `Slide15.PNG` | Hoofdstukdividers | Witte tekst verplicht |
-| `Slide17.PNG` | Afsluitslide | Geen tekst |
+| Bestand | Gebruik | Layout / bijzonderheden |
+|---------|---------|------------------------|
+| `Slide1.PNG` | Titelslide | Gecentreerde tekst, Npuls logo links boven in background |
+| `Slide2.PNG` | Agenda | Tekst RECHTS: `margin-left: 42%`, geometrische vormen links zijn background |
+| `Slide3.PNG` | Standaard contentslide | `.fill` wrapper, oranje boog rechtsonder als decoratie |
+| `Slide4.PNG` / `Slide5.PNG` | Variant contentslide | Idem Slide3, kleinere boogvariant; onderling uitwisselbaar |
+| `Slide6.PNG` | Emphasis / citaatslide | Volledig oranje achtergrond — **witte tekst verplicht**, gebruik Cooper Light (`var(--np-font-secondary)`) voor citaten |
+| `Slide7.PNG` | Afbeelding links | Roze rechthoek links ~40% voor foto/screenshot, content wrapper rechts |
+| `Slide8.PNG` | Afbeelding rechts | Roze rechthoek rechts ~40% voor foto/screenshot, content wrapper links |
+| `Slide9.PNG` | Vergelijking / 2-koloms | Blauw links 40% voor titel (witte tekst), grijs rechts 60% voor kaarten; gebruik CSS grid `40% 60%` |
+| `Slide10.PNG` | Data / statistieken | Wit links voor content, decoratief kleurenpaneel rechts in background — beperk content-grid tot `max-width: 62%` |
+| `Slide11.PNG` | Genummerd proces / lijst | Oranje golf links als decoratie, 4 horizontale balken rechts; layout: titel links 38%, genummerde stap-kaarten rechts 62% |
+| `Slide12.PNG` | Visueel intermezzo | Decoratieve achtergrond met overlappende kleurvlakken; minimale tekst of geen tekst |
+| `Slide13.PNG` / `Slide14.PNG` / `Slide15.PNG` | Hoofdstukdividers | **Witte tekst verplicht** (`color: var(--np-white, #fff)`) — geel / oranje / blauw achtergrond |
+| `Slide16.PNG` | Over ons / contact | Wit links 60% voor content, roze paneel rechts met Npuls logo |
+| `Slide17.PNG` | Afsluitslide | Kleurrijk mozaïek, geen tekst |
 
 ## Content centreren
 
@@ -314,6 +322,45 @@ ls public/npuls/powerpoint_illustrations/ | grep -i "zoekwoord"
 <img src="/npuls/powerpoint_illustrations/data.svg"
      style="position: absolute; bottom: 2rem; right: 2rem; width: 140px;" />
 ```
+
+### Bibliotheek: geïllustreerde SVG's per thema
+
+Elke slide met tekst-links en illustratie-rechts gebruikt `np-grid-2` met `align-items: center` en de `<img>` in de rechtse kolom met `width: 180px` à `220px`.
+
+| Bestand | Afmeting | Kleuren | Gebruik |
+|---------|----------|---------|---------|
+| `learninganalystics.svg` | 220×240px | blauw + roze + zwart | Leeranalytics, datadashboards, studiegedrag in beeld |
+| `data.svg` | 129×160px | groen + geel + roze | Data-architectuur, databases, informatiestapels |
+| `hersenen.svg` | 168×140px | lichtblauw blob + zwart | Neurowetenschap, leerprocessen, cognitie, denken |
+| `brains.svg` | — | — | Leerstrategieën, evidence-based onderwijs (alias van hersenen-variant) |
+| `hat.svg` | 160×144px | geel + blauw + roze | Afstuderen, kwalificaties, opleidingsniveau, mijlpalen |
+| `hands.svg` | 160×126px | geel + zwart + roze | Samenwerking, ondersteuning, community, partnerschap |
+| `Slot.svg` | 720×720px | geel + zwart | Privacy, dataveiligheid, toegangsbeheer, AVG/GDPR |
+
+Kies een illustratie waarvan de kleuren de huisstijlkleuren van de achtergrond aanvullen, niet herhalen. Op Slide3 (wit/licht) werken alle illustraties. Op Slide9 (blauw links) gebruik bij voorkeur een illustratie met geel of groen als dominante kleur.
+
+## Kleurregels
+
+Lees altijd `vormgever-npuls-huisstijl/references/design-tokens.json` voor je genereert om de actuele `allowed_combinations` te controleren.
+
+**Minimumregel:** elk deck moet minstens **3 primaire Npuls-kleuren** zichtbaar hebben over alle slides. Primaire kleuren: oranje (`var(--np-orange)`), blauw (`var(--np-blue)`), roze (`var(--np-pink)`), geel (`var(--np-yellow)`), groen (`var(--np-green)`), zwart (`var(--np-ink)`).
+
+**Toegestane combinaties** (achtergrond → tekst/accenten):
+- blauw achtergrond → geel, roze
+- roze achtergrond → blauw, groen, zwart, oranje
+- geel achtergrond → oranje, zwart, blauw
+- groen achtergrond → roze, zwart
+- oranje achtergrond → zwart, roze (= Slide6)
+
+Na het genereren: tel de primaire kleuren die over het deck aanwezig zijn. Voeg een badge, kaartaccent of illustratie toe als het minimum niet gehaald is.
+
+### Stap 0 bij genereren: lees design-tokens
+
+```bash
+cat ~/.claude/skills/vormgever-npuls-huisstijl/references/design-tokens.json
+```
+
+Controleer of de `allowed_combinations` ongewijzigd zijn. Werk verder met de waarden uit dat bestand, nooit vanuit geheugen.
 
 ## Technische vereisten
 
