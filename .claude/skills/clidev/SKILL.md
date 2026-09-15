@@ -253,21 +253,54 @@ Zet HTML-componenten (kaarten, grids, pipelines) na de markdown-content, niet er
 
 ## Controleer en herstel na genereren
 
-Na het aanmaken of aanpassen van een presentatie, loop je door elke slide en controleer je het volgende. Herstel problemen direct — lever pas op als alle checks slagen.
+Na het aanmaken of aanpassen van een presentatie voer je twee checks uit: eerst een structurele pass op de broncode, dan een visuele pass op geëxporteerde PNG-bestanden. Lever pas op als beide passes schoon zijn.
 
-**Per slide:**
+### Stap 1: Structurele check (altijd)
+
+Loop door elke slide in het `.md` bestand:
 
 1. **Achtergrond aanwezig?** — elke slide (behalve afsluitslide) heeft een `np-bg` div
 2. **Content gewrapped?** — content-slides gebruiken `.fill`, dividers hun eigen wrapper
 3. **Capaciteitslimiet?** — tel bullets, kaartregels en woorden; splits de slide als de limiet overschreden is
-4. **Geen hardcoded kleuren?** — grep mentaal door de slide op `#` gevolgd door 3 of 6 hex-tekens
+4. **Geen hardcoded kleuren?** — zoek op `#` gevolgd door 3 of 6 hex-tekens; vervang door `var(--np-*)`
 5. **Witte tekst op dividers?** — Slide13/14/15 vereisen `color: var(--np-white, #fff)` op titels
 6. **Mermaid schaal?** — elk mermaid-blok heeft `{scale: 0.5}` of lager
-7. **Illustratienamen?** — controleer exacte bestandsnaam met `ls public/npuls/powerpoint_illustrations/ | grep -i "zoekwoord"` als je niet zeker bent
+7. **Illustratienamen?** — controleer exacte bestandsnaam als je niet zeker bent
 
-**Na de check:**
+Herhaal totdat een volledige pass schoon is.
 
-Als je één of meer problemen hebt gevonden en hersteld, loop je de lijst opnieuw door. Herhaal totdat je een volledige pass zonder problemen haalt. Meld daarna aan de gebruiker welke aanpassingen er gedaan zijn.
+### Stap 2: Visuele check via PNG-export (als Playwright beschikbaar is)
+
+Exporteer elke slide als PNG en lees de afbeeldingen om visueel te verifiëren:
+
+```bash
+# Controleer of playwright-chromium aanwezig is
+ls node_modules/playwright-chromium 2>/dev/null && echo "aanwezig" || echo "niet aanwezig"
+```
+
+Als niet aanwezig: vraag de gebruiker het te installeren via PowerShell (niet Git Bash):
+
+```powershell
+cd C:\pad\naar\clidev-presentaties
+npm i -D playwright-chromium
+```
+
+Als aanwezig: exporteer naar PNG en lees elke slide:
+
+```bash
+npx slidev export YYMMDD_onderwerp.md --format png --output ./exports/YYMMDD_onderwerp/
+```
+
+Lees daarna elke PNG met het Read-gereedschap en controleer visueel:
+
+- **Overflow** — wordt tekst afgeknipt of valt content buiten de slide?
+- **Wit op wit** — is tekst op een lichte achtergrond leesbaar?
+- **Donker op donker** — zijn divider-slides goed leesbaar?
+- **Kaartbalans** — zijn kaarten in een grid gelijkmatig gevuld?
+- **Achtergrond zichtbaar** — komt de PNG-achtergrond correct door?
+- **Illustraties** — laden SVG-illustraties op de juiste plek en grootte?
+
+Herstel problemen in het `.md` bestand, exporteer opnieuw, en herhaal totdat een volledige visuele pass schoon is. Meld daarna aan de gebruiker wat er gecorrigeerd is.
 
 ## Illustraties
 
