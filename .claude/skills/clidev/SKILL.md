@@ -457,14 +457,24 @@ npx slidev export YYMMDD_onderwerp.md --format pptx
 
 Druk op `P` in de browser voor presentatormodus.
 
-## Vaste CEDA-slide
+## Vaste CEDA-slide (intro) en vaste afsluitslide (links)
 
-Elke presentatie die met deze skill wordt gemaakt bevat één vaste, woordelijk identieke slide die uitlegt wie CEDA is. Doel: elke luisteraar krijgt dezelfde, consistente uitleg over CEDA, ongeacht het onderwerp van de presentatie.
+Elke presentatie die met deze skill wordt gemaakt bevat **twee** vaste, woordelijk identieke slides: een introslide die uitlegt wie CEDA is, en een afsluitslide met de CEDA-links. Bewust gesplitst — de introslide bevat geen links, de afsluitslide wel, zodat de links op het scherm staan op het moment dat het publiek vragen stelt.
 
-- **Locatie in het deck:** vroeg — direct na de agenda (slide 3), vóór de eerste hoofdstukdivider. Niet aan het einde: de luisteraar weet dan al wie CEDA is voordat de inhoud begint, in plaats van het pas te horen als iedereen al weg wil.
-- **Bron:** deze slide staat al kant-en-klaar in `_template.md` (sectie "VASTE CEDA-SLIDE"). Kopieer hem woordelijk mee wanneer je `_template.md` gebruikt als basis voor een nieuwe presentatie — verzin geen eigen versie en parafraseer de tekst niet.
-- **Niet aanpassen:** titel, tekst, bullets en de contactregel blijven exact zoals in `_template.md`. Alleen de achtergrond (`Slide16.PNG`) en de structuur (50/50-grid, roze paneel met Npuls-logo rechts) horen hierbij; dat is al correct in de template.
-- **Als een presentatie niet uit `_template.md` is gestart** (bijvoorbeeld een oudere presentatie die je aanpast): haal de slide alsnog woordelijk over uit `_template.md` en voeg hem toe op de juiste plek, in plaats van er zelf een te schrijven.
+**Introslide — "Wie is CEDA"**
+- **Locatie:** vroeg — direct na de agenda (slide 3), vóór de eerste hoofdstukdivider. Niet aan het einde: de luisteraar weet dan al wie CEDA is voordat de inhoud begint.
+- **Inhoud:** titel, subtitel en drie bullets over wat CEDA doet. **Geen links** — die horen alleen op de afsluitslide, niet dubbel.
+- **Achtergrond:** `Slide16.PNG`, structuur 50/50-grid, roze paneel met Npuls-logo rechts.
+
+**Afsluitslide — "Blijf in contact"**
+- **Locatie:** altijd de allerlaatste slide van het deck.
+- **Inhoud:** titel, korte uitnodigingstekst, en drie kaarten (GitHub / Community / Email) met de CEDA-links.
+- **Achtergrond:** `Slide1.PNG` — bewust dezelfde achtergrond als de titelslide (bookend-effect); dit is géén fout, niet vervangen door `Slide17.PNG`. `Slide17.PNG` (het kleurrijke mozaïek) is ongeschikt als afsluitslide met tekst omdat de veelkleurige achtergrond leesbaarheid in de weg zit.
+
+**Voor beide geldt:**
+- **Bron:** beide slides staan al kant-en-klaar in `_template.md` (secties "VASTE CEDA-SLIDE" en "VASTE AFSLUITSLIDE"). Kopieer ze woordelijk mee wanneer je `_template.md` gebruikt als basis voor een nieuwe presentatie — verzin geen eigen versie en parafraseer de tekst niet.
+- **Niet aanpassen:** titel, tekst, bullets/kaarten blijven exact zoals in `_template.md`.
+- **Als een presentatie niet uit `_template.md` is gestart** (bijvoorbeeld een oudere presentatie die je aanpast): haal beide slides alsnog woordelijk over uit `_template.md` en voeg ze toe op de juiste plek, in plaats van er zelf een te schrijven.
 - **Uitzondering:** alleen weglaten als de gebruiker dat expliciet vraagt voor een specifieke presentatie.
 
 ## Afsluiting na aanmaken presentatie
