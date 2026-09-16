@@ -48,34 +48,14 @@ uitkomst; die leeg laten is beter dan er iets bij verzinnen.
 fout is maar wel een openstaand risico — vraag je alleen naar blinde vlekken, dan blijft die
 onbesproken.
 
-## Wat de agent zelf zag
-
-Ná de vier vragen, nooit ervoor: voeg toe wat jij in deze sessie zag en de deelnemer niet
-noemde. Dit is de enige plek waar jouw waarneming in het bestand komt, en hij staat apart
-onder `## Wat de agent zag`.
-
-Wat hier hoort — alleen dingen die je kunt aanwijzen:
-
-- een skill of hulpmiddel dat niet vuurde terwijl het had gepast, met wat het gescheeld had
-- een correctie die de deelnemer moest geven, en waarop
-- een stap die opnieuw moest, of een omweg die achteraf niet nodig was
-- iets wat gevraagd is en niet geleverd
-
-Wat hier niet hoort: oordelen over de persoon, advies voor de volgende keer, complimenten, en
-alles wat je niet aan een concreet moment in deze sessie kunt ophangen. Geen waarneming? Laat
-de sectie weg.
-
-Leg het voor voordat je wegschrijft, samen met de acties. De deelnemer mag regels schrappen —
-dit is diens terugblik, niet jouw beoordeling.
-
 ## Wat je met de antwoorden doet
 
 - **Overnemen in de woorden van de deelnemer.** Parafraseren maakt het gladder en daarmee
   waardelozer. Ruim hooguit de haperingen op.
 - **Niet oordelen, niet corrigeren.** Klopt iets feitelijk niet, noteer het dan zoals het
   gezegd is; de afwijking tussen beeld en werkelijkheid is zelf een bevinding.
-- **Acties destilleer je uit wat er gezegd is**, plus wat er onder `## Wat de agent zag` staat
-  en is blijven staan. Leg ze voor voor je ze in de checklist zet.
+- **Acties destilleer je uit wat er gezegd is.** Leg ze voor voor je ze in de checklist
+  zet. Nooit uit wat jij er zelf bij bedenkt.
 - **Geen ongevraagd advies over verbruik.** Het tokengetal staat al in de frontmatter; begint
   de deelnemer er zelf over, dan praat je erover, anders niet.
 
