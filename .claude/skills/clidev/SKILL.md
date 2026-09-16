@@ -99,12 +99,12 @@ Gebruik altijd de `.np-bg` class met `background-image`. Nooit `background:` in 
 | `Slide2.PNG` | Agenda | Tekst RECHTS: `margin-left: 42%`, geometrische vormen links zijn background |
 | `Slide3.PNG` | Standaard contentslide | `.fill` wrapper, oranje boog rechtsonder als decoratie |
 | `Slide4.PNG` / `Slide5.PNG` | Variant contentslide | Idem Slide3, kleinere boogvariant; onderling uitwisselbaar |
-| `Slide6.PNG` | Emphasis / citaatslide | Volledig oranje achtergrond — **witte tekst verplicht**, gebruik Cooper Light (`var(--np-font-secondary)`) voor citaten |
+| `Slide6.PNG` | Emphasis / citaatslide | Grotendeels oranje, met een lichtgrijze driehoek linksboven-tot-linksonder (~0-28% breed, punt bij ~28%) — **witte tekst verplicht**, gebruik Cooper Light (`var(--np-font-secondary)`), maar houd alle tekst rechts van ~32% breedte (bijv. `margin-left: 32%` i.p.v. volledig gecentreerd), anders valt witte tekst weg tegen de lichtgrijze driehoek |
 | `Slide7.PNG` | Afbeelding links | Roze rechthoek links ~40% voor foto/screenshot, content wrapper rechts |
 | `Slide8.PNG` | Afbeelding rechts | Roze rechthoek rechts ~40% voor foto/screenshot, content wrapper links |
 | `Slide9.PNG` | Vergelijking / 2-koloms | Blauw links 40% voor titel (witte tekst), grijs rechts 60% voor kaarten; gebruik CSS grid `40% 60%` |
 | `Slide10.PNG` | Data / statistieken | Wit links voor content, decoratief kleurenpaneel rechts in background — beperk content-grid tot `max-width: 62%` |
-| `Slide11.PNG` | Genummerd proces / lijst | Oranje golf links als decoratie, 4 horizontale balken rechts; layout: titel links 38%, genummerde stap-kaarten rechts 62% |
+| `Slide11.PNG` | Genummerd proces / lijst | Oranje golf links als decoratie (vult de volledige hoogte van de linker 38%), 4 horizontale balken rechts; **zet geen titel in de linkerkolom** — de golflijn loopt daar dwars doorheen en overlapt tekst. Plaats eyebrow/titel/subtitel bovenaan de rechterkolom (62%), boven de genummerde stap-kaarten, en laat de linkerkolom leeg als pure decoratie |
 | `Slide12.PNG` | Visueel intermezzo | Decoratieve achtergrond met overlappende kleurvlakken; minimale tekst of geen tekst |
 | `Slide13.PNG` | Hoofdstukdivider (geel) | **Donkere tekst verplicht** (`color: var(--np-ink)`) — geel achtergrond, witte tekst heeft te weinig contrast |
 | `Slide14.PNG` / `Slide15.PNG` | Hoofdstukdividers (oranje / blauw) | **Witte tekst verplicht** (`color: var(--np-white, #fff)`) — oranje of blauw achtergrond |
@@ -201,11 +201,6 @@ Het gegenereerde `.md` bestand moet leesbaar en aanpasbaar zijn voor een collega
 Elke slide begint met een `---` scheidingsteken (of `---` frontmatter voor de eerste). Zet boven elke slide een HTML-commentaar met het type:
 
 ```markdown
-<!-- Slide: Titelslide -->
----
-```
-
-```markdown
 <!-- Slide: Agenda -->
 ---
 ```
@@ -213,6 +208,19 @@ Elke slide begint met een `---` scheidingsteken (of `---` frontmatter voor de ee
 ```markdown
 <!-- Slide: Hoofdstuk 1 - Datakwaliteit -->
 ---
+```
+
+**Let op — de allereerste slide:** de sluitende `---` van de frontmatter is zelf al de scheiding voor slide 1. Zet daar **geen** extra `<!-- comment -->\n---` vóór de content, anders ontstaat een lege spookslide met alleen het commentaar erin (elke volgende PNG-export schuift dan één op). Voor de titelslide komt het commentaar direct na de frontmatter, zonder eigen `---`:
+
+```markdown
+---
+theme: default
+...
+---
+
+<!-- Slide: Titelslide -->
+<div class="np-bg" style="background-image: url(/npuls/powerpoint_slides/Slide1.PNG);"></div>
+...
 ```
 
 **Structuur binnen een slide**
@@ -310,6 +318,28 @@ Lees daarna elke PNG met het Read-gereedschap en controleer visueel:
 - **Illustraties** — laden SVG-illustraties op de juiste plek en grootte?
 
 Herstel problemen in het `.md` bestand, exporteer opnieuw, en herhaal totdat een volledige visuele pass schoon is. Meld daarna aan de gebruiker wat er gecorrigeerd is.
+
+### Stap 3: Skill zelf bijwerken bij een structurele fout
+
+Onderscheid tijdens stap 1 en 2 twee soorten problemen:
+
+- **Eenmalig** — deze presentatie gebruikt bijvoorbeeld te veel bullets, of een verkeerde illustratienaam. Fix alleen het `.md` bestand.
+- **Structureel** — de oorzaak zit in een instructie of voorbeeld in dít SKILL.md-bestand, en zou bij élke presentatie terugkomen die de instructie letterlijk volgt (bijvoorbeeld: een achtergrondtabel-regel die een layout voorschrijft die botst met de decoratie op die achtergrond, een verouderd codevoorbeeld, of een kleurregel die niet meer klopt met `design-tokens.json`).
+
+Bij een structureel probleem volstaat het niet om alleen de presentatie te repareren — de volgende gebruiker (of jijzelf in een volgende sessie) loopt er dan opnieuw tegenaan. Werk in dat geval de skill zelf bij:
+
+1. Corrigeer de betreffende instructie of het voorbeeld in dit SKILL.md-bestand.
+2. Zoek de bronrepo op de machine:
+   ```bash
+   find ~ -maxdepth 6 -type d -iname ".github" 2>/dev/null | while read -r dir; do
+     git -C "$dir" remote -v 2>/dev/null | grep -q "cedanl/.github" && echo "$dir"
+   done
+   ```
+   Gebruik dat pad — niet een geïnstalleerde/gesymlinkte kopie in `~/.claude/skills` of `~/.agents/skills`. Vind je niets, vraag de gebruiker naar het pad of om toestemming om de repo te klonen.
+3. Commit de wijziging in die repo met een duidelijke `fix(clidev): ...` boodschap die het probleem en de oorzaak benoemt, en push naar `main` — zo krijgen andere gebruikers die de skill via `npx skills add cedanl/.github` ophalen de correctie automatisch mee bij hun volgende install/update.
+4. Meld aan de gebruiker expliciet welke skill-regel gecorrigeerd is en dat de fix gepusht is, naast wat er in de presentatie zelf is aangepast.
+
+Vraag bij twijfel of destructieve twijfel (bijv. geen duidelijke bronrepo, of ongecommitte wijzigingen in die repo) eerst bevestiging aan de gebruiker voordat je commit of pusht.
 
 ## Illustraties
 
