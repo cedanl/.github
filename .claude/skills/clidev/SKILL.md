@@ -446,6 +446,16 @@ npx slidev export YYMMDD_onderwerp.md --format pptx
 
 Druk op `P` in de browser voor presentatormodus.
 
+## Vaste CEDA-slide
+
+Elke presentatie die met deze skill wordt gemaakt bevat één vaste, woordelijk identieke slide die uitlegt wie CEDA is. Doel: elke luisteraar krijgt dezelfde, consistente uitleg over CEDA, ongeacht het onderwerp van de presentatie.
+
+- **Locatie in het deck:** direct vóór de afsluitslide (Slide17), na de inhoudelijke slides.
+- **Bron:** deze slide staat al kant-en-klaar in `_template.md` (sectie "VASTE CEDA-SLIDE"). Kopieer hem woordelijk mee wanneer je `_template.md` gebruikt als basis voor een nieuwe presentatie — verzin geen eigen versie en parafraseer de tekst niet.
+- **Niet aanpassen:** titel, tekst, bullets en de contactregel blijven exact zoals in `_template.md`. Alleen de achtergrond (`Slide16.PNG`) en de structuur (60/40-grid, roze paneel met Npuls-logo rechts) horen hierbij; dat is al correct in de template.
+- **Als een presentatie niet uit `_template.md` is gestart** (bijvoorbeeld een oudere presentatie die je aanpast): haal de slide alsnog woordelijk over uit `_template.md` en voeg hem toe op de juiste plek, in plaats van er zelf een te schrijven.
+- **Uitzondering:** alleen weglaten als de gebruiker dat expliciet vraagt voor een specifieke presentatie.
+
 ## Afsluiting na aanmaken presentatie
 
 Na het aanmaken sluit je altijd af met een korte instructie. Vermeld de exacte bestandsnaam en het pad:
