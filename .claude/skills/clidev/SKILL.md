@@ -108,7 +108,7 @@ Gebruik altijd de `.np-bg` class met `background-image`. Nooit `background:` in 
 | `Slide12.PNG` | Visueel intermezzo | Decoratieve achtergrond met overlappende kleurvlakken; minimale tekst of geen tekst |
 | `Slide13.PNG` | Hoofdstukdivider (geel) | **Donkere tekst verplicht** (`color: var(--np-ink)`) — geel achtergrond, witte tekst heeft te weinig contrast |
 | `Slide14.PNG` / `Slide15.PNG` | Hoofdstukdividers (oranje / blauw) | **Witte tekst verplicht** (`color: var(--np-white, #fff)`) — oranje of blauw achtergrond |
-| `Slide16.PNG` | Over ons / contact | Wit links 60% voor content, roze paneel rechts met Npuls logo |
+| `Slide16.PNG` | Over ons / contact | Wit links, roze paneel rechts met Npuls-logo — grens exact gemeten op **50%** (niet 60%: dat is fout gebleken en zorgde voor tekst die over het roze paneel liep). Gebruik `grid-template-columns: 50% 50%` en laat content rechts eindigen ruim vóór 50% (padding-right &ge; 2rem) |
 | `Slide17.PNG` | Afsluitslide | Kleurrijk mozaïek, geen tekst |
 
 ## Content centreren
@@ -421,20 +421,31 @@ Controleer of de `allowed_combinations` ongewijzigd zijn. Werk verder met de waa
 
 ### Mermaid
 
-Een los mermaid-blok rendert standaard **linksuitgelijnd**, niet gecenterd. Wrap het altijd in een flex-container met een lege regel aan weerszijden van het codeblok (nodig om de markdown binnen de div te laten parsen):
+Er is precies **één standaard** voor mermaid-diagrammen. Gebruik altijd dit patroon, ook voor een simpel 2-node-diagram — verzin geen eigen variant:
+
+1. **Centreren** — een los mermaid-blok rendert linksuitgelijnd. Wrap het altijd in een flex-container, met een lege regel aan weerszijden van het codeblok (nodig om de markdown binnen de div te laten parsen).
+2. **Kleur en dikte** — de standaard mermaid-rendering is dunne grijze lijnen die nauwelijks zichtbaar zijn, zeker met `scale: 0.5`. Geef elke node een `classDef` met een lichte paletkleur als vulling en de bijbehorende primaire kleur als rand (zelfde principe als `.np-card.accent-*`), en zet de verbindingslijnen dikker en in een paletkleur via `linkStyle`.
+3. **Geen custom `fontFamily`** in `%%{init: ...}%%` — dat verstoort mermaid's eigen breedteberekening voor de nodes, waardoor labeltekst afgekapt wordt door de node-rand. Laat het lettertype op de mermaid-default staan.
 
 ```markdown
 <div style="display: flex; justify-content: center; margin-top: 1rem;">
 
 ```mermaid {scale: 0.5}
+%%{init: {'theme': 'base'}}%%
 graph LR
-    A[Start] --> B[Einde]
+    A[Start]:::blue --> B[Tussenstap]:::orange
+    B --> C[Einde]:::green
+
+    classDef blue fill:#D6E2FD,stroke:#3D68EC,stroke-width:2px,color:#1A1A2E;
+    classDef orange fill:#FFE4D8,stroke:#DD784B,stroke-width:2px,color:#1A1A2E;
+    classDef green fill:#CCEEE6,stroke:#00AF81,stroke-width:2px,color:#1A1A2E;
+    linkStyle default stroke:#DD784B,stroke-width:3px;
 ```
 
 </div>
 ```
 
-Houd scale op `0.5` als default. Labels max 25 tekens.
+Houd scale op `0.5` als default. Labels max 25 tekens. De drie `classDef`-kleuren (blue/orange/green) zijn het standaardpalet; voeg `yellow` (`fill:#FCF5D4,stroke:#F4D74B,color:#1A1A2E`) of `pink` (`fill:#FAEAEA,stroke:#F4D9DC,color:#1A1A2E`) toe als een diagram meer dan drie categorieën nodes heeft.
 
 ## CLI
 
@@ -450,9 +461,9 @@ Druk op `P` in de browser voor presentatormodus.
 
 Elke presentatie die met deze skill wordt gemaakt bevat één vaste, woordelijk identieke slide die uitlegt wie CEDA is. Doel: elke luisteraar krijgt dezelfde, consistente uitleg over CEDA, ongeacht het onderwerp van de presentatie.
 
-- **Locatie in het deck:** direct vóór de afsluitslide (Slide17), na de inhoudelijke slides.
+- **Locatie in het deck:** vroeg — direct na de agenda (slide 3), vóór de eerste hoofdstukdivider. Niet aan het einde: de luisteraar weet dan al wie CEDA is voordat de inhoud begint, in plaats van het pas te horen als iedereen al weg wil.
 - **Bron:** deze slide staat al kant-en-klaar in `_template.md` (sectie "VASTE CEDA-SLIDE"). Kopieer hem woordelijk mee wanneer je `_template.md` gebruikt als basis voor een nieuwe presentatie — verzin geen eigen versie en parafraseer de tekst niet.
-- **Niet aanpassen:** titel, tekst, bullets en de contactregel blijven exact zoals in `_template.md`. Alleen de achtergrond (`Slide16.PNG`) en de structuur (60/40-grid, roze paneel met Npuls-logo rechts) horen hierbij; dat is al correct in de template.
+- **Niet aanpassen:** titel, tekst, bullets en de contactregel blijven exact zoals in `_template.md`. Alleen de achtergrond (`Slide16.PNG`) en de structuur (50/50-grid, roze paneel met Npuls-logo rechts) horen hierbij; dat is al correct in de template.
 - **Als een presentatie niet uit `_template.md` is gestart** (bijvoorbeeld een oudere presentatie die je aanpast): haal de slide alsnog woordelijk over uit `_template.md` en voeg hem toe op de juiste plek, in plaats van er zelf een te schrijven.
 - **Uitzondering:** alleen weglaten als de gebruiker dat expliciet vraagt voor een specifieke presentatie.
 
