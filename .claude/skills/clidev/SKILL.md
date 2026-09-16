@@ -13,7 +13,7 @@ Skill voor het maken van Slidev presentaties in de CEDA/Npuls huisstijl. Bouwt v
 - `vormgever-npuls-huisstijl` — brand: kleurtokens, typografische schaal, toegestane kleurencombinaties
 - `style.css` in de repo — integratiepunt: vertaalt brand-tokens naar CSS-variabelen die slides gebruiken
 
-Wijzigingen in `vormgever-npuls-huisstijl` vereisen maximaal een update van `style.css`. Geen enkele slide-file en geen regel in deze skill mag daarvoor aangepast worden.
+Wijzigingen in `vormgever-npuls-huisstijl` vereisen maximaal een update van `style.css`. Geen enkele slide-file en geen regel in deze skill mag daarvoor aangepast worden. `style.css` is een **kopie**, geen live import — `scripts/check-design-tokens.mjs` (zie "Stap 0" verderop) verifieert dat de kopie nog klopt; niets houdt ze vanzelf gesynchroniseerd.
 
 ## Projectsetup (altijd als eerste stap)
 
@@ -398,13 +398,20 @@ Lees altijd `vormgever-npuls-huisstijl/references/design-tokens.json` voor je ge
 
 Na het genereren: tel de primaire kleuren die over het deck aanwezig zijn. Voeg een badge, kaartaccent of illustratie toe als het minimum niet gehaald is.
 
-### Stap 0 bij genereren: lees design-tokens
+### Stap 0 bij genereren: verifieer dat style.css nog in sync is
+
+`style.css` in de clidev-presentaties-projectroot is een **kopie** van de merkkleuren uit `vormgever-npuls-huisstijl`, geen live import — er is geen build-stap die ze gesynchroniseerd houdt. Ga dat dus elke keer na met het meegeleverde controlescript, in plaats van de twee bestanden met het blote oog te vergelijken:
 
 ```bash
-cat ~/.claude/skills/vormgever-npuls-huisstijl/references/design-tokens.json
+cd <clidev-presentaties-projectroot>
+node scripts/check-design-tokens.mjs
 ```
 
-Controleer of de `allowed_combinations` ongewijzigd zijn. Werk verder met de waarden uit dat bestand, nooit vanuit geheugen.
+- **Exit code 0** — style.css klopt, ga verder.
+- **Exit code 1** — mismatch of ontbrekende variabele. Werk `style.css` bij naar de waarden die het script toont (nooit de brontabel of losse slide-files aanpassen) en run het script opnieuw tot het slaagt.
+- **Exit code 2** — kan `design-tokens.json` niet vinden. Zoek het bestand op (`find ~ -maxdepth 8 -ipath "*vormgever-npuls-huisstijl*design-tokens.json" 2>/dev/null`) en geef het pad expliciet mee als eerste argument.
+
+Lees daarna ook de `allowed_combinations` in `design-tokens.json` zelf door (het script checkt alleen kleurwaarden, niet welke combinaties toegestaan zijn) en werk verder met die waarden, nooit vanuit geheugen.
 
 ## Technische vereisten
 
