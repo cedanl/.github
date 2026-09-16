@@ -100,8 +100,8 @@ Gebruik altijd de `.np-bg` class met `background-image`. Nooit `background:` in 
 | `Slide3.PNG` | Standaard contentslide | `.fill` wrapper, oranje boog rechtsonder als decoratie |
 | `Slide4.PNG` / `Slide5.PNG` | Variant contentslide | Idem Slide3, kleinere boogvariant; onderling uitwisselbaar |
 | `Slide6.PNG` | Emphasis / citaatslide | Grotendeels oranje, met een lichtgrijze driehoek linksboven-tot-linksonder (~0-28% breed, punt bij ~28%) — **witte tekst verplicht**, gebruik Cooper Light (`var(--np-font-secondary)`), maar houd alle tekst rechts van ~32% breedte (bijv. `margin-left: 32%` i.p.v. volledig gecentreerd), anders valt witte tekst weg tegen de lichtgrijze driehoek |
-| `Slide7.PNG` | Afbeelding links | Roze rechthoek links ~40% voor foto/screenshot, content wrapper rechts |
-| `Slide8.PNG` | Afbeelding rechts | Roze rechthoek rechts ~40% voor foto/screenshot, content wrapper links |
+| `Slide7.PNG` | Afbeelding links | Roze rechthoek links, exact gemeten op `left: 6.9%; top: 10.4%; width: 41.4%; height: 79.2%`. Content-tekst begint pas bij **`left: 50%`** — niet 40-42% — anders overlapt een gecenterde screenshot-kaart de tekst (zie voorbeeld onder de tabel) |
+| `Slide8.PNG` | Afbeelding rechts | Roze rechthoek rechts, exact gemeten op `left: 53.7%; top: 10.4%; width: 41.1%; height: 79.2%` |
 | `Slide9.PNG` | Vergelijking / 2-koloms | Blauw links 40% voor titel (witte tekst), grijs rechts 60% voor kaarten; gebruik CSS grid `40% 60%` |
 | `Slide10.PNG` | Data / statistieken | Wit links voor content, decoratief kleurenpaneel rechts in background — beperk content-grid tot `max-width: 62%` |
 | `Slide11.PNG` | Genummerd proces / lijst | Oranje golf links als decoratie (vult de volledige hoogte van de linker 38%), 4 horizontale balken rechts; **zet geen titel in de linkerkolom** — de golflijn loopt daar dwars doorheen en overlapt tekst. Plaats eyebrow/titel/subtitel bovenaan de rechterkolom (62%), boven de genummerde stap-kaarten, en laat de linkerkolom leeg als pure decoratie |
@@ -176,6 +176,19 @@ Accenten: `accent-blue`, `accent-orange`, `accent-green`, `accent-yellow`, `acce
 **Genummerde chips** — `.np-num`.
 
 **Screenshotframe** — `.np-frame` of `<img>` met `border-radius: 8px`.
+
+**Screenshot centreren in Slide7/Slide8** — plaats het frame nooit met losgeschatte `left`/`top`/`width`; gebruik de exact gemeten zone uit de achtergrondtabel en centreer daarbinnen met flex, zodat het beeld zowel horizontaal als verticaal in het roze vlak staat:
+
+```html
+<div class="np-bg" style="background-image: url(/npuls/powerpoint_slides/Slide7.PNG);"></div>
+
+<div style="position: absolute; left: 6.9%; top: 10.4%; width: 41.4%; height: 79.2%; display: flex; align-items: center; justify-content: center;">
+  <div class="np-frame" style="max-width: 85%;">
+    <img src="/shots/voorbeeld.png" />
+  </div>
+</div>
+```
+Gebruik voor Slide8 dezelfde zone-structuur met `left: 53.7%; width: 41.1%`. Zet de content-tekst pas bij `left: 50%` (Slide7) resp. eindig de content-kolom vóór `53.7%` (Slide8) — nooit op 40-42%, want de gecenterde kaart eindigt verder naar binnen dan de rechthoek zelf.
 
 ## Capaciteitslimieten per slidetype
 
@@ -408,11 +421,17 @@ Controleer of de `allowed_combinations` ongewijzigd zijn. Werk verder met de waa
 
 ### Mermaid
 
+Een los mermaid-blok rendert standaard **linksuitgelijnd**, niet gecenterd. Wrap het altijd in een flex-container met een lege regel aan weerszijden van het codeblok (nodig om de markdown binnen de div te laten parsen):
+
 ```markdown
+<div style="display: flex; justify-content: center; margin-top: 1rem;">
+
 ```mermaid {scale: 0.5}
 graph LR
     A[Start] --> B[Einde]
 ```
+
+</div>
 ```
 
 Houd scale op `0.5` als default. Labels max 25 tekens.
