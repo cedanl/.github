@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEDA Landkaart</title>
+  <style>
+    :root {
+      --cream: #FAF7F2;
+      --ink: #1A1208;
+      --ink-mid: #3D2C1A;
+      --ink-muted: #7A6555;
+      --accent: #C4702A;
+      --border: #E5D6C5;
+      --white: #FFFFFF;
+      --library:      #B84A22;
+      --app:          #2D7249;
+      --devtools:     #1E5096;
+      --comm-tools:   #6B3D8C;
+      --comm-content: #2D7A7A;
+      --live:      #2D9E50;
+      --beta:      #D4850F;
+      --alpha:     #3A6FA8;
+      --discovery: #7A6AAE;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    body::before { content:''; display:block; height:3px; background:var(--accent); }
+
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 48px; }
+
+    /* ── Tabs ── */
+    .tab-bar {
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 0;
+      padding: 0;
+      background: var(--cream);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .tab-bar-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 48px;
+      display: flex;
+      gap: 0;
+    }
+    .tab-btn {
+      padding: 14px 20px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--ink-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      margin-bottom: -1px;
+    }
+    .tab-btn:hover { color: var(--ink); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Hero ── */
+    .hero { padding: 56px 0 48px; border-bottom: 1px solid var(--border); }
+    .hero-eyebrow { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 14px; }
+    .hero h1 { font-family: Georgia, serif; font-size: 44px; font-weight: normal; line-height: 1.1; margin-bottom: 10px; }
+    .hero-sub { color: var(--ink-muted); font-size: 14px; }
+    .hero-stats { display: flex; gap: 40px; margin-top: 36px; }
+    .stat-number { font-family: Georgia, serif; font-size: 36px; color: var(--accent); line-height: 1; display: block; }
+    .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-muted); margin-top: 4px; display: block; }
+    .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 36px; padding: 12px 16px; background: var(--white); border: 1px solid var(--border); border-radius: 8px; width: fit-content; }
+    .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; }
+    .badge::before { content:''; width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .badge-live { color:var(--live); } .badge-live::before { background:var(--live); }
+    .badge-beta { color:var(--beta); } .badge-beta::before { background:var(--beta); }
+    .badge-alpha { color:var(--alpha); } .badge-alpha::before { background:var(--alpha); }
+    .badge-discovery { color:var(--discovery); } .badge-discovery::before { background:var(--discovery); }
+
+    /* ── Section (landkaart) ── */
+    .section { padding: 56px 0 0; }
+    .section-heading { display: flex; align-items: center; gap: 14px; }
+    .section-number { font-family: Georgia, serif; font-size: 13px; color: var(--ink-muted); flex-shrink: 0; }
+    .section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700; color: var(--ink-mid); flex-shrink: 0; }
+    .section-rule { flex: 1; height: 1px; background: var(--border); }
+    .subsection { margin-top: 44px; }
+    .subsection-title-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+    .subsection-title { font-family: Georgia, serif; font-size: 24px; font-weight: normal; }
+    .subsection-count { font-size: 11px; color: var(--ink-muted); }
+    .subsection-desc { font-size: 12px; color: var(--ink-muted); max-width: 560px; line-height: 1.6; margin-bottom: 16px; }
+    .type-library      .subsection-title { color: var(--library); }
+    .type-app          .subsection-title { color: var(--app); }
+    .type-devtools     .subsection-title { color: var(--devtools); }
+    .type-comm-tools   .subsection-title { color: var(--comm-tools); }
+    .type-comm-content .subsection-title { color: var(--comm-content); }
+
+    /* ── Repo grid ── */
+    .repo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(152px, 1fr)); gap: 7px; }
+    .card { background: var(--white); border: 1px solid var(--border); border-radius: 7px; padding: 10px 12px; display: flex; flex-direction: column; gap: 5px; cursor: default; transition: border-color 0.15s, box-shadow 0.15s; }
+    .card:hover { border-color: var(--accent); box-shadow: 0 1px 4px rgba(196,112,42,.12); }
+    .card.archived { opacity: 0.42; background: #F7F4F0; }
+    .card-subcat { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-muted); }
+    .card-name { font-family: 'JetBrains Mono','Fira Code','SF Mono',monospace; font-size: 11px; color: var(--ink); line-height: 1.4; word-break: break-word; }
+    .card-note { font-size: 9px; color: var(--ink-muted); font-style: italic; line-height: 1.3; }
+
+    /* ── Skills (landkaart) ── */
+    .skills-intro { margin-top: 12px; font-size: 12px; color: var(--ink-muted); }
+    .skills-intro code { font-size: 11px; background: #EDE8E0; padding: 1px 5px; border-radius: 3px; }
+    .skills-groups { margin-top: 36px; display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 32px; }
+    .skill-group { display: flex; flex-direction: column; gap: 10px; }
+    .skill-group-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; color: var(--ink-mid); padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .skill-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+    .pill { display: inline-flex; padding: 3px 9px; border-radius: 100px; font-size: 10.5px; font-family: 'JetBrains Mono','Fira Code','SF Mono',monospace; border: 1px solid transparent; transition: transform 0.1s; cursor: default; }
+    .pill:hover { transform: translateY(-1px); }
+    .g-denken  .pill { background:#FFF2E8; color:#963A0A; border-color:#EEC8A0; }
+    .g-present .pill { background:#EEF3FF; color:#1A3880; border-color:#B8CCEE; }
+    .g-data    .pill { background:#EEFAF2; color:#1A6B3A; border-color:#A0D8B8; }
+    .g-devwf   .pill { background:#F5EEFF; color:#4A1E7A; border-color:#C8A8E8; }
+    .g-infra   .pill { background:#EEF8FA; color:#0F526B; border-color:#98CCD8; }
+    .g-app     .pill { background:#FBF5E6; color:#6B4008; border-color:#DEC07A; }
+    .g-skills  .pill { background:#F4F4F4; color:#3A3A3A; border-color:#CCCCCC; }
+
+    /* ── Matrix tab ── */
+    .matrix-header { padding: 48px 0 32px; border-bottom: 1px solid var(--border); }
+    .matrix-header h2 { font-family: Georgia, serif; font-size: 36px; font-weight: normal; margin-bottom: 8px; }
+    .matrix-header p { color: var(--ink-muted); font-size: 13px; }
+
+    .type-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 32px; }
+    .type-btn {
+      padding: 7px 16px;
+      border-radius: 100px;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .type-btn:hover { border-color: var(--ink-muted); color: var(--ink); }
+    .type-btn.active { color: var(--white); border-color: transparent; }
+    .type-btn[data-type="library"].active      { background: var(--library); }
+    .type-btn[data-type="application"].active  { background: var(--app); }
+    .type-btn[data-type="devtools"].active     { background: var(--devtools); }
+    .type-btn[data-type="commtools"].active    { background: var(--comm-tools); }
+    .type-btn[data-type="commcontent"].active  { background: var(--comm-content); }
+
+    /* ── Matrix grid ── */
+    .matrix-wrap { margin-top: 32px; overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 88px repeat(7, minmax(120px, 1fr));
+      background: var(--border);
+      gap: 1px;
+      min-width: 930px;
+    }
+    .m-cell {
+      background: var(--white);
+      padding: 8px 9px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      align-content: flex-start;
+      min-height: 48px;
+    }
+    .m-cell.corner { background: var(--cream); }
+    .m-cell.phase-hdr {
+      background: var(--cream);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 700;
+      color: var(--ink-mid);
+      align-items: center;
+      min-height: 34px;
+    }
+    .m-cell.mat-hdr {
+      background: var(--cream);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--ink-mid);
+      align-items: center;
+      letter-spacing: 0.04em;
+    }
+    .m-cell.empty { background: #FDFBF8; }
+    .m-cell.disabled {
+      background: repeating-linear-gradient(
+        45deg, #F0EDE8, #F0EDE8 2px, #FAF7F2 2px, #FAF7F2 10px
+      );
+    }
+
+    .m-pill {
+      display: inline-flex;
+      padding: 2px 6px;
+      border-radius: 100px;
+      font-size: 9px;
+      font-family: 'JetBrains Mono','Fira Code','SF Mono',monospace;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      cursor: default;
+      line-height: 1.4;
+      transition: transform 0.1s;
+    }
+    .m-pill:hover { transform: translateY(-1px); }
+    .m-pill.cat-denken  { background:#FFF2E8; color:#963A0A; border-color:#EEC8A0; }
+    .m-pill.cat-present { background:#EEF3FF; color:#1A3880; border-color:#B8CCEE; }
+    .m-pill.cat-data    { background:#EEFAF2; color:#1A6B3A; border-color:#A0D8B8; }
+    .m-pill.cat-devwf   { background:#F5EEFF; color:#4A1E7A; border-color:#C8A8E8; }
+    .m-pill.cat-infra   { background:#EEF8FA; color:#0F526B; border-color:#98CCD8; }
+    .m-pill.cat-app     { background:#FBF5E6; color:#6B4008; border-color:#DEC07A; }
+    .m-pill.cat-skills  { background:#F4F4F4; color:#3A3A3A; border-color:#CCCCCC; }
+
+    /* ── Universeel row ── */
+    .universeel-section {
+      margin-top: 2px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .universeel-label {
+      background: var(--cream);
+      padding: 7px 12px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-weight: 700;
+      color: var(--ink-mid);
+      border-bottom: 1px solid var(--border);
+    }
+    .universeel-pills {
+      background: var(--white);
+      padding: 10px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    /* ── Footer ── */
+    .footer { margin-top: 80px; padding: 24px 0 40px; border-top: 1px solid var(--border); font-size: 11px; color: var(--ink-muted); }
+
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+      .tab-bar-inner { padding: 0 20px; }
+      .hero h1 { font-size: 30px; }
+      .hero-stats { gap: 24px; }
+      .stat-number { font-size: 26px; }
+      .repo-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+      .skills-groups { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <div class="tab-bar-inner">
+    <button class="tab-btn active" onclick="switchTab('landkaart', this)">Landkaart</button>
+    <button class="tab-btn" onclick="switchTab('matrix', this)">Matrix</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- TAB 1: LANDKAART                                       -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="tab-landkaart" class="tab-panel active">
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-eyebrow">cedanl · github.com/cedanl</div>
+    <h1>CEDA Landkaart</h1>
+    <div class="hero-sub">Alle repositories en skills in kaart — september 2026</div>
+    <div class="hero-stats">
+      <div><span class="stat-number">89</span><span class="stat-label">Repositories</span></div>
+      <div><span class="stat-number">67</span><span class="stat-label">Skills</span></div>
+      <div><span class="stat-number">5</span><span class="stat-label">Types</span></div>
+    </div>
+    <div class="legend">
+      <span class="badge badge-live">Live</span>
+      <span class="badge badge-beta">Beta</span>
+      <span class="badge badge-alpha">Alpha</span>
+      <span class="badge badge-discovery">Discovery</span>
+    </div>
+  </div>
+
+  <!-- 01 Maintained -->
+  <div class="section">
+    <div class="section-heading">
+      <span class="section-number">01</span>
+      <span class="section-title">Maintained — CEDA borgt kwaliteit</span>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="subsection type-library">
+      <div class="subsection-title-row"><span class="subsection-title">Library</span><span class="subsection-count">11 repos</span></div>
+      <div class="subsection-desc">Herbruikbare Python- en R-packages met versienummer. Gepubliceerd op PyPI of CRAN, importeer in je eigen project en pin op een versie.</div>
+      <div class="repo-grid">
+        <div class="card"><div class="card-name">eencijfer</div><span class="badge badge-live">Live</span></div>
+        <div class="card"><div class="card-name">wisselstroom</div><span class="badge badge-live">Live</span></div>
+        <div class="card"><div class="card-name">student-signal</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">1cijferho</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">1cijfermbo</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">rio-onderwijsdata</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">cbs-onderwijsdata</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">duo-mbo-datafiles</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">mbo-bekostiging-bestanden</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">synthetische-onderwijsdata</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">arbeidsmarkt-mbo</div><span class="badge badge-alpha">Alpha</span></div>
+      </div>
+    </div>
+
+    <div class="subsection type-app">
+      <div class="subsection-title-row"><span class="subsection-title">Application</span><span class="subsection-count">9 repos</span></div>
+      <div class="subsection-desc">Producten met een gebruikersinterface voor externe gebruikers. Dashboards, chatapps en analysetools, actief onderhouden door CEDA.</div>
+      <div class="repo-grid">
+        <div class="card"><div class="card-name">Uitnodigingsregel</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">regiobijeenkomst-tool</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-name">onderwijsdata-chat</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-name">samenwijzer</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-name">savvy</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-name">SkillsRadar</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-name">Assistentie</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-name">studentprognose</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-name">dashboard-instroomprognose-mbo</div><span class="badge badge-alpha">Alpha</span></div>
+      </div>
+    </div>
+
+    <div class="subsection type-devtools">
+      <div class="subsection-title-row"><span class="subsection-title">Developer Tools</span><span class="subsection-count">16 repos</span></div>
+      <div class="subsection-desc">Intern gereedschap voor CEDA-bouwers. Templates, hulpscripts en standaarden die het bouwen versnellen.</div>
+      <div class="repo-grid">
+        <div class="card"><div class="card-subcat">Skills &amp; Agents</div><div class="card-name">.github</div><span class="badge badge-live">Live</span></div>
+        <div class="card"><div class="card-subcat">Skills &amp; Agents</div><div class="card-name">ceda-skills-library</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-subcat">Templates</div><div class="card-name">streamlit-app-template</div><span class="badge badge-live">Live</span></div>
+        <div class="card"><div class="card-subcat">Templates</div><div class="card-name">python-uv-devcontainer</div><span class="badge badge-live">Live</span></div>
+        <div class="card"><div class="card-subcat">Templates</div><div class="card-name">r-devcontainer</div><span class="badge badge-live">Live</span></div>
+        <div class="card"><div class="card-subcat">Templates</div><div class="card-name">r-p3-template</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-subcat">Tooling</div><div class="card-name">sdp-tools</div><span class="badge badge-beta">Beta</span></div>
+        <div class="card"><div class="card-subcat">Tooling</div><div class="card-name">ceda-quickrun</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-subcat">Tooling</div><div class="card-name">ceda-store</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-subcat">Tooling</div><div class="card-name">ceda-toolkit</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-subcat">Tooling</div><div class="card-name">dev-dots</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-subcat">Tooling</div><div class="card-name">repo-context-as-data</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-subcat">Tooling</div><div class="card-name">Markov-chain</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-subcat">Workshops</div><div class="card-name">ceda-workshop-starter</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-subcat">Testing</div><div class="card-name">uitnodigingsregel-benchmark</div><span class="badge badge-alpha">Alpha</span></div>
+        <div class="card"><div class="card-subcat">In ontwikkeling</div><div class="card-name">ceda-os</div><span class="badge badge-discovery">Discovery</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 Community -->
+  <div class="section">
+    <div class="section-heading">
+      <span class="section-number">02</span>
+      <span class="section-title">Community</span>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="subsection type-comm-tools">
+      <div class="subsection-title-row"><span class="subsection-title">Community Tools</span><span class="subsection-count">29 repos</span></div>
+      <div class="subsection-desc">Code, scripts, apps en dashboards van of samen met de community. De community is zelf verantwoordelijk voor kwaliteit en onderhoud.</div>
+      <div class="repo-grid">
+        <div class="card"><div class="card-name">no-fairness-without-awareness</div></div>
+        <div class="card"><div class="card-name">lta-hhs-fairnessawareness</div></div>
+        <div class="card"><div class="card-name">1cho_ins_visualisation_powerbi</div></div>
+        <div class="card"><div class="card-name">powerbi-vsv</div></div>
+        <div class="card"><div class="card-name">selectie-evaluatietool</div><div class="card-note">mogelijk duplicaat van evaluatietool-selectie</div></div>
+        <div class="card"><div class="card-name">1cijferho-evaluatietool</div></div>
+        <div class="card"><div class="card-name">wisselstroom_demo</div></div>
+        <div class="card"><div class="card-name">overzicht-landelijke-databronnen</div></div>
+        <div class="card"><div class="card-name">textanalysis</div></div>
+        <div class="card"><div class="card-name">instroomprognose-mbo</div></div>
+        <div class="card"><div class="card-name">vsv_analysis</div></div>
+        <div class="card"><div class="card-name">studentjourney-mbo</div></div>
+        <div class="card"><div class="card-name">1cho_ins_preparation_r</div></div>
+        <div class="card"><div class="card-name">prep1cho</div></div>
+        <div class="card"><div class="card-name">docker_1cho</div></div>
+        <div class="card"><div class="card-name">Uitnodigingsregel_datapreparatie</div></div>
+        <div class="card"><div class="card-name">staat-van-onderwijsinstelling</div></div>
+        <div class="card"><div class="card-name">student-instroom-mbo</div></div>
+        <div class="card archived"><div class="card-name">1cho_ins_visualisation_tableau</div><div class="card-note">archiveer · Tableau-tijdperk</div></div>
+        <div class="card archived"><div class="card-name">1cho_nl_visualisation_tableau</div><div class="card-note">archiveer · Tableau-tijdperk</div></div>
+        <div class="card archived"><div class="card-name">1cho_nl_preparation_r</div><div class="card-note">archiveer · oud 2023</div></div>
+        <div class="card archived"><div class="card-name">ed2c-storage</div><div class="card-note">archiveer · 2023 stilgelegd</div></div>
+        <div class="card archived"><div class="card-name">ed2c-python</div><div class="card-note">archiveer · 2023 stilgelegd</div></div>
+        <div class="card archived"><div class="card-name">evaluatietool-selectie</div><div class="card-note">archiveer · leeg duplicaat</div></div>
+        <div class="card archived"><div class="card-name">demo-instroomprognose</div><div class="card-note">archiveer · nooit gevuld</div></div>
+        <div class="card archived"><div class="card-name">maak_een_hex</div><div class="card-note">archiveer · eenmalig</div></div>
+        <div class="card archived"><div class="card-name">1cijferho_avans</div><div class="card-note">archiveer · instelling-specifiek</div></div>
+        <div class="card archived"><div class="card-name">onderwijsdata-synthese</div><div class="card-note">archiveer · overlapt synthetische-onderwijsdata</div></div>
+        <div class="card archived"><div class="card-name">edusynth</div><div class="card-note">archiveer · superseded</div></div>
+      </div>
+    </div>
+
+    <div class="subsection type-comm-content">
+      <div class="subsection-title-row"><span class="subsection-title">Community Content</span><span class="subsection-count">15 repos</span></div>
+      <div class="subsection-desc">Rapporten, presentaties en documentatie. Geen software, maar kennisproducten: workshops, analyses en verhalen.</div>
+      <div class="repo-grid">
+        <div class="card"><div class="card-name">AI-Alignment</div></div>
+        <div class="card"><div class="card-name">SamenOntdekken</div></div>
+        <div class="card"><div class="card-name">clidev-presentaties</div></div>
+        <div class="card"><div class="card-name">CEDA-verhaal</div></div>
+        <div class="card"><div class="card-name">regiobijeenkomsten</div></div>
+        <div class="card"><div class="card-name">discourse-as-data</div></div>
+        <div class="card"><div class="card-name">ceda-innovatiefunnel</div></div>
+        <div class="card"><div class="card-name">ai-tech-learnings</div></div>
+        <div class="card"><div class="card-name">entire-checkpoints</div></div>
+        <div class="card"><div class="card-name">ceda-algemeen</div></div>
+        <div class="card"><div class="card-name">project_algemeen</div></div>
+        <div class="card"><div class="card-name">communicatie</div></div>
+        <div class="card"><div class="card-name">dair-agentic-coding</div><div class="card-note">wordt DAIR workshop</div></div>
+        <div class="card archived"><div class="card-name">public_activities</div><div class="card-note">archiveer · vervangen door clidev-presentaties</div></div>
+        <div class="card archived"><div class="card-name">centre_documentation</div><div class="card-note">archiveer · oude docs-site</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 Skills -->
+  <div class="section">
+    <div class="section-heading">
+      <span class="section-number">03</span>
+      <span class="section-title">Skills in .github</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="skills-intro">67 skills beschikbaar voor elk CEDA-project via <code>/skill-naam</code></div>
+    <div class="skills-groups">
+      <div class="skill-group g-denken">
+        <div class="skill-group-title">Denken &amp; Ontwerpen · 11</div>
+        <div class="skill-pills">
+          <span class="pill">brainstorm</span><span class="pill">sparren</span><span class="pill">mindmapping</span>
+          <span class="pill">hoe-kunnen-we</span><span class="pill">ideeen-ontwikkelen</span>
+          <span class="pill">centrale-inzichten-lll</span><span class="pill">centrale-inzichten-docent</span>
+          <span class="pill">ceda-concurrentieanalyse</span><span class="pill">ceda-trendanalyse</span>
+          <span class="pill">future-backcasting</span><span class="pill">ontwerper-digitaal-product</span>
+        </div>
+      </div>
+      <div class="skill-group g-present">
+        <div class="skill-group-title">Presentaties · 6</div>
+        <div class="skill-pills">
+          <span class="pill">clidev</span><span class="pill">build-marp-deck</span>
+          <span class="pill">generate-slides-retro</span><span class="pill">generate-slides-retro-simple</span>
+          <span class="pill">npuls-huisstijl</span><span class="pill">vormgever-npuls-huisstijl</span>
+        </div>
+      </div>
+      <div class="skill-group g-data">
+        <div class="skill-group-title">Voorspellen &amp; Data · 7</div>
+        <div class="skill-pills">
+          <span class="pill">voorspellen-classificatie</span><span class="pill">voorspellen-continu</span>
+          <span class="pill">voorspellen-dataprep</span><span class="pill">voorspellen-ranking</span>
+          <span class="pill">grafiekkeuze</span><span class="pill">browser-pseudonymize</span>
+          <span class="pill">identifier-mapping</span>
+        </div>
+      </div>
+      <div class="skill-group g-devwf">
+        <div class="skill-group-title">Developer Workflow · 15</div>
+        <div class="skill-pills">
+          <span class="pill">ship</span><span class="pill">gate</span><span class="pill">branch-pr</span>
+          <span class="pill">pr-reply</span><span class="pill">write-issue</span><span class="pill">write-issue-cowork</span>
+          <span class="pill">screenshot-pr</span><span class="pill">demo-video</span><span class="pill">check-style</span>
+          <span class="pill">simplify-ceda</span><span class="pill">de-hardcode</span><span class="pill">dependabot-triage</span>
+          <span class="pill">release-notes</span><span class="pill">sessie-terugblik</span><span class="pill">caveman-cowork</span>
+        </div>
+      </div>
+      <div class="skill-group g-infra">
+        <div class="skill-group-title">Infrastructure &amp; Cloud · 14</div>
+        <div class="skill-pills">
+          <span class="pill">docker</span><span class="pill">gitlab-ci</span><span class="pill">actions-ci</span>
+          <span class="pill">sdp-onboard</span><span class="pill">sdp-secrets-management</span>
+          <span class="pill">surf-ingress-migration</span><span class="pill">surf-kubectl-troubleshoot</span>
+          <span class="pill">surf-sdp-helm-flux</span><span class="pill">surf-sdp-operations</span>
+          <span class="pill">surf-tenant-rename</span><span class="pill">objectstore-experiments</span>
+          <span class="pill">objectstore-onboarding</span><span class="pill">surfdrive</span><span class="pill">etl-pipeline</span>
+        </div>
+      </div>
+      <div class="skill-group g-app">
+        <div class="skill-group-title">App Bouwen · 9</div>
+        <div class="skill-pills">
+          <span class="pill">streamlit</span><span class="pill">sram-oidc</span><span class="pill">mkdocs-setup</span>
+          <span class="pill">init-repo</span><span class="pill">migrate-cookiecutter</span>
+          <span class="pill">r-package-refactor</span><span class="pill">pypi-project</span>
+          <span class="pill">notebooklm</span><span class="pill">sam-uren-cowork-mac</span>
+        </div>
+      </div>
+      <div class="skill-group g-skills">
+        <div class="skill-group-title">Skills Beheer · 5</div>
+        <div class="skill-pills">
+          <span class="pill">create-skill</span><span class="pill">review-skill</span>
+          <span class="pill">dedup-skills</span><span class="pill">skills-ontology</span>
+          <span class="pill">externe-skill-audit</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">cedanl · september 2026 · 89 repositories · 67 skills</div>
+</div>
+</div><!-- /tab-landkaart -->
+
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- TAB 2: MATRIX                                          -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div id="tab-matrix" class="tab-panel">
+<div class="container">
+
+  <div class="matrix-header">
+    <h2>Skills per fase</h2>
+    <p>Welke skills zijn relevant per type, maturity en lifecycle-fase?</p>
+    <div class="type-selector">
+      <button class="type-btn active" data-type="library"      onclick="selectType('library',this)">Library</button>
+      <button class="type-btn"        data-type="application"  onclick="selectType('application',this)">Application</button>
+      <button class="type-btn"        data-type="devtools"     onclick="selectType('devtools',this)">Developer Tools</button>
+      <button class="type-btn"        data-type="commtools"    onclick="selectType('commtools',this)">Community Tools</button>
+      <button class="type-btn"        data-type="commcontent"  onclick="selectType('commcontent',this)">Community Content</button>
+    </div>
+  </div>
+
+  <div class="matrix-wrap">
+    <div class="matrix-grid" id="matrix-grid"></div>
+  </div>
+
+  <div class="universeel-section" style="margin-top:12px;">
+    <div class="universeel-label">Universeel</div>
+    <div class="universeel-pills" id="universeel-pills"></div>
+  </div>
+
+  <div class="footer">cedanl · september 2026</div>
+</div>
+</div><!-- /tab-matrix -->
+
+<script>
+  /* ── Data ── */
+  const PHASES = ['Plan','Design','Build','Test','Release','Maintain','Evaluate'];
+
+  const TYPES = {
+    library:      { label:'Library',          color:'#B84A22', maturity:['Discovery','Alpha','Beta','Live'] },
+    application:  { label:'Application',      color:'#2D7249', maturity:['Discovery','Alpha','Beta','Live'] },
+    devtools:     { label:'Developer Tools',  color:'#1E5096', maturity:['Discovery','Alpha','Beta','Live'] },
+    commtools:    { label:'Community Tools',  color:'#6B3D8C', maturity:['Draft','Active','Archived'] },
+    commcontent:  { label:'Community Content',color:'#2D7A7A', maturity:['Draft','Active','Archived'] },
+  };
+
+  const UNIVERSEEL = ['ship','gate','branch-pr','pr-reply','write-issue','write-issue-cowork','caveman-cowork'];
+
+  const CAT = {
+    brainstorm:'denken', sparren:'denken', mindmapping:'denken', 'hoe-kunnen-we':'denken',
+    'ideeen-ontwikkelen':'denken', 'centrale-inzichten-lll':'denken', 'centrale-inzichten-docent':'denken',
+    'ceda-concurrentieanalyse':'denken', 'ceda-trendanalyse':'denken', 'future-backcasting':'denken',
+    'ontwerper-digitaal-product':'denken',
+    clidev:'present', 'build-marp-deck':'present', 'generate-slides-retro':'present',
+    'generate-slides-retro-simple':'present', 'npuls-huisstijl':'present', 'vormgever-npuls-huisstijl':'present',
+    'voorspellen-classificatie':'data', 'voorspellen-continu':'data', 'voorspellen-dataprep':'data',
+    'voorspellen-ranking':'data', grafiekkeuze:'data', 'browser-pseudonymize':'data', 'identifier-mapping':'data',
+    ship:'devwf', gate:'devwf', 'branch-pr':'devwf', 'pr-reply':'devwf', 'write-issue':'devwf',
+    'write-issue-cowork':'devwf', 'screenshot-pr':'devwf', 'demo-video':'devwf', 'check-style':'devwf',
+    'simplify-ceda':'devwf', 'de-hardcode':'devwf', 'dependabot-triage':'devwf',
+    'release-notes':'devwf', 'sessie-terugblik':'devwf', 'caveman-cowork':'devwf',
+    docker:'infra', 'gitlab-ci':'infra', 'actions-ci':'infra', 'sdp-onboard':'infra',
+    'sdp-secrets-management':'infra', 'surf-ingress-migration':'infra', 'surf-kubectl-troubleshoot':'infra',
+    'surf-sdp-helm-flux':'infra', 'surf-sdp-operations':'infra', 'surf-tenant-rename':'infra',
+    'objectstore-experiments':'infra', 'objectstore-onboarding':'infra', surfdrive:'infra', 'etl-pipeline':'infra',
+    streamlit:'app', 'sram-oidc':'app', 'mkdocs-setup':'app', 'init-repo':'app',
+    'migrate-cookiecutter':'app', 'r-package-refactor':'app', 'pypi-project':'app',
+    notebooklm:'app', 'sam-uren-cowork-mac':'app',
+    'create-skill':'skills', 'review-skill':'skills', 'dedup-skills':'skills',
+    'skills-ontology':'skills', 'externe-skill-audit':'skills',
+  };
+
+  /* Skill definitions: types='all' or array, phases='all' or array, maturity='all' or array */
+  const SKILLS = [
+    // Denken & Ontwerpen
+    {name:'brainstorm',                types:'all',                                  phases:['Plan'],              maturity:'all'},
+    {name:'sparren',                   types:'all',                                  phases:['Plan','Design'],     maturity:'all'},
+    {name:'mindmapping',               types:'all',                                  phases:['Plan','Design'],     maturity:['Discovery','Alpha','Draft']},
+    {name:'hoe-kunnen-we',             types:'all',                                  phases:['Design'],            maturity:['Discovery','Alpha','Draft']},
+    {name:'ideeen-ontwikkelen',        types:'all',                                  phases:['Design'],            maturity:['Discovery','Alpha','Draft']},
+    {name:'centrale-inzichten-lll',    types:['application','commcontent'],          phases:['Design'],            maturity:['Discovery','Alpha','Draft']},
+    {name:'centrale-inzichten-docent', types:['application','commcontent'],          phases:['Design'],            maturity:['Discovery','Alpha','Draft']},
+    {name:'ceda-concurrentieanalyse',  types:'all',                                  phases:['Plan'],              maturity:['Discovery','Alpha']},
+    {name:'ceda-trendanalyse',         types:'all',                                  phases:['Plan'],              maturity:['Discovery']},
+    {name:'future-backcasting',        types:'all',                                  phases:['Plan','Evaluate'],   maturity:['Discovery','Alpha']},
+    {name:'ontwerper-digitaal-product',types:['application'],                        phases:['Design','Build'],    maturity:'all'},
+    // Presentaties
+    {name:'clidev',                    types:'all',                                  phases:['Release','Evaluate'],maturity:'all'},
+    {name:'build-marp-deck',           types:'all',                                  phases:['Release'],           maturity:'all'},
+    {name:'generate-slides-retro',     types:'all',                                  phases:['Evaluate'],          maturity:['Beta','Live','Active']},
+    {name:'generate-slides-retro-simple',types:'all',                                phases:['Evaluate'],          maturity:'all'},
+    {name:'npuls-huisstijl',           types:['application','commcontent'],          phases:['Design','Build'],    maturity:'all'},
+    {name:'vormgever-npuls-huisstijl', types:['application','commcontent'],          phases:['Design'],            maturity:'all'},
+    // Voorspellen & Data
+    {name:'voorspellen-classificatie', types:['library','application'],              phases:['Build'],             maturity:['Alpha','Beta','Live']},
+    {name:'voorspellen-continu',       types:['library','application'],              phases:['Build'],             maturity:['Alpha','Beta','Live']},
+    {name:'voorspellen-dataprep',      types:['library','application'],              phases:['Build','Design'],    maturity:['Alpha','Beta']},
+    {name:'voorspellen-ranking',       types:['library','application'],              phases:['Build'],             maturity:['Alpha','Beta','Live']},
+    {name:'grafiekkeuze',              types:['application','library','commcontent'],phases:['Design','Build'],    maturity:'all'},
+    {name:'browser-pseudonymize',      types:['application'],                        phases:['Build'],             maturity:['Alpha','Beta','Live']},
+    {name:'identifier-mapping',        types:['application','library'],              phases:['Build','Design'],    maturity:['Alpha','Beta']},
+    // Developer Workflow (non-universeel)
+    {name:'screenshot-pr',     types:['application','commtools'],             phases:['Release','Build'],   maturity:['Alpha','Beta','Live','Active']},
+    {name:'demo-video',        types:['application','commtools','commcontent'],phases:['Release'],           maturity:['Beta','Live','Active']},
+    {name:'check-style',       types:['library','application','devtools','commtools'],phases:['Build','Test'],maturity:['Alpha','Beta','Live','Active']},
+    {name:'simplify-ceda',     types:['library','application','devtools'],    phases:['Build'],             maturity:['Alpha','Beta','Live']},
+    {name:'de-hardcode',       types:['library','application','devtools'],    phases:['Build'],             maturity:['Beta','Live']},
+    {name:'dependabot-triage', types:['library','application','devtools','commtools'],phases:['Test','Maintain'],maturity:['Beta','Live','Active']},
+    {name:'release-notes',     types:['library','application','devtools'],    phases:['Release'],           maturity:['Alpha','Beta','Live']},
+    {name:'sessie-terugblik',  types:'all',                                   phases:['Evaluate'],          maturity:'all'},
+    // Infrastructure & Cloud
+    {name:'docker',                    types:['library','application','devtools'],   phases:['Build'],             maturity:['Alpha','Beta','Live']},
+    {name:'gitlab-ci',                 types:['library','application','devtools'],   phases:['Build','Test'],      maturity:['Alpha','Beta','Live']},
+    {name:'actions-ci',                types:['library','application','devtools'],   phases:['Build','Test'],      maturity:['Alpha','Beta','Live']},
+    {name:'sdp-onboard',               types:['application'],                        phases:['Release','Maintain'],maturity:['Beta','Live']},
+    {name:'sdp-secrets-management',    types:['application','devtools'],             phases:['Build','Maintain'],  maturity:['Beta','Live']},
+    {name:'surf-ingress-migration',    types:['application'],                        phases:['Maintain'],          maturity:['Live']},
+    {name:'surf-kubectl-troubleshoot', types:['application'],                        phases:['Maintain'],          maturity:['Beta','Live']},
+    {name:'surf-sdp-helm-flux',        types:['application','devtools'],             phases:['Build','Maintain'],  maturity:['Beta','Live']},
+    {name:'surf-sdp-operations',       types:['application'],                        phases:['Maintain'],          maturity:['Live']},
+    {name:'surf-tenant-rename',        types:['application','devtools'],             phases:['Maintain'],          maturity:['Live']},
+    {name:'objectstore-experiments',   types:['library','application'],              phases:['Build','Test'],      maturity:['Alpha','Beta']},
+    {name:'objectstore-onboarding',    types:['application','devtools'],             phases:['Build','Maintain'],  maturity:['Alpha','Beta','Live']},
+    {name:'surfdrive',                 types:'all',                                  phases:['Build','Maintain'],  maturity:['Alpha','Beta','Live','Active']},
+    {name:'etl-pipeline',              types:['library','application'],              phases:['Build'],             maturity:['Alpha','Beta','Live']},
+    // App Bouwen
+    {name:'streamlit',           types:['application'],                 phases:['Build'],               maturity:['Alpha','Beta','Live']},
+    {name:'sram-oidc',           types:['application'],                 phases:['Build'],               maturity:['Alpha','Beta','Live']},
+    {name:'mkdocs-setup',        types:['library','application','devtools'],phases:['Maintain','Release'],maturity:['Beta','Live']},
+    {name:'init-repo',           types:'all',                           phases:['Plan','Build'],        maturity:['Discovery','Alpha','Draft']},
+    {name:'migrate-cookiecutter',types:['library','application','devtools'],phases:['Build'],           maturity:['Alpha','Beta']},
+    {name:'r-package-refactor',  types:['library'],                     phases:['Build'],               maturity:['Alpha','Beta']},
+    {name:'pypi-project',        types:['library'],                     phases:['Release'],             maturity:['Alpha','Beta','Live']},
+    {name:'notebooklm',          types:['commcontent','application'],   phases:['Build','Design'],      maturity:['Draft','Active','Alpha','Beta']},
+    {name:'sam-uren-cowork-mac', types:'all',                           phases:['Maintain'],            maturity:'all'},
+    // Skills Beheer
+    {name:'create-skill',        types:['devtools'], phases:['Build'],              maturity:['Alpha','Beta','Live']},
+    {name:'review-skill',        types:['devtools'], phases:['Test'],               maturity:['Beta','Live']},
+    {name:'dedup-skills',        types:['devtools'], phases:['Maintain','Evaluate'],maturity:['Beta','Live']},
+    {name:'skills-ontology',     types:['devtools'], phases:['Design','Build'],     maturity:['Alpha','Beta','Live']},
+    {name:'externe-skill-audit', types:['devtools'], phases:['Test'],               maturity:['Beta','Live']},
+  ];
+
+  /* ── Disabled cells (not applicable) ── */
+  const DISABLED = {
+    library:     { Discovery:['Test','Release','Maintain'], Alpha:['Maintain'] },
+    application: { Discovery:['Test','Release','Maintain'], Alpha:['Maintain'] },
+    devtools:    { Discovery:['Test','Release','Maintain'], Alpha:['Maintain'] },
+    commtools: {
+      Draft:    ['Test','Release','Maintain','Evaluate'],
+      Active:   ['Plan','Design','Test','Evaluate'],
+      Archived: ['Plan','Design','Build','Test','Release','Maintain'],
+    },
+    commcontent: {
+      Draft:    ['Test','Release','Maintain','Evaluate'],
+      Active:   ['Plan','Design','Test','Maintain'],
+      Archived: ['Plan','Design','Build','Test','Release','Maintain'],
+    },
+  };
+
+  function isDisabled(typeKey, mat, phase) {
+    return (DISABLED[typeKey]?.[mat] || []).includes(phase);
+  }
+
+  /* ── Helpers ── */
+  function matches(value, filter) {
+    if (filter === 'all') return true;
+    return filter.includes(value);
+  }
+
+  function getSkillsForCell(typeKey, mat, phase) {
+    return SKILLS.filter(s =>
+      !UNIVERSEEL.includes(s.name) &&
+      matches(typeKey, s.types) &&
+      matches(phase, s.phases) &&
+      matches(mat, s.maturity)
+    ).map(s => s.name);
+  }
+
+  function makePill(name) {
+    const cat = CAT[name] || 'devwf';
+    return `<span class="m-pill cat-${cat}" title="${name}">${name}</span>`;
+  }
+
+  /* ── Render ── */
+  function renderMatrix(typeKey) {
+    const type = TYPES[typeKey];
+    const grid = document.getElementById('matrix-grid');
+
+    let html = '';
+    const cols = PHASES.length + 1;
+
+    // Header row
+    html += `<div class="m-cell corner"></div>`;
+    PHASES.forEach(p => {
+      html += `<div class="m-cell phase-hdr">${p}</div>`;
+    });
+
+    // Data rows
+    type.maturity.forEach(mat => {
+      html += `<div class="m-cell mat-hdr">${mat}</div>`;
+      PHASES.forEach(phase => {
+        if (isDisabled(typeKey, mat, phase)) {
+          html += `<div class="m-cell disabled"></div>`;
+          return;
+        }
+        const skills = getSkillsForCell(typeKey, mat, phase);
+        if (skills.length === 0) {
+          html += `<div class="m-cell empty"></div>`;
+        } else {
+          html += `<div class="m-cell">${skills.map(makePill).join('')}</div>`;
+        }
+      });
+    });
+
+    grid.style.gridTemplateColumns = `88px repeat(${PHASES.length}, minmax(120px, 1fr))`;
+    grid.innerHTML = html;
+
+    // Universeel
+    const uPills = document.getElementById('universeel-pills');
+    uPills.innerHTML = UNIVERSEEL.map(makePill).join('');
+  }
+
+  /* ── Tab switching ── */
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  /* ── Type selection ── */
+  let currentType = 'library';
+  function selectType(typeKey, btn) {
+    currentType = typeKey;
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMatrix(typeKey);
+  }
+
+  /* ── Init ── */
+  renderMatrix('library');
+</script>
+</body>
+</html>

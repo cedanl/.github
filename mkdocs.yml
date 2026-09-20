@@ -43,10 +43,6 @@ nav:
   - Guides:
     - Azure AI modellen: guides/azure-ai.md
     - Entire CLI: guides/entire-cli.md
-  - Skills:
-    - Werklandkaart: ceda-werklandkaart.md
-    - Skills landkaart: skills-landkaart.md
-    - Skill bouwmodel: skill-bouwmodel.md
 
 plugins:
   - search:
