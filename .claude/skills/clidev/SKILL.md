@@ -99,7 +99,7 @@ Gebruik altijd de `.np-bg` class met `background-image`. Nooit `background:` in 
 | `Slide2.PNG` | Agenda | Tekst RECHTS: `margin-left: 42%`, geometrische vormen links zijn background |
 | `Slide3.PNG` | Standaard contentslide | `.fill` wrapper, oranje boog rechtsonder als decoratie |
 | `Slide4.PNG` / `Slide5.PNG` | Variant contentslide | Idem Slide3, kleinere boogvariant; onderling uitwisselbaar |
-| `Slide6.PNG` | Emphasis / citaatslide | Grotendeels oranje, met een lichtgrijze driehoek linksboven-tot-linksonder (~0-28% breed, punt bij ~28%) — **witte tekst verplicht**, gebruik Cooper Light (`var(--np-font-secondary)`), maar houd alle tekst rechts van ~32% breedte (bijv. `margin-left: 32%` i.p.v. volledig gecentreerd), anders valt witte tekst weg tegen de lichtgrijze driehoek |
+| `Slide6.PNG` | Emphasis / citaatslide | Grotendeels oranje, met een lichtgrijze driehoek linksboven-tot-linksonder (~0-28% breed, punt bij ~28%) — **witte tekst verplicht**, gebruik Cooper Light (`var(--np-serif)`), maar houd alle tekst rechts van ~32% breedte (bijv. `margin-left: 32%` i.p.v. volledig gecentreerd), anders valt witte tekst weg tegen de lichtgrijze driehoek |
 | `Slide7.PNG` | Afbeelding links | Roze rechthoek links, exact gemeten op `left: 6.9%; top: 10.4%; width: 41.4%; height: 79.2%`. Content-tekst begint pas bij **`left: 50%`** — niet 40-42% — anders overlapt een gecenterde screenshot-kaart de tekst (zie voorbeeld onder de tabel) |
 | `Slide8.PNG` | Afbeelding rechts | Roze rechthoek rechts, exact gemeten op `left: 53.7%; top: 10.4%; width: 41.1%; height: 79.2%` |
 | `Slide9.PNG` | Vergelijking / 2-koloms | Blauw links 40% voor titel (witte tekst), grijs rechts 60% voor kaarten; gebruik CSS grid `40% 60%` |
@@ -204,6 +204,23 @@ Dit zijn harde grenzen. Overschrijd je ze, splits dan de slide of verklein de co
 | Pipeline (4 stappen) | 1 titel per stap + 1 regel toelichting |
 | Citaat | max 35 woorden |
 | Agenda | max 6 items |
+| Tabel | max 8 rijen en 4 kolommen, verpakt in een `div` met kleiner lettertype (zie "Tabellen") |
+
+## Tabellen
+
+Een markdown-tabel in `.fill` krijgt het grote standaardlettertype en loopt vanaf 5 rijen over de slide: de titel valt boven af en de laatste rij onder af. Verpak elke tabel daarom in een `div` met een kleiner lettertype, met een lege regel om de tabel heen:
+
+```html
+<div style="font-size: 0.8rem; overflow-x: auto; margin-top: 0.3rem;">
+
+| **Kolom A** | **Kolom B** |
+|-------------|-------------|
+| Waarde 1    | Waarde 2    |
+
+</div>
+```
+
+Kies het lettertype naar het aantal rijen: tot en met 4 rijen `0.86rem`, 5 tot 6 rijen `0.8rem`, 7 tot 8 rijen `0.74rem`. Meer dan 8 rijen: splits de tabel over twee slides. Maak de kopcellen vet (`**Kolom**`), anders lijkt de kop op een gewone rij.
 
 ## Mensleesbaar en bewerkbaar markdown
 
@@ -294,7 +311,7 @@ Loop door elke slide in het `.md` bestand:
 3. **Capaciteitslimiet?** — tel bullets, kaartregels en woorden; splits de slide als de limiet overschreden is
 4. **Geen hardcoded kleuren?** — zoek op `#` gevolgd door 3 of 6 hex-tekens; vervang door `var(--np-*)`
 5. **Tekstkleur op dividers?** — Slide14/15 (oranje/blauw): `color: var(--np-white, #fff)`. Slide13 (geel): `color: var(--np-ink)` — witte tekst op geel heeft onvoldoende contrast
-6. **Mermaid schaal?** — elk mermaid-blok heeft `{scale: 0.5}` of lager
+6. **Mermaid schaal?** — diagrammen met 5 of meer nodes hebben `{scale: 0.5}` of lager; kleine diagrammen (2 tot 4 nodes) mogen tot `{scale: 0.9}`, of gebruik liever `.np-pipeline`
 7. **Illustratienamen?** — controleer exacte bestandsnaam als je niet zeker bent
 
 Herhaal totdat een volledige pass schoon is.
@@ -452,7 +469,7 @@ graph LR
 </div>
 ```
 
-Houd scale op `0.5` als default. Labels max 25 tekens. De drie `classDef`-kleuren (blue/orange/green) zijn het standaardpalet; voeg `yellow` (`fill:#FCF5D4,stroke:#F4D74B,color:#1A1A2E`) of `pink` (`fill:#FAEAEA,stroke:#F4D9DC,color:#1A1A2E`) toe als een diagram meer dan drie categorieën nodes heeft.
+Houd scale op `0.5` als default voor diagrammen met 5 of meer nodes. Bij 2 tot 4 nodes is 0.5 te klein om te lezen: gebruik dan `0.9`, of kies liever `.np-pipeline`, dat leesbaarder is. Labels max 25 tekens. De drie `classDef`-kleuren (blue/orange/green) zijn het standaardpalet; voeg `yellow` (`fill:#FCF5D4,stroke:#F4D74B,color:#1A1A2E`) of `pink` (`fill:#FAEAEA,stroke:#F4D9DC,color:#1A1A2E`) toe als een diagram meer dan drie categorieën nodes heeft.
 
 ## CLI
 
