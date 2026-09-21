@@ -153,6 +153,8 @@ Combineer bestaande klassen; verzin geen losse inline-stijlen waar een klasse be
 - `.np-subtitle` — ondertitel direct onder de `#` titel
 - `.muted` — gedempte (grijze) tekst
 
+**Tabellen** — `.np-table` om een markdown-tabel: blauwe kop, oranje accent bij de eerste kolom, afwisselende rijen en badges voor status (zie "Tabellen").
+
 **Kaarten** — `.np-card` met accentrand:
 ```html
 <div class="np-card accent-blue">
@@ -204,23 +206,29 @@ Dit zijn harde grenzen. Overschrijd je ze, splits dan de slide of verklein de co
 | Pipeline (4 stappen) | 1 titel per stap + 1 regel toelichting |
 | Citaat | max 35 woorden |
 | Agenda | max 6 items |
-| Tabel | max 8 rijen en 4 kolommen, verpakt in een `div` met kleiner lettertype (zie "Tabellen") |
+| Tabel | max 8 rijen en 4 kolommen, verpakt in `<div class="np-table">` met kleiner lettertype (zie "Tabellen") |
 
 ## Tabellen
 
-Een markdown-tabel in `.fill` krijgt het grote standaardlettertype en loopt vanaf 5 rijen over de slide: de titel valt boven af en de laatste rij onder af. Verpak elke tabel daarom in een `div` met een kleiner lettertype, met een lege regel om de tabel heen:
+Gebruik altijd `.np-table` om een markdown-tabel. Zonder die klasse krijgt de tabel het grote standaardlettertype, loopt hij vanaf 5 rijen over de slide (titel valt boven af, laatste rij onder af) en ziet hij er kaal uit. Zet een lege regel om de tabel heen, anders parseert Slidev hem niet:
 
 ```html
-<div style="font-size: 0.8rem; overflow-x: auto; margin-top: 0.3rem;">
+<div class="np-table" style="font-size: 0.8rem;">
 
-| **Kolom A** | **Kolom B** |
-|-------------|-------------|
-| Waarde 1    | Waarde 2    |
+| Kolom A | Kolom B |
+|---------|---------|
+| Waarde 1 | Waarde 2 |
 
 </div>
 ```
 
-Kies het lettertype naar het aantal rijen: tot en met 4 rijen `0.86rem`, 5 tot 6 rijen `0.8rem`, 7 tot 8 rijen `0.74rem`. Meer dan 8 rijen: splits de tabel over twee slides. Maak de kopcellen vet (`**Kolom**`), anders lijkt de kop op een gewone rij.
+**Wat `.np-table` doet:** blauwe kop met witte tekst, afgeronde hoeken en lichte schaduw (zoals `.np-card`), eerste kolom vet met een oranje streep links, afwisselend gearceerde rijen. De kop hoeft dus niet meer vet gemaakt te worden met `**`.
+
+**Lettertype naar aantal rijen** (zet `font-size` op de wrapper): tot en met 4 rijen `0.86rem`, 5 tot 6 rijen `0.8rem`, 7 tot 8 rijen `0.74rem`. Meer dan 8 rijen: splits de tabel over twee slides. Krap? Kort de celtekst in voordat je het lettertype verkleint. Zet nooit `overflow-x: auto` op de wrapper: dat kapt de onderste rijen af zodra de tabel iets te hoog is.
+
+**Status of categorie in een cel: badge met tekst.** Gebruik `<span class="np-badge green">Ja</span>` in plaats van alleen een kleur of symbool, zodat de betekenis ook zonder kleur leesbaar is (kleurenblindheid, zwart-wit print). Kleurkeuze: groen voor ja of nu, oranje voor nee of later, geel voor deels of onzeker, blauw voor een sector of neutraal, roze voor beide. In `.np-table` staat donkere tekst op groen en oranje voor voldoende contrast.
+
+**Controle:** exporteer de slide naar PNG en kijk of de laatste rij helemaal zichtbaar is en niet tegen de onderrand of de decoratieve bogen aan zit.
 
 ## Mensleesbaar en bewerkbaar markdown
 
