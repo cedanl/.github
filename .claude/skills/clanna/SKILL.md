@@ -1,6 +1,6 @@
 ---
 name: clanna
-description: Gebruik wanneer iemand een presentatie als los HTML-bestand wil in Npuls/CEDA-huisstijl in plaats van Slidev — een HTML-deck, html-presentatie, show-deck, kick-off of keynote die moet opvallen, met Mentimeter-peilingen, of één bestand dat je kunt mailen. Ook bij "/clanna" of "maak het zoals het LLM-wiki-deck van Janna". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een Marp-deck is `build-marp-deck`.
+description: Gebruik wanneer iemand een presentatie als los HTML-bestand wil in Npuls/CEDA-huisstijl in plaats van Slidev — een HTML-deck, html-presentatie, show-deck, kick-off of keynote die moet opvallen, met Mentimeter-peilingen, of één bestand dat je kunt mailen. Ook bij "/clanna" of "maak het zoals het LLM-wiki-deck van Janna". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een PowerPoint (.pptx) is `powerclaude`; een Marp-deck is `build-marp-deck`.
 allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node and git; draait in de root van cedanl/clidev-presentaties (Npuls-assets en playwright-chromium via npm install)
 metadata:
@@ -43,7 +43,7 @@ clanna voegt daar de echte Npuls-assets, de checks en de export aan toe. Het ont
 | Font Awesome *solid sharp* | `fa-solid` | Sharp zit alleen in Font Awesome Pro |
 | Presentaties → start met `clidev` | HTML-deck → `clanna` | `clidev` blijft voor Slidev; dit is de HTML-route |
 
-**Slidev of clanna?** Terugkerende reviewdecks met vaste sjablonen → `clidev`. Iets dat moet opvallen, één deelbaar bestand, Mentimeter → `clanna`.
+**Slidev, clanna of powerclaude?** Terugkerende reviewdecks met vaste sjablonen → `clidev`. Iets dat moet opvallen, één deelbaar bestand, Mentimeter → `clanna`. Een .pptx die anderen in PowerPoint aanpassen → `powerclaude`.
 
 ## Werkwijze
 
