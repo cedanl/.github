@@ -472,6 +472,45 @@ export const LAYOUTS = {
     footer(cv, { footnote: s.footnote }, 0);
   },
 
+  // Vaste CEDA-introslide ("Wie is CEDA"), woordelijk gelijk aan clidev/_template.md.
+  // Direct na de titel/agenda; bewust zonder links (die staan op `contact`).
+  ceda(cv) {
+    cv.slide.background = { path: 'public/npuls/powerpoint_slides/Slide16.PNG' };
+    const w = W / 2 - M - 0.5;
+    cv.label('Wie is CEDA', { x: M + 0.2, y: 1.75, w, h: 0.35, color: 'oranje', size: 13 });
+    cv.text('Centre of Educational Data Analytics', { x: M + 0.2, y: 2.15, w, h: 1.3, size: 32, color: 'blauw', font: FONT.head, min: 24 });
+    cv.text('Eén team binnen Npuls. Van ruwe data tot AI-toepassing, open source.', { x: M + 0.2, y: 3.5, w, h: 0.9, size: 18, color: 'zwart', font: FONT.quote, min: 14 });
+    ['Data, analytics en generatieve AI in één keten', 'Altijd in co-creatie met mbo, hbo en wo', 'Open source, voor elke instelling'].forEach((b, i) => {
+      const y = 4.6 + i * 0.55;
+      cv.circle({ x: M + 0.2, y: y + 0.12, d: 0.17, fill: ['blauw', 'oranje', 'groen'][i] });
+      cv.text(b, { x: M + 0.55, y, w: w - 0.35, h: 0.55, size: 16, color: 'zwart', min: 12 });
+    });
+  },
+
+  // Vaste afsluitslide ("Blijf in contact") met de CEDA-links, woordelijk gelijk aan
+  // clidev/_template.md. Altijd de allerlaatste slide; de kaarten zijn klikbaar.
+  contact(cv) {
+    cv.slide.background = { path: 'public/npuls/powerpoint_slides/Slide1.PNG' };
+    cv.label('Tot slot', { x: M, y: 1.75, w: CW, h: 0.35, color: 'oranje', size: 13, align: 'center' });
+    cv.text('Blijf in contact', { x: M, y: 2.15, w: CW, h: 0.95, size: 44, color: 'blauw', font: FONT.head, align: 'center' });
+    cv.text('Vragen, feedback of zin om mee te bouwen? We horen graag van je.', { x: 2.5, y: 3.15, w: W - 5, h: 0.5, size: 18, color: 'zwart', align: 'center' });
+    const links = [
+      ['GitHub', 'github.com/cedanl', 'blauw', 'roze', 'https://github.com/cedanl'],
+      ['Community', 'community.npuls.nl/groups/data-ai', 'groen', 'zwart', 'https://community.npuls.nl/groups/data-ai'],
+      ['Email', 'ceda@surf.nl', 'oranje', 'zwart', 'mailto:ceda@surf.nl'],
+    ];
+    const cw = 3.5, gap = 0.3, x0 = (W - (3 * cw + 2 * gap)) / 2;
+    links.forEach(([tag, label, c, fg, url], i) => {
+      const x = x0 + i * (cw + gap);
+      cv.box({ x, y: 4.0, w: cw, h: 1.35, fill: 'wit', r: 0.2 });
+      cv.pill(tag, { x: x + (cw - 1.6) / 2, y: 4.22, w: 1.6, h: 0.4, fill: c, color: fg, size: 12 });
+      cv.slide.addText(label, {
+        x: x + 0.15, y: 4.78, w: cw - 0.3, h: 0.4, margin: 0, align: 'center',
+        fontFace: FONT.body, fontSize: 14, color: hex('zwart'), hyperlink: { url },
+      });
+    });
+  },
+
   // Afsluiting: vraag in Cooper, optioneel punten/contact. Logo alleen op roze.
   closing(cv, s) {
     const v = cv.v;

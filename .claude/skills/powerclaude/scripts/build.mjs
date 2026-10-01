@@ -60,10 +60,19 @@ const slides = deck?.slides ?? [];
 const illus = new Set();
 const used = new Set();
 const SATURATED = ['blauw', 'roze', 'groen', 'oranje', 'geel'];
+// Vaste CEDA-slides: inhoud ligt vast in layouts.mjs (woordelijk gelijk aan clidev).
+const FIXED = { ceda: 'Vaste CEDA-introslide: wie CEDA is. Kort toelichten, daarna door naar de inhoud.', contact: 'Vaste afsluitslide: laat deze staan tijdens de vragen, zodat iedereen de links ziet.' };
 
 slides.forEach((s, i) => {
   const n = i + 1;
   if (!TYPES.includes(s.type)) return err(n, `onbekend type "${s.type}". Kies uit: ${TYPES.join(', ')}`);
+  if (FIXED[s.type]) {
+    const extra = Object.keys(s).filter((k) => !['type', 'notes'].includes(k));
+    if (extra.length) warnings.push(`slide ${n}: ${s.type} is een vaste slide; ${extra.join(', ')} wordt genegeerd`);
+    s.variant = s.type === 'ceda' ? 'wit' : 'roze'; // volgt de achtergrond-PNG; voor de afwissel-check
+    s.notes ??= FIXED[s.type];
+    return;
+  }
   const variant = s.variant ?? (s.type === 'title' || s.type === 'section' ? 'blauw' : 'licht-geel');
   if (!VARIANTS[variant]) return err(n, `onbekende variant "${variant}". Kies uit: ${Object.keys(VARIANTS).join(', ')}`);
   s.variant = variant;
@@ -91,7 +100,11 @@ slides.forEach((s, i) => {
   if (words > 90) warnings.push(`slide ${n}: ~${words} woorden zichtbaar — splitsen (richtlijn: max ~70)`);
 });
 if (slides[0] && slides[0].type !== 'title') warnings.push('eerste slide is geen title');
-if (slides.length && slides.at(-1).type !== 'closing') warnings.push('laatste slide is geen closing');
+const cedaAt = slides.findIndex((s) => s.type === 'ceda');
+if (cedaAt === -1) warnings.push("vaste CEDA-introslide ontbreekt: zet { type: 'ceda' } direct na de titel/agenda (alleen weglaten als de gebruiker dat vraagt)");
+else if (cedaAt > 2) warnings.push(`CEDA-introslide staat op slide ${cedaAt + 1}: hoort direct na de titel/agenda`);
+if (slides.length && slides.at(-1).type !== 'contact') warnings.push("laatste slide is niet de vaste afsluitslide: eindig met { type: 'contact' } (alleen weglaten als de gebruiker dat vraagt)");
+for (const t of Object.keys(FIXED)) if (slides.filter((s) => s.type === t).length > 1) warnings.push(`${t} staat meer dan één keer in het deck`);
 const primaries = [...used].filter((c) => SATURATED.includes(c));
 if (primaries.length < 3) warnings.push(`maar ${primaries.length} primaire kleuren zichtbaar (${primaries.join(', ')}) — Npuls vraagt er minstens 3`);
 if (illus.size < 2) warnings.push(`${illus.size} Npuls-illustratie(s) in het deck — gebruik er minstens 2`);

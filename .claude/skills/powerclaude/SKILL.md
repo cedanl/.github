@@ -86,7 +86,8 @@ cp <skill>/assets/voorbeeld.deck.mjs YYMMDD_onderwerp.deck.mjs
 Lees `references/slidetypes.md` (alle types, velden en varianten) en vervang de inhoud.
 Het voorbeeld toont elk type één keer; houd alleen wat je nodig hebt.
 
-- Eerste slide `title`, laatste `closing`.
+- Volgorde: `title` → `{ type: 'ceda' }` → inhoud → eventueel `closing` (vraag) → `{ type: 'contact' }`.
+- **De twee vaste CEDA-slides staan in elk deck**, net als bij `clidev`: `ceda` ("Wie is CEDA", direct na de titel/agenda, zonder links) en `contact` ("Blijf in contact" met GitHub, Community en e-mail, altijd de laatste slide). Hun tekst ligt vast in de skill: geen velden meegeven, niet parafraseren. Alleen weglaten als de gebruiker dat expliciet vraagt.
 - Eén boodschap per slide; de titel is een bewering ("Uitval daalt na jaar 1"), geen onderwerp.
 - Varianten afwisselen: lichte inhoudsslides, één verzadigde slide per kernboodschap.
 - Per slide max ~70 woorden zichtbare tekst. Meer → splitsen.
@@ -126,6 +127,7 @@ bouwen); kleine tekstwijzigingen mogen ook direct in PowerPoint.
 | Cooper alleen voor lede, citaat en afsluitvraag | vormgever-regel: Cooper voor introducties/quotes |
 | Zwart is nooit een slide- of kaartachtergrond | vormgever-regel |
 | Logo (`npuls_logo.jpg`) alleen op een `roze` closing | Het jpg heeft een roze vlak |
+| `ceda` en `contact` in elk deck, met de vaste tekst | Gelijk aan `clidev`: wie CEDA is staat vooraan, de links staan in beeld tijdens de vragen |
 | Geen hex-kleuren in de spec; alleen Npuls-kleurnamen | `build.mjs` faalt op onbekende kleuren |
 | Niet "klaar" melden zonder build + render + alle PNG's bekeken | Overloop en botsingen zie je niet in de spec |
 

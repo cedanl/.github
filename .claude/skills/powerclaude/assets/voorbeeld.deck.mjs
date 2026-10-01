@@ -1,4 +1,4 @@
-// Voorbeeld-deck voor powerclaude: elk slidetype één keer.
+// Voorbeeld-deck voor powerclaude: elk slidetype één keer, met de twee vaste CEDA-slides.
 // Kopieer naar de projectroot als YYMMDD_onderwerp.deck.mjs en vervang de inhoud.
 export default {
   title: 'Agentic data science in het onderwijs',
@@ -14,6 +14,8 @@ export default {
       tagline: 'Onderwijs bewegen.',
       notes: 'Welkom. In 90 minuten bouwen we samen met een AI-agent één dashboard.',
     },
+    // Vaste CEDA-introslide: altijd direct na de titel/agenda. Inhoud ligt vast.
+    { type: 'ceda' },
     {
       type: 'stats',
       variant: 'roze',
@@ -101,12 +103,14 @@ export default {
     },
     {
       type: 'closing',
-      variant: 'roze',
+      variant: 'blauw',
       title: 'Afsluiting',
       question: 'Wat verloor en won je?',
       text: 'Vertaal het naar je eigen praktijk.',
       contact: 'Team CEDA',
       notes: 'Plenaire reflectie.',
     },
+    // Vaste afsluitslide met de CEDA-links: altijd de allerlaatste slide. Inhoud ligt vast.
+    { type: 'contact' },
   ],
 };

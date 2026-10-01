@@ -68,7 +68,13 @@ Statuskleuren: `groen` = vast/klaar, `oranje` = open/aandacht, `blauw` = info. N
 `title`, `image` (pad vanaf de projectroot, PNG/JPEG, bv. `public/shots/...`), `caption`,
 `text` (optioneel, kolom rechts), `alt`.
 
-### `closing` — afsluiting
+### `ceda` — vaste CEDA-introslide
+Geen velden. "Wie is CEDA": titel, subtitel en drie punten over wat CEDA doet, op de Npuls-achtergrond met roze logovlak (`Slide16.PNG`). Tekst is woordelijk gelijk aan `clidev`/`_template.md`. Plaats: direct na de titel (of agenda). Bewust zonder links.
+
+### `contact` — vaste afsluitslide
+Geen velden. "Blijf in contact" met drie klikbare kaarten: GitHub (`github.com/cedanl`), Community (`community.npuls.nl/groups/data-ai`) en e-mail (`ceda@surf.nl`), op `Slide1.PNG`. Altijd de allerlaatste slide; blijft in beeld tijdens de vragen.
+
+### `closing` — afsluiting (optioneel, vóór `contact`)
 `title` (default "Vragen?"), `question` (Cooper), `text`, `contact` (alleen als bekend; nooit
 verzinnen), `points: [{ tag?, text }]` + `pointsTitle` **of** `illustration`. Op `roze` komt
 het Npuls-logo rechtsonder.
@@ -81,9 +87,11 @@ export default {
   slides: [
     { type: 'title', kicker: 'CEDA · Thinktank', title: 'Studiesucces in beeld', lede: 'Wat de 1CHO-data ons vertelt', sub: '23 september 2026', illustration: 'learninganalystics', notes: '...' },
     { type: 'stats', variant: 'roze', title: 'Drie cijfers die opvallen', items: [{ value: '15%', label: 'uitval jaar 1', text: 'hbo, cohort 2024' }, { value: '62%', label: 'diploma in 5 jaar', text: 'alle sectoren' }, { value: '1 op 4', label: 'wisselt', text: 'binnen de instelling' }], notes: '...' },
-    { type: 'closing', variant: 'roze', question: 'Waar wil jij als eerste in duiken?', notes: '...' },
+    { type: 'ceda' },
+    { type: 'closing', variant: 'blauw', question: 'Waar wil jij als eerste in duiken?', notes: '...' },
+    { type: 'contact' },
   ],
 };
 ```
 
-Het volledige voorbeeld met elk type staat in `assets/voorbeeld.deck.mjs`.
+Het volledige voorbeeld met elk type, inclusief `ceda` en `contact`, staat in `assets/voorbeeld.deck.mjs`.
