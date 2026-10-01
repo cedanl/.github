@@ -169,9 +169,35 @@ Accenten: `accent-blue`, `accent-orange`, `accent-green`, `accent-yellow`, `acce
 
 **Badges** — `.np-badge` met kleur `blue` / `orange` / `green` / `yellow` / `pink` / `ghost`.
 
-**Pipeline / proces** — `.np-pipeline` met `.np-step` en `.np-arrow`.
+**Pipeline / proces** — `.np-pipeline` met `.np-step` en `.np-arrow`. Gebruik dit voor een reeks stappen zonder tijdsdimensie (bijv. "wat houdt valideren concreet in").
 
 **Bewijsstrip** — `.np-proof-strip` met `.np-proof-item` en `.np-proof-divider`.
+
+**Tijdlijn** — `.np-timeline` + `.np-timeline-labels` voor een lopend traject waarin je wilt laten zien WAAR je nu zit, niet alleen welke stappen er zijn (bijv. een jaarplanning). Beide containers delen dezelfde `grid-template-columns` (vaste breedte voor punten, `1fr` voor lijnen) zodat punten en labels uitlijnen:
+```html
+<div class="np-timeline">
+  <div class="np-timeline-point"><div class="np-timeline-dot"></div></div>
+  <div class="np-timeline-line"></div>
+  <div class="np-timeline-point">
+    <div class="np-timeline-marker">VANDAAG</div>
+    <div class="np-timeline-dot now"></div>
+  </div>
+  <div class="np-timeline-line"></div>
+  <div class="np-timeline-point"><div class="np-timeline-dot blue"></div></div>
+  <div class="np-timeline-line dashed"></div>
+  <div class="np-timeline-point"><div class="np-timeline-dot open"></div></div>
+</div>
+<div class="np-timeline-labels">
+  <div><strong class="mid-gray">Verleden</strong><span>Toelichting</span></div>
+  <div></div>
+  <div><strong class="orange">Vandaag</strong><span class="ink">Toelichting</span></div>
+  <div></div>
+  <div><strong class="blue">Volgende stap</strong><span>Toelichting</span></div>
+  <div></div>
+  <div><strong class="green">Nog geen datum</strong><span>Toelichting</span></div>
+</div>
+```
+Puntvarianten: `.np-timeline-dot` (verleden, grijs), `.blue` (toekomstig, vastgelegd), `.green` (behaald of afgerond, als accent), `.now` (groter, oranje, altijd met een `.np-timeline-marker` erboven), `.open` (gestippeld wit — nog geen datum). Lijnvarianten: standaard (doorgetrokken) of `.dashed` (voor het traject richting een open eindpunt). Pas het aantal kolommen in beide `grid-template-columns` aan bij meer of minder dan 4 punten; hou de twee containers dan wel identiek.
 
 **Bottomline** — `.np-bottomline`.
 
@@ -204,6 +230,7 @@ Dit zijn harde grenzen. Overschrijd je ze, splits dan de slide of verklein de co
 | Kaartgrid (2 kaarten) | 1 titel per kaart + 4 regels tekst per kaart |
 | Hoofdstukdivider | 1 eyebrow + 1 titel |
 | Pipeline (4 stappen) | 1 titel per stap + 1 regel toelichting |
+| Tijdlijn (4 punten) | 1 datum/label + 1 regel toelichting per punt |
 | Citaat | max 35 woorden |
 | Agenda | max 6 items |
 | Tabel | max 8 rijen en 4 kolommen, verpakt in `<div class="np-table">` met kleiner lettertype (zie "Tabellen") |
