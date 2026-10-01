@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Maakt van een haude-deck één deelbaar bestand: fonts, logo en illustraties uit
+// Maakt van een clanna-deck één deelbaar bestand: fonts, logo en illustraties uit
 // public/ worden als data-URI ingebakken. Font Awesome en Mentimeter blijven online.
 // Gebruik: node <skill>/scripts/bundle.mjs YYMMDD_onderwerp.html [uit.html]
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';

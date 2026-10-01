@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Visuele QA voor een haude-deck: screenshot per slide op 1920×1080 én 1366×768,
+// Visuele QA voor een clanna-deck: screenshot per slide op 1920×1080 én 1366×768,
 // plus automatische detectie van overflow, ontbrekende fonts/afbeeldingen en
 // tekst die over decoratie valt. Optioneel PDF-export.
 //
