@@ -1,6 +1,21 @@
 ---
 name: haude
-description: Gebruik wanneer iemand een presentatie als los HTML-bestand wil in Npuls/CEDA-huisstijl in plaats van Slidev — een HTML-deck, html-presentatie, show-deck, kick-off of keynote die moet opvallen, met Mentimeter-peilingen, of één bestand dat je kunt mailen. Ook bij "/haude" of "maak het zoals het LLM-wiki-deck".
+description: Gebruik wanneer iemand een presentatie als los HTML-bestand wil in Npuls/CEDA-huisstijl in plaats van Slidev — een HTML-deck, html-presentatie, show-deck, kick-off of keynote die moet opvallen, met Mentimeter-peilingen, of één bestand dat je kunt mailen. Ook bij "/haude" of "maak het zoals het LLM-wiki-deck". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een Marp-deck is `build-marp-deck`.
+allowed-tools: Read Write Edit Bash Glob Grep
+compatibility: Requires node and git; draait in de root van cedanl/clidev-presentaties (Npuls-assets en playwright-chromium via npm install)
+metadata:
+  ceda-id: ceda.haude
+  ceda-version: "0.1.0"
+  ceda-type: workflow
+  ceda-subtype: ""
+  ceda-origin: own
+  ceda-upstream: ""
+  ceda-source: "cedanl/clidev-presentaties open-source-model-llm-wiki.html (deck van Janna Berkhout, KIS)"
+  ceda-activation: ambient
+  ceda-binding: default
+  ceda-execution: inline
+  ceda-scope: org
+  ceda-verifies: measurable
 ---
 
 # haude — HTML-presentaties met Claude
@@ -28,7 +43,7 @@ Eén zelfstandig HTML-bestand per presentatie, gebouwd op een vaste **frame** (e
 Het deck moet in de root van `clidev-presentaties` staan: daar zitten de echte fonts, het logo en de illustraties (`public/npuls/`) en `playwright-chromium`.
 
 ```bash
-find ~ -type d -name Npuls_lettertype -path "*public/npuls*" 2>/dev/null | sed 's#/public/npuls/Npuls_lettertype##' | head -3
+find ~ -maxdepth 6 -type d -name Npuls_lettertype -path "*public/npuls*" -not -path "*/node_modules/*" 2>/dev/null | sed 's#/public/npuls/Npuls_lettertype##' | head -3
 ```
 
 Niets gevonden → vraag waar het mag komen en `git clone https://github.com/cedanl/clidev-presentaties.git <pad>`. Daarna `npm install` als `node_modules/` ontbreekt.
