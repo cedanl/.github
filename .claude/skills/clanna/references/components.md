@@ -1,4 +1,4 @@
-# haude-componenten
+# clanna-componenten
 
 Elk blok is een complete `<section>` die je tussen `<!-- SLIDES:START -->` en `<!-- SLIDES:END -->` plakt. Alle klassen staan al in `assets/frame.html`; verzin geen nieuwe CSS als een bestaand component past. Kleuren alleen via `var(--npuls-*)` / `var(--licht-*)`.
 

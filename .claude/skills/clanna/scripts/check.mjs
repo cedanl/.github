@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Statische huisstijlcheck voor een haude-deck.
+// Statische huisstijlcheck voor een clanna-deck.
 // Gebruik: node <skill>/scripts/check.mjs YYMMDD_onderwerp.html
 // Exit 1 bij fouten, 0 als alleen waarschuwingen of niets.
 import { readFileSync, existsSync } from 'node:fs';

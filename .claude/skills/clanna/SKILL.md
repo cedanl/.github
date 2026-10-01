@@ -1,11 +1,11 @@
 ---
-name: haude
-description: Gebruik wanneer iemand een presentatie als los HTML-bestand wil in Npuls/CEDA-huisstijl in plaats van Slidev — een HTML-deck, html-presentatie, show-deck, kick-off of keynote die moet opvallen, met Mentimeter-peilingen, of één bestand dat je kunt mailen. Ook bij "/haude" of "maak het zoals het LLM-wiki-deck". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een Marp-deck is `build-marp-deck`.
+name: clanna
+description: Gebruik wanneer iemand een presentatie als los HTML-bestand wil in Npuls/CEDA-huisstijl in plaats van Slidev — een HTML-deck, html-presentatie, show-deck, kick-off of keynote die moet opvallen, met Mentimeter-peilingen, of één bestand dat je kunt mailen. Ook bij "/clanna" of "maak het zoals het LLM-wiki-deck van Janna". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een Marp-deck is `build-marp-deck`.
 allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node and git; draait in de root van cedanl/clidev-presentaties (Npuls-assets en playwright-chromium via npm install)
 metadata:
-  ceda-id: ceda.haude
-  ceda-version: "0.1.0"
+  ceda-id: ceda.clanna
+  ceda-version: "0.2.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -18,21 +18,32 @@ metadata:
   ceda-verifies: measurable
 ---
 
-# haude — HTML-presentaties met Claude
+# clanna — HTML-presentaties met Claude
 
-Eén zelfstandig HTML-bestand per presentatie, gebouwd op een vaste **frame** (engine, slide-varianten, componenten) die is afgeleid van het deck *"Welk open-source model kan mijn LLM-wiki het beste onderhouden?"* van Janna Berkhout (KIS). Jij schrijft alleen de slides; de vormgeving komt uit de frame.
+Eén zelfstandig HTML-bestand per presentatie, gebouwd op een vaste **frame** (engine, slide-varianten, componenten). Jij schrijft alleen de slides; de vormgeving komt uit de frame.
 
-**REQUIRED BACKGROUND:** laad `vormgever-npuls-huisstijl` voor kleuren, combinaties, typografie, iconen en vormtaal. Die skill wordt niet aangepast. `haude` voegt alleen het presentatiedeel toe.
+## Met dank aan Janna
 
-**Waar haude bewust afwijkt van vormgever-npuls-huisstijl** (alleen deze drie punten; de rest volgt vormgever):
+**clanna = Claude + Janna.** Deze skill bestaat dankzij **Janna Berkhout** (Kennisinfrastructuur, KIS). Haar deck *"Welk open-source model kan mijn LLM-wiki het beste onderhouden?"* is het fundament van alles hier:
 
-| vormgever zegt | haude doet | Reden |
+- de slide-engine: toetsen, swipe, fullscreen, stip-navigatie en deeplinks;
+- de elf slide-varianten die de Npuls-kleurcombinaties netjes afdwingen;
+- de componenten: kaarten, iconen, stappen, scorebalken, procesketen, kerncijfers, tabellen en Mentimeter;
+- het ritme van haar deck: één bewering per slide, licht en verzadigd afwisselen, eindigen met een vraag.
+
+clanna voegt daar de echte Npuls-assets, de checks en de export aan toe. Het ontwerp is van Janna. Dank je wel, Janna!
+
+**REQUIRED BACKGROUND:** laad `vormgever-npuls-huisstijl` voor kleuren, combinaties, typografie, iconen en vormtaal. Die skill wordt niet aangepast. `clanna` voegt alleen het presentatiedeel toe.
+
+**Waar clanna bewust afwijkt van vormgever-npuls-huisstijl** (alleen deze drie punten; de rest volgt vormgever):
+
+| vormgever zegt | clanna doet | Reden |
 |---|---|---|
 | Plus Jakarta Sans via Google Fonts als digitale vervanger | Echte General Sans + Cooper Light uit `public/npuls/` | De echte fonts staan in de repo; `bundle.mjs` bakt ze in |
 | Font Awesome *solid sharp* | `fa-solid` | Sharp zit alleen in Font Awesome Pro |
-| Presentaties → start met `clidev` | HTML-deck → `haude` | `clidev` blijft voor Slidev; dit is de HTML-route |
+| Presentaties → start met `clidev` | HTML-deck → `clanna` | `clidev` blijft voor Slidev; dit is de HTML-route |
 
-**Slidev of haude?** Terugkerende reviewdecks met vaste sjablonen → `clidev`. Iets dat moet opvallen, één deelbaar bestand, Mentimeter → `haude`.
+**Slidev of clanna?** Terugkerende reviewdecks met vaste sjablonen → `clidev`. Iets dat moet opvallen, één deelbaar bestand, Mentimeter → `clanna`.
 
 ## Werkwijze
 
