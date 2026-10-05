@@ -94,6 +94,9 @@ timeout 45 bash -c \
 Op basis van stap 2: bepaal 3–6 scenes die de kernfunctionaliteit tonen. Bepaal per scene:
 - Welke interacties plaatsvinden (clicks, type, scroll)
 - Welke annotaties zinvol zijn (floating overlay voor context, ring+badge voor UI-elementen)
+- Waar de annotatie staat: **nooit boven een knop, invoerveld, tab of waarschuwing**
+  die in de scene wordt gebruikt of uitgelegd. Scrol het doelelement eerst naar het
+  midden (`scrollTo`) en laat `safePosition()` de overlay-hoek kiezen
 - Welke API-endpoints gemockt moeten worden
 
 **Mock data principes:**
@@ -175,6 +178,25 @@ async function showAnnotation(page, text, position = 'bottom-center', durationMs
   await page.evaluate(() =>
     document.querySelectorAll('.__demo-annotation').forEach(e => e.remove())
   );
+}
+
+// Kies de overlay-positie die geen klikbaar element of tekst afdekt.
+// Een bottom-center caption verdwijnt anders over knoppen/waarschuwingen onderin beeld.
+async function safePosition(page, selectors = ['button', 'a', 'input', 'select', '[role=tab]', '[role=alert]']) {
+  return page.evaluate((sels) => {
+    const vw = innerWidth, vh = innerHeight;
+    const boxes = {
+      'bottom-center': [vw * 0.25, vh - 160, vw * 0.75, vh - 60],
+      'top-center':    [vw * 0.25, 60, vw * 0.75, 160],
+      'bottom-left':   [24, vh - 180, vw * 0.4, vh - 80],
+      'bottom-right':  [vw * 0.6, vh - 180, vw - 24, vh - 80],
+    };
+    const els = [...document.querySelectorAll(sels.join(','))]
+      .map(e => e.getBoundingClientRect()).filter(r => r.width && r.height);
+    const hits = ([l, t, r, b]) =>
+      els.filter(e => e.left < r && e.right > l && e.top < b && e.bottom > t).length;
+    return Object.entries(boxes).sort((a, b) => hits(a[1]) - hits(b[1]))[0][0];
+  }, selectors);
 }
 
 // Stijl 2: element-anchored ring + badge (highlight specifieke UI-elementen)
@@ -565,7 +587,7 @@ Toon de gebruiker:
 ```
 Demo video klaar.
 
-Embed in README.md:
+Embed bovenaan in README.md (direct onder de titel):
 <video src="<VIDEO_URL>" controls width="100%"></video>
 
 Tussenproducten bewaard in demo-video/:
@@ -600,6 +622,17 @@ Voeg toe aan `.claude/settings.json` → `permissions.allow` voor prompt-vrije u
   en `gh auth`), geen workarounds
 - **Mock data**: gebruik altijd `page.route()` voor API-intercept en `addInitScript()`
   voor localStorage; lees de response shape uit de broncode zodat de mock exact klopt
+- **Annotaties mogen niets afdekken**: een caption die een knop of instructietekst
+  bedekt maakt de video onbruikbaar (gezien in ho-bekostiging-bestanden: de
+  bottom-center caption lag over 'Verwerk alles'). Gebruik `safePosition()`, houd
+  captions kort (max. 2 regels) en haal ze weg (`clearAnnotations`) vóór de
+  volgende interactie
+- **Controleer het resultaat visueel vóór upload**: pak per scene minstens één frame
+  (`ffmpeg -i source_video.mp4 -vf fps=1/4,scale=960:-1 frames/f%02d.png`), bekijk
+  ze en controleer dat geen caption of badge UI/tekst afdekt. Zo ja: pas de positie
+  aan en doe stap 5+ opnieuw
+- **Video bovenaan de README**: plaats de embed direct onder de titel/kopregel, niet
+  verderop in de pagina. Dit is het eerste wat een bezoeker moet zien
 - **Twee annotatiestijlen**: floating overlay voor globale context-berichten,
   element-anchored ring+badge voor specifieke UI-elementen — gebruik beide
 - **Scroll altijd via `page.evaluate()`** met `scrollIntoView` of `scrollBy` — nooit
