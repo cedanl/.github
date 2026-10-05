@@ -416,6 +416,249 @@ node demo-video/scenes/record.mjs
 uv run python demo-video/scenes/record.py
 ```
 
+### 5b. Ring, pijl en chip op het element (aanbevolen voor een showcase)
+
+Naast de floating overlay en ring+badge kun je per stap een **ring om het element, een
+pijl en een labelchip met titel en toelichting** tonen, plus een ondertitel. De pijl
+loopt van de chip naar de ring. Dit is de stijl van een geannoteerde showcase: de
+annotaties staan in de pagina zelf, dus je hebt geen aparte overlay-montage nodig.
+
+Kleur draagt betekenis: `blauw` neutrale uitleg, `groen` positief resultaat, `oranje`
+kanttekening, `rood` beperking. Nummer de labels waar een volgorde zit
+(`"1 · Automatische detectie"`).
+
+**Plaatsing is het belangrijkste.** Chip en ondertitel mogen nooit het uitgelegde
+element, een knop, tab, melding, kop of tabel afdekken. De JS hieronder meet de
+bounding box op het moment van annoteren en kiest zelf de plek:
+
+- **Chip**: boven, onder, rechts of links van de ring, de kandidaat met de minste
+  overlap met UI en ring. Chipbreedte 290px, 28px afstand tot de ring, binnen 12px van
+  de rand blijft hij weg. Een kwadratische Bezier-pijl met buiging (max ±70px) wijst
+  naar de ringrand.
+- **Ondertitel**: kandidaten in het midden en in de linker- en rechtermarge, op elke
+  hoogte in de onder- of bovenband; de plek met de laagste overlap wint. Een overlap met
+  ring of chip telt 50× zwaarder.
+- Een element dat al ruim in beeld staat (`140px` vanaf boven en onder) wordt **niet**
+  gescrold, anders worden koppen afgeknipt door de header.
+- Is de zijbalk in de weg (zoals bij Streamlit), klap hem dan in: eerst `hover()`, dan
+  klikken op de collapse-knop, en controleer dat de breedte < 10px is.
+
+```python
+BLOKKEREND = (
+    "button, [role=tab], [data-testid=stAlert], h1, h2, h3, [data-testid=stDataFrame], "
+    "[data-testid=stCheckbox], [data-testid=stSelectbox], [data-testid=stRadio], "
+    "[data-testid=stVegaLiteChart], [data-testid=stArrowVegaLiteChart], "
+    "[data-testid=stMetric], [data-testid=stExpander]"
+)
+
+# Rendert ring, chip, pijl en ondertitel; kiest posities met minimale overlap.
+ANNOTEER_JS = """({box, label, tekst, kleur, sub, selectors}) => {
+  document.querySelectorAll('.__a').forEach(e => e.remove());
+  const vw = innerWidth, vh = innerHeight, M = 9;
+  const mk = (css, cls) => { const d = document.createElement('div'); d.className = '__a ' + (cls||'');
+    d.style.cssText = 'position:fixed;pointer-events:none;z-index:2147483647;' + css;
+    document.body.appendChild(d); return d; };
+  const rect = e => { const r = e.getBoundingClientRect(); return {l:r.left,t:r.top,r:r.right,b:r.bottom}; };
+  const clip = b => ({l:Math.max(4,b.x), t:Math.max(4,b.y), r:Math.min(vw-4,b.x+b.width), b:Math.min(vh-4,b.y+b.height)});
+  const c = clip(box);
+  const ring = mk(`left:${c.l-M}px;top:${c.t-M}px;width:${c.r-c.l+2*M}px;height:${c.b-c.t+2*M}px;` +
+    `border:3px solid ${kleur};border-radius:12px;box-shadow:0 0 0 3px ${kleur}33,0 0 18px ${kleur}66;`);
+  const R = rect(ring);
+  let chip = null, CR = null, side = null, arrow = null;
+  if (label) {
+    chip = mk(`width:290px;font-family:Inter,system-ui,sans-serif;filter:drop-shadow(0 6px 14px rgba(0,0,0,.25));`);
+    chip.innerHTML = `<div style="background:${kleur};color:#fff;font:700 14px/1.3 inherit;padding:6px 12px;border-radius:8px 8px 0 0">${label}</div>` +
+      `<div style="background:#fff;color:#0f172a;font:500 13px/1.4 inherit;padding:8px 12px;border:1px solid ${kleur};border-top:0;border-radius:0 0 8px 8px">${tekst}</div>`;
+    const cw = 290, ch = chip.getBoundingClientRect().height;
+    const cx = Math.max(36, Math.min(vw - cw - 36, R.l));
+    const cy = (R.t + R.b) / 2 - ch / 2;
+    const kand = {
+      above: [cx, R.t - ch - 28], below: [cx, R.b + 28],
+      right: [R.r + 28, cy], left: [R.l - cw - 28, cy]
+    };
+    const els = [...document.querySelectorAll(selectors)].map(rect)
+      .filter(r => r.r - r.l > 4 && r.b - r.t > 4 && r.b > 0 && r.t < vh)
+      .filter(r => !(r.l >= R.l - 2 && r.r <= R.r + 2 && r.t >= R.t - 2 && r.b <= R.b + 2));
+    const ov = (a, b) => Math.max(0, Math.min(a.r, b.r) - Math.max(a.l, b.l)) * Math.max(0, Math.min(a.b, b.b) - Math.max(a.t, b.t));
+    const score = ([x, y]) => {
+      if (x < 12 || y < 12 || x + cw > vw - 12 || y + ch > vh - 12) return 1e12;
+      const r = {l:x, t:y, r:x+cw, b:y+ch};
+      return els.reduce((s, e) => s + ov(r, e), 0) + ov(r, R) * 10;
+    };
+    side = Object.keys(kand).sort((a, b) => score(kand[a]) - score(kand[b]))[0];
+    chip.style.left = kand[side][0] + 'px'; chip.style.top = kand[side][1] + 'px';
+    CR = rect(chip);
+    // pijl: kwadratische Bezier van chip naar de ringrand, buiging afhankelijk van afstand
+    const ccx = (CR.l + CR.r) / 2, ccy = (CR.t + CR.b) / 2;
+    const sx = side === 'right' ? CR.l : side === 'left' ? CR.r : Math.max(CR.l + 24, Math.min(CR.r - 24, (R.l + R.r) / 2));
+    const sy = side === 'above' ? CR.b : side === 'below' ? CR.t : ccy;
+    const ex = Math.max(R.l + 14, Math.min(R.r - 14, sx)), ey = side === 'above' ? R.t : side === 'below' ? R.b : ccy;
+    const ex2 = side === 'right' ? R.r : side === 'left' ? R.l : ex;
+    const dx = ex2 - sx, dy = ey - sy, bend = Math.max(-70, Math.min(70, dx * 0.28 || dy * 0.28));
+    const qx = (sx + ex2) / 2 + (side === 'above' || side === 'below' ? bend : 0);
+    const qy = (sy + ey) / 2 + (side === 'left' || side === 'right' ? bend : 0);
+    const svg = mk(`left:0;top:0;width:${vw}px;height:${vh}px;`);
+    svg.innerHTML = `<svg width="${vw}" height="${vh}"><defs><marker id="__h" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">` +
+      `<path d="M0,0 L10,5 L0,10 z" fill="${kleur}"/></marker></defs>` +
+      `<path d="M ${sx} ${sy} Q ${qx} ${qy} ${ex2} ${ey}" stroke="${kleur}" stroke-width="3" fill="none" marker-end="url(#__h)"/></svg>`;
+  }
+  // ondertitel: kies uit midden/links/rechts en alle hoogtes de plek met minste overlap
+  const s = mk('background:rgba(15,23,42,.92);color:#fff;padding:14px 26px;border-radius:12px;' +
+    'border-left:6px solid ' + kleur + ';font:600 21px/1.35 Inter,system-ui,sans-serif;' +
+    'box-shadow:0 8px 30px rgba(0,0,0,.25);');
+  s.textContent = sub;
+  const all = [...document.querySelectorAll(selectors)].map(rect)
+    .filter(r => r.r - r.l > 4 && r.b - r.t > 4 && r.b > 0 && r.t < vh);
+  const extra = [R].concat(CR ? [CR] : []);
+  const modes = {
+    center: {maxw: 900, x: null},
+    left: {maxw: 420, x: 24},
+    right: {maxw: 420, x: vw - 24 - 420},
+  };
+  let bestAll = null;
+  for (const [mode, m] of Object.entries(modes)) {
+    s.style.maxWidth = m.maxw + 'px';
+    s.style.transform = m.x === null ? 'translateX(-50%)' : 'none';
+    s.style.left = m.x === null ? '50%' : m.x + 'px';
+    s.style.right = 'auto';
+    const sr = s.getBoundingClientRect(), sh = sr.height, sw = sr.width;
+    const x0 = m.x === null ? (vw - sw) / 2 : m.x, x1 = x0 + sw;
+    const ov2 = (t, a) => Math.max(0, Math.min(a.r, x1) - Math.max(a.l, x0)) * Math.max(0, Math.min(a.b, t + sh) - Math.max(a.t, t));
+    const scoreY = t => all.reduce((a, e) => a + ov2(t, e), 0) + extra.reduce((a, e) => a + ov2(t, e) * 50, 0);
+    for (let y = vh - sh - 24; y >= 48; y -= 12) {
+      if (y < vh * 0.5 && y > vh * 0.2) continue;   // alleen onder- of bovenband
+      const sc0 = scoreY(y) + (mode === 'center' ? 0 : 1);   // midden/onder bij gelijkspel
+      if (!bestAll || sc0 < bestAll.sc) bestAll = {sc: sc0, mode, y, m};
+    }
+  }
+  s.style.maxWidth = bestAll.m.maxw + 'px';
+  s.style.transform = bestAll.m.x === null ? 'translateX(-50%)' : 'none';
+  s.style.left = bestAll.m.x === null ? '50%' : bestAll.m.x + 'px';
+  s.style.top = bestAll.y + 'px';
+  const best = bestAll.mode + '@' + Math.round(bestAll.y);
+  const sc = {best: Math.floor(bestAll.sc)};
+  return {chip: side, sub: best, scores: sc};
+}"""
+
+LEEG_JS = "() => document.querySelectorAll('.__a').forEach(e => e.remove())"
+KLEUR = {"blauw": "#2563eb", "groen": "#16a34a", "oranje": "#ea580c", "rood": "#dc2626"}
+HOLD = 3.7
+
+
+def settle(page, timeout=60000):
+    try:
+        page.wait_for_function(
+            """() => { const e = document.querySelector('[data-testid="stStatusWidget"]');
+                       return !e || e.offsetParent === null; }""", timeout=timeout)
+    except Exception:
+        pass
+    time.sleep(0.7)
+
+
+def center(loc):
+    """Scrol alleen als het element niet ruim in beeld staat (voorkomt afgeknipte koppen)."""
+    ok = loc.evaluate("e => { const r = e.getBoundingClientRect();"
+                      " return r.top > 140 && r.bottom < innerHeight - 140; }")
+    if ok:
+        return
+    loc.evaluate("e => e.scrollIntoView({block:'center', behavior:'smooth'})")
+    time.sleep(1.0)
+
+
+def union_box(locs):
+    boxes = [lc.bounding_box() for lc in locs]
+    l = min(b["x"] for b in boxes); t = min(b["y"] for b in boxes)
+    r = max(b["x"] + b["width"] for b in boxes); b_ = max(b["y"] + b["height"] for b in boxes)
+    return {"x": l, "y": t, "width": r - l, "height": b_ - t}
+
+
+def annoteer(page, log, target, label, tekst, sub, kleur="blauw", hold=HOLD, scroll=True):
+    locs = target if isinstance(target, list) else [target]
+    if scroll:
+        center(locs[0])
+    box = union_box(locs)
+    res = page.evaluate(ANNOTEER_JS, {"box": box, "label": label, "tekst": tekst,
+                                      "kleur": KLEUR[kleur], "sub": sub, "selectors": BLOKKEREND})
+    log.append({"label": label, "sub": sub, **res})
+    time.sleep(hold)
+    page.evaluate(LEEG_JS)
+
+
+def sidebar_inklappen(page):
+    sb = page.locator("[data-testid=stSidebar]")
+    for _ in range(3):
+        sb.hover()
+        time.sleep(0.5)
+        page.locator("[data-testid=stSidebarCollapseButton] button").first.click(force=True)
+        time.sleep(1.0)
+        if (sb.bounding_box() or {"width": 0})["width"] < 10:
+            return
+    raise RuntimeError("sidebar niet ingeklapt")
+
+
+def union_box(locs):
+    boxes = [lc.bounding_box() for lc in locs]
+    l = min(b["x"] for b in boxes); t = min(b["y"] for b in boxes)
+    r = max(b["x"] + b["width"] for b in boxes); b_ = max(b["y"] + b["height"] for b in boxes)
+    return {"x": l, "y": t, "width": r - l, "height": b_ - t}
+
+
+def annoteer(page, log, target, label, tekst, sub, kleur="blauw", hold=HOLD, scroll=True):
+    locs = target if isinstance(target, list) else [target]
+    if scroll:
+        center(locs[0])
+    box = union_box(locs)
+    res = page.evaluate(ANNOTEER_JS, {"box": box, "label": label, "tekst": tekst,
+                                      "kleur": KLEUR[kleur], "sub": sub, "selectors": BLOKKEREND})
+    log.append({"label": label, "sub": sub, **res})
+    time.sleep(hold)
+    page.evaluate(LEEG_JS)
+
+
+def sidebar_inklappen(page):
+    sb = page.locator("[data-testid=stSidebar]")
+    for _ in range(3):
+        sb.hover()
+        time.sleep(0.5)
+        page.locator("[data-testid=stSidebarCollapseButton] button").first.click(force=True)
+        time.sleep(1.0)
+        if (sb.bounding_box() or {"width": 0})["width"] < 10:
+            return
+    raise RuntimeError("sidebar niet ingeklapt")
+
+
+def klik(page, loc):
+    b = loc.bounding_box()
+    page.mouse.move(b["x"] + b["width"] / 2, b["y"] + b["height"] / 2, steps=18)
+    time.sleep(0.25)
+    loc.click()
+    settle(page)
+```
+
+Gebruik per stap:
+
+```python
+annoteer(page, log, page.get_by_role("button", name="Verwerk alles").first,
+         "5 · Eén klik voor de hele keten", "Inlezen, valideren en het star schema bouwen.",
+         "Eén klik, en de hele keten draait: inlezen, controleren, wegschrijven.",
+         kleur="blauw")
+# meerdere elementen in één ring: target=[loc_a, loc_b]
+```
+
+Regels voor betrouwbare opnames:
+- Elke locator krijgt `.first`; `get_by_role(name=...)` matcht op substring. Bij tabs
+  of panelen die verborgen kunnen zijn: `.filter(visible=True).first`, anders is
+  `bounding_box()` `None`.
+- `settle()` na elke klik; bij Streamlit wacht die op `stStatusWidget`.
+- Log per stap `{chip, sub, scores}` en **faal of waarschuw** als de laagste overlapscore
+  niet 0 is. Los dat op (andere scrollpositie, zijbalk inklappen, kortere tekst) in plaats
+  van het te accepteren.
+- Neem elke take apart op (eigen context met `record_video_dir`), warm de app eerst op
+  in een niet-opnemende context en trim het laden aan het begin
+  (`trim = tijd tot app klaar - 0,3s`).
+- Maak één ondertitel per stap zodat er geen gaten > 2 seconden vallen; een zin mag over
+  meerdere annotaties heen gelden.
+
 ### 6. Stitch scenes met FFmpeg
 
 Gebruik een Python script voor de conversie — dit geeft een betrouwbare font-fallback
@@ -482,6 +725,24 @@ print(f"Stitched: {OUTPUT}")
 ```bash
 python3 demo-video/stitch.py
 ```
+
+
+#### Titelkaarten tussen de takes (aanbevolen bij takes)
+
+Render per take een kaart als PNG met Playwright (`set_content`, 1440×900, blauwe
+gradient, eyebrow, titel, subtitel, voetnoot met repo, tool en datum) en zet die als
+3,4 s clip met fade-in/out van 0,45 s tussen de takes. Normaliseer alles op dezelfde
+manier voordat je concateneert:
+
+```text
+scale=1440:900:force_original_aspect_ratio=decrease,pad=1440:900:(ow-iw)/2:(oh-ih)/2:color=white,fps=25,format=yuv420p
+```
+
+Per take: `-ss <trim>` en `fade=t=in:st=0:d=0.35,fade=t=out:st=<duur-0.35>:d=0.35`.
+Playwright-webm heeft geen duur in de header; lees die uit `ffmpeg -i f.webm -f null -`
+(laatste `time=` in stderr). Volgorde: introkaart, kaart 1, take 1, kaart 2, take 2, …,
+outro met de repo-URL. Gebruik een `%02d`-patroon en geen `-pattern_type glob`: dat
+bestaat niet in de Windows-ffmpeg.
 
 ### 7. Schrijf narration script
 
@@ -554,6 +815,13 @@ ls -lh demo-video/demo_final.mp4
 ```
 
 ### 10. Upload naar GitHub CDN
+
+**Eerst de repo-regels lezen.** Verbiedt `CLAUDE.md` of `AGENTS.md` van de doelrepo
+`gh release create` (zoals `ho-bekostiging-bestanden`), of wil de gebruiker geen video
+in het project, gebruik dan onderstaande release-stappen **niet**. Lever het bestand dan
+op buiten de repo (bijv. `~/Videos`) en laat de gebruiker de README op github.com
+bewerken: video erin slepen levert een `user-attachments`-URL op die inline afspeelt.
+Zet nooit zelf een mp4 in git om inline weergave te krijgen.
 
 Committed video's spelen niet inline af in GitHub READMEs — gebruik GitHub Releases.
 Controleer eerst of `gh auth` werkt (zie stap 1).
@@ -634,8 +902,9 @@ Voeg toe aan `.claude/settings.json` → `permissions.allow` voor prompt-vrije u
   (`ffmpeg -i source_video.mp4 -vf fps=1/4,scale=960:-1 frames/f%02d.png`), bekijk
   ze en controleer dat geen caption of badge UI/tekst afdekt. Zo ja: pas de positie
   aan en doe stap 5+ opnieuw
-- **Twee annotatiestijlen**: floating overlay voor globale context-berichten,
-  element-anchored ring+badge voor specifieke UI-elementen — gebruik beide
+- **Drie annotatiestijlen**: floating overlay voor globale context-berichten,
+  element-anchored ring+badge, en voor een showcase ring+pijl+chip (stap 5b) — gebruik
+  ze naast elkaar waar het helpt
 - **Scroll altijd via `page.evaluate()`** met `scrollIntoView` of `scrollBy` — nooit
   Playwright's eigen scroll (onbetrouwbaar in headless)
 - **`--no-sandbox` en `--disable-setuid-sandbox`** altijd meegeven aan chromium launch
