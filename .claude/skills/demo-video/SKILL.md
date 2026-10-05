@@ -587,7 +587,7 @@ Toon de gebruiker:
 ```
 Demo video klaar.
 
-Embed bovenaan in README.md (direct onder de titel):
+Embed in README.md:
 <video src="<VIDEO_URL>" controls width="100%"></video>
 
 Tussenproducten bewaard in demo-video/:
@@ -627,12 +627,13 @@ Voeg toe aan `.claude/settings.json` → `permissions.allow` voor prompt-vrije u
   bottom-center caption lag over 'Verwerk alles'). Gebruik `safePosition()`, houd
   captions kort (max. 2 regels) en haal ze weg (`clearAnnotations`) vóór de
   volgende interactie
+- **Ondertitel en doelelement samen plannen**: staat het element dat je uitlegt in de
+  onderste helft van het scherm, zet de caption dan bovenaan (`top-center`); staat het
+  bovenin, onderaan. Een caption beweegt mee met de scene, de UI niet
 - **Controleer het resultaat visueel vóór upload**: pak per scene minstens één frame
   (`ffmpeg -i source_video.mp4 -vf fps=1/4,scale=960:-1 frames/f%02d.png`), bekijk
   ze en controleer dat geen caption of badge UI/tekst afdekt. Zo ja: pas de positie
   aan en doe stap 5+ opnieuw
-- **Video bovenaan de README**: plaats de embed direct onder de titel/kopregel, niet
-  verderop in de pagina. Dit is het eerste wat een bezoeker moet zien
 - **Twee annotatiestijlen**: floating overlay voor globale context-berichten,
   element-anchored ring+badge voor specifieke UI-elementen — gebruik beide
 - **Scroll altijd via `page.evaluate()`** met `scrollIntoView` of `scrollBy` — nooit
