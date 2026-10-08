@@ -133,7 +133,7 @@ python <skill>/scripts/edit.py kloon deck.pptx uit.pptx --slide 5 --naar 14     
 python <skill>/scripts/edit.py verplaats deck.pptx uit.pptx --slide 14 --naar 15
 ```
 
-Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. Geef de afbeeldingsnaam aan
+Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. Draai `edit.py` vanuit de projectroot (het beeldmerk komt uit `public/npuls/logos/`). Geef de afbeeldingsnaam aan
 `media` zonder beginslash (Git Bash maakt daar een Windows-pad van).
 
 ## Vaste regels
@@ -167,7 +167,7 @@ Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. G
 - `scripts/build.mjs <spec>` — draaien, niet lezen: valideert de spec en bouwt de .pptx
 - `scripts/render.mjs <pptx> [--pdf]` — draaien: PNG's per slide (en PDF) voor de controle
 - `scripts/edit.py <commando>` — draaien: een bestaande pptx lezen of aanpassen (zie stap 6)
-- `assets/` — beeldmerk-ring, beeldmerk en horizontaal logo (wit en zwart, transparant); `build.mjs` en `edit.py` gebruiken ze
+- `public/npuls/logos/` (in het project, niet in de skill) — beeldmerk-ring, beeldmerk en horizontaal logo (wit en zwart, transparant); `build.mjs` en `edit.py` gebruiken ze
 - `scripts/install-fonts.mjs [--check]` — draaien: Npuls-fonts per gebruiker installeren of controleren
 - `scripts/lib/tokens.mjs` — lees alleen als je het palet of de kaartkleuren moet aanpassen
 - `scripts/lib/layouts.mjs` — lees alleen als een slidetype ontbreekt en je er een wilt toevoegen

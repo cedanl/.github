@@ -28,7 +28,8 @@ from pptx.enum.shapes import MSO_SHAPE_TYPE
 for _stroom in (sys.stdout, sys.stderr):  # Windows-consoles gebruiken anders cp1252 en struikelen over tekens als →
     _stroom.reconfigure(encoding="utf-8")
 
-ASSETS = Path(__file__).resolve().parent.parent / "assets"
+# Logo's en beeldmerk staan in de projectroot van clidev-presentaties; draai edit.py vanuit die map.
+ASSETS = Path("public/npuls/logos")
 A = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
 R_EMBED = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed"
 
@@ -145,7 +146,10 @@ def beeldmerk(inp, uit):
         kleur = stipkleur(stippen[0])
         for s in stippen:
             s._element.getparent().remove(s._element)
-        pic = slide.shapes.add_picture(str(ASSETS / f"npuls-beeldmerk-{kleur}.png"), cx - zijde // 2, cy - zijde // 2, zijde, zijde)
+        bestand = ASSETS / f"npuls-beeldmerk-{kleur}.png"
+        if not bestand.exists():
+            sys.exit(f"FOUT: {bestand} niet gevonden. Draai edit.py vanuit de root van clidev-presentaties.")
+        pic = slide.shapes.add_picture(str(bestand), cx - zijde // 2, cy - zijde // 2, zijde, zijde)
         pic.name = "Npuls beeldmerk"
         vervangen += 1
     prs.save(uit)

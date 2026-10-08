@@ -8,7 +8,8 @@ import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ILLU_DIR = 'public/npuls/powerpoint_illustrations';
 export const LOGO = 'public/npuls/npuls_logo.jpg';
-export const SKILL_ASSETS = resolve(HERE, '../../assets');
+// Logo's en beeldmerk staan in de projectroot, naast de andere Npuls-assets (de skill draait alleen daar).
+export const SKILL_ASSETS = 'public/npuls/logos';
 // Volledige horizontale logo (stippenring + woordmerk), transparant. Wit voor blauwe vlakken, zwart voor lichte.
 export const LOGO_HORIZONTAAL = { wit: join(SKILL_ASSETS, 'npuls-logo-horizontaal-wit.png'), zwart: join(SKILL_ASSETS, 'npuls-logo-horizontaal-zwart.png') };
 // Echte titelachtergrond (blauw met de bogen) uit de Npuls-powerpointsjabloon.
