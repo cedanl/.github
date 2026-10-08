@@ -1,11 +1,11 @@
 ---
 name: powerclaude
-description: Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen. Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
+description: Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen — of een bestaande .pptx wil aanpassen (tekst vervangen, logo wisselen, slides klonen of verplaatsen). Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
 allowed-tools: Read Write Edit Bash Glob Grep
-compatibility: Requires node and git; draait in de root van cedanl/clidev-presentaties (Npuls-assets, pptxgenjs en playwright-chromium via npm install). Renderen voor controle via PowerPoint (Windows) of LibreOffice.
+compatibility: Requires node and git (en python-pptx, alleen voor edit.py); draait in de root van cedanl/clidev-presentaties (Npuls-assets, pptxgenjs en playwright-chromium via npm install). Renderen voor controle via PowerPoint (Windows) of LibreOffice.
 metadata:
   ceda-id: ceda.powerclaude
-  ceda-version: "0.1.0"
+  ceda-version: "0.2.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -118,15 +118,33 @@ Zeg erbij: **ontvangers zonder Npuls-fonts zien Calibri** — stuur hun de PDF, 
 fonts uit `public/npuls/Npuls_lettertype/` installeren. Aanpassen gaat in de spec (opnieuw
 bouwen); kleine tekstwijzigingen mogen ook direct in PowerPoint.
 
+### 6. Bestaande pptx aanpassen (alleen als er al een deck is)
+
+Een deck dat al bestaat (van een collega, of al gedeeld) bouw je niet opnieuw. Pas het aan met `edit.py`;
+schrijf daar geen eigen python-pptx-code voor.
+
+```bash
+pip install python-pptx                                            # eenmalig
+python <skill>/scripts/edit.py dump deck.pptx --notes              # wat staat er op welke slide
+python <skill>/scripts/edit.py replace deck.pptx uit.pptx map.json # {"oud": "nieuw"}; faalt als een term niet voorkomt
+python <skill>/scripts/edit.py beeldmerk deck.pptx uit.pptx        # zelfgetekend stippenmerk → echt Npuls-beeldmerk
+python <skill>/scripts/edit.py media deck.pptx uit.pptx ppt/media/image1.png nieuw.png   # afbeelding in het bestand vervangen
+python <skill>/scripts/edit.py kloon deck.pptx uit.pptx --slide 5 --naar 14               # slide kopiëren (met notities)
+python <skill>/scripts/edit.py verplaats deck.pptx uit.pptx --slide 14 --naar 15
+```
+
+Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. Geef de afbeeldingsnaam aan
+`media` zonder beginslash (Git Bash maakt daar een Windows-pad van).
+
 ## Vaste regels
 
 | Regel | Waarom |
 |---|---|
-| Altijd via `build.mjs` en een deck-spec; geen eigen pptxgenjs/python-pptx-code | Eigen layouts = elk deck ziet er anders uit en de checks lopen niet |
+| Een nieuw deck altijd via `build.mjs` en een deck-spec; een bestaand deck via `edit.py`. Geen eigen pptxgenjs/python-pptx-code en geen nabewerking | Eigen layouts of scripts = elk deck ziet er anders uit en de checks lopen niet. De echte titelslide, het volledige logo, het echte beeldmerk en de tijdlijn zitten in `build.mjs` |
 | Koppen in `General Sans Semibold`, nooit `bold: true` op General Sans | De semibold is in Windows een eigen familie; vet zetten geeft een nep-vet |
 | Cooper alleen voor lede, citaat en afsluitvraag | vormgever-regel: Cooper voor introducties/quotes |
 | Zwart is nooit een slide- of kaartachtergrond | vormgever-regel |
-| Logo (`npuls_logo.jpg`) alleen op een `roze` closing | Het jpg heeft een roze vlak |
+| Logo (`npuls_logo.jpg`) alleen op een `roze` closing | Het jpg heeft een roze vlak. De titelslide heeft zijn eigen transparante horizontale logo |
 | `ceda` en `contact` in elk deck, met de vaste tekst | Gelijk aan `clidev`: wie CEDA is staat vooraan, de links staan in beeld tijdens de vragen |
 | Geen hex-kleuren in de spec; alleen Npuls-kleurnamen | `build.mjs` faalt op onbekende kleuren |
 | Niet "klaar" melden zonder build + render + alle PNG's bekeken | Overloop en botsingen zie je niet in de spec |
@@ -148,6 +166,8 @@ bouwen); kleine tekstwijzigingen mogen ook direct in PowerPoint.
 - `assets/voorbeeld.deck.mjs` — startpunt; kopiëren naar de projectroot en invullen
 - `scripts/build.mjs <spec>` — draaien, niet lezen: valideert de spec en bouwt de .pptx
 - `scripts/render.mjs <pptx> [--pdf]` — draaien: PNG's per slide (en PDF) voor de controle
+- `scripts/edit.py <commando>` — draaien: een bestaande pptx lezen of aanpassen (zie stap 6)
+- `assets/` — beeldmerk-ring, beeldmerk en horizontaal logo (wit en zwart, transparant); `build.mjs` en `edit.py` gebruiken ze
 - `scripts/install-fonts.mjs [--check]` — draaien: Npuls-fonts per gebruiker installeren of controleren
 - `scripts/lib/tokens.mjs` — lees alleen als je het palet of de kaartkleuren moet aanpassen
 - `scripts/lib/layouts.mjs` — lees alleen als een slidetype ontbreekt en je er een wilt toevoegen

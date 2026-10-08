@@ -1,7 +1,7 @@
 // Slidetypes voor powerclaude. Elke functie tekent één slide uit een spec-object.
 // Maten in inches op 13.333 × 7.5 (16:9). Alle kleuren via tokens.mjs.
 import { ALLOWED, C, CARD, CHART_ORDER, FONT, GRIJS, VARIANTS, hex } from './tokens.mjs';
-import { imageSize } from './assets.mjs';
+import { LOGO_HORIZONTAAL, TITEL_ACHTERGROND, imageSize } from './assets.mjs';
 
 export const W = 13.333;
 export const H = 7.5;
@@ -197,10 +197,20 @@ function footer(cv, s, y) {
 
 export const LAYOUTS = {
   // Openingsslide: kicker-pill, grote titel, lede in Cooper, rechts agenda of illustratie.
+  // Op `blauw` (de standaard) krijgt de slide de echte Npuls-titelachtergrond (blauw met de bogen) en het
+  // volledige horizontale logo; `npuls: false` zet dat uit. Andere varianten krijgen alleen het beeldmerk.
   title(cv, s) {
     const v = cv.v;
-    cv.mark({ x: M, y: 0.5, size: 0.8 });
-    if (s.kicker) cv.pill(s.kicker, { x: 1.65, y: 0.68, w: Math.min(4.6, 0.6 + s.kicker.length * 0.12), h: 0.44, fill: v.accent, color: CARD[v.accent].big, size: 13 });
+    const npuls = v.bg === 'blauw' && s.npuls !== false;
+    if (npuls) {
+      const lw = 2.2;
+      const { w: pw, h: ph } = imageSize(LOGO_HORIZONTAAL.wit);
+      cv.slide.background = { path: TITEL_ACHTERGROND };
+      cv.slide.addImage({ path: LOGO_HORIZONTAAL.wit, x: M, y: 0.5, w: lw, h: (lw * ph) / pw, altText: 'Npuls' });
+    } else {
+      cv.mark({ x: M, y: 0.5, size: 0.8 });
+    }
+    if (s.kicker) cv.pill(s.kicker, { x: npuls ? 3.35 : 1.65, y: 0.68, w: Math.min(4.6, 0.6 + s.kicker.length * 0.12), h: 0.44, fill: v.accent, color: CARD[v.accent].big, size: 13 });
     const right = s.agenda?.length || s.illustration;
     const tw = right ? 7.4 : CW;
     cv.text(s.title, { x: M, y: 1.85, w: tw, h: 2.0, size: 46, color: v.title, font: FONT.head, valign: 'bottom', min: 32 });
@@ -222,7 +232,11 @@ export const LAYOUTS = {
       cv.illustration(s.illustration, { x: 8.4, y: 1.2, w: 4.3, h: 4.3 });
     }
     if (s.deco !== false) cv.deco('golven', { x: M, y: 5.75, w: 4.4, h: 1.5 });
-    if (s.tagline) cv.text(s.tagline, { x: 8.7, y: 6.72, w: 4.0, h: 0.4, size: 14, color: v.accent, font: FONT.head, align: 'right' });
+    // Met de titelachtergrond zitten de bogen rechtsonder: de tagline staat dan links onder het logo.
+    if (s.tagline) {
+      const o = npuls ? { x: M, y: 1.45, w: 4.0, h: 0.4, align: 'left' } : { x: 8.7, y: 6.72, w: 4.0, h: 0.4, align: 'right' };
+      cv.text(s.tagline, { ...o, size: 14, color: v.accent, font: FONT.head });
+    }
   },
 
   // Sectie of kernboodschap: één grote bewering, optioneel nummer en toelichting.
@@ -468,6 +482,46 @@ export const LAYOUTS = {
     if (s.text) {
       const tx = M + CW - side;
       cv.text(s.text, { x: tx, y: 1.6, w: side, h: 4.9, size: 18, color: v.text, accent: v.accent, min: 12, paraSpace: 8 });
+    }
+    footer(cv, { footnote: s.footnote }, 0);
+  },
+
+  // Tijdlijn op schaal: blokken met breedte naar rato van de duur, tijden erboven, naam en uitleg eronder.
+  // blocks: [{ minutes, title, text?, tag?, color?, start? }]; legend: [{ color, label }].
+  timeline(cv, s) {
+    cv.mark();
+    cv.title(s.title);
+    const blocks = s.blocks;
+    const total = s.total ?? blocks.reduce((n, b) => n + b.minutes, 0);
+    const gap = 0.05;
+    const perMin = (CW - gap * (blocks.length - 1)) / total;
+    const barY = 2.3, barH = 1.0;
+    const fmt = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+    let x = M, t = 0;
+    blocks.forEach((b, i) => {
+      const w = b.minutes * perMin;
+      const color = b.color ?? cv.v.cards[i % cv.v.cards.length];
+      const r = CARD[color];
+      if (w < 0.9) cv.ctx.warn(`tijdlijnblok "${b.title}" is te smal (${w.toFixed(2)} in): geef het meer minuten of voeg het samen`);
+      cv.text(fmt(b.start ?? t), { x, y: barY - 0.42, w: Math.max(w, 0.9), h: 0.3, size: 14, color: 'blauw', font: FONT.head });
+      cv.box({ x, y: barY, w, h: barH, fill: color, r: 0 });
+      cv.text(`${b.minutes} min`, { x, y: barY, w, h: barH, size: 18, color: r.title, font: FONT.head, align: 'center', valign: 'middle', min: 10 });
+      cv.box({ x, y: barY + barH, w, h: 0.05, fill: color, r: 0 });
+      cv.text(b.title, { x: x + 0.02, y: barY + barH + 0.3, w: w - 0.1, h: 0.8, size: 11, color: 'zwart', font: FONT.head, min: 9 });
+      cv.text(b.text, { x: x + 0.02, y: barY + barH + 1.25, w: w - 0.1, h: 0.9, size: 12, color: 'zwart', min: 9 });
+      if (b.tag) {
+        cv.box({ x: x + 0.02, y: barY + barH + 2.2, w: w - 0.04, h: 0.34, fill: 'wit', r: 0.17 });
+        cv.text(b.tag, { x: x + 0.02, y: barY + barH + 2.2, w: w - 0.04, h: 0.34, size: 9, color: 'blauw', font: FONT.head, align: 'center', valign: 'middle', min: 7 });
+      }
+      x += w + gap;
+      t += b.minutes;
+    });
+    cv.text(fmt(total), { x: M + CW - 1.0, y: barY - 0.42, w: 1.0, h: 0.3, size: 14, color: 'blauw', font: FONT.head, align: 'right' });
+    let lx = M;
+    for (const l of s.legend ?? []) {
+      cv.box({ x: lx, y: 6.59, w: 0.22, h: 0.22, fill: l.color, r: 0 });
+      cv.text(l.label, { x: lx + 0.32, y: 6.55, w: 2.6, h: 0.3, size: 12, color: 'zwart', valign: 'middle' });
+      lx += 0.32 + 0.11 * l.label.length + 0.5;
     }
     footer(cv, { footnote: s.footnote }, 0);
   },
