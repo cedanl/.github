@@ -31,6 +31,20 @@ export default {
       notes: 'De vier getallen vatten het format samen.',
     },
     {
+      type: 'timeline',
+      variant: 'licht-blauw',
+      title: 'Zo loopt de dag',
+      blocks: [
+        { minutes: 15, color: 'geel', title: 'Welkom en uitleg', text: 'Casus en werkwijze' },
+        { minutes: 30, color: 'blauw', title: 'Ronde 1', text: 'Jullie werken zelf' },
+        { minutes: 15, color: 'oranje', title: 'Spiegelmoment', text: 'Skill live', tag: '/skill-naam' },
+        { minutes: 30, color: 'blauw', title: 'Ronde 2', text: 'Andere rol' },
+        { minutes: 10, color: 'groen', title: 'Afsluiting', text: 'Terugblik' },
+      ],
+      legend: [{ color: 'geel', label: 'Uitleg' }, { color: 'blauw', label: 'Werken' }, { color: 'oranje', label: 'Spiegelmoment' }, { color: 'groen', label: 'Afsluiting' }],
+      notes: 'Loop het schema in dertig seconden door.',
+    },
+    {
       type: 'cards',
       variant: 'licht-geel',
       title: 'Eén dashboard, drie stappen',

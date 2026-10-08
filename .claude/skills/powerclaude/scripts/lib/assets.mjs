@@ -8,6 +8,12 @@ import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ILLU_DIR = 'public/npuls/powerpoint_illustrations';
 export const LOGO = 'public/npuls/npuls_logo.jpg';
+// Logo's en beeldmerk staan in de projectroot, naast de andere Npuls-assets (de skill draait alleen daar).
+export const SKILL_ASSETS = 'public/npuls/logos';
+// Volledige horizontale logo (stippenring + woordmerk), transparant. Wit voor blauwe vlakken, zwart voor lichte.
+export const LOGO_HORIZONTAAL = { wit: join(SKILL_ASSETS, 'npuls-logo-horizontaal-wit.png'), zwart: join(SKILL_ASSETS, 'npuls-logo-horizontaal-zwart.png') };
+// Echte titelachtergrond (blauw met de bogen) uit de Npuls-powerpointsjabloon.
+export const TITEL_ACHTERGROND = 'public/npuls/powerpoint_slides/Slide15.PNG';
 
 // pptxgenjs en playwright komen uit de node_modules van het project, niet uit de skill.
 export const projectRequire = createRequire(join(process.cwd(), 'package.json'));
@@ -46,9 +52,12 @@ export async function rasterize(svgPaths, outDir, px = 1200) {
   return out;
 }
 
-// Beeldmerk-stippen uit vormgever-npuls-huisstijl (indicatief, zie die skill).
-// Wordt als losse vector-cirkels getekend, zodat de kleur per variant klopt.
+// Echt Npuls-beeldmerk (stippenring): de stippen staan genormaliseerd in assets/beeldmerk-ring.json.
+// Wordt als losse vector-cirkels getekend, zodat de kleur per variant klopt. Valt terug op het
+// indicatieve SVG uit vormgever-npuls-huisstijl als het bestand ontbreekt.
 export function beeldmerkDots() {
+  const ring = join(SKILL_ASSETS, 'beeldmerk-ring.json');
+  if (existsSync(ring)) return JSON.parse(readFileSync(ring, 'utf8'));
   const candidates = [
     resolve(HERE, '../../../vormgever-npuls-huisstijl/assets/logos/beeldmerk.svg'),
     join(homedir(), '.claude', 'skills', 'vormgever-npuls-huisstijl', 'assets', 'logos', 'beeldmerk.svg'),

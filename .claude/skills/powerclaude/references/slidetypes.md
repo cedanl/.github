@@ -27,6 +27,8 @@ zet per kernboodschap één verzadigde slide.
 ## Types
 
 ### `title` — openingsslide
+Op `blauw` (de standaard) staat de echte Npuls-titelachtergrond (blauw met bogen) met het volledige
+horizontale logo linksboven; de tagline staat dan links onder het logo. `npuls: false` zet dat uit.
 `kicker` (pill, bv. `'CEDA · DAIR-bijeenkomst'`), `title`, `lede` (Cooper, één zin), `sub`
 (kleine regel: duur, datum, spreker), `agenda` (2-4 korte punten, genummerd rechts) **of**
 `illustration`, `tagline` (optioneel, rechtsonder), `deco: false` zet de golven uit.
@@ -60,6 +62,12 @@ Statuskleuren: `groen` = vast/klaar, `oranje` = open/aandacht, `blauw` = info. N
 `labels`, `series: [{ name, values }]`, `horizontal`, `stacked`, `format` (Excel-formaat, bv.
 `'0"%"'` of `'#,##0'`), `takeaway` (kaart rechts), `illustration` (onder de takeaway),
 `source` (voetnoot). Kleuren volgen de Npuls-volgorde blauw → oranje → groen → geel → roze.
+
+### `timeline` — programma of planning op schaal
+`title`, `blocks: [{ minutes, title, text?, tag?, color?, start? }]` (2-8), `legend: [{ color, label }]`,
+`total` (optioneel, anders de som), `footnote`. De breedte van elk blok volgt de duur; de tijden erboven
+worden opgeteld. `tag` is een kleine pill onder het blok (bijvoorbeeld een skill of spreker),
+`color` een Npuls-kleur (default: de kaartkleuren van de variant). Blokken onder ~0,9 inch breed geven een waarschuwing.
 
 ### `quote` — citaat
 `text`, `by`, `illustration` (optioneel). Beste op `blauw`.
