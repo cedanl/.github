@@ -15,7 +15,7 @@ vormgever-npuls-huisstijl/
 │   └── merkcontext.md              # Logo, vormentaal, fotografie, licentie
 └── assets/
     ├── shapes/                     # De vijf kernvormen als SVG
-    ├── logos/                      # Indicatief beeldmerk (licht + donker)
+    ├── logos/                      # Officieel beeldmerk (JPG op roze) + indicatieve SVG's
     └── illustrations/              # Voorbeeld-illustraties in de vlakke Npuls-stijl
 ```
 
