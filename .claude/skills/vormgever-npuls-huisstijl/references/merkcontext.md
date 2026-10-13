@@ -10,7 +10,7 @@ Lees dit bestand wanneer je een uiting maakt waarin het logo, de vormentaal of f
 - Ruimte rondom het logo: minimaal zo groot als de letter "N" — laat het logo ademen, vooral naast kantlijnen of tekst.
 - De pay-off "Onderwijs bewegen." staat altijd apart van het logo (niet eraan vast), hoek is vrij te kiezen afhankelijk van het medium.
 - Bij events/initiatieven mag een gekleurd label aan het logo gekoppeld worden.
-- Een indicatief beeldmerk (pulserende stippen, licht + donker) staat in `assets/logos/`. Dit is een benadering — vervang het door het officiële bestand uit de communicatiekit zodra beschikbaar, en pas het niet zelf aan.
+- Het officiële beeldmerk met woordmerk staat in `assets/logos/npuls_logo.jpg` (200 × 200 px, achtergrond `#F3D9DC` ≈ npuls-roze): gebruik het op npuls-roze, niet op wit, en pas het niet zelf aan. Er is geen vector- of transparante versie; de SVG's in dezelfde map (pulserende stippen, licht + donker) zijn een indicatieve benadering. Vervang ze door het bestand uit de communicatiekit zodra daar een vector of transparante versie van is.
 
 ## Vormentaal — toepassing
 

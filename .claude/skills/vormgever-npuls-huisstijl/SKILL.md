@@ -11,7 +11,7 @@ Je bent een ervaren digitale vormgever die de Npuls huisstijl consequent toepast
 
 - **`references/design-tokens.json`** — machine-leesbare bron voor alle exacte waarden: hex-codes, toegestane kleurencombinaties, typografie-schaal, iconenregels, kernvormen en fotografie-keywords. Bevat ook een `spacing`- / `radii`- / `shadows`-schaal, `neutrals` (alleen voor tekst/randen), `feedback_colors` en `data_visualization` (statuskleuren en grafiekpaletten), een `font_loading`-blok en een kant-en-klaar `css_variables`-blok als startpunt. Verwijs hiernaar voor elke concrete waarde, hardcode nooit een hex-code uit je geheugen.
 - **`references/merkcontext.md`** — lees dit erbij zodra het logo, de vormentaal of fotografie een prominente rol speelt (posters, covers, social posts, landingspagina's). Bevat logo-plaatsingsregels, vormentaal-toepassing, fotografiestijl, impressie-links en de licentie.
-- **`assets/`** — kant-en-klare SVG's: `shapes/` (de vijf kernvormen), `logos/` (indicatief beeldmerk, licht + donker) en `illustrations/` (voorbeeld-illustraties in de vlakke Npuls-stijl). Gebruik deze vóór je nieuwe tekent; zie `assets/README.md`.
+- **`assets/`** — kant-en-klare SVG's: `shapes/` (de vijf kernvormen), `logos/` (officieel beeldmerk `npuls_logo.jpg` op roze, plus indicatieve SVG's licht + donker) en `illustrations/` (voorbeeld-illustraties in de vlakke Npuls-stijl). Gebruik deze vóór je nieuwe tekent; zie `assets/README.md`.
 
 ## Relatie tot andere skills
 
@@ -39,4 +39,4 @@ Deze skill levert HTML/CSS/React. Voor een **Slidev-presentatie** ga je naar de 
 - Minimaal 3 primaire kleuren zichtbaar; vermijd een overwegend witte/neutrale aanpak. `neutrals` alleen voor tekst, randen en subtiele scheidingslijnen — nooit als dominant vlak.
 - Primair font General Sans met Plus Jakarta Sans als digitale vervanger; Cooper Light alleen voor introducties/quotes/ondertitels. Nooit Inter of een ander vervangend font introduceren.
 - Design tokens zijn de bron — verwijs naar `references/design-tokens.json`, nooit hardcoden.
-- Logo's en merkidentiteitselementen zelf niet wijzigen zonder expliciete toestemming (zie licentie in merkcontext.md). Het beeldmerk in `assets/logos/` is indicatief — vervang het door het officiële bestand zodra beschikbaar.
+- Logo's en merkidentiteitselementen zelf niet wijzigen zonder expliciete toestemming (zie licentie in merkcontext.md). Gebruik als logo `assets/logos/npuls_logo.jpg` (op npuls-roze, niet op wit). De SVG's in `assets/logos/` zijn indicatief; vervang ze door het bestand uit de communicatiekit zodra daar een vector of transparante versie van beschikbaar is.

@@ -137,7 +137,7 @@
   "assets": {
     "_comment": "Kant-en-klare SVG's in de skill. Kleuren volgen dit tokenbestand; gebruik ze vóór je nieuwe tekent.",
     "shapes": "assets/shapes/  (pulse-curve, concentrische-ringen, chevron, starburst, boog)",
-    "logos": "assets/logos/  (beeldmerk.svg, beeldmerk-wit.svg — indicatief, vervang door het officiële bestand uit de communicatiekit)",
+    "logos": "assets/logos/  (npuls_logo.jpg — officieel, achtergrond #F3D9DC, gebruik op npuls-roze; beeldmerk.svg en beeldmerk-wit.svg — indicatief)",
     "illustrations": "assets/illustrations/  (collaboration, data-insight, learning — voorbeeld-illustraties in de vlakke Npuls-stijl)"
   },
   "css_variables": {
