@@ -145,7 +145,7 @@ Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. D
 | Koppen in `General Sans Semibold`, nooit `bold: true` op General Sans | De semibold is in Windows een eigen familie; vet zetten geeft een nep-vet |
 | Cooper alleen voor lede, citaat en afsluitvraag | vormgever-regel: Cooper voor introducties/quotes |
 | Zwart is nooit een slide- of kaartachtergrond | vormgever-regel |
-| Logo (`npuls_logo.jpg`) alleen op een `roze` closing | Het jpg heeft een roze vlak. De titelslide heeft zijn eigen transparante horizontale logo |
+| Logo (`npuls_logo.jpg`) alleen op een `roze` closing | Het jpg heeft een roze vlak. De roze titelslide gebruikt `Slide1.PNG` met het logo erin; de blauwe titelslide heeft zijn eigen transparante horizontale logo |
 | `ceda` en `contact` in elk deck, met de vaste tekst | Gelijk aan `clidev`: wie CEDA is staat vooraan, de links staan in beeld tijdens de vragen |
 | Geen hex-kleuren in de spec; alleen Npuls-kleurnamen | `build.mjs` faalt op onbekende kleuren |
 | Niet "klaar" melden zonder build + render + alle PNG's bekeken | Overloop en botsingen zie je niet in de spec |

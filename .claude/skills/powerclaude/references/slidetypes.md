@@ -27,11 +27,14 @@ zet per kernboodschap één verzadigde slide.
 ## Types
 
 ### `title` — openingsslide
-Op `blauw` (de standaard) staat de echte Npuls-titelachtergrond (blauw met bogen) met het volledige
-horizontale logo linksboven; de tagline staat dan links onder het logo. `npuls: false` zet dat uit.
-`kicker` (pill, bv. `'CEDA · DAIR-bijeenkomst'`), `title`, `lede` (Cooper, één zin), `sub`
-(kleine regel: duur, datum, spreker), `agenda` (2-4 korte punten, genummerd rechts) **of**
-`illustration`, `tagline` (optioneel, rechtsonder), `deco: false` zet de golven uit.
+De standaard is `roze`: de originele Npuls-titelslide (`Slide1.PNG`, roze met zwart logo linksboven en
+oranje bogen rechtsonder; logo en bogen zitten in de achtergrond). Alleen tekst erbij: `title` (blauw),
+`lede` (Cooper, één zin), en één kleine regel die `kicker` en `sub` samenvoegt (bv.
+`CEDA · DAIR-bijeenkomst · 120 minuten`). `illustration` mag, `agenda`, `tagline` en `deco` worden op
+roze niet getoond (waarschuwing): zet het programma in een tijdlijn.
+Wil je toch de blauwe titelslide (blauw met bogen, wit logo, kicker-pill, agenda genummerd rechts of
+`illustration`, `tagline`, `deco: false` zet de golven uit), geef dan `variant: 'blauw'`. `npuls: false` zet
+de Npuls-achtergrond uit.
 
 ### `section` — kernboodschap of hoofdstuk
 `number` (optioneel), `title` (bewering, max ~8 woorden), `text` (Cooper, één zin),

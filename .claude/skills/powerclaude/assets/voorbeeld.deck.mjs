@@ -10,8 +10,6 @@ export default {
       title: 'Agentic data science in het onderwijs',
       lede: 'Workshop-voorstel: korte rondes met spiegelen',
       sub: '90 minuten · één casus · één dashboard',
-      agenda: ['Data exploratie', 'Dashboard bouwen', 'Verantwoorden'],
-      tagline: 'Onderwijs bewegen.',
       notes: 'Welkom. In 90 minuten bouwen we samen met een AI-agent één dashboard.',
     },
     // Vaste CEDA-introslide: altijd direct na de titel/agenda. Inhoud ligt vast.

@@ -1,7 +1,7 @@
 // Slidetypes voor powerclaude. Elke functie tekent één slide uit een spec-object.
 // Maten in inches op 13.333 × 7.5 (16:9). Alle kleuren via tokens.mjs.
 import { ALLOWED, C, CARD, CHART_ORDER, FONT, GRIJS, VARIANTS, hex } from './tokens.mjs';
-import { LOGO_HORIZONTAAL, TITEL_ACHTERGROND, imageSize } from './assets.mjs';
+import { LOGO_HORIZONTAAL, TITEL_ACHTERGROND, TITEL_ROZE, imageSize } from './assets.mjs';
 
 export const W = 13.333;
 export const H = 7.5;
@@ -201,6 +201,21 @@ export const LAYOUTS = {
   // volledige horizontale logo; `npuls: false` zet dat uit. Andere varianten krijgen alleen het beeldmerk.
   title(cv, s) {
     const v = cv.v;
+    // Standaard: de roze Npuls-titelslide (Slide1). Logo en bogen zitten in de achtergrond; verder alleen tekst.
+    if (v.bg === 'roze' && s.npuls !== false) {
+      const x0 = 1.0; // gelijk aan de linkerrand van het logo in de achtergrond
+      const tw = s.illustration ? 7.6 : W - x0 - 1.3;
+      cv.slide.background = { path: TITEL_ROZE };
+      for (const k of ['agenda', 'tagline']) {
+        if (s[k]?.length) cv.ctx.warn(`titelslide: ${k} wordt op de roze Npuls-titelslide niet getoond (toon het programma in een tijdlijn)`);
+      }
+      cv.text(s.title, { x: x0, y: 1.85, w: tw, h: 2.0, size: 46, color: v.title, font: FONT.head, valign: 'bottom', min: 32 });
+      if (s.lede) cv.text(s.lede, { x: x0, y: 4.0, w: tw, h: 0.6, size: 22, color: v.quote, font: FONT.quote, min: 16 });
+      const sub = [s.kicker, s.sub].filter(Boolean).join(' · ');
+      if (sub) cv.text(sub, { x: x0, y: 4.7, w: tw, h: 0.45, size: 16, color: v.text, min: 12 });
+      if (s.illustration) cv.illustration(s.illustration, { x: 9.0, y: 1.2, w: 3.6, h: 3.6 });
+      return;
+    }
     const npuls = v.bg === 'blauw' && s.npuls !== false;
     if (npuls) {
       const lw = 2.2;

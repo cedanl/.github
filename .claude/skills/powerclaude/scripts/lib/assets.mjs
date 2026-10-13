@@ -14,6 +14,8 @@ export const SKILL_ASSETS = 'public/npuls/logos';
 export const LOGO_HORIZONTAAL = { wit: join(SKILL_ASSETS, 'npuls-logo-horizontaal-wit.png'), zwart: join(SKILL_ASSETS, 'npuls-logo-horizontaal-zwart.png') };
 // Echte titelachtergrond (blauw met de bogen) uit de Npuls-powerpointsjabloon.
 export const TITEL_ACHTERGROND = 'public/npuls/powerpoint_slides/Slide15.PNG';
+// Standaard Npuls-titelslide: roze, zwart logo linksboven, oranje bogen rechtsonder (logo en bogen zitten in de afbeelding).
+export const TITEL_ROZE = 'public/npuls/powerpoint_slides/Slide1.PNG';
 
 // pptxgenjs en playwright komen uit de node_modules van het project, niet uit de skill.
 export const projectRequire = createRequire(join(process.cwd(), 'package.json'));

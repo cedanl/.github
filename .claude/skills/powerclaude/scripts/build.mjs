@@ -73,7 +73,7 @@ slides.forEach((s, i) => {
     s.notes ??= FIXED[s.type];
     return;
   }
-  const variant = s.variant ?? (s.type === 'title' || s.type === 'section' ? 'blauw' : 'licht-geel');
+  const variant = s.variant ?? (s.type === 'title' ? 'roze' : s.type === 'section' ? 'blauw' : 'licht-geel');
   if (!VARIANTS[variant]) return err(n, `onbekende variant "${variant}". Kies uit: ${Object.keys(VARIANTS).join(', ')}`);
   s.variant = variant;
   used.add(VARIANTS[variant].bg);
