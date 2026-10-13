@@ -134,6 +134,10 @@ python <skill>/scripts/edit.py verplaats deck.pptx uit.pptx --slide 14 --naar 15
 python <skill>/scripts/edit.py verwijder deck.pptx uit.pptx --slide 34 [36 ...]         # slides weghalen (met notities)
 ```
 
+Na `kloon` deelt de kopie tekst en afbeeldingen met het origineel. Geef `replace` en `media` dan
+`--slide N` mee, zodat alleen de kopie verandert (`media --slide` geeft die slide een eigen afbeelding).
+`dump` toont per afbeelding de onderdeelnaam (`ppt/media/...`) die `media` nodig heeft.
+
 Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. Draai `edit.py` vanuit de projectroot (het beeldmerk komt uit `public/npuls/logos/`). Geef de afbeeldingsnaam aan
 `media` zonder beginslash (Git Bash maakt daar een Windows-pad van).
 
