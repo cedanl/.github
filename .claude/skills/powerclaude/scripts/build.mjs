@@ -73,12 +73,13 @@ slides.forEach((s, i) => {
     s.notes ??= FIXED[s.type];
     return;
   }
-  const variant = s.variant ?? (s.type === 'title' || s.type === 'section' ? 'blauw' : 'licht-geel');
+  const variant = s.variant ?? (s.type === 'title' ? 'roze' : s.type === 'section' ? 'blauw' : 'licht-geel');
   if (!VARIANTS[variant]) return err(n, `onbekende variant "${variant}". Kies uit: ${Object.keys(VARIANTS).join(', ')}`);
   s.variant = variant;
   used.add(VARIANTS[variant].bg);
   for (const c of VARIANTS[variant].cards) if (['cards', 'stats'].includes(s.type)) used.add(c);
   if (['stats', 'cards', 'list'].includes(s.type) && !s.items?.length) err(n, `${s.type} heeft items nodig`);
+  if (s.type === 'timeline' && (!s.blocks?.length || s.blocks.some((b) => !(b.minutes > 0) || !b.title))) err(n, 'timeline heeft blocks nodig, elk met minutes en title');
   if (s.type === 'chart' && (!s.labels?.length || !s.series?.length)) err(n, 'chart heeft labels en series nodig');
   if (s.type === 'table' && (!s.columns?.length || !s.rows?.length)) err(n, 'table heeft columns en rows nodig');
   if (s.type === 'image' && (!s.image || !existsSync(s.image))) err(n, `afbeelding "${s.image}" niet gevonden`);

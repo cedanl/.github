@@ -27,9 +27,14 @@ zet per kernboodschap één verzadigde slide.
 ## Types
 
 ### `title` — openingsslide
-`kicker` (pill, bv. `'CEDA · DAIR-bijeenkomst'`), `title`, `lede` (Cooper, één zin), `sub`
-(kleine regel: duur, datum, spreker), `agenda` (2-4 korte punten, genummerd rechts) **of**
-`illustration`, `tagline` (optioneel, rechtsonder), `deco: false` zet de golven uit.
+De standaard is `roze`: de originele Npuls-titelslide (`Slide1.PNG`, roze met zwart logo linksboven en
+oranje bogen rechtsonder; logo en bogen zitten in de achtergrond). Alleen tekst erbij: `title` (blauw),
+`lede` (Cooper, één zin), en één kleine regel die `kicker` en `sub` samenvoegt (bv.
+`CEDA · DAIR-bijeenkomst · 120 minuten`). `illustration` mag, `agenda`, `tagline` en `deco` worden op
+roze niet getoond (waarschuwing): zet het programma in een tijdlijn.
+Wil je toch de blauwe titelslide (blauw met bogen, wit logo, kicker-pill, agenda genummerd rechts of
+`illustration`, `tagline`, `deco: false` zet de golven uit), geef dan `variant: 'blauw'`. `npuls: false` zet
+de Npuls-achtergrond uit.
 
 ### `section` — kernboodschap of hoofdstuk
 `number` (optioneel), `title` (bewering, max ~8 woorden), `text` (Cooper, één zin),
@@ -60,6 +65,12 @@ Statuskleuren: `groen` = vast/klaar, `oranje` = open/aandacht, `blauw` = info. N
 `labels`, `series: [{ name, values }]`, `horizontal`, `stacked`, `format` (Excel-formaat, bv.
 `'0"%"'` of `'#,##0'`), `takeaway` (kaart rechts), `illustration` (onder de takeaway),
 `source` (voetnoot). Kleuren volgen de Npuls-volgorde blauw → oranje → groen → geel → roze.
+
+### `timeline` — programma of planning op schaal
+`title`, `blocks: [{ minutes, title, text?, tag?, color?, start? }]` (2-8), `legend: [{ color, label }]`,
+`total` (optioneel, anders de som), `footnote`. De breedte van elk blok volgt de duur; de tijden erboven
+worden opgeteld. `tag` is een kleine pill onder het blok (bijvoorbeeld een skill of spreker),
+`color` een Npuls-kleur (default: de kaartkleuren van de variant). Blokken onder ~0,9 inch breed geven een waarschuwing.
 
 ### `quote` — citaat
 `text`, `by`, `illustration` (optioneel). Beste op `blauw`.
