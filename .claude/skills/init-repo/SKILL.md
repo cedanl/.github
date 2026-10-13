@@ -1,6 +1,6 @@
 ---
 name: init-repo
-description: Initialize a new cedanl repository with the correct CEDA project structure. Use when starting a new project, creating a new repo, or scaffolding a repository.
+description: Initialize a new cedanl repository with the correct CEDA project structure. Use when starting a new project, creating a new repo, or scaffolding a repository. LET OP — voor een repo die al bestaat en alleen de projectinstructies mist is er `cedafy-claude-md`.
 ---
 
 # Initialize CEDA Repository
@@ -159,29 +159,22 @@ project-name/
 
 #### CLAUDE.md
 
-Use the template from `standards/project-structure.md`:
+Do not write this one by hand. Fetch the org baseline and fill in its `<...>` slots:
 
-```markdown
-# [Project Name]
-
-## Overview
-[description]
-
-## Standards
-Follow CEDA technical standards: https://github.com/cedanl/.github/tree/main/standards/README.md
-
-## Tech Stack
-[R or Python], key packages.
-
-## Project Structure
-[generated directory layout]
-
-## How to Run
-[commands for install + run]
-
-## Data
-[input/output formats, where data comes from]
+```bash
+gh api repos/cedanl/.github/contents/werkafspraken/_claude-md-template.md --jq .content | base64 -d
 ```
+
+Fill the slots from the answers in step 1 and the structure you just generated: one line on
+what this is, the stack and package manager, and the run/test/lint commands for the chosen
+language. Leave the `## Valkuilen` section empty — it grows per repository, on evidence.
+
+Do **not** add a module map, an architecture description, or code style rules. Claude reads
+those from the code itself, style is a linter's job, and every line in this file is loaded in
+every session — a longer file means a file that gets half ignored.
+
+An existing repository that does not have this baseline yet is a job for `/cedafy-claude-md`,
+not for this skill.
 
 #### README.md
 
