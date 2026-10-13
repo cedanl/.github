@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bestaande .pptx aanpassen zonder opnieuw te bouwen: lezen, tekst vervangen, logo wisselen, slides klonen of verplaatsen.
+"""Bestaande .pptx aanpassen zonder opnieuw te bouwen: lezen, tekst vervangen, logo wisselen, slides klonen, verplaatsen of verwijderen.
 
 Voor decks die je niet zelf met build.mjs hebt gemaakt (bijvoorbeeld een voorstel dat al gedeeld is, of een
 deck van een collega). Voor een nieuw deck gebruik je build.mjs en een deck-spec, geen edit.py.
@@ -13,6 +13,7 @@ Gebruik:
   python edit.py media     in.pptx uit.pptx ppt/media/image1.png nieuw.png [...paren]
   python edit.py kloon     in.pptx uit.pptx --slide N --naar M
   python edit.py verplaats in.pptx uit.pptx --slide N --naar M
+  python edit.py verwijder in.pptx uit.pptx --slide N [N ...]
 
 Slidenummers beginnen bij 1. `--naar M` is de positie die de slide daarna heeft.
 """
@@ -223,6 +224,32 @@ def verplaats(inp, uit, nummer, naar):
     print(f"slide {nummer} verplaatst naar positie {naar} -> {uit}")
 
 
+def eerste_tekst(slide):
+    for sh in slide.shapes:
+        if sh.has_text_frame and sh.text_frame.text.strip():
+            return sh.text_frame.text.strip().splitlines()[0][:60]
+    return "(geen tekst)"
+
+
+def verwijder(inp, uit, nummers):
+    prs = Presentation(inp)
+    totaal = len(prs.slides)
+    nummers = sorted(set(nummers), reverse=True)
+    fout = [n for n in nummers if not 1 <= n <= totaal]
+    if fout:
+        sys.exit(f"FOUT: slide {', '.join(map(str, fout))} bestaat niet (het deck heeft {totaal} slides)")
+    if len(nummers) == totaal:
+        sys.exit("FOUT: je verwijdert dan alle slides")
+    lijst = prs.slides._sldIdLst
+    for n in nummers:  # van achter naar voren, zodat de nummers van de rest niet verschuiven
+        el = list(lijst)[n - 1]
+        print(f"  slide {n}: {eerste_tekst(prs.slides[n - 1])}")
+        prs.part.drop_rel(el.rId)  # slide en notities hangen nergens meer aan en worden niet meer opgeslagen
+        lijst.remove(el)
+    prs.save(uit)
+    print(f"{len(nummers)} slide(s) verwijderd, {len(prs.slides)} over -> {uit}")
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -233,6 +260,8 @@ def main():
     for naam in ("kloon", "verplaats"):
         k = sub.add_parser(naam); k.add_argument("inp"); k.add_argument("uit")
         k.add_argument("--slide", type=int, required=True); k.add_argument("--naar", type=int, required=True)
+    v = sub.add_parser("verwijder"); v.add_argument("inp"); v.add_argument("uit")
+    v.add_argument("--slide", type=int, nargs="+", required=True)
     a = p.parse_args()
     if a.cmd == "dump":
         dump(a.inp, a.notes)
@@ -246,6 +275,8 @@ def main():
         kloon(a.inp, a.uit, a.slide, a.naar)
     elif a.cmd == "verplaats":
         verplaats(a.inp, a.uit, a.slide, a.naar)
+    elif a.cmd == "verwijder":
+        verwijder(a.inp, a.uit, a.slide)
 
 
 if __name__ == "__main__":

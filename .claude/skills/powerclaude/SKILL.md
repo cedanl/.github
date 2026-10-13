@@ -1,6 +1,6 @@
 ---
 name: powerclaude
-description: Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen — of een bestaande .pptx wil aanpassen (tekst vervangen, logo wisselen, slides klonen of verplaatsen). Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
+description: Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen — of een bestaande .pptx wil aanpassen (tekst vervangen, logo wisselen, slides klonen, verplaatsen of verwijderen). Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
 allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node and git (en python-pptx, alleen voor edit.py); draait in de root van cedanl/clidev-presentaties (Npuls-assets, pptxgenjs en playwright-chromium via npm install). Renderen voor controle via PowerPoint (Windows) of LibreOffice.
 metadata:
@@ -131,6 +131,7 @@ python <skill>/scripts/edit.py beeldmerk deck.pptx uit.pptx        # zelfgeteken
 python <skill>/scripts/edit.py media deck.pptx uit.pptx ppt/media/image1.png nieuw.png   # afbeelding in het bestand vervangen
 python <skill>/scripts/edit.py kloon deck.pptx uit.pptx --slide 5 --naar 14               # slide kopiëren (met notities)
 python <skill>/scripts/edit.py verplaats deck.pptx uit.pptx --slide 14 --naar 15
+python <skill>/scripts/edit.py verwijder deck.pptx uit.pptx --slide 34 [36 ...]         # slides weghalen (met notities)
 ```
 
 Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. Draai `edit.py` vanuit de projectroot (het beeldmerk komt uit `public/npuls/logos/`). Geef de afbeeldingsnaam aan
