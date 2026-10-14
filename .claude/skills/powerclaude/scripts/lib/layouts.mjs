@@ -188,6 +188,64 @@ function cardColors(cv, items) {
   return items.map((it, i) => it.color ?? cv.v.cards[i % cv.v.cards.length]);
 }
 
+// Eén rij kaarten vanaf y, hooguit maxH hoog. Geeft de kaarthoogte terug.
+function cardRow(cv, s, items, y, maxH, minH, compact = false) {
+  const v = cv.v;
+  items = items.slice(0, 4);
+  const cols = cardColors(cv, items);
+  const gap = s.arrows ? 0.5 : 0.3;
+  const cw = (CW - gap * (items.length - 1)) / items.length;
+  // Rijen (kop, titel, secties) krijgen over alle kaarten dezelfde hoogte,
+  // zodat labels naast elkaar uitlijnen; de kaart is zo hoog als de inhoud.
+  const iw = cw - 0.6;
+  const ts = items.length > 3 ? 20 : 24;
+  // compact (rows): badge naast de titel in plaats van erboven, minder witruimte.
+  const pad = compact ? 0.22 : 0.3;
+  const bw = compact && items.some((it) => it.badge || s.numbered) ? 0.6 : 0;
+  const headH = !compact && items.some((it) => it.badge || s.numbered || it.tag) ? 0.85 : 0;
+  const titleH = Math.max(0.4, ...items.map((it) => textHeight(it.title, { w: iw - bw, size: ts, font: FONT.head }))) + 0.12;
+  const subH = items.some((it) => it.sub) ? 0.5 : 0;
+  const secsOf = (it) => it.sections ?? (it.text ? [{ text: it.text }] : []);
+  const nSec = Math.max(...items.map((it) => secsOf(it).length));
+  let secH = Array.from({ length: nSec }, (_, k) => Math.max(...items.map((it) => {
+    const sec = secsOf(it)[k];
+    if (!sec) return 0;
+    return (sec.label ? 0.38 : 0) + textHeight(sec.text, { w: iw, size: 15, font: sec.strong ? FONT.head : FONT.body }) + 0.25;
+  })));
+  const fixed = pad + headH + titleH + subH + (compact ? 0.05 : 0.15);
+  const natural = fixed + secH.reduce((a, b) => a + b, 0);
+  if (natural > maxH) secH = secH.map((h) => h * (maxH - fixed) / (natural - fixed));
+  const ch = Math.min(maxH, Math.max(minH, natural));
+  items.forEach((it, i) => {
+    const x = M + i * (cw + gap);
+    const c = cols[i];
+    const r = CARD[c];
+    cv.checkPair(v.bg, c, 'kaart');
+    cv.box({ x, y, w: cw, h: ch, fill: c });
+    let iy = y + pad;
+    const badge = it.badge ?? (s.numbered ? String(i + 1) : null);
+    if (badge && compact) cv.badge(badge, { x: x + 0.3, y: iy - 0.02, d: 0.46, fill: r.pillBg, color: r.pillFg, size: 16 });
+    else if (badge) cv.badge(badge, { x: x + 0.3, y: iy, d: 0.6, fill: r.pillBg, color: r.pillFg, size: 20 });
+    if (it.tag) cv.pill(it.tag, { x: x + (badge ? 1.05 : 0.3), y: iy + 0.08, w: cw - (badge ? 1.35 : 0.6), h: 0.44, fill: r.pillBg, color: r.pillFg, size: 12 });
+    iy += headH;
+    if (it.illustration) { cv.illustration(it.illustration, { x: x + cw - 1.3, y: y + 0.2, w: 1.1, h: 1.1 }); }
+    cv.text(it.title, { x: x + 0.3 + bw, y: iy, w: iw - bw, h: titleH - 0.15, size: ts, color: r.title, font: FONT.head, min: 14 });
+    iy += titleH;
+    if (it.sub) cv.text(it.sub, { x: x + 0.3, y: iy, w: iw, h: 0.4, size: 14, color: r.text, font: FONT.quote, min: 10 });
+    iy += subH + (compact ? 0.05 : 0.15);
+    secsOf(it).forEach((sec, k) => {
+      let sy = iy;
+      if (sec.label) { cv.label(sec.label, { x: x + 0.3, y: sy, w: iw, h: 0.3, color: r.label }); sy += 0.38; }
+      cv.text(sec.text, { x: x + 0.3, y: sy, w: iw, h: secH[k] - (sy - iy) - 0.15, size: 15, color: r.text, font: sec.strong ? FONT.head : FONT.body, min: 10 });
+      iy += secH[k];
+    });
+    if (s.arrows && i < items.length - 1) {
+      cv.slide.addShape(cv.pptx.ShapeType.chevron, { x: x + cw + 0.12, y: y + ch / 2 - 0.3, w: 0.26, h: 0.6, fill: { color: hex(v.title) }, line: { type: 'none' } });
+    }
+  });
+  return ch;
+}
+
 function footer(cv, s, y) {
   if (s.footer) cv.text(s.footer, { x: M, y, w: CW, h: 0.5, size: 18, color: cv.v.text, accent: cv.v.accent, min: 12 });
   if (s.footnote) cv.text(s.footnote, { x: M, y: H - 0.62, w: CW, h: 0.3, size: 11, color: cv.v.bg === 'blauw' ? 'roze' : cv.v.title, min: 9 });
@@ -304,61 +362,33 @@ export const LAYOUTS = {
 
   // Kaarten in kolommen (2-4): badge, pill, kop, ondertitel, gelabelde secties.
   // `arrows: true` zet chevrons tussen de kaarten (proces/stappen).
+  // `rows: [{ label, items }]` (max 2) zet twee rijen kaarten onder elkaar, elk met een label erboven.
+  // `callout` zet een grote witte balk onder de kaarten (oproep of kernboodschap).
   cards(cv, s) {
-    const v = cv.v;
     cv.mark();
     cv.title(s.title);
-    const items = s.items.slice(0, 4);
-    const cols = cardColors(cv, items);
-    const gap = s.arrows ? 0.5 : 0.3;
-    const cw = (CW - gap * (items.length - 1)) / items.length;
-    const y = 1.5;
-    // Rijen (kop, titel, secties) krijgen over alle kaarten dezelfde hoogte,
-    // zodat labels naast elkaar uitlijnen; de kaart is zo hoog als de inhoud.
-    const iw = cw - 0.6;
-    const ts = items.length > 3 ? 20 : 24;
-    const headH = items.some((it) => it.badge || s.numbered || it.tag) ? 0.85 : 0;
-    const titleH = Math.max(0.4, ...items.map((it) => textHeight(it.title, { w: iw, size: ts, font: FONT.head }))) + 0.12;
-    const subH = items.some((it) => it.sub) ? 0.5 : 0;
-    const secsOf = (it) => it.sections ?? (it.text ? [{ text: it.text }] : []);
-    const nSec = Math.max(...items.map((it) => secsOf(it).length));
-    let secH = Array.from({ length: nSec }, (_, k) => Math.max(...items.map((it) => {
-      const sec = secsOf(it)[k];
-      if (!sec) return 0;
-      return (sec.label ? 0.38 : 0) + textHeight(sec.text, { w: iw, size: 15, font: sec.strong ? FONT.head : FONT.body }) + 0.25;
-    })));
-    const maxH = s.footer ? 4.55 : 5.05;
-    const fixed = 0.3 + headH + titleH + subH + 0.15;
-    const natural = fixed + secH.reduce((a, b) => a + b, 0);
-    if (natural > maxH) secH = secH.map((h) => h * (maxH - fixed) / (natural - fixed));
-    const ch = Math.min(maxH, Math.max(2.8, natural));
-    items.forEach((it, i) => {
-      const x = M + i * (cw + gap);
-      const c = cols[i];
-      const r = CARD[c];
-      cv.checkPair(v.bg, c, 'kaart');
-      cv.box({ x, y, w: cw, h: ch, fill: c });
-      let iy = y + 0.3;
-      const badge = it.badge ?? (s.numbered ? String(i + 1) : null);
-      if (badge) cv.badge(badge, { x: x + 0.3, y: iy, d: 0.6, fill: r.pillBg, color: r.pillFg, size: 20 });
-      if (it.tag) cv.pill(it.tag, { x: x + (badge ? 1.05 : 0.3), y: iy + 0.08, w: cw - (badge ? 1.35 : 0.6), h: 0.44, fill: r.pillBg, color: r.pillFg, size: 12 });
-      iy += headH;
-      if (it.illustration) { cv.illustration(it.illustration, { x: x + cw - 1.3, y: y + 0.2, w: 1.1, h: 1.1 }); }
-      cv.text(it.title, { x: x + 0.3, y: iy, w: iw, h: titleH - 0.15, size: ts, color: r.title, font: FONT.head, min: 14 });
-      iy += titleH;
-      if (it.sub) cv.text(it.sub, { x: x + 0.3, y: iy, w: iw, h: 0.4, size: 14, color: r.text, font: FONT.quote, min: 10 });
-      iy += subH + 0.15;
-      secsOf(it).forEach((sec, k) => {
-        let sy = iy;
-        if (sec.label) { cv.label(sec.label, { x: x + 0.3, y: sy, w: iw, h: 0.3, color: r.label }); sy += 0.38; }
-        cv.text(sec.text, { x: x + 0.3, y: sy, w: iw, h: secH[k] - (sy - iy) - 0.15, size: 15, color: r.text, font: sec.strong ? FONT.head : FONT.body, min: 10 });
-        iy += secH[k];
+    const calloutH = s.callout ? 1.1 : 0;
+    const bottom = 6.55 - (s.footer ? 0.5 : 0) - (calloutH ? calloutH + 0.3 : 0);
+    let y = 1.5;
+    if (s.rows?.length) {
+      const rows = s.rows.slice(0, 2);
+      const labelH = 0.4, rowGap = 0.3;
+      const maxH = (bottom - y - rows.length * labelH - rowGap * (rows.length - 1)) / rows.length;
+      rows.forEach((row, k) => {
+        if (row.label) cv.label(row.label, { x: M, y, w: CW, h: 0.3, color: cv.v.title });
+        y += labelH;
+        y += cardRow(cv, s, row.items, y, maxH, 1.2, true) + (k < rows.length - 1 ? rowGap : 0);
       });
-      if (s.arrows && i < items.length - 1) {
-        cv.slide.addShape(cv.pptx.ShapeType.chevron, { x: x + cw + 0.12, y: y + ch / 2 - 0.3, w: 0.26, h: 0.6, fill: { color: hex(v.title) }, line: { type: 'none' } });
-      }
-    });
-    footer(cv, s, y + ch + 0.2);
+    } else {
+      y += cardRow(cv, s, s.items, y, bottom - y, 2.8);
+    }
+    if (s.callout) {
+      y += 0.3;
+      cv.box({ x: M, y, w: CW, h: calloutH, fill: 'wit', r: 0.2 });
+      cv.text(s.callout, { x: M + 0.4, y, w: CW - 0.8, h: calloutH, size: 22, color: 'zwart', accent: 'blauw', valign: 'middle', min: 14 });
+      y += calloutH;
+    }
+    footer(cv, s, y + 0.2);
   },
 
   // Tekst naast een Npuls-illustratie.
