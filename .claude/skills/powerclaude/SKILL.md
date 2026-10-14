@@ -1,6 +1,6 @@
 ---
 name: powerclaude
-description: Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen — of een bestaande .pptx wil aanpassen (tekst vervangen, logo wisselen, slides klonen, verplaatsen of verwijderen). Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
+description: Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen — of een bestaande .pptx wil aanpassen (tekst vervangen, logo wisselen, slides klonen, importeren, verplaatsen of verwijderen). Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
 allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node and git (en python-pptx, alleen voor edit.py); draait in de root van cedanl/clidev-presentaties (Npuls-assets, pptxgenjs en playwright-chromium via npm install). Renderen voor controle via PowerPoint (Windows) of LibreOffice.
 metadata:
@@ -130,6 +130,7 @@ python <skill>/scripts/edit.py replace deck.pptx uit.pptx map.json # {"oud": "ni
 python <skill>/scripts/edit.py beeldmerk deck.pptx uit.pptx        # zelfgetekend stippenmerk → echt Npuls-beeldmerk
 python <skill>/scripts/edit.py media deck.pptx uit.pptx ppt/media/image1.png nieuw.png   # afbeelding in het bestand vervangen
 python <skill>/scripts/edit.py kloon deck.pptx uit.pptx --slide 5 --naar 14               # slide kopiëren (met notities)
+python <skill>/scripts/edit.py importeer deck.pptx uit.pptx nieuw.pptx --slide 3 --naar 4      # slide uit een ander bestand invoegen
 python <skill>/scripts/edit.py verplaats deck.pptx uit.pptx --slide 14 --naar 15
 python <skill>/scripts/edit.py verwijder deck.pptx uit.pptx --slide 34 [36 ...]         # slides weghalen (met notities)
 ```
@@ -137,6 +138,9 @@ python <skill>/scripts/edit.py verwijder deck.pptx uit.pptx --slide 34 [36 ...] 
 Na `kloon` deelt de kopie tekst en afbeeldingen met het origineel. Geef `replace` en `media` dan
 `--slide N` mee, zodat alleen de kopie verandert (`media --slide` geeft die slide een eigen afbeelding).
 `dump` toont per afbeelding de onderdeelnaam (`ppt/media/...`) die `media` nodig heeft.
+
+Een nieuwe slide (bijvoorbeeld een tijdlijn met andere tijden) bouw je met `build.mjs` in een klein
+hulpdeck en zet je met `importeer` in het bestaande deck; zo blijven layout en controles die van `build.mjs`.
 
 Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. Draai `edit.py` vanuit de projectroot (het beeldmerk komt uit `public/npuls/logos/`). Geef de afbeeldingsnaam aan
 `media` zonder beginslash (Git Bash maakt daar een Windows-pad van).
