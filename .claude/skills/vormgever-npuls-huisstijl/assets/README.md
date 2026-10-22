@@ -18,10 +18,11 @@ Inzetbaar ter ondersteuning van een boodschap of decoratief als masker. Altijd i
 
 | Bestand | Gebruik |
 |---------|---------|
-| `beeldmerk.svg` | pulserende stippen, donker — op lichte achtergrond |
-| `beeldmerk-wit.svg` | pulserende stippen, wit — op donkere/kleurvlak-achtergrond |
+| `npuls_logo.jpg` | **officieel beeldmerk** met woordmerk (stippenkrans + "Npuls"), 200 × 200 px. De achtergrond van het bestand is `#F3D9DC`, vrijwel gelijk aan npuls-roze (`#F4D9DC`): gebruik het op npuls-roze (bijvoorbeeld een hero) en niet op wit |
+| `beeldmerk.svg` | indicatief: pulserende stippen, donker — op lichte achtergrond |
+| `beeldmerk-wit.svg` | indicatief: pulserende stippen, wit — op donkere/kleurvlak-achtergrond |
 
-**Indicatief.** Dit is een benadering van het beeldmerk, geen officieel bestand. Vervang door het bestand uit de Npuls-communicatiekit zodra beschikbaar en pas het niet zelf aan (zie licentie in `../references/merkcontext.md`). Clearspace: minimaal de hoogte van de letter "N" rondom.
+**Gebruik `npuls_logo.jpg` waar het logo zichtbaar is.** Het is het bestand uit de CEDA/Npuls-presentaties (`clidev-presentaties/public/npuls/`). Het is een JPG met roze achtergrond, geen vector en geen transparante versie; de SVG's zijn een benadering en alleen een noodoplossing. Vervang het door het bestand uit de Npuls-communicatiekit als daar een vector of transparante versie van beschikbaar is, en pas het niet zelf aan (zie licentie in `../references/merkcontext.md`). Clearspace: minimaal de hoogte van de letter "N" rondom.
 
 ## `illustrations/` — voorbeeld-illustraties
 
