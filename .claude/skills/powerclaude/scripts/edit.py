@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bestaande .pptx aanpassen zonder opnieuw te bouwen: lezen, tekst vervangen, logo wisselen, slides klonen, verplaatsen of verwijderen.
+"""Bestaande .pptx aanpassen zonder opnieuw te bouwen: lezen, tekst vervangen, logo wisselen, slides klonen, importeren, verplaatsen of verwijderen.
 
 Voor decks die je niet zelf met build.mjs hebt gemaakt (bijvoorbeeld een voorstel dat al gedeeld is, of een
 deck van een collega). Voor een nieuw deck gebruik je build.mjs en een deck-spec, geen edit.py.
@@ -12,15 +12,18 @@ Gebruik:
   python edit.py beeldmerk in.pptx uit.pptx
   python edit.py media     in.pptx uit.pptx ppt/media/image1.png nieuw.png [...paren] [--slide N ...]
   python edit.py kloon     in.pptx uit.pptx --slide N --naar M
+  python edit.py importeer in.pptx uit.pptx bron.pptx --slide N --naar M
   python edit.py verplaats in.pptx uit.pptx --slide N --naar M
   python edit.py verwijder in.pptx uit.pptx --slide N [N ...]
 
 Slidenummers beginnen bij 1. `--naar M` is de positie die de slide daarna heeft.
+`importeer` zet slide N uit een ander bestand (bijvoorbeeld een met build.mjs gebouwde slide) op positie M.
 `--slide` bij replace en media beperkt de wijziging tot die slides; nodig na `kloon`, want de kloon deelt
 tekst en afbeeldingen met het origineel.
 """
 import argparse
 import copy
+import io
 import json
 import sys
 from pathlib import Path
@@ -34,7 +37,8 @@ for _stroom in (sys.stdout, sys.stderr):  # Windows-consoles gebruiken anders cp
 # Logo's en beeldmerk staan in de projectroot van clidev-presentaties; draai edit.py vanuit die map.
 ASSETS = Path("public/npuls/logos")
 A = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
-R_EMBED = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed"
+R_NS = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}"
+R_EMBED = f"{R_NS}embed"
 
 
 # ---------- lezen ----------
@@ -241,6 +245,13 @@ def kloon(inp, uit, nummer, naar):
         nieuw._element.cSld.insert(0, met_eigen_afbeeldingen(copy.deepcopy(achtergrond)))
     for sh in bron.shapes:
         nieuw.shapes._spTree.append(met_eigen_afbeeldingen(copy.deepcopy(sh._element)))
+    kopieer_notities(bron, nieuw)
+    verplaats_slide(prs, len(prs.slides), naar)
+    prs.save(uit)
+    print(f"slide {nummer} gekloond naar positie {naar} -> {uit}")
+
+
+def kopieer_notities(bron, nieuw):
     if bron.has_notes_slide and bron.notes_slide.notes_text_frame is not None:
         ns = nieuw.notes_slide
         if ns.notes_text_frame is None:  # notitiemaster zonder tekstvak: neem de structuur van de bron over
@@ -249,9 +260,47 @@ def kloon(inp, uit, nummer, naar):
             for sh in bron.notes_slide.shapes:
                 ns.shapes._spTree.append(copy.deepcopy(sh._element))
         ns.notes_text_frame.text = bron.notes_slide.notes_text_frame.text
+
+
+def importeer(inp, uit, bronbestand, nummer, naar):
+    prs = Presentation(inp)
+    bprs = Presentation(bronbestand)
+    if not 1 <= nummer <= len(bprs.slides):
+        sys.exit(f"FOUT: slide {nummer} bestaat niet in {bronbestand} ({len(bprs.slides)} slides)")
+    if not 1 <= naar <= len(prs.slides) + 1:
+        sys.exit(f"FOUT: positie {naar} bestaat niet (het deck heeft {len(prs.slides)} slides)")
+    bron = bprs.slides[nummer - 1]
+    layouts = {l.name: l for l in prs.slide_layouts}
+    nieuw = prs.slides.add_slide(layouts.get(bron.slide_layout.name, prs.slide_layouts[0]))
+    for sh in list(nieuw.shapes):
+        sh._element.getparent().remove(sh._element)
+
+    def met_eigen_relaties(el):
+        # afbeeldingen en links verwijzen naar relaties van het bronbestand; leg ze opnieuw aan in dit bestand
+        for node in el.iter():
+            for attr, rid in list(node.attrib.items()):
+                if not attr.startswith(R_NS) or rid not in bron.part.rels:
+                    continue
+                rel = bron.part.rels[rid]
+                if rel.is_external:
+                    node.set(attr, nieuw.part.relate_to(rel.target_ref, rel.reltype, is_external=True))
+                elif rel.target_part.content_type.startswith("image/"):
+                    _, nieuw_rid = nieuw.part.get_or_add_image_part(io.BytesIO(rel.target_part.blob))
+                    node.set(attr, nieuw_rid)
+                else:
+                    sys.exit(f"FOUT: {rel.target_part.partname} ({rel.target_part.content_type}) kan niet mee; "
+                             "importeer alleen slides met tekst, vormen, afbeeldingen en tabellen")
+        return el
+
+    achtergrond = bron._element.cSld.bg
+    if achtergrond is not None:
+        nieuw._element.cSld.insert(0, met_eigen_relaties(copy.deepcopy(achtergrond)))
+    for sh in bron.shapes:
+        nieuw.shapes._spTree.append(met_eigen_relaties(copy.deepcopy(sh._element)))
+    kopieer_notities(bron, nieuw)
     verplaats_slide(prs, len(prs.slides), naar)
     prs.save(uit)
-    print(f"slide {nummer} gekloond naar positie {naar} -> {uit}")
+    print(f"slide {nummer} uit {bronbestand} geimporteerd op positie {naar} -> {uit}")
 
 
 def verplaats(inp, uit, nummer, naar):
@@ -297,6 +346,8 @@ def main():
     for naam in ("kloon", "verplaats"):
         k = sub.add_parser(naam); k.add_argument("inp"); k.add_argument("uit")
         k.add_argument("--slide", type=int, required=True); k.add_argument("--naar", type=int, required=True)
+    im = sub.add_parser("importeer"); im.add_argument("inp"); im.add_argument("uit"); im.add_argument("bron")
+    im.add_argument("--slide", type=int, required=True); im.add_argument("--naar", type=int, required=True)
     v = sub.add_parser("verwijder"); v.add_argument("inp"); v.add_argument("uit")
     v.add_argument("--slide", type=int, nargs="+", required=True)
     a = p.parse_args()
@@ -312,6 +363,8 @@ def main():
         kloon(a.inp, a.uit, a.slide, a.naar)
     elif a.cmd == "verplaats":
         verplaats(a.inp, a.uit, a.slide, a.naar)
+    elif a.cmd == "importeer":
+        importeer(a.inp, a.uit, a.bron, a.slide, a.naar)
     elif a.cmd == "verwijder":
         verwijder(a.inp, a.uit, a.slide)
 

@@ -78,7 +78,7 @@ slides.forEach((s, i) => {
   s.variant = variant;
   used.add(VARIANTS[variant].bg);
   for (const c of VARIANTS[variant].cards) if (['cards', 'stats'].includes(s.type)) used.add(c);
-  if (['stats', 'cards', 'list'].includes(s.type) && !s.items?.length) err(n, `${s.type} heeft items nodig`);
+  if (['stats', 'cards', 'list'].includes(s.type) && !s.items?.length && !(s.type === 'cards' && s.rows?.length)) err(n, `${s.type} heeft items (of bij cards rows) nodig`);
   if (s.type === 'timeline' && (!s.blocks?.length || s.blocks.some((b) => !(b.minutes > 0) || !b.title))) err(n, 'timeline heeft blocks nodig, elk met minutes en title');
   if (s.type === 'chart' && (!s.labels?.length || !s.series?.length)) err(n, 'chart heeft labels en series nodig');
   if (s.type === 'table' && (!s.columns?.length || !s.rows?.length)) err(n, 'table heeft columns en rows nodig');
@@ -88,7 +88,7 @@ slides.forEach((s, i) => {
   if (i > 0 && SATURATED.includes(variant) && slides[i - 1].variant === variant && s.type !== 'closing') {
     warnings.push(`slide ${n}: twee keer achter elkaar ${variant} — wissel af`);
   }
-  for (const it of [s, ...(s.items ?? [])]) {
+  for (const it of [s, ...(s.items ?? []), ...(s.rows ?? []).flatMap((r) => r.items ?? [])]) {
     if (it.color && !C[it.color]) err(n, `onbekende kleur "${it.color}"`);
     if (it.illustration) {
       const p = illustrationPath(it.illustration);

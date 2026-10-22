@@ -48,6 +48,9 @@ de Npuls-achtergrond uit.
 `title`, `items` (2-4): `{ badge?, tag?, title, sub?, sections: [{ label?, text, strong? }] | text, illustration?, color? }`.
 `numbered: true` nummert de badges, `arrows: true` zet chevrons tussen de kaarten (proces).
 `footer` (één zin onder de kaarten), `footnote`. Per kaart max ~35 woorden.
+`rows: [{ label, items }]` (max 2) in plaats van `items` zet twee rijen kaarten onder elkaar, elk met een
+label erboven (bv. stappen en valkuilen); houd de kaarttekst dan kort. `callout` zet een grote witte balk
+onder de kaarten voor een oproep of kernboodschap (gebruik `**Kop:** tekst`).
 
 ### `split` — tekst naast een illustratie
 `title`, `lede` (optioneel), `bullets` (max 4) **of** `text`, `illustration`, `side: 'left'`
