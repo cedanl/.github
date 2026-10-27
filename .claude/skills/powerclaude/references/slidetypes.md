@@ -86,7 +86,7 @@ worden opgeteld. `tag` is een kleine pill onder het blok (bijvoorbeeld een skill
 Geen velden. "Wie is CEDA": titel, subtitel en drie punten over wat CEDA doet, op de Npuls-achtergrond met roze logovlak (`Slide16.PNG`). Tekst is woordelijk gelijk aan `clidev`/`_template.md`. Plaats: direct na de titel (of agenda). Bewust zonder links.
 
 ### `contact` — vaste afsluitslide
-Geen velden. "Blijf in contact" met drie klikbare kaarten: GitHub (`github.com/cedanl`), Community (`community.npuls.nl/groups/data-ai`) en e-mail (`ceda@surf.nl`), op `Slide1.PNG`. Altijd de allerlaatste slide; blijft in beeld tijdens de vragen.
+Geen velden. "Blijf in contact" met drie klikbare kaarten: GitHub (`github.com/cedanl`), Community (`edu.nl/7b4yg`) en e-mail (`ceda@surf.nl`), op `Slide1.PNG`. Altijd de allerlaatste slide; blijft in beeld tijdens de vragen.
 
 ### `closing` — afsluiting (optioneel, vóór `contact`)
 `title` (default "Vragen?"), `question` (Cooper), `text`, `contact` (alleen als bekend; nooit

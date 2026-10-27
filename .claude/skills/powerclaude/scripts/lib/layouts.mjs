@@ -595,7 +595,7 @@ export const LAYOUTS = {
     cv.text('Vragen, feedback of zin om mee te bouwen? We horen graag van je.', { x: 2.5, y: 3.15, w: W - 5, h: 0.5, size: 18, color: 'zwart', align: 'center' });
     const links = [
       ['GitHub', 'github.com/cedanl', 'blauw', 'roze', 'https://github.com/cedanl'],
-      ['Community', 'community.npuls.nl/groups/data-ai', 'groen', 'zwart', 'https://community.npuls.nl/groups/data-ai'],
+      ['Community', 'edu.nl/7b4yg', 'groen', 'zwart', 'https://edu.nl/7b4yg'],
       ['Email', 'ceda@surf.nl', 'oranje', 'zwart', 'mailto:ceda@surf.nl'],
     ];
     const cw = 3.5, gap = 0.3, x0 = (W - (3 * cw + 2 * gap)) / 2;
