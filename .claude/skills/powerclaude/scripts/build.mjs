@@ -6,11 +6,11 @@
 //
 // Schrijft exports/<naam>/<naam>.pptx. Exit 0 = gebouwd zonder fouten
 // (waarschuwingen mogelijk), 1 = fouten in de spec, 2 = omgeving niet in orde.
-import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { ILLU_DIR, beeldmerkDots, illustrationPath, projectRequire, rasterize } from './lib/assets.mjs';
+import { FONT_DIR, ILLU_DIR, beeldmerkDots, embedFonts, illustrationPath, projectRequire, rasterize } from './lib/assets.mjs';
 import { Canvas, LAYOUTS, TYPES } from './lib/layouts.mjs';
 import { C, VARIANTS } from './lib/tokens.mjs';
 
@@ -28,6 +28,16 @@ try {
   PptxGenJS = projectRequire('pptxgenjs');
 } catch {
   console.error('FOUT  pptxgenjs ontbreekt in dit project. Draai: npm install -D pptxgenjs');
+  process.exit(2);
+}
+try {
+  projectRequire.resolve('pptx-embed-fonts');
+} catch {
+  console.error('FOUT  pptx-embed-fonts ontbreekt in dit project. Draai: npm install -D pptx-embed-fonts');
+  process.exit(2);
+}
+if (!existsSync(FONT_DIR)) {
+  console.error(`FOUT  ${FONT_DIR} niet gevonden. Draai dit vanuit de root van clidev-presentaties.`);
   process.exit(2);
 }
 
@@ -139,6 +149,6 @@ slides.forEach((s, i) => {
 });
 
 const file = join(outDir, `${name}.pptx`);
-await pptx.writeFile({ fileName: file });
+writeFileSync(file, await embedFonts(await pptx.write({ outputType: 'nodebuffer' })));
 warnings.forEach((w) => console.warn(`WAARSCHUWING  ${w}`));
 console.log(`OK  ${file} — ${slides.length} slides, ${warnings.length} waarschuwing(en)`);

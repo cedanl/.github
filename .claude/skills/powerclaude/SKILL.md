@@ -2,7 +2,7 @@
 name: powerclaude
 description: Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen — of een bestaande .pptx wil aanpassen (tekst vervangen, logo wisselen, slides klonen, importeren, verplaatsen of verwijderen). Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
 allowed-tools: Read Write Edit Bash Glob Grep
-compatibility: Requires node and git (en python-pptx, alleen voor edit.py); draait in de root van cedanl/clidev-presentaties (Npuls-assets, pptxgenjs en playwright-chromium via npm install). Renderen voor controle via PowerPoint (Windows) of LibreOffice.
+compatibility: Requires node and git (en python-pptx, alleen voor edit.py); draait in de root van cedanl/clidev-presentaties (Npuls-assets, pptxgenjs, pptx-embed-fonts en playwright-chromium via npm install). Renderen voor controle via PowerPoint (Windows) of LibreOffice.
 metadata:
   ceda-id: ceda.powerclaude
   ceda-version: "0.2.0"
@@ -32,7 +32,7 @@ en vormtaal. `powerclaude` voegt alleen het PowerPoint-deel toe.
 
 | vormgever zegt | powerclaude doet | Reden |
 |---|---|---|
-| Plus Jakarta Sans als digitale vervanger | Echte General Sans, General Sans Semibold en Cooper Lt BT | PowerPoint gebruikt geïnstalleerde fonts; `install-fonts.mjs` zet ze erop |
+| Plus Jakarta Sans als digitale vervanger | Echte General Sans, General Sans Semibold en Cooper Lt BT | `build.mjs` embedt ze in de pptx, zodat ontvangers en PowerPoint in de browser ze ook zien; `install-fonts.mjs` zet ze lokaal erop voor de controle-render |
 | Font Awesome-iconen | Npuls-illustraties en vector-vormtaal | Webfonts werken niet in PowerPoint |
 | Design tokens niet hardcoden | Palet staat in `scripts/lib/tokens.mjs` | De geïnstalleerde vormgever-kopie mist `references/`; `build.mjs` controleert tegen `design-tokens.json` als die er is |
 
@@ -52,10 +52,10 @@ find ~ -maxdepth 6 -type d -name Npuls_lettertype -path "*public/npuls*" -not -p
 ```
 
 Niets gevonden → vraag waar het mag komen en `git clone https://github.com/cedanl/clidev-presentaties.git <pad>`.
-Ontbreekt `node_modules/pptxgenjs` → `npm install` (of `npm install -D pptxgenjs`).
+Ontbreekt `node_modules/pptxgenjs` of `node_modules/pptx-embed-fonts` → `npm install`.
 
-Fonts controleren — zonder deze fonts rendert PowerPoint in Calibri/Cooper Black, kloppen de
-tekstmaten niet en zie je in de controle-PNG's verdubbelde woorden:
+Fonts controleren — de controle-render (LibreOffice) gebruikt de geïnstalleerde fonts, niet de
+embedded. Zonder installatie kloppen de tekstmaten niet en zie je in de PNG's verdubbelde woorden:
 
 ```bash
 node <skill>/scripts/install-fonts.mjs --check
@@ -114,9 +114,11 @@ node <skill>/scripts/render.mjs exports/<naam>/<naam>.pptx --pdf   # + exports/<
 ```
 
 Meld: pad van de spec, de `.pptx`, de PDF, en de uitkomst van build en render.
-Zeg erbij: **ontvangers zonder Npuls-fonts zien Calibri** — stuur hun de PDF, of laat ze de
-fonts uit `public/npuls/Npuls_lettertype/` installeren. Aanpassen gaat in de spec (opnieuw
-bouwen); kleine tekstwijzigingen mogen ook direct in PowerPoint.
+De Npuls-fonts zitten in de pptx: ontvangers hoeven niets te installeren, ook niet in PowerPoint
+in de browser (Teams/SharePoint). Uitzondering: **PowerPoint in de browser toont Cooper Lt BT als
+Cooper Black**; desktop-PowerPoint toont hem goed. Moet de lede/het citaat in de browser kloppen,
+stuur dan de PDF mee. Aanpassen gaat in de spec (opnieuw bouwen); kleine tekstwijzigingen mogen
+ook direct in PowerPoint.
 
 ### 6. Bestaande pptx aanpassen (alleen als er al een deck is)
 
@@ -164,7 +166,8 @@ Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. D
 |---|---|
 | Calibri, Cooper Black of dubbele woorden in de PNG's | Fonts niet geïnstalleerd: `install-fonts.mjs`, PowerPoint herstarten, opnieuw renderen |
 | `public/npuls/powerpoint_illustrations niet gevonden` | Niet vanuit de projectroot gedraaid |
-| `pptxgenjs ontbreekt` | `npm install -D pptxgenjs` in de projectroot |
+| `pptxgenjs ontbreekt` / `pptx-embed-fonts ontbreekt` | `npm install` in de projectroot |
+| Ontvanger ziet Calibri in een oud deck | Deck is van vóór het embedden: opnieuw bouwen met `build.mjs` |
 | Kaarttekst loopt uit de kaart | Minder tekst per sectie, of 4 → 3 kaarten |
 | Twee blauwe kaarten naast elkaar op roze | Roze heeft drie kaartkleuren; gebruik 3 items of zet `color` per item |
 | Render faalt op macOS/Linux | Installeer LibreOffice en poppler (`pdftoppm`) |
@@ -180,4 +183,4 @@ Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. D
 - `scripts/install-fonts.mjs [--check]` — draaien: Npuls-fonts per gebruiker installeren of controleren
 - `scripts/lib/tokens.mjs` — lees alleen als je het palet of de kaartkleuren moet aanpassen
 - `scripts/lib/layouts.mjs` — lees alleen als een slidetype ontbreekt en je er een wilt toevoegen
-- `scripts/lib/assets.mjs` — lees alleen bij problemen met illustraties of het beeldmerk
+- `scripts/lib/assets.mjs` — lees alleen bij problemen met illustraties, het beeldmerk of het embedden van fonts

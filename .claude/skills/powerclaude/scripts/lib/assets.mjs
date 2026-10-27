@@ -4,6 +4,7 @@ import { createRequire } from 'node:module';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { FONT } from './tokens.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ILLU_DIR = 'public/npuls/powerpoint_illustrations';
@@ -19,6 +20,28 @@ export const TITEL_ROZE = 'public/npuls/powerpoint_slides/Slide1.PNG';
 
 // pptxgenjs en playwright komen uit de node_modules van het project, niet uit de skill.
 export const projectRequire = createRequire(join(process.cwd(), 'package.json'));
+
+// Npuls-fonts gaan mee in de pptx (EOT in ppt/fonts/). PowerPoint in de browser gebruikt nooit
+// lokaal geïnstalleerde fonts, en pc's zonder deze fonts tonen anders Calibri en Cooper Black.
+// Embedden mag: General Sans fsType 0 (installable), Cooper Lt BT fsType 14 (editable).
+export const FONT_DIR = 'public/npuls/Npuls_lettertype';
+const FONT_FILES = {
+  [FONT.body]: 'Npuls_lettertype_generalsans_regular.otf',
+  [FONT.head]: 'Npuls_lettertype_generalsans_semibold.otf',
+  [FONT.quote]: 'Npuls_lettertype_cooper_light_bt.ttf',
+};
+
+export async function embedFonts(pptxBuffer) {
+  const { default: PPTXEmbedFonts } = projectRequire('pptx-embed-fonts');
+  const fonts = new PPTXEmbedFonts();
+  await fonts.load(pptxBuffer);
+  for (const [face, file] of Object.entries(FONT_FILES)) {
+    const data = readFileSync(join(FONT_DIR, file));
+    const buf = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+    await (file.endsWith('.otf') ? fonts.addFontFromOTF(face, buf) : fonts.addFontFromTTF(face, buf));
+  }
+  return fonts.save();
+}
 
 export function illustrationPath(name) {
   const file = name.endsWith('.svg') ? name : `${name}.svg`;
