@@ -39,6 +39,7 @@ nav:
     - Presentaties: werkafspraken/presentaties.md
     - Pitches: werkafspraken/pitches.md
     - Gebruikersrechten: werkafspraken/gebruikersrechten.md
+    - Feedback zonder persoonsgegevens: werkafspraken/feedback-zonder-persoonsgegevens.md
     - Entire: werkafspraken/entire.md
   - Guides:
     - Azure AI modellen: guides/azure-ai.md
