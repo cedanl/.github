@@ -253,6 +253,9 @@ function footer(cv, s, y) {
 
 // ---------- slidetypes ----------
 
+export const TEAM_IMAGE = 'public/shots/team/groep.png';
+const TEAM_TEXT = 'Diverse projecten, waaronder\n\n**Instroomprognose**\n\n**Staat van de Onderwijsinstelling**';
+
 export const LAYOUTS = {
   // Openingsslide: kicker-pill, grote titel, lede in Cooper, rechts agenda of illustratie.
   // Op `blauw` (de standaard) krijgt de slide de echte Npuls-titelachtergrond (blauw met de bogen) en het
@@ -584,6 +587,11 @@ export const LAYOUTS = {
       cv.circle({ x: M + 0.2, y: y + 0.12, d: 0.17, fill: ['blauw', 'oranje', 'groen'][i] });
       cv.text(b, { x: M + 0.55, y, w: w - 0.35, h: 0.55, size: 16, color: 'zwart', min: 12 });
     });
+  },
+
+  // Vaste teamslide ("Wie zijn wij"): groepsfoto van het CEDA-team, zoals in de DAIR-decks. `text` mag anders.
+  team(cv, s) {
+    LAYOUTS.image(cv, { ...s, title: 'Wie zijn wij', image: 'public/shots/team/groep.png', alt: 'Groepsfoto van het CEDA-team', text: s.text ?? TEAM_TEXT });
   },
 
   // Vaste afsluitslide ("Blijf in contact") met de CEDA-links, woordelijk gelijk aan

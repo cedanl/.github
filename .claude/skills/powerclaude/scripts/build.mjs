@@ -2,19 +2,34 @@
 // Bouwt een Npuls-PowerPoint uit een deck-spec.
 //
 // Gebruik (vanuit de clidev-presentaties projectroot):
-//   node <skill>/scripts/build.mjs YYMMDD_onderwerp.deck.mjs
+//   node <skill>/scripts/build.mjs YYMMDD_onderwerp.deck.mjs [--engine potx|pptxgenjs]
 //
+// Engine potx (standaard): bouwt op de Npuls-template public/npuls/Npuls_powerpoint-template.potx
+// via scripts/build_potx.py (python-pptx). Engine pptxgenjs: de eigen layouts uit lib/layouts.mjs.
 // Schrijft exports/<naam>/<naam>.pptx. Exit 0 = gebouwd zonder fouten
 // (waarschuwingen mogelijk), 1 = fouten in de spec, 2 = omgeving niet in orde.
-import { existsSync, mkdirSync, readFileSync } from 'node:fs';
-import { homedir } from 'node:os';
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { homedir, tmpdir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { ILLU_DIR, beeldmerkDots, illustrationPath, projectRequire, rasterize } from './lib/assets.mjs';
-import { Canvas, LAYOUTS, TYPES } from './lib/layouts.mjs';
-import { C, VARIANTS } from './lib/tokens.mjs';
+import { Canvas, LAYOUTS, TEAM_IMAGE, TYPES } from './lib/layouts.mjs';
+import { ALLOWED, C, CARD, CHART_ORDER, FONT, VARIANTS } from './lib/tokens.mjs';
 
-const specPath = process.argv[2];
+const args = process.argv.slice(2);
+const engineAt = args.indexOf('--engine');
+const ENGINE = engineAt >= 0 ? args.splice(engineAt, 2)[1] : 'potx';
+const TEMPLATE = 'public/npuls/Npuls_powerpoint-template.potx';
+const specPath = args[0];
+if (!['potx', 'pptxgenjs'].includes(ENGINE)) {
+  console.error(`FOUT  onbekende engine "${ENGINE}": kies potx of pptxgenjs`);
+  process.exit(2);
+}
+if (ENGINE === 'potx' && !existsSync(TEMPLATE)) {
+  console.error(`FOUT  ${TEMPLATE} niet gevonden. Draai dit vanuit de root van clidev-presentaties (of gebruik --engine pptxgenjs).`);
+  process.exit(2);
+}
 if (!specPath) {
   console.error('Gebruik: node <skill>/scripts/build.mjs YYMMDD_onderwerp.deck.mjs');
   process.exit(2);
@@ -24,11 +39,13 @@ if (!existsSync(ILLU_DIR)) {
   process.exit(2);
 }
 let PptxGenJS;
-try {
-  PptxGenJS = projectRequire('pptxgenjs');
-} catch {
-  console.error('FOUT  pptxgenjs ontbreekt in dit project. Draai: npm install -D pptxgenjs');
-  process.exit(2);
+if (ENGINE === 'pptxgenjs') {
+  try {
+    PptxGenJS = projectRequire('pptxgenjs');
+  } catch {
+    console.error('FOUT  pptxgenjs ontbreekt in dit project. Draai: npm install -D pptxgenjs');
+    process.exit(2);
+  }
 }
 
 const name = basename(specPath).replace(/\.deck\.mjs$/, '').replace(/\.mjs$/, '');
@@ -61,19 +78,28 @@ const illus = new Set();
 const used = new Set();
 const SATURATED = ['blauw', 'roze', 'groen', 'oranje', 'geel'];
 // Vaste CEDA-slides: inhoud ligt vast in layouts.mjs (woordelijk gelijk aan clidev).
-const FIXED = { ceda: 'Vaste CEDA-introslide: wie CEDA is. Kort toelichten, daarna door naar de inhoud.', contact: 'Vaste afsluitslide: laat deze staan tijdens de vragen, zodat iedereen de links ziet.' };
+const FIXED = {
+  ceda: 'Vaste CEDA-introslide: wie CEDA is. Kort toelichten, daarna door naar de inhoud.',
+  team: 'Dit is het CEDA-team. Noem kort twee projecten waar we aan werken.',
+  contact: 'Vaste afsluitslide: laat deze staan tijdens de vragen, zodat iedereen de links ziet.',
+};
+const FIXED_FIELDS = { team: ['text'] }; // velden die een vaste slide wel mag hebben
+const FIXED_VARIANT = { ceda: 'wit', team: 'licht-blauw', contact: 'roze' };
 
 slides.forEach((s, i) => {
   const n = i + 1;
   if (!TYPES.includes(s.type)) return err(n, `onbekend type "${s.type}". Kies uit: ${TYPES.join(', ')}`);
   if (FIXED[s.type]) {
-    const extra = Object.keys(s).filter((k) => !['type', 'notes'].includes(k));
+    const extra = Object.keys(s).filter((k) => !['type', 'notes', ...(FIXED_FIELDS[s.type] ?? [])].includes(k));
     if (extra.length) warnings.push(`slide ${n}: ${s.type} is een vaste slide; ${extra.join(', ')} wordt genegeerd`);
-    s.variant = s.type === 'ceda' ? 'wit' : 'roze'; // volgt de achtergrond-PNG; voor de afwissel-check
+    if (s.type === 'team' && !existsSync(TEAM_IMAGE)) err(n, `teamfoto ${TEAM_IMAGE} niet gevonden`);
+    s.variant = FIXED_VARIANT[s.type]; // voor de afwissel-check
     s.notes ??= FIXED[s.type];
     return;
   }
-  const variant = s.variant ?? (s.type === 'title' ? 'roze' : s.type === 'section' ? 'blauw' : 'licht-geel');
+  // Op de template zijn inhoudsslides standaard wit (de witte master), net als in de Npuls-template.
+  const contentDefault = ENGINE === 'potx' ? 'wit' : 'licht-geel';
+  const variant = s.variant ?? (s.type === 'title' ? 'roze' : s.type === 'section' ? 'blauw' : s.type === 'closing' && ENGINE === 'potx' ? 'roze' : contentDefault);
   if (!VARIANTS[variant]) return err(n, `onbekende variant "${variant}". Kies uit: ${Object.keys(VARIANTS).join(', ')}`);
   s.variant = variant;
   used.add(VARIANTS[variant].bg);
@@ -84,7 +110,7 @@ slides.forEach((s, i) => {
   if (s.type === 'table' && (!s.columns?.length || !s.rows?.length)) err(n, 'table heeft columns en rows nodig');
   if (s.type === 'image' && (!s.image || !existsSync(s.image))) err(n, `afbeelding "${s.image}" niet gevonden`);
   if (s.type !== 'title' && !s.title && s.type !== 'quote') err(n, 'titel ontbreekt');
-  if (variant === 'wit') warnings.push(`slide ${n}: variant wit — Npuls is kleurrijk, kies liever een lichte variant`);
+  if (variant === 'wit' && ENGINE !== 'potx') warnings.push(`slide ${n}: variant wit — Npuls is kleurrijk, kies liever een lichte variant`);
   if (i > 0 && SATURATED.includes(variant) && slides[i - 1].variant === variant && s.type !== 'closing') {
     warnings.push(`slide ${n}: twee keer achter elkaar ${variant} — wissel af`);
   }
@@ -104,8 +130,10 @@ if (slides[0] && slides[0].type !== 'title') warnings.push('eerste slide is geen
 const cedaAt = slides.findIndex((s) => s.type === 'ceda');
 if (cedaAt === -1) warnings.push("vaste CEDA-introslide ontbreekt: zet { type: 'ceda' } direct na de titel/agenda (alleen weglaten als de gebruiker dat vraagt)");
 else if (cedaAt > 2) warnings.push(`CEDA-introslide staat op slide ${cedaAt + 1}: hoort direct na de titel/agenda`);
+if (cedaAt >= 0 && slides[cedaAt + 1]?.type !== 'team') warnings.push("teamslide ontbreekt na de CEDA-introslide: zet { type: 'team' } direct na { type: 'ceda' } (alleen weglaten als de gebruiker dat vraagt)");
 if (slides.length && slides.at(-1).type !== 'contact') warnings.push("laatste slide is niet de vaste afsluitslide: eindig met { type: 'contact' } (alleen weglaten als de gebruiker dat vraagt)");
 for (const t of Object.keys(FIXED)) if (slides.filter((s) => s.type === t).length > 1) warnings.push(`${t} staat meer dan één keer in het deck`);
+if (ENGINE === 'potx') for (const c of ['oranje', 'roze']) used.add(c); // de template zelf toont oranje bogen en roze vlakken
 const primaries = [...used].filter((c) => SATURATED.includes(c));
 if (primaries.length < 3) warnings.push(`maar ${primaries.length} primaire kleuren zichtbaar (${primaries.join(', ')}) — Npuls vraagt er minstens 3`);
 if (illus.size < 2) warnings.push(`${illus.size} Npuls-illustratie(s) in het deck — gebruik er minstens 2`);
@@ -120,6 +148,28 @@ const outDir = join('exports', name);
 mkdirSync(outDir, { recursive: true });
 const illu = await rasterize([...illus].map(illustrationPath), join(outDir, 'img'));
 const illuByName = new Map([...illus].map((k) => [k, illu.get(illustrationPath(k))]));
+
+if (ENGINE === 'potx') {
+  const payload = {
+    name, title: deck.title ?? name, author: deck.author ?? 'CEDA', einddia: deck.einddia ?? true,
+    template: resolve(TEMPLATE), out: resolve(join(outDir, `${name}.pptx`)),
+    slides, illu: Object.fromEntries([...illuByName].map(([k, v]) => [k, resolve(v)])),
+    tokens: { C, VARIANTS, CARD, CHART_ORDER, FONT, ALLOWED },
+  };
+  const pf = join(tmpdir(), `powerclaude-${name}.json`); // tijdelijk: alleen voor build_potx.py
+  writeFileSync(pf, JSON.stringify(payload, null, 1));
+  const py = process.platform === 'win32' ? 'python' : 'python3';
+  const r = spawnSync(py, [join(import.meta.dirname, 'build_potx.py'), pf], { encoding: 'utf8', env: { ...process.env, PYTHONIOENCODING: 'utf-8' } });
+  if (r.error || r.status !== 0) {
+    console.error(r.stdout ?? '', r.stderr ?? r.error?.message ?? '');
+    if (/No module named 'pptx'/.test(r.stderr ?? '')) console.error('FOUT  python-pptx ontbreekt: pip install python-pptx');
+    process.exit(r.status === 1 ? 1 : 2);
+  }
+  warnings.forEach((w) => console.warn(`WAARSCHUWING  ${w}`));
+  process.stdout.write(r.stdout);
+  process.exit(0);
+}
+
 const dots = beeldmerkDots();
 if (!dots) warnings.push('beeldmerk niet gevonden (vormgever-npuls-huisstijl/assets/logos) — slides zonder beeldmerk');
 

@@ -14,6 +14,8 @@ export default {
     },
     // Vaste CEDA-introslide: altijd direct na de titel/agenda. Inhoud ligt vast.
     { type: 'ceda' },
+    // Vaste teamslide: groepsfoto van het CEDA-team, direct na ceda. Alleen `text` mag anders.
+    { type: 'team' },
     {
       type: 'stats',
       variant: 'roze',
@@ -58,7 +60,7 @@ export default {
     },
     {
       type: 'section',
-      variant: 'groen',
+      variant: 'oranje',
       number: 2,
       title: 'De agent doet het handwerk',
       text: 'Jij stelt de vraag, controleert de code en trekt de conclusie.',
@@ -87,7 +89,7 @@ export default {
     {
       type: 'list',
       variant: 'licht-groen',
-      title: 'Wat staat vast en wat is nog open',
+      title: 'Wat staat vast, wat is open',
       items: [
         { title: 'AI-agent: Claude Code', text: 'voor wie direct wil prompten', status: 'Vast', color: 'groen' },
         { title: 'Data en codebook', text: 'synthetisch 1CHO-bestand, gelabelde waarden', status: 'Vast', color: 'groen' },
