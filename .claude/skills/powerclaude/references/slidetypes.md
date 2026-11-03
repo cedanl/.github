@@ -118,7 +118,7 @@ het Npuls-logo rechtsonder.
 | `closing` | Sectiescheider (standaard roze): `title` klein bovenaan, `question` groot |
 | `ceda` | Partnerslide (wit met rechts het roze Npuls-vlak) |
 | `team` | Alleen titel, groepsfoto met tekst rechts (licht-blauw) |
-| `contact` | Sectiescheider oranje met klikbare links; daarna volgt automatisch de **Einddia** (Npuls-logo). `einddia: false` op het deck zet die uit |
+| `contact` | Titeldia roze (logo en bogen uit de template), gecentreerd met drie witte kaarten en klikbare links, gelijk aan de oude engine; daarna volgt automatisch de **Einddia** (Npuls-logo). `einddia: false` op het deck zet die uit |
 | `cards`, `stats`, `chart`, `table`, `timeline`, `image` | Alleen titel, met de inhoud getekend als vormen, grafiek of tabel |
 
 Verschillen met de oude engine:

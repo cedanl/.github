@@ -831,24 +831,26 @@ def t_team(n, s):
 
 
 def t_contact(n, s):
-    """Vaste afsluitslide met de CEDA-links; oranje sectiescheider uit de template."""
-    sl = Slide(n, s, 2, "Sectiescheider")
-    sl.set_ph(0, "Tot slot")
-    p = sl.place(11, y=1.9, h=1.7)
-    p.text_frame.vertical_anchor = MSO_ANCHOR.BOTTOM
-    sl._fill(p.text_frame, "Blijf in contact")
-    para = p.text_frame.add_paragraph()
-    para.space_before = Pt(14)
-    r = para.add_run()
-    r.text = "Vragen, feedback of zin om mee te bouwen? We horen graag van je."
-    r.font.size, r.font.name = Pt(20), BODY
-    links = [("GitHub", "github.com/cedanl", "https://github.com/cedanl"),
-             ("Community", "edu.nl/7b4yg", "https://edu.nl/7b4yg"),
-             ("E-mail", "ceda@surf.nl", "mailto:ceda@surf.nl")]
-    for i, (lab, txt, url) in enumerate(links):
-        box = sl.text(f"**{lab}**   {txt}", ML, 4.1 + i * 0.52, 7.5, 0.45, 20, None, mn=14, link=url)
-        for rr in (rr for pa in box.text_frame.paragraphs for rr in pa.runs):  # tekst 1 = wit op de oranje master
-            rr.font.color.theme_color = TC.TEXT_1
+    """Vaste afsluitslide met de CEDA-links, zoals in de oude engine: roze titeldia (logo en bogen uit de template),
+    gecentreerde kop en drie witte kaarten met een gekleurde pill en een link."""
+    sl = Slide(n, s, 1, "Titeldia")
+    for p in list(sl.s.placeholders):
+        p._element.getparent().remove(p._element)
+    sl.label("Tot slot", 0, 1.75, W, 0.35, "oranje", size=13, align="center")
+    sl.text("Blijf in contact", 0, 2.15, W, 0.95, 44, "blauw", font=HEAD, align="center")
+    sl.text("Vragen, feedback of zin om mee te bouwen? We horen graag van je.", 2.5, 3.15, W - 5, 0.5, 18, "zwart", align="center")
+    links = [("GitHub", "github.com/cedanl", "blauw", "roze", "https://github.com/cedanl"),
+             ("Community", "edu.nl/7b4yg", "groen", "zwart", "https://edu.nl/7b4yg"),
+             ("Email", "ceda@surf.nl", "oranje", "zwart", "mailto:ceda@surf.nl")]
+    cw, gap = 3.5, 0.3
+    x0 = (W - (3 * cw + 2 * gap)) / 2
+    for i, (tag, txt, c, fg, url) in enumerate(links):
+        x = x0 + i * (cw + gap)
+        sl.box(x, 4.0, cw, 1.35, "wit", r=0.2)
+        sl.pill(tag, x + (cw - 1.6) / 2, 4.22, 1.6, 0.4, c, fg, size=12)
+        box = sl.text(txt, x + 0.15, 4.78, cw - 0.3, 0.4, 14, "zwart", align="center", link=url)
+        for rr in (rr for pa in box.text_frame.paragraphs for rr in pa.runs):
+            rr.font.underline = True
 
 
 def t_closing(n, s):
