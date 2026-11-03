@@ -862,9 +862,11 @@ def t_closing(n, s):
     lw = 5.8 if has_right else 8.4
     p = sl.place(11, w=lw, y=1.9, h=2.6)
     p.text_frame.vertical_anchor = MSO_ANCHOR.BOTTOM
-    if len(plain(s["question"])) > (70 if has_right else 110):
+    # bottom-anchored: te veel tekst groeit omhoog over het label; daarom passend maken (44pt → min. 24pt)
+    size, ok = fit(plain(s["question"]), lw, 2.6, 44, HEAD, 24)
+    if not ok:
         sl.warn("afsluitvraag is lang voor de template-placeholder → inkorten")
-    sl._fill(p.text_frame, plain(s["question"]))
+    sl._fill(p.text_frame, plain(s["question"]), size=size)
     ty = 4.75
     if s.get("text"):
         sl.text(s["text"], ML, ty, lw, 0.9, 18, None, font=HEAD, mn=11)
