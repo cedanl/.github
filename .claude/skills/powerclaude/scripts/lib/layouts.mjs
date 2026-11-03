@@ -1,5 +1,6 @@
 // Slidetypes voor powerclaude. Elke functie tekent één slide uit een spec-object.
 // Maten in inches op 13.333 × 7.5 (16:9). Alle kleuren via tokens.mjs.
+import { readFileSync } from 'node:fs';
 import { ALLOWED, C, CARD, CHART_ORDER, FONT, GRIJS, VARIANTS, hex } from './tokens.mjs';
 import { LOGO_HORIZONTAAL, TITEL_ACHTERGROND, TITEL_ROZE, imageSize } from './assets.mjs';
 
@@ -244,6 +245,25 @@ function cardRow(cv, s, items, y, maxH, minH, compact = false) {
     }
   });
   return ch;
+}
+
+// image en video: titel, beeld passend geschaald (verhouding van `sizeFrom`), onderschrift en optioneel een tekstkolom rechts.
+function mediaSlide(cv, s, sizeFrom, place) {
+  const v = cv.v;
+  cv.mark();
+  cv.title(s.title);
+  const side = s.text ? 4.1 : 0;
+  const box = { x: M, y: 1.5, w: CW - side - (side ? 0.3 : 0), h: s.caption ? 4.75 : 5.2 };
+  const { w: iw, h: ih } = imageSize(sizeFrom);
+  const scale = Math.min(box.w / iw, box.h / ih);
+  const w = iw * scale, h = ih * scale;
+  place({ x: box.x + (box.w - w) / 2, y: box.y + (box.h - h) / 2, w, h });
+  if (s.caption) cv.text(s.caption, { x: M, y: box.y + box.h + 0.15, w: box.w, h: 0.4, size: 13, color: v.text, align: 'center', min: 10 });
+  if (s.text) {
+    const tx = M + CW - side;
+    cv.text(s.text, { x: tx, y: 1.6, w: side, h: 4.9, size: 18, color: v.text, accent: v.accent, min: 12, paraSpace: 8 });
+  }
+  footer(cv, { footnote: s.footnote }, 0);
 }
 
 function footer(cv, s, y) {
@@ -517,21 +537,13 @@ export const LAYOUTS = {
 
   // Schermafbeelding of foto, passend geschaald, met onderschrift.
   image(cv, s) {
-    const v = cv.v;
-    cv.mark();
-    cv.title(s.title);
-    const side = s.text ? 4.1 : 0;
-    const box = { x: M, y: 1.5, w: CW - side - (side ? 0.3 : 0), h: s.caption ? 4.75 : 5.2 };
-    const { w: iw, h: ih } = imageSize(s.image);
-    const scale = Math.min(box.w / iw, box.h / ih);
-    const w = iw * scale, h = ih * scale;
-    cv.slide.addImage({ path: s.image, x: box.x + (box.w - w) / 2, y: box.y + (box.h - h) / 2, w, h, altText: s.alt ?? s.caption ?? '' });
-    if (s.caption) cv.text(s.caption, { x: M, y: box.y + box.h + 0.15, w: box.w, h: 0.4, size: 13, color: v.text, align: 'center', min: 10 });
-    if (s.text) {
-      const tx = M + CW - side;
-      cv.text(s.text, { x: tx, y: 1.6, w: side, h: 4.9, size: 18, color: v.text, accent: v.accent, min: 12, paraSpace: 8 });
-    }
-    footer(cv, { footnote: s.footnote }, 0);
+    mediaSlide(cv, s, s.image, (pos) => cv.slide.addImage({ path: s.image, ...pos, altText: s.alt ?? s.caption ?? '' }));
+  },
+
+  // Video (mp4) in het bestand, met een stilstaand beeld tot je op afspelen klikt. build.mjs zet s.poster klaar.
+  video(cv, s) {
+    const cover = `data:image/png;base64,${readFileSync(s.poster).toString('base64')}`;
+    mediaSlide(cv, s, s.poster, (pos) => cv.slide.addMedia({ type: 'video', path: s.video, cover, ...pos, objectName: s.alt ?? s.caption ?? 'Video' }));
   },
 
   // Tijdlijn op schaal: blokken met breedte naar rato van de duur, tijden erboven, naam en uitleg eronder.

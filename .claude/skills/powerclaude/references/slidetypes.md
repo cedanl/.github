@@ -82,6 +82,13 @@ worden opgeteld. `tag` is een kleine pill onder het blok (bijvoorbeeld een skill
 `title`, `image` (pad vanaf de projectroot, PNG/JPEG, bv. `public/shots/...`), `caption`,
 `text` (optioneel, kolom rechts), `alt`.
 
+### `video` — video die in PowerPoint afspeelt
+Zelfde opbouw als `image`: `title`, `video` (pad naar een `.mp4`, H.264), `caption`, `text` (optioneel), `alt`.
+Het stilstaande beeld tot je op afspelen klikt is `poster` (PNG); zonder `poster` haalt `build.mjs` het beeld
+op `posterAt` seconden (standaard 1) uit de video met ffmpeg. De video zit in het bestand: reken op de grootte
+van de mp4 erbij. Speelt niet af in de PDF of in Google Slides; daar zie je alleen de poster. Geen `.webm`:
+PowerPoint op Windows speelt die niet betrouwbaar af.
+
 ### `ceda` — vaste CEDA-introslide
 Geen velden. "Wie is CEDA": titel, subtitel en drie punten over wat CEDA doet, links op wit; rechts het roze vlak met het Npuls-logo (template-layout Partnerslide; oude engine: `Slide16.PNG`). Tekst is woordelijk gelijk aan `clidev`/`_template.md`. Plaats: direct na de titel (of agenda). Bewust zonder links.
 

@@ -8,10 +8,10 @@
 // via scripts/build_potx.py (python-pptx). Engine pptxgenjs: de eigen layouts uit lib/layouts.mjs.
 // Schrijft exports/<naam>/<naam>.pptx. Exit 0 = gebouwd zonder fouten
 // (waarschuwingen mogelijk), 1 = fouten in de spec, 2 = omgeving niet in orde.
-import { spawnSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
-import { basename, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { ILLU_DIR, beeldmerkDots, illustrationPath, projectRequire, rasterize } from './lib/assets.mjs';
 import { Canvas, LAYOUTS, TEAM_IMAGE, TYPES } from './lib/layouts.mjs';
@@ -109,6 +109,11 @@ slides.forEach((s, i) => {
   if (s.type === 'chart' && (!s.labels?.length || !s.series?.length)) err(n, 'chart heeft labels en series nodig');
   if (s.type === 'table' && (!s.columns?.length || !s.rows?.length)) err(n, 'table heeft columns en rows nodig');
   if (s.type === 'image' && (!s.image || !existsSync(s.image))) err(n, `afbeelding "${s.image}" niet gevonden`);
+  if (s.type === 'video') {
+    if (!s.video || !existsSync(s.video)) err(n, `video "${s.video}" niet gevonden`);
+    else if (!/\.mp4$/i.test(s.video)) err(n, `video "${s.video}" moet een .mp4 zijn (PowerPoint speelt webm niet betrouwbaar af)`);
+    if (s.poster && (!/\.png$/i.test(s.poster) || !existsSync(s.poster))) err(n, `poster "${s.poster}" niet gevonden of geen .png`);
+  }
   if (s.type !== 'title' && !s.title && s.type !== 'quote') err(n, 'titel ontbreekt');
   if (variant === 'wit' && ENGINE !== 'potx') warnings.push(`slide ${n}: variant wit — Npuls is kleurrijk, kies liever een lichte variant`);
   if (i > 0 && SATURATED.includes(variant) && slides[i - 1].variant === variant && s.type !== 'closing') {
@@ -148,6 +153,18 @@ const outDir = join('exports', name);
 mkdirSync(outDir, { recursive: true });
 const illu = await rasterize([...illus].map(illustrationPath), join(outDir, 'img'));
 const illuByName = new Map([...illus].map((k) => [k, illu.get(illustrationPath(k))]));
+// Video zonder poster: het beeld op `posterAt` seconden (standaard 1) wordt het stilstaande beeld.
+for (const [i, s] of slides.entries()) {
+  if (s.type !== 'video' || s.poster) continue;
+  s.poster = join(outDir, 'img', `poster-${i + 1}.png`);
+  mkdirSync(dirname(s.poster), { recursive: true });
+  try {
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', String(s.posterAt ?? 1), '-i', s.video, '-frames:v', '1', s.poster]);
+  } catch {
+    console.error(`FOUT  slide ${i + 1}: geen poster uit "${s.video}" (ffmpeg ontbreekt of faalt). Installeer ffmpeg of geef poster: 'pad.png' mee`);
+    process.exit(2);
+  }
+}
 
 if (ENGINE === 'potx') {
   const payload = {

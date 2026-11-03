@@ -148,6 +148,7 @@ Na `kloon` deelt de kopie tekst en afbeeldingen met het origineel. Geef `replace
 
 Een nieuwe slide (bijvoorbeeld een tijdlijn met andere tijden) bouw je met `build.mjs` in een klein
 hulpdeck en zet je met `importeer` in het bestaande deck; zo blijven layout en controles die van `build.mjs`.
+Dat werkt ook voor een `video`-slide: de mp4 gaat mee.
 
 Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. Draai `edit.py` vanuit de projectroot (het beeldmerk komt uit `public/npuls/logos/`). Geef de afbeeldingsnaam aan
 `media` zonder beginslash (Git Bash maakt daar een Windows-pad van).

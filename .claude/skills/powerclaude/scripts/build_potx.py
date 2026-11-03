@@ -269,6 +269,20 @@ class Slide:
             pic.click_action.hyperlink.address = link
         return pic
 
+    def movie(self, path, poster, x, y, w, h, alt=""):
+        """mp4 in het bestand, passend geschaald naar de verhouding van de poster; speelt bij klik."""
+        from PIL import Image
+        with Image.open(poster) as im:
+            pw, ph = im.size
+        k = min(w / pw, h / ph)
+        mw, mh = pw * k, ph * k
+        mov = self.s.shapes.add_movie(str(path), E(x + (w - mw) / 2), E(y + (h - mh) / 2), E(mw), E(mh),
+                                      poster_frame_image=str(poster), mime_type="video/mp4")
+        mov._element.nvPicPr.cNvPr.set("name", alt or "Video")
+        if alt:
+            mov._element.nvPicPr.cNvPr.set("descr", alt)
+        return mov
+
     def illustration(self, name, x, y, w, h, alt=""):
         png = P["illu"].get(name)
         if not png:
@@ -744,7 +758,11 @@ def t_image(n, s):
     side = 4.1 if s.get("text") else 0
     bx, by, bw = ML, TOP, CW - side - (0.3 if side else 0)
     bh = (BOTTOM - TOP) - (0.55 if s.get("caption") else 0)
-    pic = sl.picture(s["image"], bx, by, bw, bh, s.get("alt") or s.get("caption", ""), link=s.get("link"))
+    alt = s.get("alt") or s.get("caption", "")
+    if s.get("video"):
+        sl.movie(s["video"], s["poster"], bx, by, bw, bh, alt)
+    else:
+        sl.picture(s["image"], bx, by, bw, bh, alt, link=s.get("link"))
     if s.get("caption"):
         sl.text(s["caption"], bx, by + bh + 0.12, bw, 0.4, 13, v["text"], align="center", mn=10)
     if s.get("text"):
@@ -876,7 +894,7 @@ def t_einddia(n, s):
 
 
 LAYOUTS = {"title": t_title, "section": t_section, "stats": t_stats, "cards": t_cards, "split": t_split, "list": t_list,
-           "table": t_table, "chart": t_chart, "quote": t_quote, "image": t_image, "timeline": t_timeline,
+           "table": t_table, "chart": t_chart, "quote": t_quote, "image": t_image, "video": t_image, "timeline": t_timeline,
            "ceda": t_ceda, "team": t_team, "contact": t_contact, "closing": t_closing, "einddia": t_einddia}
 
 slides = list(P["slides"])
