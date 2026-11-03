@@ -82,8 +82,19 @@ worden opgeteld. `tag` is een kleine pill onder het blok (bijvoorbeeld een skill
 `title`, `image` (pad vanaf de projectroot, PNG/JPEG, bv. `public/shots/...`), `caption`,
 `text` (optioneel, kolom rechts), `alt`.
 
+### `video` — video die in PowerPoint afspeelt
+Zelfde opbouw als `image`: `title`, `video` (pad naar een `.mp4`, H.264), `caption`, `text` (optioneel), `alt`.
+Het stilstaande beeld tot je op afspelen klikt is `poster` (PNG); zonder `poster` haalt `build.mjs` het beeld
+op `posterAt` seconden (standaard 1) uit de video met ffmpeg. De video zit in het bestand: reken op de grootte
+van de mp4 erbij. Speelt niet af in de PDF of in Google Slides; daar zie je alleen de poster. Geen `.webm`:
+PowerPoint op Windows speelt die niet betrouwbaar af.
+
 ### `ceda` — vaste CEDA-introslide
-Geen velden. "Wie is CEDA": titel, subtitel en drie punten over wat CEDA doet, op de Npuls-achtergrond met roze logovlak (`Slide16.PNG`). Tekst is woordelijk gelijk aan `clidev`/`_template.md`. Plaats: direct na de titel (of agenda). Bewust zonder links.
+Geen velden. "Wie is CEDA": titel, subtitel en drie punten over wat CEDA doet, links op wit; rechts het roze vlak met het Npuls-logo (template-layout Partnerslide; oude engine: `Slide16.PNG`). Tekst is woordelijk gelijk aan `clidev`/`_template.md`. Plaats: direct na de titel (of agenda). Bewust zonder links.
+
+### `team` — vaste teamslide
+Alleen `text` (optioneel). "Wie zijn wij": groepsfoto van het CEDA-team (`public/shots/team/groep.png`) met rechts
+de projecten (standaard: Instroomprognose en Staat van de Onderwijsinstelling), zoals in de DAIR-decks. Plaats: direct na `ceda`.
 
 ### `contact` — vaste afsluitslide
 Geen velden. "Blijf in contact" met drie klikbare kaarten: GitHub (`github.com/cedanl`), Community (`edu.nl/7b4yg`) en e-mail (`ceda@surf.nl`), op `Slide1.PNG`. Altijd de allerlaatste slide; blijft in beeld tijdens de vragen.
@@ -92,6 +103,29 @@ Geen velden. "Blijf in contact" met drie klikbare kaarten: GitHub (`github.com/c
 `title` (default "Vragen?"), `question` (Cooper), `text`, `contact` (alleen als bekend; nooit
 verzinnen), `points: [{ tag?, text }]` + `pointsTitle` **of** `illustration`. Op `roze` komt
 het Npuls-logo rechtsonder.
+
+## Template-engine (standaard)
+
+`build.mjs` bouwt op `public/npuls/Npuls_powerpoint-template.potx`. Elk type krijgt een layout uit de template:
+
+| Type | Layout in de template |
+|---|---|
+| `title` | Titeldia (roze, standaard); `variant: 'blauw'` of `'oranje'` → Titeldia 3. `kicker` en `sub` op eigen regels |
+| `section` | Sectiescheider op de master van de variant: `blauw`, `oranje`, `geel` of `roze` (`groen` bestaat niet → blauw). `number` komt klein bovenaan |
+| `split` | Tekst en afbeelding 1 (illustratie rechts) of 2 (`side: 'left'`); `image` mag in plaats van `illustration` |
+| `list` | Tot 4 items zonder `footer`: Stappen (golf links, vakken rechts; `illustration` per item wordt het icoon). Meer: rijen op Alleen titel |
+| `quote` | Quote (op `roze` de roze master) |
+| `closing` | Sectiescheider (standaard roze): `title` klein bovenaan, `question` groot |
+| `ceda` | Partnerslide (wit met rechts het roze Npuls-vlak) |
+| `team` | Alleen titel, groepsfoto met tekst rechts (licht-blauw) |
+| `contact` | Titeldia roze (logo en bogen uit de template), gecentreerd met drie witte kaarten en klikbare links, gelijk aan de oude engine; daarna volgt automatisch de **Einddia** (Npuls-logo). `einddia: false` op het deck zet die uit |
+| `cards`, `stats`, `chart`, `table`, `timeline`, `image` | Alleen titel, met de inhoud getekend als vormen, grafiek of tabel |
+
+Verschillen met de oude engine:
+- Inhoudsslides zijn standaard **wit**, zoals in de template. Een andere variant wordt de achtergrond van die slide (Opmaak achtergrond); de layout blijft die van de template.
+- Titels staan in de titel-placeholder (40pt, zwart op wit en licht). Te lang → automatisch kleiner, met een waarschuwing.
+- `image` kan een `link` krijgen: klikken op de afbeelding opent die URL.
+- Geen eigen beeldmerk of golven: logo en vormtaal komen uit de template.
 
 ## Minimaal voorbeeld
 

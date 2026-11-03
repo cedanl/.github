@@ -2,10 +2,10 @@
 name: powerclaude
 description: Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen — of een bestaande .pptx wil aanpassen (tekst vervangen, logo wisselen, slides klonen, importeren, verplaatsen of verwijderen). Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
 allowed-tools: Read Write Edit Bash Glob Grep
-compatibility: Requires node and git (en python-pptx, alleen voor edit.py); draait in de root van cedanl/clidev-presentaties (Npuls-assets, pptxgenjs en playwright-chromium via npm install). Renderen voor controle via PowerPoint (Windows) of LibreOffice.
+compatibility: Requires node, git en python met python-pptx (template-engine en edit.py); draait in de root van cedanl/clidev-presentaties (Npuls-template, assets, teamfoto, pptxgenjs en playwright-chromium via npm install). Renderen voor controle via PowerPoint (Windows) of LibreOffice.
 metadata:
   ceda-id: ceda.powerclaude
-  ceda-version: "0.2.0"
+  ceda-version: "0.3.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -21,8 +21,10 @@ metadata:
 # powerclaude — PowerPoint met Claude
 
 Een echte, bewerkbare `.pptx` in Npuls-huisstijl. Jij schrijft alleen de **inhoud** als deck-spec
-(een JS-bestand met slides); `build.mjs` tekent elke slide uit vaste layouts met de echte
-Npuls-fonts, het palet, het beeldmerk en de illustraties. Zo ziet elk deck er hetzelfde uit en
+(een JS-bestand met slides); `build.mjs` bouwt elke slide op de **officiële Npuls-template**
+(`public/npuls/Npuls_powerpoint-template.potx`): elk slidetype gebruikt een layout uit die template,
+met de echte Npuls-fonts, het palet en de illustraties. Collega's krijgen zo bij "Nieuwe dia" de
+echte Npuls-layouts. Zo ziet elk deck er hetzelfde uit en
 blijft alles in PowerPoint aanpasbaar (tekstvakken, vormen, native grafieken en tabellen).
 
 **REQUIRED BACKGROUND:** laad `vormgever-npuls-huisstijl` voor kleuren, combinaties, typografie
@@ -53,6 +55,7 @@ find ~ -maxdepth 6 -type d -name Npuls_lettertype -path "*public/npuls*" -not -p
 
 Niets gevonden → vraag waar het mag komen en `git clone https://github.com/cedanl/clidev-presentaties.git <pad>`.
 Ontbreekt `node_modules/pptxgenjs` → `npm install` (of `npm install -D pptxgenjs`).
+Ontbreekt python-pptx → `pip install python-pptx` (nodig voor de template-engine).
 
 Fonts controleren — zonder deze fonts rendert PowerPoint in Calibri/Cooper Black, kloppen de
 tekstmaten niet en zie je in de controle-PNG's verdubbelde woorden:
@@ -86,8 +89,8 @@ cp <skill>/assets/voorbeeld.deck.mjs YYMMDD_onderwerp.deck.mjs
 Lees `references/slidetypes.md` (alle types, velden en varianten) en vervang de inhoud.
 Het voorbeeld toont elk type één keer; houd alleen wat je nodig hebt.
 
-- Volgorde: `title` → `{ type: 'ceda' }` → inhoud → eventueel `closing` (vraag) → `{ type: 'contact' }`.
-- **De twee vaste CEDA-slides staan in elk deck**, net als bij `clidev`: `ceda` ("Wie is CEDA", direct na de titel/agenda, zonder links) en `contact` ("Blijf in contact" met GitHub, Community en e-mail, altijd de laatste slide). Hun tekst ligt vast in de skill: geen velden meegeven, niet parafraseren. Alleen weglaten als de gebruiker dat expliciet vraagt.
+- Volgorde: `title` → `{ type: 'ceda' }` → `{ type: 'team' }` → inhoud → eventueel `closing` (vraag) → `{ type: 'contact' }`. Na `contact` zet de build zelf de Npuls-Einddia.
+- **De drie vaste CEDA-slides staan in elk deck**, net als bij `clidev` en de DAIR-decks: `ceda` ("Wie is CEDA", tekst links en het roze Npuls-vlak rechts, direct na de titel/agenda, zonder links), `team` ("Wie zijn wij" met de groepsfoto `public/shots/team/groep.png`, direct na `ceda`; alleen `text` mag anders) en `contact` ("Blijf in contact" met GitHub, Community en e-mail, de laatste inhoudsslide). Hun tekst ligt vast in de skill: niet parafraseren. Alleen weglaten als de gebruiker dat expliciet vraagt.
 - Eén boodschap per slide; de titel is een bewering ("Uitval daalt na jaar 1"), geen onderwerp.
 - Varianten afwisselen: lichte inhoudsslides, één verzadigde slide per kernboodschap.
 - Per slide max ~70 woorden zichtbare tekst. Meer → splitsen.
@@ -101,6 +104,10 @@ Het voorbeeld toont elk type één keer; houd alleen wat je nodig hebt.
 node <skill>/scripts/build.mjs YYMMDD_onderwerp.deck.mjs     # → exports/<naam>/<naam>.pptx
 node <skill>/scripts/render.mjs exports/<naam>/<naam>.pptx   # → exports/<naam>/qa/slide-NN.png
 ```
+
+`build.mjs` controleert de spec en geeft hem door aan `build_potx.py`, dat de template vult
+(engine `potx`, de standaard). `--engine pptxgenjs` bouwt nog met de oude eigen layouts, zonder template.
+Welke layout elk type krijgt en wat anders is: `references/slidetypes.md`, "Template-engine".
 
 - **FOUT** → oplossen en opnieuw bouwen.
 - **WAARSCHUWING** "tekst past niet" → inkorten of splitsen; niet negeren. Combinatie-waarschuwing → andere kaartkleur of variant.
@@ -141,6 +148,7 @@ Na `kloon` deelt de kopie tekst en afbeeldingen met het origineel. Geef `replace
 
 Een nieuwe slide (bijvoorbeeld een tijdlijn met andere tijden) bouw je met `build.mjs` in een klein
 hulpdeck en zet je met `importeer` in het bestaande deck; zo blijven layout en controles die van `build.mjs`.
+Dat werkt ook voor een `video`-slide: de mp4 gaat mee.
 
 Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. Draai `edit.py` vanuit de projectroot (het beeldmerk komt uit `public/npuls/logos/`). Geef de afbeeldingsnaam aan
 `media` zonder beginslash (Git Bash maakt daar een Windows-pad van).
@@ -149,12 +157,13 @@ Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. D
 
 | Regel | Waarom |
 |---|---|
-| Een nieuw deck altijd via `build.mjs` en een deck-spec; een bestaand deck via `edit.py`. Geen eigen pptxgenjs/python-pptx-code en geen nabewerking | Eigen layouts of scripts = elk deck ziet er anders uit en de checks lopen niet. De echte titelslide, het volledige logo, het echte beeldmerk en de tijdlijn zitten in `build.mjs` |
+| Een nieuw deck altijd via `build.mjs` en een deck-spec; een bestaand deck via `edit.py`. Geen eigen pptxgenjs/python-pptx-code en geen nabewerking | Eigen layouts of scripts = elk deck ziet er anders uit en de checks lopen niet. Ontbreekt iets, voeg het dan toe aan `build_potx.py` |
+| Bouwen op `public/npuls/Npuls_powerpoint-template.potx`, nooit op een eigen kopie | De template is de organisatiestandaard; een nieuwe versie vervang je op die plek |
 | Koppen in `General Sans Semibold`, nooit `bold: true` op General Sans | De semibold is in Windows een eigen familie; vet zetten geeft een nep-vet |
 | Cooper alleen voor lede, citaat en afsluitvraag | vormgever-regel: Cooper voor introducties/quotes |
 | Zwart is nooit een slide- of kaartachtergrond | vormgever-regel |
-| Logo (`npuls_logo.jpg`) alleen op een `roze` closing | Het jpg heeft een roze vlak. De roze titelslide gebruikt `Slide1.PNG` met het logo erin; de blauwe titelslide heeft zijn eigen transparante horizontale logo |
-| `ceda` en `contact` in elk deck, met de vaste tekst | Gelijk aan `clidev`: wie CEDA is staat vooraan, de links staan in beeld tijdens de vragen |
+| Geen eigen logo's toevoegen | Het Npuls-logo zit in de template (titeldia, CEDA-slide, Einddia). Alleen bij `--engine pptxgenjs`: `npuls_logo.jpg` alleen op een `roze` closing |
+| `ceda`, `team` en `contact` in elk deck, met de vaste tekst | Gelijk aan `clidev` en de DAIR-decks: wie CEDA is en wie het team is staan vooraan, de links staan in beeld tijdens de vragen |
 | Geen hex-kleuren in de spec; alleen Npuls-kleurnamen | `build.mjs` faalt op onbekende kleuren |
 | Niet "klaar" melden zonder build + render + alle PNG's bekeken | Overloop en botsingen zie je niet in de spec |
 
@@ -173,11 +182,12 @@ Render daarna met `render.mjs` en bekijk de PNG's, net als bij een nieuw deck. D
 
 - `references/slidetypes.md` — lees altijd voordat je de spec schrijft: types, velden, varianten
 - `assets/voorbeeld.deck.mjs` — startpunt; kopiëren naar de projectroot en invullen
-- `scripts/build.mjs <spec>` — draaien, niet lezen: valideert de spec en bouwt de .pptx
+- `scripts/build.mjs <spec> [--engine potx|pptxgenjs]` — draaien, niet lezen: valideert de spec en bouwt de .pptx
+- `scripts/build_potx.py` — de template-engine; lees alleen als een slidetype ontbreekt of een layout niet klopt
 - `scripts/render.mjs <pptx> [--pdf]` — draaien: PNG's per slide (en PDF) voor de controle
 - `scripts/edit.py <commando>` — draaien: een bestaande pptx lezen of aanpassen (zie stap 6)
 - `public/npuls/logos/` (in het project, niet in de skill) — beeldmerk-ring, beeldmerk en horizontaal logo (wit en zwart, transparant); `build.mjs` en `edit.py` gebruiken ze
 - `scripts/install-fonts.mjs [--check]` — draaien: Npuls-fonts per gebruiker installeren of controleren
 - `scripts/lib/tokens.mjs` — lees alleen als je het palet of de kaartkleuren moet aanpassen
-- `scripts/lib/layouts.mjs` — lees alleen als een slidetype ontbreekt en je er een wilt toevoegen
+- `scripts/lib/layouts.mjs` — layouts van de oude engine (`--engine pptxgenjs`)
 - `scripts/lib/assets.mjs` — lees alleen bij problemen met illustraties of het beeldmerk

@@ -30,6 +30,7 @@ from pathlib import Path
 
 from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
+from pptx.media import Video
 
 for _stroom in (sys.stdout, sys.stderr):  # Windows-consoles gebruiken anders cp1252 en struikelen over tekens als →
     _stroom.reconfigure(encoding="utf-8")
@@ -287,9 +288,15 @@ def importeer(inp, uit, bronbestand, nummer, naar):
                 elif rel.target_part.content_type.startswith("image/"):
                     _, nieuw_rid = nieuw.part.get_or_add_image_part(io.BytesIO(rel.target_part.blob))
                     node.set(attr, nieuw_rid)
+                elif rel.target_part.content_type.startswith(("video/", "audio/")):
+                    # een video hangt met twee relaties aan hetzelfde bestand; get_or_add houdt het bij één kopie
+                    deel = rel.target_part
+                    media_part = prs.part.package.get_or_add_media_part(
+                        Video.from_blob(deel.blob, deel.content_type, Path(str(deel.partname)).name))
+                    node.set(attr, nieuw.part.relate_to(media_part, rel.reltype))
                 else:
                     sys.exit(f"FOUT: {rel.target_part.partname} ({rel.target_part.content_type}) kan niet mee; "
-                             "importeer alleen slides met tekst, vormen, afbeeldingen en tabellen")
+                             "importeer alleen slides met tekst, vormen, afbeeldingen, tabellen en video")
         return el
 
     achtergrond = bron._element.cSld.bg
