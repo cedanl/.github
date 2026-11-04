@@ -64,6 +64,10 @@ for (const m of body.matchAll(/<section\s+class="([^"]*)"[\s\S]*?<\/section>/g))
   if (/npuls_logo\.jpg/.test(m[0]) && !/\bs-roze\b/.test(m[1]))
     errors.push(`npuls_logo.jpg staat op een ${m[1].match(/s-\w+/)?.[0]}-slide — het logo heeft een roze vlak, zet het op s-roze`);
 
+// 9. Vaste CEDA-slides (gelijk aan powerclaude/clidev)
+for (const [t, naam] of [['Wie is CEDA', '"Wie is CEDA"'], ['Wie zijn wij', '"Wie zijn wij"'], ['Blijf in contact', '"Blijf in contact"']])
+  if (!body.includes(t)) warns.push(`vaste CEDA-slide ${naam} ontbreekt — alleen weglaten als de gebruiker dat expliciet vroeg`);
+
 for (const w of warns) console.log('WAARSCHUWING  ' + w);
 for (const e of errors) console.log('FOUT          ' + e);
 console.log(`\n${variants.length} slides · varianten: ${variants.join(' ')}`);

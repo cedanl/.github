@@ -5,7 +5,7 @@ allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node and git; draait in de root van cedanl/clidev-presentaties (Npuls-assets en playwright-chromium via npm install)
 metadata:
   ceda-id: ceda.clanna
-  ceda-version: "0.3.0"
+  ceda-version: "0.4.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -80,7 +80,8 @@ cp <skill>/assets/frame.html YYMMDD_onderwerp.html
 Naam: `YYMMDD_onderwerp.html` in de projectroot, tenzij de gebruiker een andere naam geeft — die mag ook, zolang het bestand in de projectroot staat.
 
 - Vul de `{{…}}`-placeholders in (titel, brand-label zoals `Npuls · CEDA`, kicker, lede, spreker, afsluitvraag, contact). Geen contact bekend → haal die `<p>` weg, verzin geen adres.
-- Zet je slides tussen `<!-- SLIDES:START -->` en `<!-- SLIDES:END -->`, tussen de titelslide en de afsluitslide in. Die twee blijven staan.
+- Zet je slides op de markering `<!-- INHOUD -->`: na "Wie zijn wij" en vóór "Blijf in contact".
+- **Vaste CEDA-slides, net als `powerclaude` en `clidev`:** titel → "Wie is CEDA" → "Wie zijn wij" → inhoud → "Blijf in contact" → Einddia. Ze staan al in de frame. Hun tekst ligt vast: niet parafraseren; alleen de projectenlijst op "Wie zijn wij" mag anders. Alleen weglaten als de gebruiker dat expliciet vraagt.
 - Raak `<style>` en `<script>` niet aan. Mis je echt een component, voeg dan één klein CSS-blok toe onderaan `<style>` met alleen `var(--npuls-*)`-kleuren.
 
 ### 4. Slides bouwen

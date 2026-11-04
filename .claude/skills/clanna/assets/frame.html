@@ -411,6 +411,20 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
   .lay-blokken .tegels,.lay-eind .tegels{display:none}
 }
 
+
+/* vaste CEDA-slides (gelijk aan powerclaude/clidev): Wie is CEDA, Wie zijn wij, Blijf in contact */
+.ceda-punten{list-style:none;display:flex;flex-direction:column;gap:.7em;margin-top:clamp(16px,2.6vh,32px)}
+.ceda-punten li{display:flex;align-items:center;gap:.8em}
+.ceda-punten .stip{width:14px;height:14px;border-radius:99px;flex-shrink:0}
+.foto{display:block;width:100%;height:auto;max-height:min(58vh,560px);object-fit:cover;border-radius:20px}
+.linkkaart{background:var(--npuls-wit);border-radius:20px;padding:clamp(16px,1.6vw,28px);display:flex;flex-direction:column;align-items:center;gap:.7em;text-decoration:none;color:var(--npuls-zwart)}
+.linkkaart b{font-size:clamp(15px,1.3vw,20px);font-weight:600}
+.pill{display:inline-block;padding:.38em 1.1em;border-radius:99px;font-size:clamp(10px,.85vw,13px);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.pill.blauw{background:var(--npuls-blauw);color:var(--npuls-roze)}
+.pill.groen{background:var(--npuls-groen);color:var(--npuls-zwart)}
+.pill.oranje{background:var(--npuls-oranje);color:var(--npuls-zwart)}
+.contact-body{align-items:center;text-align:center}
+
 /* ============================================================
    NAVIGATIE — linksonder (rechtsonder is voor de bogen)
    ============================================================ */
@@ -490,6 +504,52 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
     <h1>{{TITEL}}</h1>
     <p class="lede">{{LEDE}}</p>
     <p class="meta">{{SPREKER}} &middot; {{TEAM}} &middot; {{DATUM}}</p>
+  </div>
+</section>
+
+<!-- ========== 2. WIE IS CEDA (vast, tekst niet aanpassen) ========== -->
+<section class="slide s-wit lay-partner">
+  <div class="partner-paneel"><img class="npuls-logo groot" src="public/npuls/vormen/npuls-logo.svg" alt="Npuls"></div>
+  <div class="body">
+    <p class="label" style="color:var(--npuls-oranje)">Wie is CEDA</p>
+    <h2 style="color:var(--npuls-blauw);margin-top:.4em;max-width:16ch">Centre of Educational Data Analytics</h2>
+    <p class="lede" style="margin-top:.8em">Eén team binnen Npuls. Van ruwe data tot AI-toepassing, open source.</p>
+    <ul class="ceda-punten">
+      <li><span class="stip" style="background:var(--npuls-blauw)"></span>Data, analytics en generatieve AI in één keten</li>
+      <li><span class="stip" style="background:var(--npuls-oranje)"></span>Altijd in co-creatie met mbo, hbo en wo</li>
+      <li><span class="stip" style="background:var(--npuls-groen)"></span>Open source, voor elke instelling</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========== 3. WIE ZIJN WIJ (vast; alleen de projectenlijst mag anders) ========== -->
+<section class="slide s-wit">
+  <div class="deco bogen"></div>
+  <div class="slide-head"><h2>Wie zijn wij</h2></div>
+  <div class="split">
+    <img class="foto" src="public/shots/team/groep.png" alt="Groepsfoto van het CEDA-team">
+    <div><p class="lede">Diverse projecten, waaronder</p>
+      <p style="margin-top:1em"><strong>Instroomprognose</strong></p>
+      <p style="margin-top:.6em"><strong>Staat van de Onderwijsinstelling</strong></p></div>
+  </div>
+</section>
+
+<!-- INHOUD: zet de inhoudsslides hieronder, vóór de contactslide -->
+
+
+<!-- ========== N-1. BLIJF IN CONTACT (vast, tekst niet aanpassen) ========== -->
+<section class="slide s-roze">
+  <img class="npuls-logo" src="public/npuls/vormen/npuls-logo.svg" alt="Npuls">
+  <div class="deco bogen"></div>
+  <div class="body contact-body">
+    <p class="label" style="color:var(--npuls-oranje)">Tot slot</p>
+    <h1 style="color:var(--npuls-blauw);margin-top:.3em">Blijf in contact</h1>
+    <p style="margin-top:.8em">Vragen, feedback of zin om mee te bouwen? We horen graag van je.</p>
+    <div class="grid g3" style="margin-top:clamp(20px,3.4vh,44px);width:min(100%,900px)">
+      <a class="linkkaart" href="https://github.com/cedanl"><span class="pill blauw">GitHub</span><b>github.com/cedanl</b></a>
+      <a class="linkkaart" href="https://edu.nl/7b4yg"><span class="pill groen">Community</span><b>edu.nl/7b4yg</b></a>
+      <a class="linkkaart" href="mailto:ceda@surf.nl"><span class="pill oranje">Email</span><b>ceda@surf.nl</b></a>
+    </div>
   </div>
 </section>
 
