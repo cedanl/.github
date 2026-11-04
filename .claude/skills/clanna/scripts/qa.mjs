@@ -72,7 +72,7 @@ for (const vp of viewports) {
         return `<${el.tagName.toLowerCase()}${el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).join('.') : ''}> "${t}"`;
       };
       const content = [...slide.querySelectorAll('*')].filter(el =>
-        !el.closest('.deco') && !el.closest('svg') && el.getClientRects().length &&
+        !el.closest('.deco,.tegels,.vormen-duo,.golf,.cc') && !el.closest('svg') && el.getClientRects().length &&
         getComputedStyle(el).visibility !== 'hidden');
       // leaf-ish: elementen met eigen tekst, afbeeldingen, kaarten
       const leaves = content.filter(el =>

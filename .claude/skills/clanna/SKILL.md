@@ -5,7 +5,7 @@ allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node and git; draait in de root van cedanl/clidev-presentaties (Npuls-assets en playwright-chromium via npm install)
 metadata:
   ceda-id: ceda.clanna
-  ceda-version: "0.2.0"
+  ceda-version: "0.3.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
