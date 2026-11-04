@@ -37,6 +37,10 @@
   --licht-oranje:#FFE4D8;
   --licht-geel:#FCF5D4;
 
+  /* neutraal vlak uit het officiële Npuls-pptx-template (Tussendia, Titeldia 3,
+     Afbeeldingen en vormen). Alleen als layout-vlak via .lay-*, nooit als kaart. */
+  --npuls-grijs:#E6E6E6;
+
   --font-primair:'General Sans',system-ui,-apple-system,sans-serif;
   --font-secundair:'Cooper Light BT',Georgia,serif;
 
@@ -106,7 +110,7 @@ p,li{font-size:clamp(14px,1.12vw,17px);line-height:1.55}
   text-transform:uppercase;letter-spacing:.08em;
 }
 .kicker{
-  display:inline-block;
+  display:inline-block;align-self:flex-start;
   background:var(--accent);color:var(--paper);
   padding:.42em .95em;border-radius:99px;
   font-size:clamp(10px,.82vw,13px);font-weight:600;
@@ -273,6 +277,8 @@ tr td:last-child{border-radius:0 12px 12px 0}
 ul.ticks{list-style:none;display:flex;flex-direction:column;gap:.55em}
 ul.ticks li{display:flex;gap:.7em;align-items:flex-start}
 ul.ticks li i{margin-top:.28em;font-size:.82em;color:var(--accent)}
+ul.ticks.groot{gap:.8em}
+ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
 
 .split{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(22px,3vw,58px);align-items:center;flex:1;min-height:0}
 
@@ -293,14 +299,128 @@ ul.ticks li i{margin-top:.28em;font-size:.82em;color:var(--accent)}
 .deco.tl{top:-6%;left:-4%}
 
 /* ============================================================
-   NAVIGATIE
+   NPULS-TEMPLATE — logo, bogen en layouts uit het officiële
+   pptx-template (public/npuls/Npuls_powerpoint-template.potx).
+   Vormen: public/npuls/vormen/*.svg
+   ============================================================ */
+
+/* logo linksboven (zwarte SVG; wit via invert op blauw, groen en oranje) */
+.npuls-logo{
+  position:absolute;z-index:4;
+  top:clamp(22px,3.6vh,46px);left:clamp(28px,5.5vw,110px);
+  width:clamp(92px,8vw,150px);height:auto;
+  filter:var(--logo-filter,none);
+}
+.npuls-logo.groot{position:relative;top:auto;left:auto;width:clamp(220px,25vw,440px)}
+.slide:has(.npuls-logo:not(.groot)){padding-top:clamp(84px,13vh,150px)}
+.s-blauw,.s-groen,.s-oranje{--logo-filter:invert(1)}
+.partner-paneel{--logo-filter:none}
+
+/* drie bogen rechtsonder: het vaste Npuls-template-motief.
+   Schrijf <div class="deco bogen"></div>; het script zet de SVG erin. */
+.bogen{
+  position:absolute;right:0;bottom:0;z-index:1;pointer-events:none;
+  width:clamp(110px,14.5vw,280px);aspect-ratio:1;
+}
+.bogen svg{display:block;width:100%;height:100%}
+.bogen path{fill:var(--boog,var(--npuls-oranje))}
+.s-geel,.s-oranje{--boog:var(--npuls-zwart)}
+.s-blauw,.s-groen{--boog:var(--npuls-wit)}
+.s-roze{--boog:var(--npuls-oranje)}
+
+/* tegels: vierkante vormblokken uit het template */
+.tegel{display:block;width:100%;height:100%;object-fit:cover}
+
+/* Titeldia — groot, links uitgelijnd, logo + bogen */
+.lay-titel .body{justify-content:center}
+.lay-titel .body::before,.lay-titel .body::after{display:none}
+.lay-titel h1{font-size:clamp(40px,5.4vw,80px);max-width:16ch}
+.lay-titel .lede{margin-top:clamp(16px,2.4vh,30px);max-width:38ch}
+.lay-titel .meta{margin-top:clamp(22px,3.4vh,44px);opacity:.75}
+
+/* Titeldia 3 — grijze driehoek links op een verzadigde slide */
+.lay-driehoek::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:31%;z-index:0;
+  background:var(--npuls-grijs);clip-path:polygon(0 0,100% 50%,0 100%);
+}
+.lay-driehoek{padding-left:36%}
+.lay-driehoek .body{justify-content:center}
+.lay-driehoek .body::before,.lay-driehoek .body::after{display:none}
+.lay-driehoek h1{font-size:clamp(38px,5vw,74px);max-width:15ch}
+
+/* Sectiescheider — vol vlak, grote kop onderaan, bogen */
+.slide.lay-sectie{padding-bottom:clamp(96px,13vh,150px)}
+.lay-sectie .body{justify-content:flex-end}
+.lay-sectie .body::before,.lay-sectie .body::after{display:none}
+.lay-sectie .nr{font-size:clamp(15px,1.3vw,20px);font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin-bottom:.6em}
+.lay-sectie h1{font-size:clamp(44px,6vw,92px);max-width:14ch}
+
+/* Tussendia — gekleurde band links, grijs vlak rechts */
+.lay-band{
+  background:linear-gradient(90deg,var(--paper) 0 32%,var(--npuls-grijs) 32% 100%);
+  display:grid;grid-template-columns:32% 1fr;padding:0;
+}
+.lay-band>.band-l{padding:clamp(28px,4.2vw,80px) clamp(24px,3vw,56px) clamp(72px,7vh,104px) clamp(28px,5.5vw,110px);display:flex;flex-direction:column;justify-content:flex-end}
+.lay-band>.band-r{color:var(--npuls-zwart);padding:clamp(28px,4.2vw,80px) clamp(28px,5.5vw,110px) clamp(72px,7vh,104px) clamp(28px,4vw,72px);display:flex;flex-direction:column;justify-content:center;min-width:0}
+.lay-band .band-l .big-num{font-size:clamp(64px,8vw,140px)}
+
+/* Quote — Cooper, groot, met openingsteken in de accentkleur */
+.lay-quote .body{justify-content:center}
+.lay-quote .body::before,.lay-quote .body::after{display:none}
+.quote{font-family:var(--font-secundair);font-weight:300;font-size:clamp(28px,3.6vw,56px);line-height:1.18;max-width:22ch}
+.quote::before{content:'\201C';display:block;color:var(--accent-2);font-size:1.9em;line-height:.6;margin-bottom:.15em}
+.quote-bron{margin-top:clamp(16px,2.4vh,30px);font-weight:600}
+
+/* Tekst en vorm-blokken — 2×3 tegels tegen de rechterrand */
+.tegels{
+  position:absolute;right:0;top:0;bottom:0;z-index:1;
+  height:100%;aspect-ratio:2/3;
+  display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);
+}
+.lay-blokken{padding-right:calc(100vh*2/3 + clamp(28px,4vw,80px))}
+
+/* Afbeeldingen en vormen — grijs vlak met twee verspringende tegels */
+.lay-vormen{background:var(--npuls-grijs);--ink:var(--npuls-zwart);color:var(--ink);padding-right:52%}
+.vormen-duo{position:absolute;inset:0;z-index:1;pointer-events:none}
+.vormen-duo .tegel{position:absolute;width:50vh;height:50vh}
+.vormen-duo .tegel:first-child{top:0;right:calc(10% + 25vh)}
+.vormen-duo .tegel:last-child{bottom:0;right:10%}
+.vormen-duo::after{content:'';position:absolute;top:50vh;right:0;width:calc(10% + 25vh);border-top:1.5px solid var(--npuls-oranje)}
+
+/* Stappen — oranje golf links, grijze stappen rechts */
+.lay-stappen .golf{position:absolute;left:0;top:50%;transform:translateY(-42%);width:30%;height:auto;z-index:1;pointer-events:none}
+.lay-stappen{padding-left:36%}
+.lay-stappen .step{background:var(--npuls-grijs)}
+
+/* Partnerslide — tekst links, roze paneel met logo rechts */
+.lay-partner{padding-right:54%}
+.partner-paneel{position:absolute;right:0;top:0;bottom:0;width:50%;z-index:1;background:var(--npuls-roze);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,3vh,40px)}
+.partner-logos{display:flex;gap:clamp(18px,2.4vw,44px);align-items:center;flex-wrap:wrap;justify-content:center}
+.partner-logos img{height:clamp(36px,5vh,64px);width:auto}
+
+/* Einddia — tegelmozaïek links, logo + vraag rechts, CC-licentie */
+.lay-eind{padding-left:calc(100vh*2/3 + clamp(36px,5vw,96px))}
+.lay-eind .tegels{left:0;right:auto}
+.lay-eind .body{justify-content:center;align-items:flex-start}
+.lay-eind .body::before,.lay-eind .body::after{display:none}
+.cc{position:absolute;right:clamp(28px,4vw,80px);bottom:clamp(22px,4vh,48px);width:clamp(90px,8vw,150px);height:auto;z-index:3}
+
+@media (max-aspect-ratio:4/3){
+  .lay-blokken,.lay-eind{padding-left:clamp(28px,5.5vw,110px);padding-right:clamp(28px,5.5vw,110px)}
+  .lay-blokken .tegels,.lay-eind .tegels{display:none}
+}
+
+/* ============================================================
+   NAVIGATIE — linksonder (rechtsonder is voor de bogen)
    ============================================================ */
 .nav{
-  position:fixed;left:0;right:0;bottom:0;z-index:20;
-  display:flex;align-items:center;justify-content:space-between;
+  position:fixed;left:0;bottom:0;z-index:20;
+  display:flex;align-items:center;gap:clamp(14px,1.6vw,26px);
   padding:clamp(12px,1.4vh,20px) clamp(28px,5.5vw,110px);
   pointer-events:none;
 }
+.nav.na-tegels{left:calc(100vh*2/3)}
 .dots{display:flex;gap:7px;pointer-events:auto}
 .dot{
   width:8px;height:8px;border-radius:99px;border:none;cursor:pointer;padding:0;color:inherit;
@@ -361,36 +481,35 @@ ul.ticks li i{margin-top:.28em;font-size:.82em;color:var(--accent)}
 
 <!-- SLIDES:START -->
 
-<!-- ========== 1. TITEL ========== -->
-<section class="slide s-blauw active">
-  <svg class="deco tr" width="560" height="560" viewBox="0 0 560 560" fill="none">
-    <circle cx="380" cy="180" r="230" style="stroke:var(--npuls-geel)" stroke-width="14"/>
-    <circle cx="380" cy="180" r="160" style="stroke:var(--npuls-roze)" stroke-width="14"/>
-    <circle cx="380" cy="180" r="92" style="fill:var(--npuls-geel)"/>
-  </svg>
-  <svg class="deco bl" width="460" height="300" viewBox="0 0 460 300" fill="none">
-    <path d="M-20 200 C 80 90, 160 300, 260 190 S 420 60, 500 160" style="stroke:var(--npuls-roze)" stroke-width="16" stroke-linecap="round"/>
-    <path d="M-20 255 C 80 145, 160 355, 260 245 S 420 115, 500 215" style="stroke:var(--npuls-groen)" stroke-width="16" stroke-linecap="round"/>
-  </svg>
-  <div class="body title-body">
+<!-- ========== 1. TITEL (template: Titeldia) ========== -->
+<section class="slide s-roze lay-titel active">
+  <img class="npuls-logo" src="public/npuls/vormen/npuls-logo.svg" alt="Npuls">
+  <div class="deco bogen"></div>
+  <div class="body">
     <span class="kicker">{{KICKER}}</span>
     <h1>{{TITEL}}</h1>
-    <p class="lede" style="margin-top:clamp(18px,2.4vh,30px);opacity:.92">{{LEDE}}</p>
-    <p style="margin-top:clamp(20px,2.8vh,36px);opacity:.75">{{SPREKER}} &middot; {{TEAM}} &middot; {{DATUM}}</p>
+    <p class="lede">{{LEDE}}</p>
+    <p class="meta">{{SPREKER}} &middot; {{TEAM}} &middot; {{DATUM}}</p>
   </div>
 </section>
 
-<!-- ========== N. AFSLUITING ========== -->
-<section class="slide s-roze">
-  <svg class="deco br" width="480" height="480" viewBox="0 0 480 480" fill="none">
-    <path d="M240 20 L270 170 L400 100 L320 230 L460 250 L320 275 L400 400 L268 325 L240 470 L212 325 L80 400 L160 275 L20 250 L160 230 L80 100 L210 170 Z" style="fill:var(--npuls-oranje)" opacity=".3"/>
-  </svg>
-  <div class="body title-body">
-    <img class="logo" src="public/npuls/npuls_logo.jpg" alt="Npuls">
-    <h2 style="margin-top:clamp(18px,2.4vh,30px)">{{AFSLUITVRAAG}}</h2>
-    <p style="margin-top:clamp(14px,2vh,24px);opacity:.75">{{CONTACT}}</p>
-    <p class="payoff" style="margin-top:clamp(24px,3.4vh,44px)">Onderwijs bewegen.</p>
+<!-- ========== N. AFSLUITING (template: Einddia) ========== -->
+<section class="slide s-roze lay-eind">
+  <div class="tegels" aria-hidden="true">
+    <img class="tegel" src="public/npuls/vormen/tegel-pijl-oranje.svg" alt="">
+    <img class="tegel" src="public/npuls/vormen/tegel-cirkel-geel.svg" alt="">
+    <img class="tegel" src="public/npuls/vormen/tegel-doel-groen.svg" alt="">
+    <img class="tegel" src="public/npuls/vormen/tegel-ster-oranje.svg" alt="">
+    <img class="tegel" src="public/npuls/vormen/tegel-schakelaar-blauw.svg" alt="">
+    <img class="tegel" src="public/npuls/vormen/tegel-chevrons-zwart.svg" alt="">
   </div>
+  <div class="body">
+    <img class="npuls-logo groot" src="public/npuls/vormen/npuls-logo.svg" alt="Npuls">
+    <h2 style="margin-top:clamp(22px,3.4vh,44px);max-width:20ch">{{AFSLUITVRAAG}}</h2>
+    <p style="margin-top:clamp(14px,2vh,24px);opacity:.75">{{CONTACT}}</p>
+    <p class="payoff" style="margin-top:clamp(20px,3vh,38px)">Onderwijs bewegen.</p>
+  </div>
+  <img class="cc" src="public/npuls/vormen/cc-by-sa.svg" alt="Creative Commons BY-SA">
 </section>
 
 <!-- SLIDES:END -->
@@ -415,6 +534,10 @@ ul.ticks li i{margin-top:.28em;font-size:.82em;color:var(--accent)}
 const MENTI = { url: '' };
 
 (function(){
+  /* bogen: pad uit het Npuls-template (Bogen), kleur via --boog */
+  const BOGEN='<svg viewBox="0 0 198.425 198.425" aria-hidden="true"><path d="M198.425 97.4007C148.43 101.505 108.256 144.383 103.222 198.425L106.877 198.425C111.886 146.568 150.437 105.454 198.425 101.368Z"/><path d="M198.425 49.9902C121.331 54.0228 58.2174 117.062 46.4388 198.425L50.1229 198.425C61.8583 119.251 123.34 57.9749 198.425 53.9562Z"/><path d="M198.425 0C99.9995 4.2638 18.6467 88.2546 0 198.425L3.70359 198.425C22.2677 90.4548 101.993 8.21808 198.425 3.96124Z"/></svg>';
+  document.querySelectorAll('.bogen:empty').forEach(b=>{b.innerHTML=BOGEN});
+
   const slides=[...document.querySelectorAll('.slide')];
   const dotsWrap=document.getElementById('dots');
   const counter=document.getElementById('counter');
@@ -457,7 +580,10 @@ const MENTI = { url: '' };
     // navigatie neemt de tekstkleur van de slide-variant over
     const ink=getComputedStyle(slides[i]).color;
     nav.style.color=ink; brand.style.color=ink;
-    brand.style.visibility=i===0?'hidden':''; // titelslide noemt het team al, en daar zitten de ringen
+    // tegels linksonder (Einddia) of gekleurde band (Tussendia): navigatie schuift mee
+    nav.classList.toggle('na-tegels',slides[i].classList.contains('lay-eind'));
+    if(slides[i].classList.contains('lay-band')) nav.style.color=getComputedStyle(slides[i].querySelector('.band-l')||slides[i]).color;
+    brand.style.visibility=(i===0||slides[i].matches('.lay-blokken,.lay-band,.lay-partner'))?'hidden':''; // titelslide noemt het team al, en daar zitten de ringen
     try{history.replaceState(null,'','#s'+(i+1))}catch(e){}
   }
 

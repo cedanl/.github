@@ -235,3 +235,28 @@ Maximaal twee per slide, in een hoek (`tr`, `br`, `bl`, `tl`), aan de kant waar 
 ```
 
 Een `h2` die over de volle breedte loopt botst met een `tr`-deco: kies dan `br`/`bl`. `qa.mjs` meldt dit als "tekst ligt over decoratie".
+
+## Npuls-template-layouts (v0.3.0)
+
+Nagebouwd uit het officiële pptx-template (`public/npuls/Npuls_powerpoint-template.potx`). Vormen staan in `public/npuls/vormen/`. Voorbeeld van elke layout: `_test_npuls_layouts.html` in clidev-presentaties.
+
+| Klasse op `<section>` | Template-layout | Gebruik |
+|---|---|---|
+| `lay-titel` (s-roze) | Titeldia | Titelslide; staat al in de frame |
+| `lay-driehoek` (s-oranje/s-blauw) | Titeldia 3 | Tweede titel of hoofdstukopening |
+| `lay-sectie` (verzadigd) | Sectiescheider | `<p class="nr">Deel 1</p><h1>…</h1>` + bogen |
+| `lay-band` (s-blauw/s-oranje) | Tussendia | `.band-l` (groot nummer) + `.band-r` (kop, sub); geen `.body` |
+| `lay-quote` (s-roze/s-wit) | Quote | `<p class="quote">` + `<p class="quote-bron">` |
+| `lay-blokken` (s-wit) | Tekst en vorm-blokken | `.tegels` met 6× `<img class="tegel">` rechts |
+| `lay-vormen` | Afbeeldingen en vormen | Grijs vlak, `.vormen-duo` met 2 tegels |
+| `lay-stappen` (s-wit) | Stappen | `<img class="golf" src="public/npuls/vormen/golf-oranje.svg">` + `.steps` |
+| `lay-partner` (s-wit) | Partnerslide | `.partner-paneel` met groot logo en `.partner-logos` |
+| `lay-eind` (s-roze) | Einddia | Afsluitslide; staat al in de frame |
+
+**Vaste elementen**
+- Logo linksboven: `<img class="npuls-logo" src="public/npuls/vormen/npuls-logo.svg" alt="Npuls">`. Wordt automatisch wit op blauw, groen en oranje. `class="npuls-logo groot"` binnen de inhoud.
+- Bogen rechtsonder: `<div class="deco bogen"></div>`. Kleur volgt de variant (oranje op licht/roze, zwart op geel/oranje, wit op blauw/groen). Op lichte inhoudsslides standaard gebruiken; niet combineren met een andere `deco br`.
+- Tegels: `tegel-ster-oranje`, `tegel-cirkel-geel`, `tegel-golf-zwart`, `tegel-golf-roze`, `tegel-bogen-roze`, `tegel-doel-groen`, `tegel-schakelaar-blauw`, `tegel-pijl-oranje`, `tegel-chevrons-zwart`, `tegel-stippen-geel`, `tegel-boog-geel` (`.svg`).
+- `--npuls-grijs` alleen als layout-vlak (band, driehoek, vormen, stappen), nooit als kaart.
+- Grote opsomming op een verzadigde slide: `<ul class="ticks groot">`.
+- Navigatie staat linksonder; rechtsonder is voor de bogen.
