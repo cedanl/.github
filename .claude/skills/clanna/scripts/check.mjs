@@ -23,16 +23,20 @@ for (const m of html.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) {
   errors.push(`regel ${lineOf(m.index)}: hardcoded kleur ${m[0]} — gebruik var(--npuls-*) of var(--licht-*)`);
 }
 
-// 2. Elke slide precies één variant
+// 2. Elke slide precies één variant (s-deel = lichte kleur van het deel, vereist data-deel)
 const variants = [];
-for (const m of html.matchAll(/<section\s+class="([^"]*\bslide\b[^"]*)"/g)) {
+for (const m of html.matchAll(/<section\b[^>]*\bclass="([^"]*\bslide\b[^"]*)"[^>]*>/g)) {
   const v = m[1].split(/\s+/).filter(c => /^s-/.test(c));
   if (v.length !== 1) errors.push(`regel ${lineOf(m.index)}: slide heeft ${v.length} variant-klassen (s-*), moet er 1 zijn`);
+  if (v[0] === 's-deel' && !/\bdata-deel="[^"]+"/.test(m[0])) errors.push(`regel ${lineOf(m.index)}: s-deel zonder data-deel="…" — geef het deel een naam`);
   variants.push(v[0] || '?');
 }
 if (!variants.length) errors.push('geen <section class="slide ..."> gevonden');
+const delen = new Set([...html.matchAll(/<section\b[^>]*\bdata-deel="([^"]+)"/g)].map(m => m[1]));
+if (delen.size === 1) warns.push(`maar één deel (${[...delen][0]}) — delen zijn bedoeld voor 3 à 5 hoofdstukken`);
+if (delen.size > 5) warns.push(`${delen.size} delen — de navigatie past er maximaal 5 netjes`);
 for (let k = 2; k < variants.length; k++)
-  if (variants[k] === variants[k - 1] && variants[k] === variants[k - 2])
+  if (variants[k] !== 's-deel' && variants[k] === variants[k - 1] && variants[k] === variants[k - 2])
     warns.push(`slides ${k - 1}-${k + 1}: drie keer achter elkaar ${variants[k]} — wissel licht/verzadigd af`);
 
 // 3. Echte Npuls-fonts, geen stand-ins
@@ -71,6 +75,7 @@ for (const [t, naam] of [['Wie is CEDA', '"Wie is CEDA"'], ['Wie zijn wij', '"Wi
 for (const w of warns) console.log('WAARSCHUWING  ' + w);
 for (const e of errors) console.log('FOUT          ' + e);
 console.log(`\n${variants.length} slides · varianten: ${variants.join(' ')}`);
+if (delen.size) console.log(`delen: ${[...delen].join(' · ')}`);
 console.log(`primaire kleuren: ${prim.join(', ')}`);
 console.log(errors.length ? `\n✗ ${errors.length} fout(en)` : '\n✓ huisstijlcheck geslaagd');
 process.exit(errors.length ? 1 : 0);

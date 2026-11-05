@@ -202,6 +202,105 @@ Zet de URL in `const MENTI = { url: '…' }` (of `poll1: '…'`).
 </section>
 ```
 
+## 12. Delen (hoofdstukken in de navigatie)
+
+Geef inhoudsslides `data-deel="Naam"`. De navigatie linksonder toont dan de delen in plaats van de stippen; het actieve deel licht op en een klik springt naar de eerste slide van dat deel. Gebruik 3 à 5 delen met korte namen (één woord of twee).
+
+Variant `s-deel` = de lichte kleur van dat deel, automatisch: deel 1 `s-lroze`, 2 `s-lblauw`, 3 `s-lgeel`, 4 `s-lgroen`, 5 `s-loranje`. Zo voelt elk hoofdstuk anders. Een expliciete variant (`s-wit` voor data, een verzadigde kernslide of `lay-sectie`) mag binnen een deel gewoon.
+
+```html
+<section class="slide s-deel" data-deel="Uitrol">…</section>
+```
+
+Vaste CEDA-slides krijgen geen `data-deel`.
+
+## 13. Voortgang per partij
+
+`data-fasen` per rij: `v` afgerond, `n` nu bezig, `x` volgende stap, `-` leeg. Aantal fasen in `--fasen`. Max ~8 rijen; groepeer met `.tr-groep`.
+
+```html
+<div class="tracker" style="--fasen:5">
+  <div class="tr-kop"><span>Instelling</span><span>Verk.</span><span>Proef</span><span>Valid.</span><span>Go</span><span>Live</span><span>Stand</span></div>
+  <p class="tr-groep">Universiteiten</p>
+  <div class="tr-rij" data-fasen="v,v,v,n,x"><b>Universiteit van Amsterdam</b><span class="tr-stand">Inbedden</span></div>
+</div>
+<div class="legend">
+  <span><i class="swatch" style="background:var(--npuls-blauw)"></i> Afgerond</span>
+  <span><i class="swatch" style="background:var(--npuls-oranje)"></i> Nu bezig</span>
+  <span><i class="swatch volgend"></i> Volgende stap</span>
+</div>
+```
+
+## 14. Tijdlijn met NU-lijn
+
+`--n` = aantal kolommen op de as (bijv. maanden). Balken met `--van`/`--tot` in kolommen (halve mag); `.verwacht` = gestreept (prognose), `.licht` = seizoen of bandbreedte. `.tl-nu` met `--op`. Max ~5 rijen.
+
+```html
+<div class="tijdlijn" style="--n:12">
+  <div class="tl-as"><span></span><div><span>mrt</span><span>apr</span>…<span>feb</span></div></div>
+  <div class="tl-rij"><b>UvA<small>verkenning → go</small></b><div class="tl-baan"><i class="tl-balk" style="--van:0;--tot:7">7 mnd</i></div></div>
+  <div class="tl-rij"><b>Volgende<small>als die nu start</small></b><div class="tl-baan"><i class="tl-balk verwacht" style="--van:7.5;--tot:12">± 6 mnd</i></div></div>
+  <div class="tl-nu" style="--op:7.5"><span>nu</span></div>
+</div>
+```
+
+## 15. Voor / na
+
+Twee panelen met elk een stroom van max 3 nodes en max 3 gevolgen. `.voor` krijgt oranje kruisjes, `.na` een groene rand en vinkjes.
+
+```html
+<div class="voorna">
+  <div class="vn-paneel voor">
+    <p class="vn-kop"><span class="pill oranje">Nu</span> Via een omweg</p>
+    <div class="vn-flow"><div class="node"><b>Studielink</b></div><i class="fa-solid fa-arrow-down"></i><div class="node"><b>Eén instelling geeft door</b></div></div>
+    <ul class="vn-gevolg"><li><i class="fa-solid fa-xmark"></i><span>Handwerk bij elke levering</span></li></ul>
+  </div>
+  <div class="vn-pijl"><i class="fa-solid fa-arrow-right"></i></div>
+  <div class="vn-paneel na">
+    <p class="vn-kop"><span class="pill groen">Straks</span> Direct</p>
+    <div class="vn-flow">…</div>
+    <ul class="vn-gevolg"><li><i class="fa-solid fa-check"></i><span>Automatisch, elke week</span></li></ul>
+  </div>
+</div>
+```
+
+## 16. Risicotabel
+
+De gewone tabel (7) met `class="risico"` en een stip voor het niveau: `.niv hoog` (oranje), `.niv midden` (geel), `.niv laag` (groen). De laatste kolom (beheersing) wordt blauw. Max 5 risico's.
+
+```html
+<table class="risico">
+  <thead><tr><th style="width:30%">Risico</th><th>Wat we zien</th><th style="width:32%">Hoe we het beheersen</th></tr></thead>
+  <tbody><tr><td><span class="niv hoog"></span>Het valt stil</td><td>Waar het stilviel, ontbrak een eigenaar</td><td>Go-besluit met alle rollen</td></tr></tbody>
+</table>
+```
+
+## 17. Probleem → les
+
+```html
+<div class="lessen">
+  <div class="les-kop"><span>Wat we zagen</span><span></span><span>Wat we leerden</span></div>
+  <div class="les"><div class="les-l">Eigen modellen vielen stil</div><i class="fa-solid fa-arrow-right"></i>
+    <div class="les-r"><i class="fa-solid fa-lightbulb"></i>Begin bij iets dat al werkt</div></div>
+</div>
+```
+
+Max 5 rijen, elk vak één regel.
+
+## Animaties (GSAP)
+
+Gaan vanzelf: de kop, kaarten in een `.grid`, stappen, ketens, tabelrijen, voortgangsrijen, tijdlijnbalken, voor/na-panelen en lessen schuiven of groeien in bij binnenkomst van de slide. Extra, per element:
+
+| Attribuut | Effect |
+|---|---|
+| `data-a` | schuift in (voor losse elementen buiten de componenten) |
+| `data-count="6.5"` | cijfer telt op; zet het eindgetal óók als tekst (`6,5`), dat is wat print/PDF toont |
+| `data-grow` | groeit van links |
+| `data-pop` | plopt in (stippen, badges) |
+| `data-draw` | SVG-lijn tekent zichzelf (op een `<path>` met stroke) |
+
+Geen internet, PDF, `qa.mjs` of "reduce motion" aan → geen animatie, alles staat direct in beeld. Dus nooit inhoud alleen via een animatie laten verschijnen.
+
 ## Vormtaal (`.deco`)
 
 Maximaal twee per slide, in een hoek (`tr`, `br`, `bl`, `tl`), aan de kant waar **geen** tekst staat. Op verzadigde slides vol (geen opacity), op lichte en witte slides zacht (`opacity=".15"`–`".3"`). Alleen kleuren die bij de achtergrond mogen (tabel hierboven).

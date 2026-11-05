@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{TITEL}}</title>
 <!--
-  clanna-frame v1 — gebaseerd op het deck "Welk open-source model kan mijn LLM-wiki
+  clanna-frame v2 (delen-navigatie, datacomponenten, GSAP-animaties) — gebaseerd op het deck "Welk open-source model kan mijn LLM-wiki
   het beste onderhouden?" van Janna Berkhout (KIS). Huisstijl: vormgever-npuls-huisstijl.
   Dit bestand hoort in de root van clidev-presentaties: de fonts, het logo en de
   illustraties komen uit public/npuls/ (relatieve paden).
@@ -426,6 +426,81 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
 .contact-body{align-items:center;text-align:center}
 
 /* ============================================================
+   DATACOMPONENTEN v2 (inspiratie: domeinteamdeck studentprognose)
+   ============================================================ */
+
+/* voortgang per partij: data-fasen="v,v,n,x,-" (v afgerond, n nu, x volgende, - leeg) */
+.tracker{--fasen:5;display:flex;flex-direction:column}
+.tr-kop,.tr-rij{display:grid;grid-template-columns:minmax(12ch,1.5fr) repeat(var(--fasen),minmax(0,1fr)) minmax(10ch,1.3fr);
+  column-gap:clamp(4px,.45vw,8px);align-items:center}
+.tr-kop{padding-bottom:.45em;border-bottom:2px solid var(--npuls-blauw)}
+.tr-kop span{font-size:clamp(9.5px,.78vw,12px);font-weight:600;text-transform:uppercase;letter-spacing:.06em;text-align:center;opacity:.75}
+.tr-kop span:first-child,.tr-kop span:last-child{text-align:left}
+.tr-rij{padding:clamp(5px,.75vh,10px) 0;border-bottom:1px solid rgba(0,0,0,.08)}
+.tr-rij>b{font-weight:600;font-size:clamp(12.5px,1.05vw,16px);line-height:1.2}
+.tr-rij>b small{display:block;font-weight:400;font-size:.78em;opacity:.65}
+.tr-stand{font-size:clamp(11.5px,.95vw,14.5px);padding-left:clamp(8px,1vw,16px);opacity:.85}
+.tr-groep{font-size:clamp(10px,.8vw,12.5px);font-weight:600;text-transform:uppercase;letter-spacing:.07em;opacity:.6;margin-top:clamp(8px,1.2vh,14px)}
+.seg{position:relative;height:clamp(14px,1.3vw,22px);border-radius:6px;background:rgba(0,0,0,.06);overflow:hidden}
+.seg i{position:absolute;inset:0;border-radius:6px;transform-origin:left}
+.seg.af i{background:var(--npuls-blauw)}
+.seg.nu i{background:var(--npuls-oranje)}
+.seg.volgend,.swatch.volgend{background:repeating-linear-gradient(135deg,var(--licht-oranje) 0 6px,var(--npuls-oranje) 6px 8px)}
+
+/* tijdlijn met NU-lijn: --n kolommen op de as, balken met --van/--tot (in kolommen) */
+.tijdlijn{--n:12;--naam:clamp(130px,15vw,260px);--gat:clamp(10px,1.2vw,20px);position:relative}
+.tl-as,.tl-rij{display:grid;grid-template-columns:var(--naam) 1fr;column-gap:var(--gat);align-items:center}
+.tl-as>div{display:grid;grid-template-columns:repeat(var(--n),1fr);border-bottom:2px solid var(--npuls-blauw)}
+.tl-as span{font-size:clamp(9.5px,.78vw,12.5px);font-weight:600;opacity:.65;padding-bottom:.35em;white-space:nowrap}
+.tl-rij{height:clamp(42px,6vh,64px);border-bottom:1px solid rgba(0,0,0,.08)}
+.tl-rij>b{font-weight:600;font-size:clamp(12.5px,1.05vw,16px);line-height:1.2}
+.tl-rij>b small{display:block;font-weight:400;font-size:.78em;opacity:.65}
+.tl-baan{position:relative;height:100%}
+.tl-balk{position:absolute;top:22%;bottom:22%;left:calc(var(--van) / var(--n) * 100%);width:calc((var(--tot) - var(--van)) / var(--n) * 100%);
+  border-radius:10px;background:var(--npuls-blauw);color:var(--npuls-wit);font-style:normal;font-weight:600;
+  font-size:clamp(10.5px,.85vw,13px);display:flex;align-items:center;justify-content:flex-end;padding:0 .8em;white-space:nowrap;transform-origin:left}
+.tl-balk.verwacht{background:repeating-linear-gradient(135deg,var(--npuls-oranje) 0 12px,var(--licht-oranje) 12px 24px);color:var(--npuls-zwart)}
+.tl-balk.licht{background:var(--licht-groen);color:var(--npuls-zwart);border:2px dashed var(--npuls-groen)}
+.tl-nu{position:absolute;top:0;bottom:0;border-left:2px dashed var(--npuls-oranje);pointer-events:none;
+  left:calc(var(--naam) + var(--gat) + (100% - var(--naam) - var(--gat)) * var(--op) / var(--n))}
+.tl-nu span{position:absolute;bottom:-1.6em;left:0;transform:translateX(-50%);font-size:clamp(10px,.8vw,12.5px);font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--npuls-oranje);white-space:nowrap}
+
+/* voor/na: twee panelen met een stroom van nodes en de gevolgen */
+.voorna{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(12px,1.6vw,28px);align-items:stretch}
+.vn-paneel{background:var(--npuls-wit);border-radius:20px;padding:clamp(14px,1.4vw,24px);display:flex;flex-direction:column;gap:clamp(8px,1.1vh,14px)}
+.vn-paneel.na{box-shadow:inset 0 0 0 3px var(--npuls-groen)}
+.vn-kop{display:flex;align-items:center;gap:.7em;font-weight:600;font-size:clamp(14px,1.18vw,18px)}
+.vn-flow{display:flex;flex-direction:column;align-items:stretch;gap:clamp(3px,.5vh,6px)}
+.vn-flow .node{background:var(--licht-blauw);flex:none}
+.vn-paneel.voor .vn-flow .node{background:var(--licht-oranje)}
+.vn-flow>i{align-self:center;font-size:clamp(11px,.9vw,14px);opacity:.55}
+.vn-gevolg{list-style:none;display:flex;flex-direction:column;gap:.35em;margin-top:auto;padding-top:.5em;border-top:1px solid rgba(0,0,0,.08)}
+.vn-gevolg li{display:flex;gap:.6em;align-items:flex-start}
+.vn-gevolg li i{margin-top:.3em;font-size:.85em}
+.voor .vn-gevolg li i{color:var(--npuls-oranje)}
+.na .vn-gevolg li i{color:var(--npuls-groen)}
+.vn-pijl{display:grid;place-items:center;font-size:clamp(20px,2vw,32px);color:var(--accent)}
+
+/* risicotabel: table.risico, stip in de eerste kolom geeft het niveau */
+.niv{display:inline-block;width:.75em;height:.75em;border-radius:99px;margin-right:.55em;vertical-align:.02em}
+.niv.hoog{background:var(--npuls-oranje)}
+.niv.midden{background:var(--npuls-geel)}
+.niv.laag{background:var(--npuls-groen)}
+table.risico td:last-child{color:var(--npuls-blauw);font-weight:600}
+
+/* probleem → les */
+.lessen{display:flex;flex-direction:column;gap:clamp(6px,1vh,12px)}
+.les-kop,.les{display:grid;grid-template-columns:1fr clamp(30px,3.4vw,56px) 1.1fr;align-items:stretch}
+.les-kop span{font-size:clamp(10px,.8vw,12.5px);font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.65}
+.les-kop span:last-child{color:var(--accent);opacity:1}
+.les-l,.les-r{border-radius:16px;padding:clamp(9px,1vw,15px) clamp(12px,1.3vw,20px);display:flex;align-items:center;gap:.7em}
+.les-l{background:var(--npuls-wit);font-weight:600}
+.les-r{background:var(--npuls-blauw);color:var(--npuls-wit)}
+.les-r i{color:var(--npuls-geel)}
+.les>i{align-self:center;justify-self:center;color:var(--accent-2);font-size:clamp(14px,1.2vw,20px)}
+
+/* ============================================================
    NAVIGATIE — linksonder (rechtsonder is voor de bogen)
    ============================================================ */
 .nav{
@@ -449,6 +524,14 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
   display:grid;place-items:center;font-size:12px;opacity:.6;transition:opacity .2s;
 }
 .navbtn:hover{opacity:1}
+/* delen: verschijnen zodra een slide data-deel heeft, en vervangen dan de stippen */
+.delen{display:flex;flex-wrap:wrap;gap:clamp(10px,1.3vw,22px);pointer-events:auto}
+.delen button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:.5em;
+  font-size:clamp(10.5px,.85vw,13px);font-weight:600;letter-spacing:.03em;opacity:.5;transition:opacity .2s}
+.delen button::before{content:'';width:8px;height:8px;border-radius:99px;background:currentColor;opacity:.35}
+.delen button:hover,.delen button.on{opacity:1}
+.delen button.on::before{background:var(--deel-acc,currentColor);opacity:1}
+.nav.met-delen .dots{display:none}
 .brand{
   position:fixed;top:clamp(18px,2.4vh,30px);right:clamp(28px,5.5vw,110px);z-index:20;
   font-size:clamp(11px,.88vw,13px);font-weight:600;letter-spacing:.09em;text-transform:uppercase;opacity:.55;
@@ -578,6 +661,7 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
 
 <div class="nav">
   <div class="dots" id="dots"></div>
+  <div class="delen" id="delen"></div>
   <div class="nav-right">
     <span class="counter" id="counter"></span>
     <button class="navbtn" id="prev" aria-label="Vorige slide"><i class="fa-solid fa-chevron-left"></i></button>
@@ -585,6 +669,8 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
   </div>
 </div>
 
+<!-- GSAP voor de animaties. Zonder internet laadt hij niet: dan staat alles direct stil in beeld. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
 /* ============================================================
    MENTIMETER — Share -> Participants -> Embed slides -> Copy code.
@@ -616,6 +702,66 @@ const MENTI = { url: '' };
   const dots=[...dotsWrap.children];
   const pad=n=>String(n).padStart(2,'0');
 
+  /* DELEN — data-deel="Naam" op een slide. Volgorde = eerste keer genoemd.
+     s-deel als variant = de lichte kleur van dat deel. */
+  const DEELKLEUR=['s-lroze','s-lblauw','s-lgeel','s-lgroen','s-loranje'];
+  const delen=[...new Set(slides.map(s=>s.dataset.deel).filter(Boolean))];
+  const delenWrap=document.getElementById('delen');
+  slides.forEach(s=>{
+    if(!s.classList.contains('s-deel')) return;
+    const k=delen.indexOf(s.dataset.deel);
+    s.classList.replace('s-deel',DEELKLEUR[(k<0?0:k)%DEELKLEUR.length]);
+  });
+  delen.forEach(d=>{
+    const b=document.createElement('button');
+    b.textContent=d;
+    b.addEventListener('click',()=>go(slides.findIndex(s=>s.dataset.deel===d)));
+    delenWrap.appendChild(b);
+  });
+  nav.classList.toggle('met-delen',delen.length>0);
+
+  /* voortgang: segmenten uit data-fasen="v,v,n,x,-" */
+  document.querySelectorAll('.tr-rij[data-fasen]').forEach(r=>{
+    const naam=r.firstElementChild;
+    r.dataset.fasen.split(',').reverse().forEach(c=>{
+      const seg=document.createElement('div');
+      seg.className='seg '+({v:'af',n:'nu',x:'volgend'}[c.trim()]||'');
+      if(/^[vn]$/.test(c.trim())) seg.innerHTML='<i></i>';
+      naam.after(seg);
+    });
+  });
+
+  /* ANIMATIES (GSAP). Automatisch voor de vaste componenten; extra met
+     data-a (inschuiven), data-grow (balk groeit), data-pop (ploppen),
+     data-count (cijfer telt op; zet het eindgetal ook als tekst), data-draw (SVG-lijn tekent).
+     Uit bij print, PDF, QA (webdriver) en reduced motion. */
+  const STIL=!window.gsap||navigator.webdriver||matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const IN='[data-a],.slide-head,.grid>*,.steps>.step,.chain>*,.tr-groep,.tr-rij,.tl-rij,.vn-paneel,.vn-pijl,.les,tbody tr';
+  let anim=null;
+  function animeer(slide){
+    if(STIL) return;
+    if(anim) anim.revert();
+    anim=gsap.context(()=>{
+      const items=[...slide.querySelectorAll(IN)].filter(el=>!el.parentElement.closest('[data-a],.grid>*,.vn-paneel'));
+      if(items.length) gsap.from(items,{opacity:0,y:22,duration:.6,ease:'power3.out',stagger:.06,delay:.08,clearProps:'transform'});
+      const grow=slide.querySelectorAll('[data-grow],.seg i,.tl-balk');
+      if(grow.length) gsap.from(grow,{scaleX:0,duration:.6,ease:'power2.out',stagger:.03,delay:.35});
+      const pop=slide.querySelectorAll('[data-pop]');
+      if(pop.length) gsap.from(pop,{scale:0,duration:.5,ease:'back.out(2.2)',stagger:.09,delay:.7});
+      const nu=slide.querySelector('.tl-nu');
+      if(nu) gsap.from(nu,{opacity:0,duration:.5,delay:1});
+      slide.querySelectorAll('[data-count]').forEach(el=>{
+        const doel=el.dataset.count, dec=(doel.split('.')[1]||'').length, o={v:0};
+        const fmt=v=>v.toLocaleString('nl-NL',{minimumFractionDigits:dec,maximumFractionDigits:dec});
+        gsap.to(o,{v:+doel,duration:1.5,ease:'power2.out',delay:.3,onUpdate:()=>{el.textContent=fmt(o.v)},onComplete:()=>{el.textContent=fmt(+doel)}});
+      });
+      slide.querySelectorAll('[data-draw]').forEach((p,k)=>{
+        const L=p.getTotalLength();
+        gsap.fromTo(p,{strokeDasharray:L,strokeDashoffset:L},{strokeDashoffset:0,duration:1.4,ease:'power2.inOut',delay:.3+k*.2});
+      });
+    },slide);
+  }
+
   // Mentimeter pas laden als de slide in beeld komt
   function loadMenti(slide){
     const key=slide.dataset.menti; if(!key) return;
@@ -637,6 +783,9 @@ const MENTI = { url: '' };
     slides[i].classList.add('active'); dots[i].classList.add('on');
     counter.textContent=pad(i+1)+' / '+pad(slides.length);
     loadMenti(slides[i]);
+    [...delenWrap.children].forEach(b=>b.classList.toggle('on',b.textContent===slides[i].dataset.deel));
+    nav.style.setProperty('--deel-acc',getComputedStyle(slides[i]).getPropertyValue('--accent'));
+    animeer(slides[i]);
     // navigatie neemt de tekstkleur van de slide-variant over
     const ink=getComputedStyle(slides[i]).color;
     nav.style.color=ink; brand.style.color=ink;
