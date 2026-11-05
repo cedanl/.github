@@ -5,7 +5,7 @@ allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node and git; draait in de root van cedanl/clidev-presentaties (Npuls-assets en playwright-chromium via npm install)
 metadata:
   ceda-id: ceda.clanna
-  ceda-version: "0.4.0"
+  ceda-version: "0.5.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -90,6 +90,8 @@ Lees `references/components.md` (snippets per slidetype, varianten, vormtaal) en
 
 - Eén boodschap per slide; de `h2` is een bewering met het kernwoord in `<span class="hl">`.
 - Varianten afwisselen: licht ↔ wit, één verzadigde slide per kernboodschap.
+- Langer dan ~8 inhoudsslides → verdeel in 3 à 5 **delen** (`data-deel` + `s-deel`): de navigatie toont dan het hoofdstuk en elk deel krijgt een eigen lichte kleur.
+- Voor voortgang, planning, voor/na, risico's of lessen: de datacomponenten 13–17. Animaties gaan vanzelf (GSAP via CDN); `data-count` voor kerncijfers.
 - Per slide max ~60 woorden zichtbare tekst. Meer → splitsen.
 - Gebruik minstens twee echte Npuls-illustraties in het deck.
 - Sprekersnotities in een HTML-commentaar boven de `<section>`.
