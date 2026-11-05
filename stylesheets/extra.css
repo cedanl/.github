@@ -1,0 +1,72 @@
+/* Npuls brand colors */
+:root {
+  --md-primary-fg-color: #000000;
+  --md-primary-fg-color--light: #333333;
+  --md-primary-fg-color--dark: #000000;
+  --md-primary-bg-color: #ffffff;
+  --md-accent-fg-color: #DD784B;
+  --md-accent-fg-color--transparent: #DD784B1a;
+  --npuls-orange: #DD784B;
+  --npuls-blue: #3D68EC;
+  --npuls-pink: #F4D9DC;
+  --npuls-yellow: #F4D74B;
+  --npuls-green: #00AF81;
+}
+
+/* Nav header */
+.md-header {
+  background-color: #000000;
+}
+
+/* Orange accent on links and active nav */
+.md-nav__link--active,
+.md-nav__link:hover {
+  color: var(--npuls-orange) !important;
+}
+
+a {
+  color: var(--npuls-blue);
+}
+
+a:hover {
+  color: var(--npuls-orange);
+}
+
+/* Hero section on home page */
+.hero {
+  padding: 3rem 0 2rem;
+  border-bottom: 3px solid var(--npuls-orange);
+  margin-bottom: 2rem;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 0.5rem;
+}
+
+.hero .tagline {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Card grid hover effect */
+.md-typeset .grid.cards > ul > li:hover,
+.md-typeset .grid.cards > ol > li:hover {
+  border-color: var(--npuls-orange);
+}
+
+/* Section labels */
+.section-label {
+  display: inline-block;
+  background: var(--npuls-orange);
+  color: white;
+  padding: 0.15rem 0.6rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
