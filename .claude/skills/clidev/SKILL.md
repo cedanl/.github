@@ -33,12 +33,12 @@ npx skills add slidevjs/slidev
 
 ### 2. Zoek het project op de machine
 
-Zoek naar een directory die de kenmerken heeft van het clidev project:
+Kijk alleen in de huidige map en op een paar vaste plekken (geen zoektocht door de hele home-map):
 
 ```bash
-find ~ -type f -name "_template.md" 2>/dev/null | xargs -I{} dirname {} | while read dir; do
-  [ -f "$dir/style.css" ] && [ -d "$dir/public/npuls" ] && echo "$dir"
-done | head -3
+CLIDEV_DIR=$(for dir in "$PWD" "$PWD/clidev-presentaties" ~/Projects/clidev-presentaties ~/projects/clidev-presentaties ~/clidev-presentaties ~/Documents/GitHub/clidev-presentaties; do
+  [ -f "$dir/_template.md" ] && [ -f "$dir/style.css" ] && [ -d "$dir/public/npuls" ] && echo "$dir"
+done | head -1); echo "$CLIDEV_DIR"
 ```
 
 - Als een directory gevonden wordt: gebruik die locatie, ongeacht de naam van de map
@@ -396,10 +396,11 @@ Bij een structureel probleem volstaat het niet om alleen de presentatie te repar
 1. Corrigeer de betreffende instructie of het voorbeeld in dit SKILL.md-bestand.
 2. Zoek de bronrepo op de machine:
    ```bash
-   find ~ -maxdepth 6 -type d -iname ".github" 2>/dev/null | while read -r dir; do
+   for dir in "$(dirname "$CLIDEV_DIR")/.github" ~/Projects/.github ~/projects/.github; do
      git -C "$dir" remote -v 2>/dev/null | grep -q "cedanl/.github" && echo "$dir"
-   done
+   done | head -1
    ```
+   (`$CLIDEV_DIR` is de projectmap uit "Zoek het project op de machine".)
    Gebruik dat pad — niet een geïnstalleerde/gesymlinkte kopie in `~/.claude/skills` of `~/.agents/skills`. Vind je niets, vraag de gebruiker naar het pad of om toestemming om de repo te klonen.
 3. Commit de wijziging in die repo met een duidelijke `fix(clidev): ...` boodschap die het probleem en de oorzaak benoemt, en push naar `main` — zo krijgen andere gebruikers die de skill via `npx skills add cedanl/.github` ophalen de correctie automatisch mee bij hun volgende install/update.
 4. Meld aan de gebruiker expliciet welke skill-regel gecorrigeerd is en dat de fix gepusht is, naast wat er in de presentatie zelf is aangepast.
@@ -461,7 +462,7 @@ node scripts/check-design-tokens.mjs
 
 - **Exit code 0** — style.css klopt, ga verder.
 - **Exit code 1** — mismatch of ontbrekende variabele. Werk `style.css` bij naar de waarden die het script toont (nooit de brontabel of losse slide-files aanpassen) en run het script opnieuw tot het slaagt.
-- **Exit code 2** — kan `design-tokens.json` niet vinden. Zoek het bestand op (`find ~ -maxdepth 8 -ipath "*vormgever-npuls-huisstijl*design-tokens.json" 2>/dev/null`) en geef het pad expliciet mee als eerste argument.
+- **Exit code 2** — kan `design-tokens.json` niet vinden. Zoek het bestand in de `.github`-repo (`.claude/skills/vormgever-npuls-huisstijl/references/design-tokens.json`) of in `~/.claude/skills/vormgever-npuls-huisstijl/references/`, of vraag de gebruiker naar het pad, en geef het pad expliciet mee als eerste argument.
 
 Lees daarna ook de `allowed_combinations` in `design-tokens.json` zelf door (het script checkt alleen kleurwaarden, niet welke combinaties toegestaan zijn) en werk verder met die waarden, nooit vanuit geheugen.
 
