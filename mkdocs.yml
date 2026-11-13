@@ -55,6 +55,7 @@ nav:
     - Gebruikersrechten: werkafspraken/gebruikersrechten.md
     - Feedback zonder persoonsgegevens: werkafspraken/feedback-zonder-persoonsgegevens.md
     - Entire: werkafspraken/entire.md
+    - CEDA-agenda en mail: werkafspraken/ceda-agenda-en-mail.md
   - Handleidingen:
     - Overzicht: guides/index.md
     - Azure AI-modellen: guides/azure-ai.md
