@@ -95,36 +95,35 @@ body{
 /* ============================================================
    TYPOGRAFIE
    ============================================================ */
-h1{font-size:clamp(34px,4.6vw,58px);font-weight:600;line-height:1.05;letter-spacing:-.02em}
-h2{font-size:clamp(26px,3.1vw,38px);font-weight:600;line-height:1.1;letter-spacing:-.015em}
-h3{font-size:clamp(17px,1.6vw,23px);font-weight:600;line-height:1.2}
-p,li{font-size:clamp(14px,1.12vw,17px);line-height:1.55}
+h1{font-size:clamp(36px,5.2vw,110px);font-weight:600;line-height:1.05;letter-spacing:-.02em}
+h2{font-size:clamp(26px,3.7vw,76px);font-weight:600;line-height:1.1;letter-spacing:-.015em}
+h3{font-size:clamp(18px,2.1vw,44px);font-weight:600;line-height:1.2}
+p,li{font-size:clamp(16px,1.75vw,36px);line-height:1.42}
 .lede{
   font-family:var(--font-secundair);font-weight:300;
-  font-size:clamp(17px,1.8vw,26px);line-height:1.38;
+  font-size:clamp(19px,2.2vw,46px);line-height:1.38;
   max-width:34ch;
 }
 .label{
   display:inline-flex;align-items:center;gap:.5em;
-  font-size:clamp(10px,.82vw,13px);font-weight:600;
+  font-size:clamp(11px,1.05vw,22px);font-weight:600;
   text-transform:uppercase;letter-spacing:.08em;
 }
 .kicker{
   display:inline-block;align-self:flex-start;
   background:var(--accent);color:var(--paper);
   padding:.42em .95em;border-radius:99px;
-  font-size:clamp(10px,.82vw,13px);font-weight:600;
+  font-size:clamp(11px,1.05vw,22px);font-weight:600;
   text-transform:uppercase;letter-spacing:.08em;
   margin-bottom:clamp(14px,1.8vh,24px);
 }
 .s-blauw .kicker,.s-groen .kicker,.s-oranje .kicker{color:var(--npuls-zwart)}
-.slide-head{margin-bottom:clamp(18px,2.6vh,34px);flex-shrink:0;max-width:78%}
+.slide-head{margin-bottom:clamp(14px,2.2vh,32px);flex-shrink:0;max-width:90%}
 .slide-head h2 .hl{color:var(--accent)}
-.sub{margin-top:.7em;opacity:.78;max-width:62ch;font-size:clamp(13px,1.05vw,16px)}
-.body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-start}
-/* inhoud op 1/3 van de vrije ruimte, niet midden: geen gat onder de kop */
-.body::before{content:'';flex:1 1 0;max-height:4vh}
-.body::after{content:'';flex:2 1 0}
+.sub{margin-top:.6em;opacity:.8;max-width:none;font-size:clamp(15px,1.55vw,32px)}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+/* inhoud verticaal midden in de vrije ruimte: geen lege onderhelft (Aslam, 2026-11-12) */
+.body::before,.body::after{content:none}
 strong{font-weight:600}
 .mono{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.92em}
 .payoff{font-weight:600;letter-spacing:-.01em}
@@ -140,7 +139,7 @@ strong{font-weight:600}
 .card{
   background:var(--npuls-wit);
   border-radius:20px;
-  padding:clamp(16px,1.5vw,26px);
+  padding:clamp(16px,1.9vw,42px);
   display:flex;flex-direction:column;gap:.55em;
 }
 .card.row{flex-direction:row;align-items:center;gap:1.2em}
@@ -171,7 +170,7 @@ strong{font-weight:600}
 .ico.zwart{background:var(--npuls-zwart);color:var(--npuls-geel)}
 .ico.wit{background:var(--npuls-wit);color:var(--npuls-blauw)}
 
-.steps{display:flex;flex-direction:column;gap:clamp(6px,.8vh,11px)}
+.steps{display:flex;flex-direction:column;gap:clamp(8px,1.3vh,20px)}
 .step{display:flex;gap:clamp(11px,1.1vw,18px);align-items:flex-start;
   background:var(--npuls-wit);border-radius:18px;padding:clamp(10px,.95vw,15px) clamp(13px,1.2vw,20px)}
 .step .num{
@@ -179,11 +178,11 @@ strong{font-weight:600}
   border-radius:99px;display:grid;place-items:center;font-weight:600;
   font-size:clamp(12px,1vw,15px);
 }
-.step-t{font-weight:600;font-size:clamp(14px,1.18vw,18px);margin-bottom:.2em}
+.step-t{font-weight:600;font-size:clamp(16px,1.85vw,38px);margin-bottom:.2em}
 .step p{opacity:.8}
 
 .minirow{display:flex;justify-content:space-between;align-items:baseline;gap:1em;
-  padding:.4em 0;border-bottom:1px solid rgba(0,0,0,.08);font-size:clamp(12px,1.02vw,15.5px)}
+  padding:.4em 0;border-bottom:1px solid rgba(0,0,0,.08);font-size:clamp(14px,1.6vw,34px)}
 .minirow b{font-weight:600;font-variant-numeric:tabular-nums}
 
 .badge{
@@ -197,12 +196,12 @@ strong{font-weight:600}
 .bars{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
   column-gap:clamp(10px,1.1vw,18px);row-gap:clamp(8px,1.25vh,17px);align-items:center}
 .bar-row{display:contents}
-.bar-name{font-weight:600;font-size:clamp(12px,1.02vw,16px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-name{font-weight:600;font-size:clamp(14px,1.6vw,34px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar-name .tag{font-weight:400;opacity:.55;font-size:.82em}
 .bar-track{position:relative;height:clamp(20px,2.1vw,34px);background:rgba(0,0,0,.075);border-radius:99px;overflow:hidden}
 .bar-fill{height:100%;border-radius:99px;width:0;transition:width .85s cubic-bezier(.2,.75,.3,1)}
 .slide.active .bar-fill{width:var(--w)}
-.bar-val{font-weight:600;font-variant-numeric:tabular-nums;font-size:clamp(12px,1.05vw,16px);min-width:3.4em;text-align:right}
+.bar-val{font-weight:600;font-variant-numeric:tabular-nums;font-size:clamp(14px,1.6vw,34px);min-width:3.4em;text-align:right}
 .bar-row.win .bar-name{color:var(--npuls-blauw)}
 .bar-row.ref .bar-name,.bar-row.ref .bar-val{opacity:.55}
 .bar-row.ref .bar-name{font-style:italic}
@@ -233,13 +232,13 @@ strong{font-weight:600}
 /* procesketen: node → hop → node */
 .chain{display:flex;align-items:stretch;gap:clamp(6px,.75vw,12px)}
 .node{flex:1;display:flex;flex-direction:column;justify-content:center;background:var(--npuls-wit);border-radius:14px;padding:clamp(9px,.85vw,14px) clamp(10px,.95vw,16px);min-width:0}
-.node b{display:block;font-size:clamp(13px,1.1vw,17px);font-weight:600}
-.node span{display:block;font-size:clamp(11px,.9vw,14px);opacity:.7;margin-top:.15em;line-height:1.35}
+.node b{display:block;font-size:clamp(16px,1.8vw,38px);font-weight:600}
+.node span{display:block;font-size:clamp(14px,1.5vw,30px);opacity:.7;margin-top:.15em;line-height:1.35}
 .node.lblauw{background:var(--licht-blauw)}
 .node.lgeel{background:var(--licht-geel)}
 .node.lgroen{background:var(--licht-groen)}
 .hop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25em;flex-shrink:0;padding:0 .1em;color:var(--accent-2)}
-.hop b{font-size:clamp(9.5px,.78vw,12px);font-weight:600;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.hop b{font-size:clamp(10px,1vw,20px);font-weight:600;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
 .hop i{font-size:clamp(12px,1vw,15px)}
 
 /* grafiek (inline SVG) */
@@ -249,18 +248,18 @@ strong{font-weight:600}
 .chart .ann{font-family:var(--font-primair);font-size:15px;font-weight:600;opacity:.85}
 .chart-foot{display:flex;flex-wrap:wrap;align-items:center;gap:clamp(10px,1.6vw,28px);margin-top:clamp(8px,1.2vh,16px)}
 .chip{display:inline-flex;align-items:baseline;gap:.5em;background:var(--npuls-wit);border-radius:14px;padding:.55em .95em}
-.chip b{font-size:clamp(16px,1.5vw,23px);font-weight:600;letter-spacing:-.02em}
+.chip b{font-size:clamp(18px,2vw,42px);font-weight:600;letter-spacing:-.02em}
 .chip span{font-size:clamp(11px,.88vw,13.5px);font-weight:600;text-transform:uppercase;letter-spacing:.07em;opacity:.65}
 .src{font-size:clamp(10.5px,.85vw,13px);opacity:.55;margin-left:auto}
 
 /* tabel: rijen als witte pillen */
-table{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:clamp(11.5px,1vw,15px)}
+table{width:100%;border-collapse:separate;border-spacing:0 clamp(5px,.5vw,10px);font-size:clamp(14px,1.5vw,32px)}
 th{
-  text-align:left;font-weight:600;font-size:clamp(10px,.8vw,12.5px);
+  text-align:left;font-weight:600;font-size:clamp(11px,1.05vw,22px);
   text-transform:uppercase;letter-spacing:.07em;opacity:.6;
   padding:0 .8em .2em;
 }
-td{padding:.62em .8em;background:var(--npuls-wit);vertical-align:top}
+td{padding:.5em .8em;background:var(--npuls-wit);vertical-align:top}
 tr td:first-child{border-radius:12px 0 0 12px;font-weight:600}
 tr td:last-child{border-radius:0 12px 12px 0}
 
@@ -415,11 +414,11 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
 /* vaste CEDA-slides (gelijk aan powerclaude/clidev): Wie is CEDA, Wie zijn wij, Blijf in contact */
 .ceda-punten{list-style:none;display:flex;flex-direction:column;gap:.7em;margin-top:clamp(16px,2.6vh,32px)}
 .ceda-punten li{display:flex;align-items:center;gap:.8em}
-.ceda-punten .stip{width:14px;height:14px;border-radius:99px;flex-shrink:0}
+.ceda-punten .stip{width:.8em;height:.8em;border-radius:99px;flex-shrink:0}
 .foto{display:block;width:100%;height:auto;max-height:min(58vh,560px);object-fit:cover;border-radius:20px}
 .linkkaart{background:var(--npuls-wit);border-radius:20px;padding:clamp(16px,1.6vw,28px);display:flex;flex-direction:column;align-items:center;gap:.7em;text-decoration:none;color:var(--npuls-zwart)}
-.linkkaart b{font-size:clamp(15px,1.3vw,20px);font-weight:600}
-.pill{display:inline-block;padding:.38em 1.1em;border-radius:99px;font-size:clamp(10px,.85vw,13px);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.linkkaart b{font-size:clamp(16px,1.7vw,36px);font-weight:600}
+.pill{display:inline-block;padding:.38em 1.1em;border-radius:99px;font-size:clamp(11px,1.05vw,22px);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
 .pill.blauw{background:var(--npuls-blauw);color:var(--npuls-roze)}
 .pill.groen{background:var(--npuls-groen);color:var(--npuls-zwart)}
 .pill.oranje{background:var(--npuls-oranje);color:var(--npuls-zwart)}
@@ -539,19 +538,9 @@ table.risico td:last-child{color:var(--npuls-blauw);font-weight:600}
 
 /* lage schermen (beamers, 768px-laptops): alles een slag compacter */
 @media (max-height:840px){
+  /* lage schermen: alleen marges compacter, lettergrootte blijft via vw meeschalen */
   .slide{padding-top:clamp(20px,3vw,52px);padding-bottom:62px}
   .slide-head{margin-bottom:clamp(10px,1.7vh,20px)}
-  h1{font-size:clamp(30px,4vw,48px)}
-  h2{font-size:clamp(23px,2.7vw,32px)}
-  h3{font-size:clamp(15px,1.4vw,19px)}
-  p,li{font-size:clamp(12.5px,1vw,15px)}
-  .sub{font-size:clamp(12px,.98vw,14.5px)}
-  .card{padding:clamp(11px,1.15vw,17px);gap:.4em}
-  .grid{gap:clamp(8px,1vw,15px)}
-  .ico{width:clamp(28px,2.5vw,38px);height:clamp(28px,2.5vw,38px);border-radius:11px;font-size:clamp(13px,1.1vw,16px)}
-  .step{padding:clamp(8px,.82vw,13px) clamp(11px,1vw,17px)}
-  .steps{gap:clamp(5px,.7vh,9px)}
-  .big-num{font-size:clamp(32px,4vw,58px)}
   .kicker{margin-bottom:clamp(8px,1.3vh,16px)}
 }
 @media (max-width:820px){

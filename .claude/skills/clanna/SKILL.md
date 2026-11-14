@@ -5,7 +5,7 @@ allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node and git; draait in de root van cedanl/clidev-presentaties (Npuls-assets en playwright-chromium via npm install)
 metadata:
   ceda-id: ceda.clanna
-  ceda-version: "0.5.0"
+  ceda-version: "0.5.1"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -93,6 +93,8 @@ Lees `references/components.md` (snippets per slidetype, varianten, vormtaal) en
 - Langer dan ~8 inhoudsslides → verdeel in 3 à 5 **delen** (`data-deel` + `s-deel`): de navigatie toont dan het hoofdstuk en elk deel krijgt een eigen lichte kleur.
 - Voor voortgang, planning, voor/na, risico's of lessen: de datacomponenten 13–17. Animaties gaan vanzelf (GSAP via CDN); `data-count` voor kerncijfers.
 - Per slide max ~60 woorden zichtbare tekst. Meer → splitsen.
+- **Leesbaar en gevuld:** de frame schaalt tekst mee met de breedte (body ~1,75vw, op 1920 px ~34 px) en zet de inhoud verticaal in het midden. Zet nooit een lage bovengrens op `font-size` (zoals `clamp(…,17px)`): op een beamer wordt dat onleesbaar. Lege onderhelft? Grotere componenten of meer inhoud per slide, niet kleiner lettertype.
+- **Zakelijk, geen opvulling:** geen sectiescheiders zonder inhoud, geen wervende ledes. Elke bewering en elk cijfer gecontroleerd tegen de bron (audit) vóór export. Tekst volgens de Npuls-schrijfwijzer (skill `npuls-schrijfwijzer` als die er is).
 - Gebruik minstens twee echte Npuls-illustraties in het deck.
 - Sprekersnotities in een HTML-commentaar boven de `<section>`.
 
@@ -126,6 +128,7 @@ Meld: pad van het deck, de gebundelde versie, de PDF, en de uitkomst van check e
 | Logo (`npuls_logo.jpg`) alleen op `s-roze` | Het jpg heeft een roze vlak |
 | Geen grijze of zelfverzonnen kaartkleuren | Alleen `.card` + Npuls-kleur of licht-variant |
 | Geen hex-kleuren in slides, ook niet in SVG | `style="fill:var(--npuls-…)"`; check.mjs faalt op hex |
+| Tekst op 1920×1080 leesbaar van achterin de zaal; geen lege onderhelft | Vaste bovengrenzen op lettergrootte maakten decks op beamers onleesbaar (2026-11-12) |
 | Niet "klaar" melden zonder check + qa + screenshots bekeken | Fonts, overflow en botsingen zie je niet in de broncode |
 
 ## Veelgemaakte fouten
