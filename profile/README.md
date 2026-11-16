@@ -6,6 +6,13 @@ Dit doet CEDA door succesvolle informatieproducten uit instellingen op te halen 
 
 In deze github-omgeving delen we alle code en dashboards. Voor meer informatie over CEDA en de door ons georganiseerde werkgroepen, workshops en sessies, zie de [CEDA-pagina](https://edu.nl/twt84) op het community platform of neem contact op met projectleider [Corneel den Hartogh](mailto:corneeldenhartogh@surf.nl).
 
+## Projecten
+
+Een project brengt meerdere tools samen rond één opgave. De projectrepo vertelt het verhaal en verwijst naar de code. Alle projectrepo's hebben het onderwerp [`project`](https://github.com/orgs/cedanl/repositories?q=topic%3Aproject).
+
+- **Sectorale informatievoorziening**: de DUO-bestanden van mbo en ho bruikbaar maken voor studiesucces en bekostiging. Welke bestanden elk product gebruikt, wat er al werkt en waar we heen willen.
+  - [sectorale-informatievoorziening](https://github.com/cedanl/sectorale-informatievoorziening)
+
 ## CEDA Repositories
 
 ### Analytics
