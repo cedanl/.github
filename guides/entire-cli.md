@@ -76,13 +76,17 @@ In de CEDA devcontainer is Entire al geconfigureerd. Je hoeft niets handmatigs t
 
 ### Automatische activatie
 
-De `claude`-functie in de container voert automatisch het volgende uit bij het starten:
+De `claude`-functie in de container draait bij het starten `entire-setup`, en doet dan per CEDA-repo:
 
 1. `entire enable -y --agent claude-code` — installeert de hooks
 2. `entire configure --checkpoint-backend branch --checkpoint-remote github:cedanl/entire-checkpoints` — kiest de opslag (branch) en wijst de checkpoint-repo aan
-3. Start Claude Code met `--dangerously-skip-permissions`
+3. Start daarna Claude Code met `--dangerously-skip-permissions`
 
-Dit gebeurt alleen in CEDA-repos: waar `origin` `cedanl/` bevat (GitHub) of `surf-internal/npuls/ceda/` (GitLab, git.sdp.surf.nl). Checkpoints van beide gaan naar dezelfde GitHub-repo, want Entire kent als checkpoint-remote alleen GitHub. Dit gebeurt bij elke start van `claude`, dus `entire disable` blijft niet staan.
+`entire-setup` doet dit voor de repo waar je staat én voor elke repo direct onder `/workspaces/dev-dots`, dus ook als je Claude in de root start. Een repo die al klopt wordt alleen gelezen. Handmatig draaien of controleren kan met `entire-setup` en `entire-setup --check`. Een mislukte stap wordt met de reden getoond. Zie ook [dev-dots#49](https://github.com/cedanl/dev-dots/pull/49).
+
+Dit gebeurt alleen in CEDA-repos: waar `origin` `cedanl/` bevat (GitHub) of `surf-internal/npuls/ceda/` (GitLab, git.sdp.surf.nl). Checkpoints van beide gaan naar dezelfde GitHub-repo, want Entire kent als checkpoint-remote alleen GitHub. Dit gebeurt bij elke start van `claude`, dus `entire disable` blijft niet staan. Uitzetten kan met `git config devdots.entire false` (één repo) of `export DEVDOTS_ENTIRE=0` (alle repo's).
+
+Gebruik je een agent om Entire in te stellen? Zie de tekst voor je agent in de [werkafspraak](../werkafspraken/entire.md#laat-je-agent-het-regelen).
 
 ### Centrale checkpoint-repo
 
@@ -178,6 +182,8 @@ entire dispatch                    # markdown samenvatting van recent AI-werk
 | `Not a git repository` | Ga eerst naar een Git-repository |
 | `Entire is disabled` | Draai `entire enable` |
 | `shadow branch conflict` | Draai `entire clean --force` |
+| Geen `Entire-Checkpoint:` in je commit | Draai `entire-setup --check`. Start je Claude in de root, dan werkt een container van vóór dev-dots#49 niet voor zustermappen |
+| `entire enable` zegt `Git identity is missing` | Draai eerst `onboard` of zet `git config --global user.name` en `user.email` |
 | Push of sync naar `entire/checkpoints/v1` botst of de branches lopen uit elkaar | Draai `entire doctor` |
 | `checkpoint not found` bij een ID van 26 tekens | Dat checkpoint staat als ref. Controleer of de opslag op `git-refs` staat of haal de refs op: `git fetch origin '+refs/entire/checkpoints/*:refs/entire/checkpoints/*'` |
 | SSH-fout bij `session resume` | Voeg GitHub host keys toe: `ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts` |
