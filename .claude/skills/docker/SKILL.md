@@ -32,7 +32,7 @@ debug a container build in a CEDA repo. It is reference/convention.
 3. Specific version tags on the base image (not `latest`).
 4. Remove build-only deps after use.
 5. Non-root user (see above).
-6. Include a healthcheck (compose or Dockerfile) — Streamlit apps expose `/healthz`.
+6. Include a healthcheck (compose or Dockerfile) — Streamlit apps expose `/_stcore/health`.
 
 ## Lint before committing
 ```bash
