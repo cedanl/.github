@@ -1,9 +1,13 @@
 ---
 name: objectstore-experiments
-description: Exercise and verify S3 features against the SURF Object Store (Ceph RGW) with boto3 — versioning, lifecycle policies, multipart upload, SSE-C encryption, and presigned URLs — plus the known Ceph-vs-AWS behavioural quirks. Use when testing Object Store functionality, writing boto3 against objectstore.surf.nl, or checking whether an S3 feature behaves as it does on AWS.
+description: Exercise and verify S3 features against the SURF Object Store (Ceph RGW) with boto3 (versioning, lifecycle policies, multipart upload, SSE-C encryption, presigned URLs) plus known Ceph-vs-AWS quirks. Use when testing Object Store functionality, writing boto3 against objectstore.surf.nl, or checking whether an S3 feature behaves as on AWS. LET OP — MinIO on SDP is `surf-sdp-operations`.
 ---
 
 # objectstore-experiments
+
+> **Scope:** this skill is about the **SURF Object Store** (Ceph,
+> `objectstore.surf.nl`). For the MinIO of an SDP app, see /surf-sdp-operations
+> and module `minio_file` in cedanl/sdp-tools.
 
 Runnable feature checks against the **SURF Object Store** (Ceph RGW,
 `https://objectstore.surf.nl`) using boto3 and the `object-store` aws profile.
