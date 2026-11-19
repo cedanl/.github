@@ -56,7 +56,10 @@ the env vars are absent, so local dev needs no login.
 - Deps via **uv** (`pyproject.toml` + `uv.lock`); run `uv run streamlit run src/main.py`.
 - Container + local dev: see /docker. Deploy on SDP: see /sdp-onboard,
   /surf-sdp-helm-flux (Streamlit URL pattern `https://<app>.<env>.sdp.surf.nl`,
-  health probe `/healthz`, ingress port 8501).
+  ingress port 8501).
+- **Health probe: `/_stcore/health`** on port 8501, for both liveness and
+  readiness. `/healthz` and `/` also return 200, but only serve the app HTML,
+  so they are not a health check.
 
 ## Important
 - **Match the repo's multipage pattern** (auto-discovery vs explicit `st.Page`);

@@ -98,7 +98,7 @@ CI matrix / test conventions: /actions-ci.
 
 ## Important
 - **Match the repo's existing toolchain.** Modern repos use setuptools + uv;
-  legacy quartet repos (`eencijfer`, `minio-file`, `sdp-tools`) use poetry + tox
+  legacy repos differ (`eencijfer` uses poetry + tox, `sdp-tools` hatchling + tox)
   in `preview.yml`/`release.yml`. Don't convert one to the other unasked.
 - **Trusted Publishing needs a one-time PyPI-side setup** (linking repo/workflow/
   environment) that can't be done from code — flag it to the user.

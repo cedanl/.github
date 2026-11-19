@@ -1,9 +1,13 @@
 ---
 name: objectstore-onboarding
-description: Take a user from "granted access" to a working, least-privilege setup on the SURF Object Store (Ceph RGW, S3-compatible at objectstore.surf.nl) — detect the account type, install/configure aws-cli, split a privileged root profile from a non-root working profile, and verify S3 access. Use when onboarding to Object Store, setting up aws profiles for objectstore.surf.nl, or debugging a login 401/AccessDenied.
+description: Take a user from "granted access" to a least-privilege setup on the SURF Object Store (Ceph RGW, S3 at objectstore.surf.nl); detect account type, configure aws-cli, split root and non-root profiles, verify S3 access. Use when onboarding to Object Store, setting up aws profiles for objectstore.surf.nl, or debugging a login 401/AccessDenied. LET OP — MinIO on SDP is `surf-sdp-operations`.
 ---
 
 # objectstore-onboarding
+
+> **Scope:** this skill is about the **SURF Object Store** (Ceph,
+> `objectstore.surf.nl`). For the MinIO of an SDP app, see /surf-sdp-operations
+> and module `minio_file` in cedanl/sdp-tools.
 
 End-to-end path to get a user running on the **SURF Object Store**, an
 S3-compatible service backed by **Ceph RGW** in SURF's Amsterdam data centers
