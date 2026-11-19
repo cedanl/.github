@@ -14,6 +14,7 @@ Doelgroep is het CEDA-kernteam.
 | [Gebruikersrechten](https://github.com/cedanl/.github/blob/main/werkafspraken/gebruikersrechten.md) | Verplicht | [@Tomeriko96](https://github.com/Tomeriko96) |
 | [Feedback zonder persoonsgegevens](https://github.com/cedanl/.github/blob/main/werkafspraken/feedback-zonder-persoonsgegevens.md) | Verplicht | [@Tomeriko96](https://github.com/Tomeriko96) |
 | [Entire](https://github.com/cedanl/.github/blob/main/werkafspraken/entire.md) | Experiment | [@Tomeriko96](https://github.com/Tomeriko96) |
+| [CEDA-agenda en mail](https://github.com/cedanl/.github/blob/main/werkafspraken/ceda-agenda-en-mail.md) | Experiment | [@Tomeriko96](https://github.com/Tomeriko96) |
 
 ## Niveaus
 
