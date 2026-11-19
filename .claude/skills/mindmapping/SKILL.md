@@ -44,13 +44,13 @@ Zoek daarbij bewust naar:
 
 ### 3. Clusteren naar hoofdtakken
 
-Groepeer de associaties tot 5-7 hoofdtakken. Gebruik de onderwijs-perspectieven in `references/onderwijscontext.md` als check: dek je genoeg invalshoeken af, of zit alles in één hoek? Lees dat bestand wanneer het thema onderwijsspecifiek is en je meer grip wilt op de sector — actoren, wetgeving, jaarritme, gangbare thema's.
+Groepeer de associaties tot 5-7 hoofdtakken. Gebruik de onderwijs-perspectieven in `references/mindmapping-onderwijscontext.md` als check: dek je genoeg invalshoeken af, of zit alles in één hoek? Lees dat bestand wanneer het thema onderwijsspecifiek is en je meer grip wilt op de sector — actoren, wetgeving, jaarritme, gangbare thema's.
 
 Vermijd de luie indeling (Voordelen / Nadelen / Toekomst). Kies takken die het specifieke thema recht doen.
 
 ### 4. Bouw de mindmap
 
-Volg het gekozen formaat. Zie `references/formaten.md` voor de exacte sjablonen van markdown, Mermaid en SVG — lees dat bestand vóór je de mindmap genereert, de SVG-opbouw en kleurgebruik staan daar uitgeschreven.
+Volg het gekozen formaat. Zie `references/mindmapping-formaten.md` voor de exacte sjablonen van markdown, Mermaid en SVG — lees dat bestand vóór je de mindmap genereert, de SVG-opbouw en kleurgebruik staan daar uitgeschreven.
 
 ### 5. Lever op
 

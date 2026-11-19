@@ -161,5 +161,5 @@ Toon: bondig en direct, actieve vorm, Nederlands. Geen inleidende plichtpleginge
 
 - `references/persona-docent-ondersteuner.md` — vaste empathy maps voor docent en ondersteuner,
   plus brondocumentatie. Lees dit voor je schrijft, tenzij de gebruiker volledige eigen input geeft.
-- `references/voorbeelden.md` — uitgewerkte voorbeeldsets met goed/fout-vergelijkingen. Lees dit
+- `references/centrale-inzichten-docent-voorbeelden.md` — uitgewerkte voorbeeldsets met goed/fout-vergelijkingen. Lees dit
   bij twijfel over de scherpte van een formulering.

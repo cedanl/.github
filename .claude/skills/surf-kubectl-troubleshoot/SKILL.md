@@ -150,8 +150,8 @@ git status
 kubectl config current-context
 ls -la .sops.yaml
 
-# Run the sops-doctor script:
-bash scripts/sops-doctor.sh
+# Run the sops-doctor script from the sdp-secrets-management skill:
+bash ../sdp-secrets-management/scripts/sops-doctor.sh
 
 # Or manually check:
 which age
@@ -333,7 +333,7 @@ If it's not resolved, dig deeper:
 
 Reference these scripts in diagnostic output (assume they're available in the user's repo):
 
-- `scripts/sops-doctor.sh` — diagnose AGE/SOPS setup
+- `../sdp-secrets-management/scripts/sops-doctor.sh` — diagnose AGE/SOPS setup (bundled with the sdp-secrets-management skill)
 - `scripts/flux-hr-status.sh <helmrelease> <ns>` — quick HelmRelease health check
 - `scripts/flux-force-reconcile.sh <helmrelease> <ns>` — force Flux to retry
 
