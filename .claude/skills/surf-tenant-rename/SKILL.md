@@ -1,10 +1,11 @@
 ---
 name: surf-tenant-rename
 description: >-
-  Rename a SURF SDP tenant across all Git repos, Kubernetes namespaces, CI/CD
-  pipelines, and secrets vaults with a coordinated multi-repo checklist. Use when
-  a tenant changes its name (e.g., project codename → product name), or the user
-  mentions refactoring tenant identifiers across repos.
+  Rename a SURF SDP tenant across kubernetes-clusters, GitLab environments, the
+  app repo and gitlab-config (Terraform moved-blocks, Harbor kept), with a
+  coordinated multi-repo checklist. Use when a tenant changes its name (e.g.,
+  project codename → product name), or the user mentions refactoring tenant
+  identifiers across repos.
 ---
 
 # SURF SDP Tenant Rename Orchestration
@@ -15,7 +16,9 @@ pipelines, and SOPS encryption keys. This is a **multi-system coordinated
 change** — execute the checklist step-by-step to avoid breaking deployments.
 
 A real case study: `savvy` → `voxpop` rename (2026-05-XX) involved 5 repos,
-3 namespaces, and 15+ files. This skill ensures no step is missed.
+3 namespaces, and 15+ files. This skill ensures no step is missed. The SDP
+procedure in Phase 3 comes from that rename and the earlier `sumilearn` rename
+(see Gotchas).
 
 ## Workflow
 
@@ -66,151 +69,153 @@ Kubernetes secrets or in a vault. Flag these for manual rotation after the renam
 
 ```bash
 kubectl -n services-<old-name> get secrets | grep -E "(password|uri|credentials)"
-# Document these; they'll need to be re-encrypted/rotated after step 4
+# Document these; they'll need to be re-encrypted/rotated after Phase 4
 ```
 
-### Phase 3: Git Repository Renames (coordinated)
+### Phase 3: SDP-procedure (volgorde)
 
-Rename repos in this order to avoid circular references:
+Do the five steps in this order. Each step names the repo or system it touches;
+wait for CI to pass on each MR before moving on.
 
-**3a. App repository** (code repo, if separate from config)
+**Harbor is never renamed.** The Harbor project keeps the old name
+(`lifecycle { ignore_changes = [name] }` in `harbor.tf`). So every Harbor
+reference — `image.repository`, `helmrepo.url` — keeps pointing at the **old**
+Harbor project name, and a blanket `sed s/<old-name>/<new-name>/` must skip them.
+The examples below skip lines that contain `harbor`; check the remaining Harbor
+references by hand afterwards.
+
+#### Step 1: kubernetes-clusters (MR)
+
+Rename the tenant directory under `services/base/` and everything that points at it:
+
+```bash
+cd kubernetes-clusters
+git checkout -b feat/rename-<old-name>-<new-name>
+git mv services/base/<old-name> services/base/<new-name>
+
+# Internal references: namespace, secrets, git URL, kustomizations
+grep -rn "<old-name>" . --exclude-dir=.git | tee /tmp/rename-refs.txt
+grep -rl "<old-name>" services/base/<new-name> | \
+  xargs sed -i '/harbor/!s/<old-name>/<new-name>/g'
+
+# Cluster kustomizations (development, testing, playground, ...) that list the tenant
+grep -rln "services/base/<old-name>" . --exclude-dir=.git
+# Edit each hit to services/base/<new-name>
+
+git add . && git commit -m "refactor: rename tenant <old-name> → <new-name>"
+git push origin feat/rename-<old-name>-<new-name>
+```
+
+Open the MR and request review from the platform team.
+
+#### Step 2: GitLab environments (`kubernetes_namespace`, `flux_resource_path`)
+
+GitLab environments are **not** updated automatically when the namespace changes.
+For every environment of the app project, via the UI (Operate → Environments →
+Edit) or the API:
+
+- `kubernetes_namespace` → `services-<new-name>`
+- `flux_resource_path` → the new path (same form as the current value, with the
+  new tenant name)
+
+```bash
+glab api --hostname git.sdp.surf.nl "projects/<project-id>/environments" \
+  | jq '.[] | {id, name, kubernetes_namespace, flux_resource_path}'
+
+glab api --hostname git.sdp.surf.nl -X PUT \
+  "projects/<project-id>/environments/<env-id>" \
+  -f kubernetes_namespace=services-<new-name> \
+  -f flux_resource_path=<new-flux-resource-path>
+```
+
+#### Step 3: App repo (Helm chart, templates, values, CI)
 
 ```bash
 cd <app-repo>
-# Rename locally (no git command; just plan the changes)
-# Update references in CI files, README, package.json, etc.
-grep -r "<old-name>" . | grep -v ".git" | head -20
-# Manually edit files to replace old-name → new-name
-# Examples: package.json name field, Dockerfile labels, CI variable names
-
-git add .
-git commit -m "refactor: rename tenant identifier <old-name> → <new-name>
-
-- Update package/module names
-- Update Docker image labels
-- Update CI variable references
-- No logic changes; rename only
-
-Related: tenant consolidation"
-
-git push origin feat/rename-<old-name>-<new-name>
-```
-
-Open MR, request review (tenant admin + platform team).
-
-**3b. Config/manifests repository** (Helm charts, Flux, K8s manifests)
-
-This is the heavy one — namespace names, Helm release names, and values all
-reference the tenant:
-
-```bash
-cd <config-repo>
 git checkout -b feat/rename-<old-name>-<new-name>
 
-# Find all references
-grep -r "<old-name>" . | grep -v ".git" | tee /tmp/rename-refs.txt
-
-# Update in three sections:
-
-# Section 1: Kubernetes manifests
-# - manifests/base/kustomization.yaml: namespace, Flux resource names
-# - manifests/<env>/kustomization.yaml: patch overlays
-sed -i 's/<old-name>/<new-name>/g' manifests/*/kustomization.yaml
-sed -i 's/<old-name>/<new-name>/g' manifests/base/kustomization.yaml
-
-# Section 2: Helm chart names and values
-# - charts/<old-name>/ → charts/<new-name>/
+# Helm chart directory
 git mv charts/<old-name> charts/<new-name>
-sed -i 's/<old-name>/<new-name>/g' charts/<new-name>/Chart.yaml
-sed -i 's/<old-name>/<new-name>/g' charts/<new-name>/values.yaml
 
-# Section 3: Flux resources (HelmRelease, HelmRepository, Kustomization)
-sed -i 's/<old-name>/<new-name>/g' manifests/base/helmrelease.yaml
-sed -i 's/<old-name>/<new-name>/g' manifests/base/kustomization.yaml
+# Internal references in templates, values, CI — Harbor refs excluded
+grep -rn "<old-name>" . --exclude-dir=.git
+grep -rl "<old-name>" charts/<new-name> .gitlab-ci.yml README.md | \
+  xargs sed -i '/harbor/!s/<old-name>/<new-name>/g'
 
-# Section 4: CI/CD (.gitlab-ci.yml, environment names)
-sed -i 's/<old-name>/<new-name>/g' .gitlab-ci.yml
+# Check: image.repository and helmrepo.url still use the OLD Harbor project name
+grep -rn -e "repository:" -e "helmrepo" charts/ .gitlab-ci.yml
 
-# Section 5: Documentation
-sed -i 's/<old-name>/<new-name>/g' README.md docs/*.md
+git add . && git commit -m "refactor: rename tenant <old-name> → <new-name>
 
-git add .
-git commit -m "refactor: rename tenant <old-name> → <new-name>
-
-- Rename Kubernetes namespaces in manifests/*/kustomization.yaml
-- Rename Helm chart directories and values
-- Rename Flux resources (HelmRelease, HelmRepository)
-- Rename CI/CD variables and environments
-- Update documentation
-
-Related: tenant consolidation"
-
+- Rename Helm chart directory, templates and values
+- Update CI references
+- Harbor references (image.repository, helmrepo.url) keep the old project name"
 git push origin feat/rename-<old-name>-<new-name>
 ```
 
-Open MR. Request review from platform team (this must be merged before step 4).
+Do not touch the `HARBOR_PROJECT` CI variable: it is set automatically.
 
-**3c. Shared infrastructure repos (if applicable)**
+#### Step 4: gitlab-config (MR, Terraform `moved` blocks)
 
-If the tenant is referenced in a shared infra repo (`kubernetes-clusters`,
-`gitlab-config`, SDP platform repos), update there too:
+1. Rename the tenant's module in the right `main.tf`.
+2. Add `moved` blocks in `terraform/moves.tf` for **all** resources of the
+   module, Harbor resources included (project, retention, robot account, member
+   groups). Without them Terraform plans a destroy + create.
+3. After `terraform apply`, remove the `moved` blocks again (follow-up MR).
 
-```bash
-cd <shared-infra-repo>
-git checkout -b feat/rename-<old-name>-<new-name>
-grep -r "<old-name>" terraform/ docs/
-# Edit Terraform module blocks, TF variables, documentation
-git add . && git commit -m "infra: rename tenant <old-name> → <new-name>" && git push
+```hcl
+# terraform/moves.tf — one block per resource address the plan wants to recreate
+moved {
+  from = module.<old-name>.<resource-address>
+  to   = module.<new-name>.<resource-address>
+}
 ```
 
-**Merge order:** App repo → Config repo → Shared infra. Wait for CI to pass on each.
+Check the plan before merging: it must show moves only, no destroy of the
+Harbor project or any other resource.
 
-### Phase 4: Kubernetes Namespace Rename (destructive — coordinated cutover)
+#### Step 5: Restore branch protection
 
-Once all MRs are merged, perform the namespace rename on each cluster. **This is
-the point of no return** — all services must be redeployed to the new namespace.
+If branch protection was switched off for direct pushes during the rename, switch
+it back on in every repo where you did that:
+
+```bash
+glab api --hostname git.sdp.surf.nl "projects/<project-id>/protected_branches"
+```
+
+### Phase 4: Flux cutover (per environment)
+
+The namespace `services-<new-name>` and its secrets are defined in
+`services/base/<new-name>` (Step 1), so Flux creates them once the
+kubernetes-clusters MR is merged. Do **not** create the namespace or copy
+secrets by hand: Flux owns them, and manual objects conflict with what it applies.
 
 **For each environment (development first, production last):**
 
 ```bash
 kubectx <env>
 
-# 4a. Create the new namespace with the same setup
-kubectl create namespace services-<new-name>
-kubectl config set-context --current --namespace=services-<new-name>
-
-# 4b. Copy secrets from old namespace (they'll be re-encrypted post-deployment)
-kubectl get secrets -n services-<old-name> -o yaml | \
-  sed "s/namespace: services-<old-name>/namespace: services-<new-name>/g" | \
-  kubectl apply -n services-<new-name> -f -
-
-# 4c. Reconcile Flux on the new namespace
-# (The Flux Kustomization now points to the new namespace via the merged config repo)
-kubectl delete kustomization <old-name>-sync -n flux-system
-# Flux will auto-create the new one from the updated GitLab repo
-kubectl get kustomization -n flux-system | grep <new-name>
-# Wait 1-2 minutes for initial sync
-
-# 4d. Monitor Flux reconciliation
+# 4a. Monitor Flux reconciliation
 kubectl get kustomization -n flux-system -w
-# Watch until Status=Reconciling or Ready, no errors
+# Watch until Ready, no errors
 
-# 4e. Verify deployment
+# 4b. Verify deployment
 kubectl get pods -n services-<new-name>
 kubectl describe helmrelease <new-name> -n services-<new-name>
 # Check conditions; should show Ready=True
 
-# 4f. Verify application connectivity
+# 4c. Verify application connectivity
 kubectl get svc -n services-<new-name>
 curl -v http://<app-service>:8080/healthz -n services-<new-name>
 
-# 4g. Only after verification: delete old namespace
+# 4d. Only after verification: remove the old namespace if it still exists
+kubectl get namespace services-<old-name>
 kubectl delete namespace services-<old-name>
 ```
 
 ### Phase 5: Post-Deployment Verification (all environments)
 
-After step 4 is complete on all environments:
+After Phase 4 is complete on all environments:
 
 **5a. End-to-end connectivity**
 
@@ -247,7 +252,7 @@ Once verification is complete:
 **6a. Delete old Git branches**
 
 ```bash
-for repo in <app-repo> <config-repo> <shared-infra-repo>; do
+for repo in kubernetes-clusters <app-repo> gitlab-config; do
   cd $repo
   git branch -d feat/rename-<old-name>-<new-name>
   git push origin --delete feat/rename-<old-name>-<new-name>
@@ -256,8 +261,8 @@ done
 
 **6b. Rotate secrets (if applicable)**
 
-Secrets that were copied in step 4b should be rotated to use new encryption keys.
-Coordinate with platform team:
+Secrets under the renamed `services/base/<new-name>` keep their old values.
+Coordinate rotation with the platform team:
 - Re-encrypt SOPS secrets with new AGE keys
 - Rotate database credentials
 - Rotate API tokens
@@ -282,15 +287,16 @@ Summarize the rename plan:
 > **Phases:**
 > 1. Planning & validation
 > 2. Database & secrets (manual)
-> 3. Git repo renames (3 coordinated MRs)
-> 4. Kubernetes namespace rename (production cutover)
+> 3. SDP procedure: kubernetes-clusters MR → GitLab environments → app repo →
+>    gitlab-config MR (moved blocks, removed after apply) → branch protection
+> 4. Flux cutover per environment (development first, production last)
 > 5. Verification (end-to-end tests)
 > 6. Cleanup (branch deletion, secret rotation)
 >
 > **Timeline:** 2–3 hours total (mostly waiting for Flux reconciliation)
 >
-> **Risk:** High — namespace rename is destructive. Rollback requires manual
-> restoration from backups. Ensure step 5 verification before proceeding to cleanup.
+> **Risk:** High — the namespace changes. Rollback requires manual
+> restoration from backups. Ensure Phase 5 verification before proceeding to cleanup.
 >
 > Ready to start Phase 1 (planning)?
 
@@ -298,12 +304,31 @@ Wait for the user to confirm. If they identify issues, adjust and re-confirm.
 
 ## Important
 
-- **Execute phases in order.** Skipping or reordering steps can lead to inconsistent state.
-- **Merge all MRs before step 4.** The Kubernetes cutover depends on the config repo changes.
+- **Execute phases and steps in order.** Phase 3 follows the SDP procedure:
+  kubernetes-clusters → GitLab environments → app repo → gitlab-config → branch protection.
+- **Merge all Phase 3 MRs before the Phase 4 cutover.** The cutover depends on the kubernetes-clusters changes.
 - **Test environments first (development → test).** Production is last. Never rename production first.
-- **Namespace rename is destructive.** Rollback requires manual Kubernetes backup restoration.
-  Ensure verification (step 5) is thorough before deleting the old namespace.
-- **Secrets are copied, not migrated.** After the rename, rotate secrets to use new encryption keys.
-- **Watch Flux reconciliation carefully.** If HelmRelease shows errors, check the config repo MR for syntax issues.
+- **Namespaces belong to Flux.** Do not create, copy into or delete Flux-managed
+  namespaces by hand before verification (Phase 5) is thorough.
+- **Secrets keep their values.** After the rename, rotate secrets to use new encryption keys.
+- **Watch Flux reconciliation carefully.** If HelmRelease shows errors, check the kubernetes-clusters MR for syntax issues.
 - This is a **GitLab/SDP** skill — use `glab`, `kubectl`, `git`, not `gh`.
 - Applies to cedanl / SURF SDP repos.
+
+## Gotchas
+
+- **The Harbor project name does not change** — `lifecycle { ignore_changes = [name] }`
+  in `harbor.tf`. `image.repository` and `helmrepo.url` keep the old Harbor name.
+- **`HARBOR_PROJECT` is set automatically.** The CI variable cannot be changed by hand; leave it.
+- **GitLab environments are not updated automatically** on a namespace rename:
+  Step 2 is always manual.
+- **Container scanning can fail when image tag `latest` does not exist.** That is
+  a separate problem, not caused by the rename.
+- **Pipeline race condition on quick successive commits** — a false alarm; check
+  the pod status (`kubectl get pods -n services-<new-name>`) before you act on it.
+- **Precedent:** the `sumilearn` rename — gitlab-config MR !120, kubernetes-clusters MR !336.
+  Read those before a new rename.
+
+## References
+
+- `gitlab-config/terraform/modules/project/harbor.tf` — Harbor project naming and lifecycle
