@@ -80,6 +80,16 @@ tell where the token came from).
    refreshes (default 24h). *Note: this token is not signed — it's session
    continuity, not a security boundary. Don't treat it as tamper-proof.*
 
+   **For production**, make the session tamper-proof in one of two ways:
+   - **Sign the token** with the app's existing signing secret (HMAC, e.g.
+     `itsdangerous.URLSafeTimedSerializer`), and reject it on a bad signature
+     or when it has expired.
+   - **Keep the session server-side** (store keyed by id) and put only a random
+     id in the URL (`secrets.token_urlsafe(32)`), never the user info itself.
+
+   Never take permissions or roles from the unsigned token: take them from the
+   id_token or `userinfo` at the callback.
+
 ## Requesting a client: get CLIENT_ID / CLIENT_SECRET from SRAM
 
 There is no self-service API — you must **request an application on SRAM**
@@ -155,7 +165,8 @@ require_authentication()   # st.stop()s on the login page if not authed
 - Ask explicitly for `eduperson_entitlement` + `voperson_external_affiliation`
   or you can't show org/institution.
 - The session token is **not signed** — it's session continuity, not a security
-  boundary; don't treat it as tamper-proof.
+  boundary; don't treat it as tamper-proof. For production see "For production"
+  under the session step above.
 - **Auth enabled → set the session/signing secret**, or the app
   CrashLoopBackOffs at startup.
 - **Egress to `proxy.sram.surf.nl:443` must be opened** in the tenant network
