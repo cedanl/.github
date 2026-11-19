@@ -1,11 +1,10 @@
 ---
 name: surf-tenant-rename
 description: >-
-  Rename a SURF SDP tenant across kubernetes-clusters, GitLab environments, the
-  app repo and gitlab-config (Terraform moved-blocks, Harbor kept), with a
-  coordinated multi-repo checklist. Use when a tenant changes its name (e.g.,
-  project codename → product name), or the user mentions refactoring tenant
-  identifiers across repos.
+  Rename a SURF SDP tenant across all Git repos, Kubernetes namespaces, CI/CD
+  pipelines, and secrets vaults with a coordinated multi-repo checklist. Use when
+  a tenant changes its name (e.g., project codename → product name), or the user
+  mentions refactoring tenant identifiers across repos.
 ---
 
 # SURF SDP Tenant Rename Orchestration
