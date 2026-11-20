@@ -8,7 +8,7 @@ Voor de governance-regels zie de [werkafspraak Entire](../werkafspraken/entire.m
 
 Entire installeert Git-hooks in je repository die sessiedata vastleggen terwijl je werkt. Bij een `git commit` wordt een **checkpoint** aangemaakt — een snapshot van de volledige sessiecontext (prompts, tool-calls, gewijzigde bestanden, transcripts).
 
-Checkpoint-data wordt opgeslagen op een aparte branch `entire/checkpoints/v1`, zodat je git-historie schoon blijft. Alleen een 12-tekens ID (bijv. `a3b2c4d5e6f7`) verschijnt als `Entire-Checkpoint`-trailer in je commit message.
+Checkpoint-data wordt apart van je code opgeslagen, zodat je git-historie schoon blijft. Alleen het ID van het checkpoint verschijnt als `Entire-Checkpoint`-trailer in je commit message. Waar de data precies staat hangt af van de opslag, zie [Checkpoint-opslag](#checkpoint-opslag-branch-of-refs). Bij ons is dat de branch `entire/checkpoints/v1` met een 12-tekens ID (bijv. `a3b2c4d5e6f7`).
 
 ```
 Jouw branch                    entire/checkpoints/v1
@@ -76,13 +76,17 @@ In de CEDA devcontainer is Entire al geconfigureerd. Je hoeft niets handmatigs t
 
 ### Automatische activatie
 
-De `claude`-functie in de container voert automatisch het volgende uit bij het starten:
+De `claude`-functie in de container draait bij het starten `entire-setup`, en doet dan per CEDA-repo:
 
 1. `entire enable -y --agent claude-code` — installeert de hooks
-2. `entire configure --checkpoint-remote github:cedanl/entire-checkpoints` — wijst de checkpoint-repo aan
-3. Start Claude Code met `--dangerously-skip-permissions`
+2. `entire configure --checkpoint-backend branch --checkpoint-remote github:cedanl/entire-checkpoints` — kiest de opslag (branch) en wijst de checkpoint-repo aan
+3. Start daarna Claude Code met `--dangerously-skip-permissions`
 
-Dit gebeurt alleen in repos waar `origin` met `cedanl/` begint.
+`entire-setup` doet dit voor de repo waar je staat én voor elke repo direct onder `/workspaces/dev-dots`, dus ook als je Claude in de root start. Een repo die al klopt wordt alleen gelezen. Handmatig draaien of controleren kan met `entire-setup` en `entire-setup --check`. Een mislukte stap wordt met de reden getoond. Zie ook [dev-dots#49](https://github.com/cedanl/dev-dots/pull/49).
+
+Dit gebeurt alleen in CEDA-repos: waar `origin` `cedanl/` bevat (GitHub) of `surf-internal/npuls/ceda/` (GitLab, git.sdp.surf.nl). Checkpoints van beide gaan naar dezelfde GitHub-repo, want Entire kent als checkpoint-remote alleen GitHub. Dit gebeurt bij elke start van `claude`, dus `entire disable` blijft niet staan. Uitzetten kan met `git config devdots.entire false` (één repo) of `export DEVDOTS_ENTIRE=0` (alle repo's).
+
+Gebruik je een agent om Entire in te stellen? Zie de tekst voor je agent in de [werkafspraak](../werkafspraken/entire.md#laat-je-agent-het-regelen).
 
 ### Centrale checkpoint-repo
 
@@ -90,7 +94,7 @@ Alle checkpoints worden gesynchroniseerd naar **`cedanl/entire-checkpoints`**. D
 
 ### Configuratie
 
-De configuratie staat in `.entire/settings.json` (gecommit in dev-dots):
+De configuratie staat per repo in `.entire/settings.json`. Die map staat in `.git/info/exclude`, dus ze wordt niet gecommit. De hooks voor Claude Code komen in `.claude/settings.local.json`, zodat een gedeelde `.claude/settings.json` schoon blijft.
 
 ```json
 {
@@ -100,11 +104,29 @@ De configuratie staat in `.entire/settings.json` (gecommit in dev-dots):
       "provider": "github",
       "repo": "cedanl/entire-checkpoints"
     }
+  },
+  "checkpoints": {
+    "primary": {
+      "type": "git-branch"
+    }
   }
 }
 ```
 
-Persoonlijke overrides kunnen in `.entire/settings.local.json` (niet gecommit).
+Persoonlijke overrides kunnen in `.entire/settings.local.json`.
+
+### Checkpoint-opslag: branch of refs
+
+Entire kent twee manieren om checkpoints op te slaan:
+
+| Opslag | Instelling | Waar | ID |
+|--------|------------|------|----|
+| **Branch** (onze keuze) | `git-branch` | één gedeelde branch `entire/checkpoints/v1` | 12 tekens |
+| Refs | `git-refs` | één ref per checkpoint: `refs/entire/checkpoints/<xx>/<id>` | ULID, 26 tekens |
+
+De CLI noemt refs zelf de aanbevolen opslag. Refs staan niet in de branchlijst op GitHub en zijn daardoor makkelijk over het hoofd te zien. Wij kiezen de branch, zodat de sessies van het hele team op één plek zichtbaar zijn. Nadeel: iedereen schrijft naar dezelfde branch, dus pushes kunnen botsen.
+
+Checkpoints met een ULID zijn alleen via de refs leesbaar door `entire checkpoint explain`. Een kopie op de branch is wel gewoon als bestand te bekijken op GitHub.
 
 ## Basisgebruik
 
@@ -149,9 +171,9 @@ entire dispatch                    # markdown samenvatting van recent AI-werk
 ## Veiligheid
 
 - **Redactie:** Entire voert automatische redactie uit op cloud-credentials, tokens, sleutels en hoge-entropie strings voordat data wordt opgeslagen.
-- **Opslag:** Sessiedata staat in je git-repo op de `entire/checkpoints/v1` branch. Als je repo publiek is, is deze data zichtbaar.
+- **Opslag:** Sessiedata staat op de branch `entire/checkpoints/v1` in de checkpoint-repo. Gebruik je Entire in een repo zonder aparte checkpoint-remote, dan staat die branch in je eigen repo en is de data zichtbaar als die repo publiek is.
 - **Lokale sessies:** Tijdens een sessie maakt Entire tijdelijke shadow-branches aan met ongeredacteerde data. Deze worden niet gepusht.
-- **Toegang:** De `cedanl/entire-checkpoints` repo is private; alleen cedanl-leden hebben toegang.
+- **Toegang:** De `cedanl/entire-checkpoints` repo is private, maar iedereen met toegang kan alle transcripts lezen. Dat zijn meer mensen dan er schrijven. Laad geen data met persoonsgegevens in een sessie, zie [Feedback zonder persoonsgegevens](../werkafspraken/feedback-zonder-persoonsgegevens.md).
 
 ## Troubleshooting
 
@@ -160,6 +182,10 @@ entire dispatch                    # markdown samenvatting van recent AI-werk
 | `Not a git repository` | Ga eerst naar een Git-repository |
 | `Entire is disabled` | Draai `entire enable` |
 | `shadow branch conflict` | Draai `entire clean --force` |
+| Geen `Entire-Checkpoint:` in je commit | Draai `entire-setup --check`. Start je Claude in de root, dan werkt een container van vóór dev-dots#49 niet voor zustermappen |
+| `entire enable` zegt `Git identity is missing` | Draai eerst `onboard` of zet `git config --global user.name` en `user.email` |
+| Push of sync naar `entire/checkpoints/v1` botst of de branches lopen uit elkaar | Draai `entire doctor` |
+| `checkpoint not found` bij een ID van 26 tekens | Dat checkpoint staat als ref. Controleer of de opslag op `git-refs` staat of haal de refs op: `git fetch origin '+refs/entire/checkpoints/*:refs/entire/checkpoints/*'` |
 | SSH-fout bij `session resume` | Voeg GitHub host keys toe: `ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts` |
 | `failed to unlock correct collection` | De OS-keyring is niet beschikbaar — gebruik `ENTIRE_TOKEN_STORE=file entire login` |
 
