@@ -334,8 +334,22 @@ If it's not resolved, dig deeper:
 Reference these scripts in diagnostic output (assume they're available in the user's repo):
 
 - `../sdp-secrets-management/scripts/sops-doctor.sh` — diagnose AGE/SOPS setup (bundled with the sdp-secrets-management skill)
-- `scripts/flux-hr-status.sh <helmrelease> <ns>` — quick HelmRelease health check
-- `scripts/flux-force-reconcile.sh <helmrelease> <ns>` — force Flux to retry
+
+## Quick commands
+
+- **HelmRelease health check:**
+  ```bash
+  flux get hr <helmrelease> -n <ns>
+  kubectl describe helmrelease <helmrelease> -n <ns>
+  ```
+- **Force Flux to retry:**
+  ```bash
+  flux reconcile hr <helmrelease> -n <ns> --with-source
+  # Without (FluxCD) flux binary: the kubectl annotate fallback from Symptom 6
+  kubectl annotate helmrelease <helmrelease> \
+    reconcile.fluxcd.io/requestedAt="$(date +%s)" \
+    -n <ns> --overwrite
+  ```
 
 ## Important
 
