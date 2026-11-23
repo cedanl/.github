@@ -6,14 +6,14 @@ Elk blok is een complete `<section>` die je tussen `<!-- SLIDES:START -->` en `<
 
 | Klasse | Achtergrond | Tekst | `.hl` / kicker | Gebruik |
 |---|---|---|---|---|
-| `s-blauw` | blauw | roze | geel | sectie, sterk statement |
+| `s-blauw` | blauw | wit | geel | sectie, sterk statement |
 | `s-geel` / `s-groen` / `s-oranje` / `s-roze` | verzadigd | zwart | blauw / roze / roze / blauw | hoofdvraag, advies, afsluiting |
 | `s-lblauw` `s-lgroen` `s-lgeel` `s-lroze` `s-loranje` | licht | zwart | eigen kleur | inhoudsslides met kaarten |
 | `s-wit` | wit | zwart | blauw | data, tabellen, grafieken |
 
 Ritme (OSH-13): titel `s-roze` (titelslide van de potx) → inhoud ongeveer de helft `s-wit`, de rest licht → één verzadigde slide per hoofdstuk/kernboodschap → afsluiting `s-roze` (logo). Nooit twee keer dezelfde variant achter elkaar. Zwart is nooit een achtergrond.
 
-**Kaarten** op lichte slides: wit (`.card`) of een verzadigde kleur (`.card blauw|geel|roze|groen|oranje`). Op `s-wit`: lichte kaarten (`.card lblauw|lgroen|...`). `.card blauw` krijgt automatisch roze tekst (blauw draagt alleen geel of roze); gebruik daarin `.ico geel` of `.ico roze`, en voor `ul.ticks` `style="color:var(--npuls-geel)"` op de `<i>`.
+**Kaarten** op lichte slides: wit (`.card`) of een verzadigde kleur (`.card blauw|geel|roze|groen|oranje`). Op `s-wit`: lichte kaarten (`.card lblauw|lgroen|...`). `.card blauw` krijgt automatisch witte tekst (blauw draagt wit, geel of roze); gebruik daarin `.ico geel` of `.ico roze`, en voor `ul.ticks` `style="color:var(--npuls-geel)"` op de `<i>`.
 
 **Iconen** (`.ico <kleur>`, Font Awesome `fa-solid`): wissel de kleuren af binnen een rij. De icoonkleur bij elke achtergrond is al goed gezet.
 

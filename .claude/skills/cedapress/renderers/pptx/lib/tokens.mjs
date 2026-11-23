@@ -23,7 +23,7 @@ export const GRIJS = '5C5C66';
 // allowed_combinations uit design-tokens.json: achtergrond → toegestane voorgrond.
 // Lichte (secondary) vlakken en wit dragen zwart, blauw, groen of oranje.
 export const ALLOWED = {
-  blauw: ['geel', 'roze'],
+  blauw: ['wit', 'geel', 'roze'],
   roze: ['blauw', 'groen', 'zwart', 'oranje'],
   geel: ['oranje', 'zwart', 'blauw'],
   groen: ['roze', 'zwart'],
@@ -39,7 +39,7 @@ export const ALLOWED = {
 // Slide-varianten: achtergrond + vaste rollen. Elke rol is een toegestane voorgrond.
 // cards = kaartkleuren die op deze achtergrond mogen (nooit gelijk aan de achtergrond).
 export const VARIANTS = {
-  blauw: { bg: 'blauw', title: 'roze', text: 'roze', accent: 'geel', quote: 'geel', mark: 'roze', cards: ['geel', 'roze'], deco: ['geel', 'roze'] },
+  blauw: { bg: 'blauw', title: 'wit', text: 'wit', accent: 'geel', quote: 'geel', mark: 'roze', cards: ['geel', 'roze'], deco: ['geel', 'roze'] },
   roze: { bg: 'roze', title: 'zwart', text: 'zwart', accent: 'blauw', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen'], deco: ['blauw', 'oranje'] },
   groen: { bg: 'groen', title: 'zwart', text: 'zwart', accent: 'roze', quote: 'zwart', mark: 'zwart', cards: ['roze'], deco: ['roze'] },
   oranje: { bg: 'oranje', title: 'zwart', text: 'zwart', accent: 'roze', quote: 'zwart', mark: 'zwart', cards: ['roze'], deco: ['roze'] },
@@ -55,7 +55,7 @@ export const VARIANTS = {
 // Tekstrollen per kaartkleur: groot (kerncijfer/badge), kop, tekst, label.
 // Body-tekst op groen en oranje is zwart: roze haalt daar geen leesbaar contrast.
 export const CARD = {
-  blauw: { big: 'geel', title: 'roze', text: 'roze', label: 'geel', pillBg: 'geel', pillFg: 'blauw' },
+  blauw: { big: 'geel', title: 'wit', text: 'wit', label: 'geel', pillBg: 'geel', pillFg: 'blauw' },
   oranje: { big: 'zwart', title: 'zwart', text: 'zwart', label: 'zwart', pillBg: 'roze', pillFg: 'zwart' },
   groen: { big: 'roze', title: 'zwart', text: 'zwart', label: 'zwart', pillBg: 'roze', pillFg: 'zwart' },
   geel: { big: 'blauw', title: 'blauw', text: 'zwart', label: 'blauw', pillBg: 'blauw', pillFg: 'geel' },
@@ -73,7 +73,7 @@ export const ICON_FG = { blauw: 'geel', geel: 'blauw', groen: 'roze', oranje: 'z
 // Tegelkleur op een kaart: nooit gelijk aan de kaartkleur.
 export const TILE_ON = { blauw: 'geel', oranje: 'roze', groen: 'roze', geel: 'blauw', roze: 'blauw' };
 // Tekst op een gekleurde pil of cirkel (label-pil, stapnummer): alleen toegestane combinaties.
-export const BADGE_FG = { blauw: 'roze', groen: 'zwart', oranje: 'zwart', geel: 'blauw', roze: 'blauw' };
+export const BADGE_FG = { blauw: 'wit', groen: 'zwart', oranje: 'zwart', geel: 'blauw', roze: 'blauw' };
 
 // Grafiekreeksen in de volgorde uit data_visualization.categorical_order.
 export const CHART_ORDER = ['blauw', 'oranje', 'groen', 'geel', 'roze'];

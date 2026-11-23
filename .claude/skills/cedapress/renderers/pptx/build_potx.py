@@ -397,7 +397,7 @@ def no_bullet(paragraphs):
 def footnote(sl, s):
     note = s.get("footnote") or (f"Bron: {s['source']}" if s.get("source") else None)
     if note:
-        sh = sl.text(note, 1.6, 6.92, CW - 0.62, 0.3, 12, "zwart" if sl.v["bg"] != "blauw" else "roze", kind="label")
+        sh = sl.text(note, 1.6, 6.92, CW - 0.62, 0.3, 12, "zwart" if sl.v["bg"] != "blauw" else "wit", kind="label")
         if sh is not None:
             sh.name = "cedapress-voetnoot"  # blijft staan bij het verticaal centreren
 

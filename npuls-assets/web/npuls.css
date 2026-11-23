@@ -1,5 +1,5 @@
 /* GEGENEREERD uit design-tokens.json — niet met de hand bewerken (scripts/gen_npuls_css.py, sjabloon scripts/npuls.css.tmpl) */
-/* Npuls web-laag v0.2.0 - waarden komen uit vormgever-npuls-huisstijl/references/design-tokens.json */
+/* Npuls web-laag v0.2.1 - waarden komen uit vormgever-npuls-huisstijl/references/design-tokens.json */
 /* General Sans (Fontshare) met Plus Jakarta Sans als digitale vervanger. Cooper Light: lokaal installeren, zie ../fonts.md */
 @import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
@@ -47,6 +47,7 @@ h1 { font-size: var(--npuls-h1); } h2 { font-size: var(--npuls-h2); } h3 { font-
 .fg-oranje { color: var(--npuls-oranje); } .fg-zwart { color: var(--npuls-zwart); } .fg-roze { color: var(--npuls-roze); } .fg-blauw { color: var(--npuls-blauw); }
 .fg-geel { color: var(--npuls-geel); } .fg-groen { color: var(--npuls-groen); } .fg-wit { color: var(--npuls-wit); }
 /* kant-en-klare paren (achtergrond-voorgrond) */
+.npuls-blauw-wit { background: var(--npuls-blauw); color: var(--npuls-wit); }
 .npuls-blauw-geel { background: var(--npuls-blauw); color: var(--npuls-geel); }
 .npuls-blauw-roze { background: var(--npuls-blauw); color: var(--npuls-roze); }
 .npuls-roze-blauw { background: var(--npuls-roze); color: var(--npuls-blauw); }

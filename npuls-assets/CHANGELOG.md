@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+- **Kleur:** wit op blauw is toegestaan (`allowed_combinations` in de tokens, besluit Aslam 2026-11-23). `web/npuls.css` heeft daardoor de nieuwe klasse `.npuls-blauw-wit`.
+- **Kleur:** zwart staat niet meer als achtergrond in `allowed_combinations` (zwart is nooit een vlak). In `npuls.css` veranderde daardoor niets.
+
 ## 0.2.0
 
 Let op: de illustraties uit het template hebben een nieuwe naam. Pakket 0.1.0 blijft ongewijzigd beschikbaar.

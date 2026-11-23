@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Haal een vaste versie van het Npuls-assetpakket op en print het pad (alleen stdlib, Python 3.9+).
 
-  npuls_assets.py ensure --version 0.2.0 [--local <map>]   print absoluut pad naar de pakketmap
-  npuls_assets.py path <relatief> --version 0.2.0          print pad van een bestand in het pakket
+  npuls_assets.py ensure --version 0.2.1 [--local <map>]   print absoluut pad naar de pakketmap
+  npuls_assets.py path <relatief> --version 0.2.1          print pad van een bestand in het pakket
 
 --local <map> of env NPULS_ASSETS_DIR: gebruik een lokale npuls-assets/ (voor testen), geen download.
 Exit-codes: 0 ok, 1 bestand niet in pakket, 2 download mislukt (offline?), 3 verificatie mislukt, 4 ongeldige invoer.
@@ -20,7 +20,7 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-DEFAULT_VERSION = "0.2.0"
+DEFAULT_VERSION = "0.2.1"
 URL = "https://github.com/cedanl/.github/releases/download/npuls-assets-v{v}/npuls-assets-{v}.zip"
 CACHE = Path.home() / ".cache" / "ceda" / "npuls-assets"
 
