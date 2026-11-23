@@ -13,7 +13,7 @@ Elk blok is een complete `<section>` die je tussen `<!-- SLIDES:START -->` en `<
 
 Ritme: titel `s-blauw` → afwisselend licht en `s-wit` → één verzadigde slide per hoofdstuk/kernboodschap → afsluiting `s-roze` (logo). Nooit drie keer dezelfde variant achter elkaar. Zwart is nooit een achtergrond.
 
-**Kaarten** op lichte slides: wit (`.card`) of een verzadigde kleur (`.card blauw|geel|roze|groen|oranje`). Op `s-wit`: lichte kaarten (`.card lblauw|lgroen|...`). `.card blauw` krijgt automatisch witte tekst; gebruik daarin `.ico geel` of `.ico roze`, en voor `ul.ticks` `style="color:var(--npuls-geel)"` op de `<i>`.
+**Kaarten** op lichte slides: wit (`.card`) of een verzadigde kleur (`.card blauw|geel|roze|groen|oranje`). Op `s-wit`: lichte kaarten (`.card lblauw|lgroen|...`). `.card blauw` krijgt automatisch roze tekst (blauw draagt alleen geel of roze); gebruik daarin `.ico geel` of `.ico roze`, en voor `ul.ticks` `style="color:var(--npuls-geel)"` op de `<i>`.
 
 **Iconen** (`.ico <kleur>`, Font Awesome `fa-solid`): wissel de kleuren af binnen een rij. De icoonkleur bij elke achtergrond is al goed gezet.
 
@@ -67,7 +67,7 @@ Kop met pil en accent: `kicker` is de label-pil (kleur = accent van de variant),
 | Notitiebalk | `<div class="notitie"><p><strong>Let op:</strong> één boodschap.</p></div>`, onder de inhoud |
 | Inzichtregel | `.inzichten` met 3 tot 5 × `<div class="inzicht"><div class="ico blauw">…</div><b>Sleutel</b><span>tekst</span><span class="tag">Tag</span></div>` |
 | Lijstkaart | `.card` met kop en `<ul class="lijst"><li>…</li></ul>` (3 tot 5) |
-| Pillenkaart | `.card` met kop en `<ul class="pillen"><li>…</li></ul>` (max. 4) |
+| Pillenkaart | `.card` met kop en `<ul class="pillen"><li>…</li></ul>` (3 tot 5) |
 
 ## 2. Statement + lijst | kaarten (split)
 
