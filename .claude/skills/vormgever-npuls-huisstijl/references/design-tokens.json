@@ -142,7 +142,7 @@
     "_comment": "Officiele assets staan in het versioned pakket npuls-assets (zie SKILL.md, sectie Assetpakket); haal ze op met scripts/npuls_assets.py.",
     "shapes": "npuls-assets: vormen/ (SVG) en web/sprite.svg",
     "logos": "npuls-assets: logos/ (npuls-logo-roze.jpg op npuls-roze, PNG-logo's en beeldmerken)",
-    "illustrations": "npuls-assets: illustraties/ (26 SVG uit het Npuls-template)"
+    "illustrations": "npuls-assets: illustraties/ (48 SVG: 26 uit het Npuls-template, 22 van npuls.nl) en tegels/ (10 banner- en kaarttegels)"
   },
   "css_variables": {
     "_comment": "Kant-en-klaar startpunt voor werkwijze-stap 7 (volledig CSS-bestand met variabelen). Alle waarden komen 1-op-1 uit dit bestand.",

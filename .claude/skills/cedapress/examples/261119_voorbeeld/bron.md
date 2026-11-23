@@ -17,10 +17,10 @@ De inhoud staat één keer in bron.md. HTML en pptx worden eruit gemaakt.
 Notes: Testslide voor de renderers; geen echte inhoud.
 
 ::: html
-Illustratie 07 rechts, kop schuift in.
+Illustratie team-rond-idee rechts, kop schuift in.
 :::
 ::: pptx
-Split met illustratie-07 rechts.
+Split met team-rond-idee rechts.
 :::
 
 ## Slide 2 — De check vangt verouderde output

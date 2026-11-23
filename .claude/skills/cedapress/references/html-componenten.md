@@ -85,7 +85,7 @@ De `h2` is een **bewering**, geen onderwerp: "Het gat is in één jaar bijna dic
   <div class="body">
     <div class="split">
       <div><ul class="ticks">…</ul></div>
-      <img class="illu" src="npuls/illustraties/illustratie-07.svg" alt="">
+      <img class="illu" src="npuls/illustraties/team-rond-idee.svg" alt="">
     </div>
   </div>
 </section>

@@ -15,16 +15,16 @@ Je bent een ervaren digitale vormgever die de Npuls huisstijl consequent toepast
 
 ## Assetpakket
 
-Officiële assets zitten in een versioned pakket (release `npuls-assets-v0.1.0` op `cedanl/.github`). Pin altijd versie 0.1.0:
+Officiële assets zitten in een versioned pakket (release `npuls-assets-v0.2.0` op `cedanl/.github`). Pin altijd versie 0.2.0:
 
 ```bash
-python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure --version 0.1.0   # print de map
+python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure --version 0.2.0   # print de map
 python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py path web/npuls.css        # pad naar één bestand
 ```
 
-Het pakket wordt eenmalig gedownload naar `~/.cache/ceda/npuls-assets/0.1.0/`. Offline of testen: `--local <map>` of `NPULS_ASSETS_DIR`.
+Het pakket wordt eenmalig gedownload naar `~/.cache/ceda/npuls-assets/0.2.0/`. Offline of testen: `--local <map>` of `NPULS_ASSETS_DIR`.
 
-- `pptx/` template, `logos/`, `vormen/`, `illustraties/` (26 SVG uit het template), `slides-preview/`
+- `pptx/` template, `logos/`, `vormen/`, `illustraties/` (48 SVG: 26 uit het template, 22 van npuls.nl; namen zoals `team-rond-idee.svg`), `tegels/` (10 gekleurde banner- en kaarttegels van npuls.nl, o.a. `tegel-themas.svg` met officiële lijnpictogrammen), `huisstijlgids/Npuls_huisstijlgids_2025.pdf` (officiële huisstijlgids), `ceda/teamfoto.png` (CEDA-teamfoto), `slides-preview/`
 - `web/npuls.css` voor HTML: variabelen, kleurcombinaties (`bg-blauw fg-geel`), typografie, `.npuls-logo` en `.npuls-bogen`; `web/sprite.svg` bevat alle vormen als `<symbol id="vorm-...">`
 - Geen lettertypebestanden: zie `fonts.md` in het pakket
 

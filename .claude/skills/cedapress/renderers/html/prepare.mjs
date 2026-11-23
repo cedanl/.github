@@ -2,13 +2,13 @@
 // Zet een deckmap klaar voor de HTML-renderer:
 //   - map `npuls` naast het deck = junction (Windows) of symlink naar het Npuls-assetpakket (versie uit assets.lock)
 //   - .gitignore in de deckmap: npuls, exports/ en de teamfoto niet in git (assets uit het pakket, exports naar SharePoint)
-//   - CEDA-teamfoto (geen Npuls-asset) uit env CEDA_TEAMFOTO naar img/team-groep.png
+//   - CEDA-teamfoto (env CEDA_TEAMFOTO of ceda/teamfoto.png uit het pakket) naar img/team-groep.png
 //   - zonder deck-HTML: kopieer frame.html als <mapnaam>.html en vul {{BRON_HASH}} in
 // Gebruik: node <cedapress>/renderers/html/prepare.mjs presentaties/YYMMDD_onderwerp
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { npulsAssetsDir } from '../lib/npuls-assets.mjs';
+import { npulsAssetsDir, npulsPaths } from '../lib/npuls-assets.mjs';
 import { bronHash } from '../lib/bron.mjs';
 
 const dir = process.argv[2];
@@ -33,9 +33,10 @@ if (add.length) writeFileSync(gi, [...have.filter(Boolean), ...add].join('\n') +
 
 const team = join(deckDir, 'img', 'team-groep.png');
 if (!existsSync(team)) {
-  if (process.env.CEDA_TEAMFOTO && existsSync(process.env.CEDA_TEAMFOTO)) {
+  const bron = npulsPaths().teamfoto;
+  if (bron && existsSync(bron)) {
     mkdirSync(dirname(team), { recursive: true });
-    copyFileSync(process.env.CEDA_TEAMFOTO, team);
+    copyFileSync(bron, team);
     console.log('✓ teamfoto → img/team-groep.png');
   } else console.log('WAARSCHUWING  geen teamfoto: zet CEDA_TEAMFOTO of leg img/team-groep.png neer ("Wie zijn wij")');
 }

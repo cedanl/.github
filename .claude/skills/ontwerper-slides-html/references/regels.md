@@ -23,3 +23,4 @@ Vaste structuur per regel: **id · regel · meetbaar criterium · fancy-niveau �
 | OSH-13 | Ritme | niet 3× achter elkaar dezelfde variant | alle | check.mjs (huisstijl) | W |
 | OSH-14 | Verhaallijn | > 8 inhoudsslides → 3 à 5 delen (`data-deel`) | alle | check.mjs (aantal delen) | W |
 | OSH-15 | Feiten kloppen | elk cijfer en elke bewering terug te vinden in de bronnen van `bron.md` | alle | handmatig (audit vóór export) | F |
+| OSH-16 | Banner/hero-patroon | Banner/hero-patroon zoals npuls.nl: effen vlak in één huisstijlkleur (blauw, groen, oranje of roze), daarop één illustratie, eventueel met een dunne witte cirkellijn erachter. Kant-en-klaar voorbeeld: `tegels/` in het assetpakket. Lijnpictogrammen in `tegels/tegel-themas.svg` zijn het officiële Npuls-alternatief voor icoontjes. | B, C | handmatig | W |

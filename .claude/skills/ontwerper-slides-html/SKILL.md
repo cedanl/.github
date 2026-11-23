@@ -4,7 +4,7 @@ description: Ontwerpregels voor HTML-presentaties van CEDA/Npuls — tekst per s
 allowed-tools: Read
 metadata:
   ceda-id: ceda.ontwerper-slides-html
-  ceda-version: "0.1.0"
+  ceda-version: "0.2.0"
   ceda-type: reference
   ceda-subtype: knowledge
   ceda-origin: own

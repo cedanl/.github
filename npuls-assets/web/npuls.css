@@ -1,5 +1,5 @@
 /* GEGENEREERD uit design-tokens.json — niet met de hand bewerken (scripts/gen_npuls_css.py, sjabloon scripts/npuls.css.tmpl) */
-/* Npuls web-laag v0.1.0 - waarden komen uit vormgever-npuls-huisstijl/references/design-tokens.json */
+/* Npuls web-laag v0.2.0 - waarden komen uit vormgever-npuls-huisstijl/references/design-tokens.json */
 /* General Sans (Fontshare) met Plus Jakarta Sans als digitale vervanger. Cooper Light: lokaal installeren, zie ../fonts.md */
 @import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');

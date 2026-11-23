@@ -7,7 +7,10 @@ Versioned pakket met officiele Npuls-assets (PowerPoint, HTML-decks, webpagina's
 | Map of bestand | Wat | Bron |
 |---|---|---|
 | `pptx/Npuls_powerpoint-template.potx` | PowerPoint-template | Npuls-communicatiekit |
-| `illustraties/` | 26 illustraties (SVG), `illustratie-NN.svg` | potx slide 18 en 19 (leesvolgorde); herkomst per bestand in `illustraties-mapping.json` |
+| `illustraties/` | 48 illustraties (SVG) met betekenisvolle namen, bv. `team-rond-idee.svg` | 26 uit potx slide 18 en 19, 22 van npuls.nl; herkomst en oude namen per bestand in `illustraties-mapping.json` |
+| `tegels/` | 10 gekleurde banner- en kaarttegels (SVG), o.a. `tegel-themas.svg` met lijnpictogrammen | npuls.nl; herkomst per bestand in `tegels-mapping.json` |
+| `huisstijlgids/` | `Npuls_huisstijlgids_2025.pdf`, de officiële Npuls-huisstijlgids | npuls.nl |
+| `ceda/` | Eigen CEDA-assets: `teamfoto.png` (groepsfoto van het team). Het CEDA-logo volgt nog (TODO) | CEDA |
 | `vormen/` | Vormen en tegels (SVG), o.a. `bogen.svg` | Npuls-communicatiekit; identiek aan de graphics in de slideLayouts van de potx |
 | `logos/` | Logo's en beeldmerken (PNG), logo op roze (JPG) | Npuls-communicatiekit |
 | `slides-preview/` | PNG-previews van de templateslides | uit het template |
@@ -15,18 +18,18 @@ Versioned pakket met officiele Npuls-assets (PowerPoint, HTML-decks, webpagina's
 | `fonts.md` | Lettertypen en licenties (geen losse fontbestanden; de potx heeft ze ingesloten) | |
 | `manifest.json` | Versie en alle bestanden met sha256 | gegenereerd |
 
-De potx-illustraties hebben geen betekenisvolle namen (shapes heten "Graphic NN"), vandaar de nummering.
+In 0.1.0 heetten de potx-illustraties `illustratie-01.svg` t/m `illustratie-26.svg`. Sinds 0.2.0 hebben ze een naam; de oude naam staat per bestand in `illustraties-mapping.json`.
 
 ## Gebruiken en pinnen
 
 Pin altijd een vaste versie. De helper in de skill `vormgever-npuls-huisstijl` haalt het pakket op en cachet het in `~/.cache/ceda/npuls-assets/<versie>/`:
 
 ```bash
-python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure --version 0.1.0
+python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure --version 0.2.0
 python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py path web/npuls.css
 ```
 
-Handmatig: `https://github.com/cedanl/.github/releases/download/npuls-assets-v0.1.0/npuls-assets-0.1.0.zip`.
+Handmatig: `https://github.com/cedanl/.github/releases/download/npuls-assets-v0.2.0/npuls-assets-0.2.0.zip`.
 
 ## Uitbrengen
 

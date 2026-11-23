@@ -28,19 +28,28 @@ from pathlib import Path
 root, version = Path(sys.argv[1]), sys.argv[2]
 pkg = root / "npuls-assets"
 mapping = json.loads((pkg / "illustraties-mapping.json").read_text(encoding="utf-8"))
+tegels = json.loads((pkg / "tegels-mapping.json").read_text(encoding="utf-8"))
 
 def describe(rel):
     p = rel.split("/")
     if rel == "pptx/Npuls_powerpoint-template.potx": return ("pptx-template", "Npuls PowerPoint-template (19 slides)")
     if p[0] == "logos": return ("logo", "Npuls logo of beeldmerk (" + p[-1] + ")")
     if p[0] == "vormen": return ("vorm", "Npuls vorm of tegel (SVG)")
-    if p[0] == "illustraties": return ("illustratie", "Illustratie, " + mapping.get(p[-1], ""))
+    if p[0] == "illustraties":
+        m = mapping.get(p[-1], {})
+        return ("illustratie", "Illustratie, bron: " + (m.get("bron", "") if isinstance(m, dict) else m))
+    if p[0] == "tegels":
+        m = tegels.get(p[-1], {})
+        return ("tegel", "Gekleurde tegel van npuls.nl, bron: " + m.get("bron", ""))
+    if p[0] == "huisstijlgids": return ("doc", "Officiele Npuls-huisstijlgids (PDF)")
+    if p[0] == "ceda": return ("ceda", "Eigen CEDA-asset (" + p[-1] + ")")
     if p[0] == "slides-preview": return ("preview", "PNG-preview van templateslide")
     if rel == "web/npuls.css": return ("css", "CSS-variabelen, kleurcombinaties, typografie, logo en bogen")
     if rel == "web/sprite.svg": return ("sprite", "Alle vormen als <symbol id=vorm-...>")
     if p[0] == "web": return ("web", "Geoptimaliseerde kopie voor HTML")
     if rel == "fonts.md": return ("doc", "Uitleg lettertypen en licenties")
-    if rel == "illustraties-mapping.json": return ("data", "Mapping oorspronkelijke naam naar kebab-case bestandsnaam")
+    if rel == "illustraties-mapping.json": return ("data", "Herkomst en oude naam per illustratie")
+    if rel == "tegels-mapping.json": return ("data", "Herkomst per tegel")
     return ("doc", rel)
 
 files = []

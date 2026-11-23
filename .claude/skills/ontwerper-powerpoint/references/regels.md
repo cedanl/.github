@@ -21,3 +21,4 @@ Vaste structuur per regel: **id · regel · meetbaar criterium · fancy-niveau �
 | OPP-11 | Beeld | fancy B/C: ≥ 2 Npuls-illustraties in het deck | B, C | build.mjs | W |
 | OPP-12 | Visueel gecontroleerd | elke gerenderde PNG bekeken; geen overloop of botsing | alle | render.mjs + handmatig | F |
 | OPP-13 | Feiten kloppen | elk cijfer terug te vinden in de bronnen van `bron.md` | alle | handmatig (audit vóór export) | F |
+| OPP-14 | Banner/hero-patroon | Banner/hero-patroon zoals npuls.nl: effen vlak in één huisstijlkleur (blauw, groen, oranje of roze), daarop één illustratie, eventueel met een dunne witte cirkellijn erachter. Kant-en-klaar voorbeeld: `tegels/` in het assetpakket. Lijnpictogrammen in `tegels/tegel-themas.svg` zijn het officiële Npuls-alternatief voor icoontjes. | B, C | handmatig | W |
