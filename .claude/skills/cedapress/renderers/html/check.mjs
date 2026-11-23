@@ -81,9 +81,14 @@ for (const m of body.matchAll(/<section\s+class="([^"]*)"[\s\S]*?<\/section>/g))
   if (/npuls_logo\.jpg|npuls-logo-roze\.jpg/.test(m[0]) && !/\bs-roze\b/.test(m[1]))
     errors.push(`npuls-logo-roze.jpg staat op een ${m[1].match(/s-\w+/)?.[0]}-slide — het logo heeft een roze vlak, zet het op s-roze`);
 
-// 9. Vaste CEDA-slides (gelijk in HTML en pptx)
-for (const [t, naam] of [['Wie is CEDA', '"Wie is CEDA"'], ['Wie zijn wij', '"Wie zijn wij"'], ['Blijf in contact', '"Blijf in contact"']])
-  if (!body.includes(t)) warns.push(`vaste CEDA-slide ${naam} ontbreekt — alleen weglaten als de gebruiker dat expliciet vroeg`);
+// 9. Vaste CEDA-slides zijn optioneel (bron.md: vaste-slides: ja | nee). Zijn ze er, dan als één blok vóór de afsluiting.
+const VASTE = ['Wie is CEDA', 'Wie zijn wij', 'Blijf in contact'];
+const vasteAan = VASTE.filter((t) => body.includes(t));
+const wens = (bron ? readFileSync(bron, 'utf8') : '').match(/^vaste-slides:\s*(ja|nee)/mi)?.[1]?.toLowerCase();
+if (vasteAan.length && vasteAan.length < VASTE.length)
+  warns.push(`vaste CEDA-slides zijn optioneel, maar horen als blok bij elkaar: ${VASTE.filter((t) => !vasteAan.includes(t)).join(', ')} ontbreekt`);
+if (wens === 'ja' && !vasteAan.length) warns.push('bron.md zegt vaste-slides: ja, maar de HTML heeft geen vaste CEDA-slides (blok VASTE-SLIDES in de frame)');
+if (wens === 'nee' && vasteAan.length) warns.push('bron.md zegt vaste-slides: nee, maar de HTML heeft vaste CEDA-slides — verwijder het blok of zet vaste-slides: ja');
 
 // 10. Bron-markdown is de single source of truth: HTML moet de hash van de huidige bron.md dragen
 const meta = html.match(/<meta name="cedapress-bron" content="([^"]*)"/);
@@ -91,31 +96,42 @@ if (!bron) errors.push('bron.md ontbreekt naast het deck — elk deck heeft een 
 else if (!meta || !/^sha256:/.test(meta[1])) errors.push('meta cedapress-bron ontbreekt — HTML is niet uit bron.md gegenereerd (prepare.mjs, of --stempel na bijwerken)');
 else if (meta[1] !== bronHash(bron)) errors.push(`HTML loopt achter op bron.md (HTML ${meta[1]}, bron ${bronHash(bron)}) — werk de HTML bij uit de bron en draai check met --stempel`);
 
-// 11. Ontwerpregels (ontwerper-slides-html/references/regels.md). TODO(Edwin): drempels vaststellen.
-const sections = [...body.matchAll(/<section([^>]*)>([\s\S]*?)<\/section>/g)];
+// 11. Ontwerpregels (ontwerper-slides-html/references/regels.md): zelfde drempels als de tabel daar.
+const sections = [...body.matchAll(/<section\b([^>]*)>([\s\S]*?)<\/section>/g)];
 const zichtbaar = (h) => h.replace(/<!--[\s\S]*?-->|<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<svg[\s\S]*?<\/svg>/g, ' ')
   .replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;|&#\d+;/g, ' ');
+// Vaste CEDA-slides: één aaneengesloten blok (Wie is CEDA, Wie zijn wij, Blijf in contact) vóór de afsluiter (lay-eind), zelfde regel als build.mjs.
+{
+  const at = sections.map(([all], k) => (VASTE.some((t) => all.includes(`>${t}<`) || all.includes(t) && /class="[^"]*\bs-/.test(all)) && !/lay-eind/.test(all) ? k : -1)).filter((k) => k >= 0);
+  if (at.length) {
+    const aaneen = at.every((v, k) => k === 0 || v === at[k - 1] + 1);
+    const erna = sections.slice(at.at(-1) + 1).filter(([all]) => !/lay-eind/.test(all)).length; // alleen de afsluiter mag volgen
+    if (!aaneen || erna > 0) warns.push('vaste CEDA-slides (Wie is CEDA, Wie zijn wij, Blijf in contact) horen als één blok aan het eind, vóór de afsluiter');
+  }
+}
 const vast = /Wie is CEDA|Wie zijn wij|Blijf in contact|lay-eind/;
 sections.forEach(([all, attrs, inner], k) => {
   const n = k + 1;
   if (vast.test(all)) return;
   const woorden = zichtbaar(inner).split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length;
   if (woorden > 90) errors.push(`slide ${n}: ${woorden} woorden zichtbaar [OSH-02] — splitsen`);
-  else if (woorden > 60) warns.push(`slide ${n}: ${woorden} woorden zichtbaar [OSH-02] — richtlijn max 60`);
-  const h2 = (inner.match(/<h2/g) || []).length;
+  else if (woorden > 50) warns.push(`slide ${n}: ${woorden} woorden zichtbaar [OSH-02] — richtlijn max 50`);
+  const h2 = (inner.match(/<h2\b/g) || []).length;
   if (h2 > 1) errors.push(`slide ${n}: ${h2} koppen (h2) [OSH-01] — één boodschap per slide`);
-  const kop = inner.match(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/);
+  const kop = inner.match(/<h[12]\b[^>]*>([\s\S]*?)<\/h[12]>/);
   if (kop) { const kw = zichtbaar(kop[1]).split(/\s+/).filter(Boolean).length; if (kw > 12) warns.push(`slide ${n}: kop van ${kw} woorden [OSH-03] — max 12`); }
-  for (const ul of inner.matchAll(/<(ul|ol)[^>]*>([\s\S]*?)<\/>/g)) {
-    const li = (ul[2].match(/<li/g) || []).length;
+  for (const ul of inner.matchAll(/<(ul|ol)\b[^>]*>([\s\S]*?)<\/>/g)) {
+    const li = (ul[2].match(/<li\b/g) || []).length;
     if (li > 5) warns.push(`slide ${n}: lijst met ${li} punten [OSH-04] — max 5`);
   }
-  for (const img of inner.matchAll(/<img[^>]*>/g)) if (!/alt=/.test(img[0])) errors.push(`slide ${n}: afbeelding zonder alt [OSH-06] — alt="" voor decoratie`);
+  for (const r of inner.matchAll(/<div class="inzicht"[^>]*>([\s\S]*?)<\/div>\s*(?=<div class="inzicht"|<\/div>)/g))
+    if (!/class="ico\b/.test(r[0])) warns.push(`slide ${n}: inzichtregel zonder icoontegel (class="ico") [OPP-22]`);
+  for (const img of inner.matchAll(/<img\b[^>]*>/g)) if (!/\balt=/.test(img[0])) errors.push(`slide ${n}: afbeelding zonder alt [OSH-06] — alt="" voor decoratie`);
 });
 const fancy = html.match(/<meta name="cedapress-fancy" content="([ABC])"/)?.[1];
 if (!fancy) warns.push('meta cedapress-fancy (A, B of C) ontbreekt [OSH-10]');
 else {
-  const anim = (body.match(/data-(a|count|draw|pop|grow)/g) || []).length;
+  const anim = (body.match(/\bdata-(a|count|draw|pop|grow)\b/g) || []).length;
   const illus = (body.match(/npuls\/illustraties\//g) || []).length;
   const bogen = (body.match(/class="deco bogen"/g) || []).length;
   if (fancy === 'A' && anim) errors.push(`fancy A (sober) met ${anim} extra animatie(s) data-* [OSH-10]`);

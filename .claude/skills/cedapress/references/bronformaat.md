@@ -1,8 +1,8 @@
 # Bron-markdown (`bron.md`)
 
 Eén `bron.md` per deck is de **single source of truth**. Altijd verplicht: cedapress schrijft hem eerst,
-HTML en pptx worden er altijd uit gemaakt. Nooit HTML of pptx los bewerken zonder dat de bron mee verandert;
-wijzigingen in een gedeelde pptx komen via `scripts/terugschrijven.py` terug. Formaat uit pitch
+HTML en pptx worden er altijd uit gemaakt. Nooit HTML of pptx los bewerken zonder dat de bron mee verandert.
+Formaat uit pitch
 cedanl/clidev-presentaties#16. Parser en validatie: `python <cedapress>/scripts/parse_bron.py bron.md --check`.
 
 ## Plaats
@@ -12,7 +12,6 @@ cedanl/clidev-presentaties#16. Parser en validatie: `python <cedapress>/scripts/
   bron.md                              # inhoud (git)
   YYMMDD_onderwerp.html                # HTML-deck, draagt de bron-hash (git)
   YYMMDD_onderwerp.deck.mjs            # pptx-deckspec, draagt de bron-hash (git)
-  YYMMDD_onderwerp.pptx.meta.json      # hash van de geëxporteerde pptx, voor terugschrijven (git)
   img/                                 # eigen afbeeldingen, los (git)
   npuls  -> assetpakket                # link, niet in git (prepare.mjs)
   exports/                             # pdf, pptx, gebundelde html: niet in git, naar SharePoint
@@ -34,7 +33,7 @@ fancy: B               # A sober | B huisstijl+ | C rijk (ontwerper-skills)
 duur: 15               # minuten; ~1 inhoudsslide per 2 minuten
 spreker: Naam
 datum: 2026-11-19
-vaste-slides: ja       # Wie is CEDA, Wie zijn wij, Blijf in contact; nee alleen op expliciet verzoek
+vaste-slides: ja       # optioneel blok vóór de afsluiter: Wie is CEDA, Wie zijn wij, Blijf in contact; ja of nee, de auteur kiest
 bronnen: pad/of/url, pad2
 ---
 
@@ -61,7 +60,8 @@ Notes: In HTML zit dit achter de klik op slide 1.
 | Element | Betekenis |
 |---|---|
 | `## ` | Nieuwe slide. `Slide N — ` ervoor mag, de rest is de **titel** (een bewering, geen onderwerp). |
-| Sleutels direct onder de kop | `type` (pptx-slidetype of HTML-component), `alleen`, `variant`, `layout`, `deel`. Alleen deze namen. |
+| Sleutels direct onder de kop | `type` (pptx-slidetype of HTML-component), `alleen`, `variant`, `layout`, `deel`, `label`. Alleen deze namen. |
+| `label` | Label-pil boven de titel: 1 tot 3 woorden in kapitalen (`AANLEIDING`). Titels mogen `**accentdeel**` bevatten ("Wat de regel **doet**"); het accentdeel krijgt de accentkleur van de slide. Componenten en velden: `pptx-slidetypes.md` en `html-componenten.md`. |
 | Tekst | Wat op de slide staat, in markdown. Gedeeld door beide vormen. |
 | `Notes:` | Sprekersnotities, tot de volgende slide of het volgende blok. Elke slide heeft notes. |
 | `::: html` … `:::` | Alleen voor HTML: animatie, timer, interactie, Mentimeter. |
@@ -69,9 +69,10 @@ Notes: In HTML zit dit achter de klik op slide 1.
 | Geen blok | Slide is in beide vormen gelijk. |
 | `alleen: html` / `alleen: pptx` | Slide bestaat in één vorm. |
 
-Vaste CEDA-slides (titel, Wie is CEDA, Wie zijn wij, Blijf in contact, Einddia) staan **niet** in de bron:
-de renderers zetten ze erin (`vaste-slides: ja`). Alleen de projectenlijst op "Wie zijn wij" mag in de
-frontmatter: `team-projecten: Instroomprognose, Staat van de Onderwijsinstelling`.
+De vaste CEDA-slides (Wie is CEDA, Wie zijn wij, Blijf in contact) zijn **optioneel** en staan niet in de bron.
+Met `vaste-slides: ja` komen ze als één blok vóór de afsluiter (Einddia); met `nee` ontbreken ze. Niet opgegeven
+betekent: de auteur heeft nog niet gekozen, de check geeft dan geen melding. Alleen de projectenlijst op "Wie zijn wij"
+mag in de frontmatter: `team-projecten: Instroomprognose, Staat van de Onderwijsinstelling`.
 
 ## Hash
 
@@ -83,7 +84,4 @@ Stempel alleen nadat de inhoud echt is bijgewerkt.
 
 ## Terugschrijven uit pptx
 
-1. Bij export schrijft `build.mjs` `<naam>.pptx.meta.json` met de hash van de pptx en van de bron.
-2. Is de pptx op SharePoint bewerkt (andere hash): `python <cedapress>/scripts/terugschrijven.py <deckmap> <pptx>`.
-3. Toon de verschillen (tekst en notes) aan de gebruiker; verwerk na akkoord in `bron.md`, commit
-   "wijziging uit pptx", maak HTML en exports opnieuw. Opmaak uit PowerPoint komt niet terug.
+Nog niet beschikbaar (backlog cedanl/.github#130). Een in PowerPoint bewerkte pptx: neem de wijziging met de hand over in `bron.md` en bouw opnieuw.

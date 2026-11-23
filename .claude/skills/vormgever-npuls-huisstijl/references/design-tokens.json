@@ -23,12 +23,11 @@
       "secondary_usage": "achtergronden of illustratie-details, ter ondersteuning van leesbaarheid"
     },
     "allowed_combinations": [
-      { "background": "npuls-blauw",  "with": ["npuls-geel", "npuls-roze"] },
+      { "background": "npuls-blauw",  "with": ["npuls-wit", "npuls-geel", "npuls-roze"] },
       { "background": "npuls-roze",   "with": ["npuls-blauw", "npuls-groen", "npuls-zwart", "npuls-oranje"] },
       { "background": "npuls-geel",   "with": ["npuls-oranje", "npuls-zwart", "npuls-blauw"] },
       { "background": "npuls-groen",  "with": ["npuls-roze", "npuls-zwart"] },
-      { "background": "npuls-oranje", "with": ["npuls-zwart", "npuls-roze"] },
-      { "background": "npuls-zwart",  "with": ["npuls-blauw", "npuls-oranje", "npuls-groen", "npuls-geel", "npuls-roze"] }
+      { "background": "npuls-oranje", "with": ["npuls-zwart", "npuls-roze"] }
     ],
     "forbidden_examples": ["geel-op-groen", "groen-op-blauw"],
     "layout": {

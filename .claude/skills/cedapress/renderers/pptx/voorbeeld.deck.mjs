@@ -1,4 +1,4 @@
-// Voorbeeld-deck-spec voor de cedapress-pptx-renderer: elk slidetype één keer, met de vaste CEDA-slides.
+// Voorbeeld-deck-spec voor de cedapress-pptx-renderer: elk slidetype één keer, met het optionele blok vaste CEDA-slides.
 // Kopieer naar presentaties/YYMMDD_onderwerp/YYMMDD_onderwerp.deck.mjs en vul hem uit bron.md
 // (python <cedapress>/scripts/parse_bron.py bron.md --vorm pptx). `bron` = hash van bron.md
 // (python <cedapress>/scripts/parse_bron.py bron.md --hash); build.mjs faalt als die niet klopt.
@@ -15,22 +15,18 @@ export default {
       sub: '90 minuten · één casus · één dashboard',
       notes: 'Welkom. In 90 minuten bouwen we samen met een AI-agent één dashboard.',
     },
-    // Vaste CEDA-introslide: altijd direct na de titel/agenda. Inhoud ligt vast.
-    { type: 'ceda' },
-    // Vaste teamslide: groepsfoto van het CEDA-team, direct na ceda. Alleen `text` mag anders.
-    { type: 'team' },
     {
       type: 'stats',
-      variant: 'roze',
+      variant: 'licht-roze',
       title: 'Eén casus, één dashboard, drie rondes',
-      lede: 'AI is geen black box maar een transparante junior-analist. De agent versnelt, jij houdt de regie.',
+      lede: 'AI is een transparante junior-analist: de agent versnelt, jij houdt de regie.',
       items: [
         { value: '90', label: 'minuten', text: 'één workshop, negen blokken' },
         { value: '3', label: 'rondes', text: 'exploreren, bouwen en verantwoorden' },
-        { value: '3', label: 'spiegelmomenten', text: 'elk met een skill die de stap ervoor doet' },
+        { value: '3', label: 'spiegelmomenten', text: 'elk met een skill' },
         { value: '1', label: 'casus', text: 'beantwoord met één dashboard' },
       ],
-      callout: '**Wow-moment:** elke ronde een zichtbare sprong, gespiegeld aan de groep ernaast.',
+      callout: '**Wow-moment:** elke ronde een zichtbare sprong.',
       notes: 'De vier getallen vatten het format samen.',
     },
     {
@@ -40,9 +36,9 @@ export default {
       blocks: [
         { minutes: 15, color: 'geel', title: 'Welkom en uitleg', text: 'Casus en werkwijze' },
         { minutes: 30, color: 'blauw', title: 'Ronde 1', text: 'Jullie werken zelf' },
-        { minutes: 15, color: 'oranje', title: 'Spiegelmoment', text: 'Skill live', tag: '/skill-naam' },
+        { minutes: 15, color: 'oranje', title: 'Spiegel', text: 'Skill live', tag: '/skill-naam' },
         { minutes: 30, color: 'blauw', title: 'Ronde 2', text: 'Andere rol' },
-        { minutes: 10, color: 'groen', title: 'Afsluiting', text: 'Terugblik' },
+        { minutes: 10, color: 'groen', title: 'Slot', text: 'Terugblik' },
       ],
       legend: [{ color: 'geel', label: 'Uitleg' }, { color: 'blauw', label: 'Werken' }, { color: 'oranje', label: 'Spiegelmoment' }, { color: 'groen', label: 'Afsluiting' }],
       notes: 'Loop het schema in dertig seconden door.',
@@ -54,12 +50,82 @@ export default {
       numbered: true,
       arrows: true,
       items: [
-        { tag: 'Data → Informatie', title: 'Data exploratie', sections: [{ label: 'Wat je doet', text: 'Data en codebook verkennen met de agent.' }, { label: 'Wat ontstaat', text: 'Begrip van de data en een schets.', strong: true }] },
-        { tag: 'Informatie → Kennis', title: 'Dashboard bouwen', sections: [{ label: 'Wat je doet', text: 'Grafiek, vergelijking en filter bouwen.' }, { label: 'Wat ontstaat', text: 'Een werkend dashboard.', strong: true }] },
-        { tag: 'Kennis → Wijsheid', title: 'Verantwoorden', sections: [{ label: 'Wat je doet', text: 'Toetsen op privacy, framing en bron.' }, { label: 'Wat ontstaat', text: 'Hetzelfde dashboard, nu uitlegbaar.', strong: true }] },
+        { tag: 'Data → Informatie', title: 'Data exploratie', sections: [{ label: 'Wat je doet', text: 'Data en codebook verkennen.' }, { label: 'Wat ontstaat', text: 'Begrip van de data.', strong: true }] },
+        { tag: 'Informatie → Kennis', title: 'Dashboard bouwen', sections: [{ label: 'Wat je doet', text: 'Grafiek en filter bouwen.' }, { label: 'Wat ontstaat', text: 'Een werkend dashboard.', strong: true }] },
+        { tag: 'Kennis → Wijsheid', color: 'wit', title: 'Verantwoorden', sections: [{ label: 'Wat je doet', text: 'Toetsen op privacy en bron.' }, { label: 'Wat ontstaat', text: 'Een uitlegbaar dashboard.', strong: true }] },
       ],
       footer: '**Het dashboard is het middel**, de casusvraag het doel.',
       notes: 'Drie rondes, elk met een eigen opbrengst.',
+    },
+    // Componenten uit ceda-powerpoint-maker (Edwin): label-pil + titel met **accentdeel**, icoontegel, stapkolom, kerncijfer naast lead,
+    // inzichtregel, lijstkaart en pillenkaart, heldenkaart en notitiebalk. Zie references/pptx-slidetypes.md.
+    {
+      type: 'steps',
+      variant: 'licht-groen',
+      label: 'Aanpak',
+      title: 'In drie stappen **aan de slag**',
+      items: [
+        { title: 'Data klaarzetten', text: 'Gegevens uit het studentsysteem' },
+        { title: 'Regel draaien', text: 'Lijst met studenten om uit te nodigen' },
+        { title: 'Gesprek voeren', text: 'Mentor of begeleider' },
+      ],
+      note: { bold: 'Let op:', text: 'de mens beslist, niet het model.' },
+      notes: 'Stapkolom: een verticale kaart per stap.',
+    },
+    {
+      type: 'lead',
+      variant: 'wit',
+      label: 'Aanleiding',
+      title: 'Uitval in het **eerste jaar**',
+      lead: 'Veel studenten stoppen in het eerste jaar. Een gesprek op tijd helpt.',
+      figures: [{ value: '15%', label: 'uitval jaar 1, hbo (synthetisch)' }],
+      notes: 'Kerncijfer naast de lead. Bron: synthetische 1CHO-data.',
+    },
+    {
+      type: 'cards',
+      variant: 'licht-blauw',
+      label: 'Wat het doet',
+      title: 'Wat de regel **doet**',
+      items: [
+        { title: 'Signaleren', text: 'Welke studenten baat hebben bij een gesprek.', icon: 'zoeken', color: 'wit' },
+        { title: 'Uitnodigen', text: 'De mentor nodigt de student uit.', icon: 'samenwerken', color: 'wit' },
+        { title: 'Leren', text: 'De instelling stelt de regel bij.', icon: 'grafiek', color: 'oranje' },
+      ],
+      notes: 'Kaarten met icoontegel. Het icoon komt uit iconen/<naam>.svg van het assetpakket; zonder icoon blijft de tegel leeg en volgt een waarschuwing.',
+    },
+    {
+      type: 'insight',
+      variant: 'licht-groen',
+      label: 'Inzicht',
+      title: 'Wie, wil, want, **maar**',
+      rows: [
+        { icon: 'persoon', key: 'Wie', text: 'Student in het eerste jaar', tag: 'Doelgroep' },
+        { icon: 'doel', key: 'Wil', text: 'Het diploma halen', tag: 'Motief' },
+        { icon: 'zoeken', key: 'Maar', text: 'Twijfelt en meldt dat niet', tag: 'Risico' },
+      ],
+      notes: 'Inzichtregels.',
+    },
+    {
+      type: 'lists',
+      variant: 'licht-oranje',
+      label: 'Voorwaarden',
+      title: 'Wat je nodig **hebt**',
+      groups: [
+        { title: 'Data', icon: 'grafiek', style: 'pills', items: ['Inschrijvingen', 'Aanwezigheid', 'Resultaten'] },
+        { title: 'Afspraken', icon: 'persoon', items: ['Een mentor per student', 'Een vast gesprekspatroon', 'Ruimte voor het gesprek'] },
+      ],
+      notes: 'Pillenkaart links, lijstkaart rechts.',
+    },
+    {
+      type: 'hero',
+      variant: 'wit',
+      label: 'Kernvraag',
+      title: 'Hoe kunnen we **de student op tijd spreken?**',
+      eyebrow: 'Ontwerpvraag',
+      text: 'Hoe nodigen we studenten op tijd uit, zonder dat het voelt als controle?',
+      illustration: 'verrekijker',
+      color: 'groen',
+      notes: 'Heldenkaart met een grote vraag.',
     },
     {
       type: 'section',
@@ -127,7 +193,10 @@ export default {
       contact: 'Team CEDA',
       notes: 'Plenaire reflectie.',
     },
-    // Vaste afsluitslide met de CEDA-links: altijd de allerlaatste slide. Inhoud ligt vast.
+    // Optioneel blok vaste CEDA-slides (bron.md: vaste-slides: ja): ceda → team → contact, vóór de afsluiter (de Einddia komt vanzelf).
+    // Kies je nee, haal dan alle drie weg. Inhoud van deze slides ligt vast; alleen `text` van team mag anders.
+    { type: 'ceda' },
+    { type: 'team' },
     { type: 'contact' },
   ],
 };

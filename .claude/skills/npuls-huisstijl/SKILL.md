@@ -1,7 +1,10 @@
 ---
 name: npuls-huisstijl
-description: Centrale Npuls huisstijlgids en brand-assets voor CEDA/Npuls projecten. Gebruik wanneer iemand iets maakt in de Npuls stijl — presentaties (Slidev, PowerPoint .potx), dashboards (Streamlit, R Shiny), documenten, visualisaties of branded assets. Levert design tokens, kleurcombinaties, typografie, vormentaal, illustraties en kant-en-klare thema's voor Slidev, Streamlit en R Shiny. Moeder-skill van clidev — gebruik deze voor de bronwaarheid, clidev voor Slidev-workflow.
+description: UITGEFASEERD en niet meer bijgewerkt. Voor Npuls-huisstijl, tokens en assets is vormgever-npuls-huisstijl de bron van waarheid.
 ---
+
+> **Uitgefaseerd.** Niet meer bijgewerkt. Bron van waarheid voor Npuls: `vormgever-npuls-huisstijl` (tokens) en de release `npuls-assets`. Presentaties: `cedapress`.
+
 
 # Npuls Huisstijl
 

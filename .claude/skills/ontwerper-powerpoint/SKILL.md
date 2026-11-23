@@ -4,7 +4,7 @@ description: Ontwerpregels voor PowerPoint-decks van CEDA/Npuls — tekst per sl
 allowed-tools: Read
 metadata:
   ceda-id: ceda.ontwerper-powerpoint
-  ceda-version: "0.2.0"
+  ceda-version: "0.3.0"
   ceda-type: reference
   ceda-subtype: knowledge
   ceda-origin: own
@@ -25,20 +25,23 @@ Huisstijl en template komen uit `vormgever-npuls-huisstijl`.
 
 **Toetsbare regels:** `references/regels.md` (id, regel, meetbaar criterium, fancy-niveau, waar getoetst).
 
-> **Voorlopig.** Eerste versie van CEDA; Edwin Lieftink (ontwerp) levert de definitieve regels, zie
-> "TODO(Edwin)" in `references/regels.md`.
+Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0), afgeleid uit de CEDA-presentatie Uitnodigingsregel en de Npuls-huisstijl.
+
+**Taakverdeling (besluit Aslam):** de officiële Npuls-potx en de tokens zijn vast (beheer: `vormgever-npuls-huisstijl` en `npuls-assets`; layouts, kleuren, fonts, logo's, vormen, illustraties). Wat in deze skill staat beheert Edwin en is flexibel (componenten, slidepatronen, drempels, kleurkeuze per slide, deckstructuur), zolang het binnen de potx-layouts en tokens blijft. Ontbrekende assets komen via een nieuwe assetrelease. Achtergrond: pitch cedanl/clidev-presentaties#16.
+
+> Open punten staan onder "Nog open" in `references/regels.md`.
 
 ## Kern
 
-1. **Eén boodschap per slide**, titel is een bewering. Max ~70 woorden zichtbaar; meer → splitsen of notes.
+1. **Eén boodschap per slide**, titel is een bewering. Max ~50 woorden zichtbaar; meer → splitsen of notes. Titel: neutraal deel + accentdeel, max ~45 tekens.
 2. **Notes op elke slide:** wat de spreker zegt, niet wat er al staat. Een pptx wordt vaak zonder spreker gelezen;
    de notes dragen dan het verhaal.
 3. **Bewerkbaar blijven:** echte tekstvakken, native tabellen en grafieken, layouts uit de template. Geen tekst in
    afbeeldingen. Collega's moeten bij "Nieuwe dia" de Npuls-layouts krijgen.
 4. **Statisch denken:** wat in HTML een animatie of klik is, wordt in pptx een extra slide of een statische
    grafiek (`::: pptx`-blok in de bron). Geen PowerPoint-animaties tenzij de gebruiker erom vraagt.
-5. **Leesbaar:** body ≥ 14 pt, koppen ≥ 24 pt; liever splitsen dan verkleinen.
-6. **Toegankelijk:** alt-tekst bij afbeeldingen, leesvolgorde = layoutvolgorde, alleen toegestane kleurcombinaties.
+5. **Leesbaar:** 16:9, body ≥ 15 pt, labels ≥ 12 pt (potx-pt; Edwin: 11,5 en 9 pt op 10 in), slidetitel 40 pt uit de layout; liever splitsen dan verkleinen.
+6. **Toegankelijk:** alt-tekst bij afbeeldingen, leesvolgorde = layoutvolgorde, alleen toegestane kleurcombinaties, zwart nooit als vlak.
 7. **Ontvangers zonder Npuls-fonts zien Calibri:** stuur ook de PDF.
 
 ## Fancy-schaal

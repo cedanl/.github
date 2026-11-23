@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Eén bron, twee vormen</title>
-<meta name="cedapress-bron" content="sha256:a3d0eede31535bac">
+<meta name="cedapress-bron" content="sha256:65dad1a3e53a8853">
 <meta name="cedapress-fancy" content="B">
 <!--
   cedapress HTML-frame (overgenomen uit clanna-frame v2: delen-navigatie, datacomponenten, GSAP-animaties) —
@@ -63,8 +63,8 @@ body{
 .s-blauw  {--paper:var(--npuls-blauw); --ink:var(--npuls-wit);  --accent:var(--npuls-geel);   --accent-2:var(--npuls-roze)}
 .s-roze   {--paper:var(--npuls-roze);  --ink:var(--npuls-zwart);--accent:var(--npuls-blauw);  --accent-2:var(--npuls-oranje)}
 .s-geel   {--paper:var(--npuls-geel);  --ink:var(--npuls-zwart);--accent:var(--npuls-blauw);  --accent-2:var(--npuls-oranje)}
-.s-groen  {--paper:var(--npuls-groen); --ink:var(--npuls-zwart);--accent:var(--npuls-roze);   --accent-2:var(--npuls-wit)}
-.s-oranje {--paper:var(--npuls-oranje);--ink:var(--npuls-zwart);--accent:var(--npuls-roze);   --accent-2:var(--npuls-wit)}
+.s-groen  {--paper:var(--npuls-groen); --ink:var(--npuls-zwart);--accent:var(--npuls-roze);   --accent-2:var(--npuls-zwart)}
+.s-oranje {--paper:var(--npuls-oranje);--ink:var(--npuls-zwart);--accent:var(--npuls-roze);   --accent-2:var(--npuls-zwart)}
 .s-lblauw {--paper:var(--licht-blauw); --ink:var(--npuls-zwart);--accent:var(--npuls-blauw);  --accent-2:var(--npuls-oranje)}
 .s-lgroen {--paper:var(--licht-groen); --ink:var(--npuls-zwart);--accent:var(--npuls-groen);  --accent-2:var(--npuls-oranje)}
 .s-lgeel  {--paper:var(--licht-geel);  --ink:var(--npuls-zwart);--accent:var(--npuls-oranje); --accent-2:var(--npuls-blauw)}
@@ -101,9 +101,17 @@ p,li{font-size:clamp(16px,1.75vw,36px);line-height:1.42}
 .slide-head{margin-bottom:clamp(14px,2.2vh,32px);flex-shrink:0;max-width:90%}
 .slide-head h2 .hl{color:var(--accent)}
 .sub{margin-top:.6em;opacity:.8;max-width:none;font-size:clamp(15px,1.55vw,32px)}
-.body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
-/* inhoud verticaal midden in de vrije ruimte: geen lege onderhelft (Aslam, 2026-11-12) */
-.body::before,.body::after{content:none}
+.body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-start}
+/* inhoud in het optische midden van de vrije ruimte: 40 % boven, 60 % onder. Geen lege onderhelft en geen lege band
+   onder de titel (Aslam, 2026-11-12); gelijk aan OPTISCH in renderers/pptx/build_potx.py */
+.body::before{content:'';flex:2 1 0}
+.body::after{content:'';flex:3 1 0}
+/* een split staat op zijn eigen hoogte in het optische midden; grafiek en Mentimeter vullen de ruimte zelf */
+.body>.split{flex:0 1 auto}
+.body:has(>.chart-wrap,>.menti-wrap)::before,.body:has(>.chart-wrap,>.menti-wrap)::after{display:none}
+/* accentdeel op groen en oranje: roze als tekst haalt daar maar ca. 2,2:1, dus een roze markering achter zwarte tekst (gelijk aan de pptx) */
+.s-groen .slide-head h2 .hl,.s-oranje .slide-head h2 .hl{color:var(--npuls-zwart);background:var(--npuls-roze);padding:0 .1em;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
 strong{font-weight:600}
 .mono{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.92em}
 .payoff{font-weight:600;letter-spacing:-.01em}
@@ -137,29 +145,59 @@ strong{font-weight:600}
 .card h3{letter-spacing:-.01em}
 
 .ico{
-  width:clamp(34px,3vw,46px);height:clamp(34px,3vw,46px);
-  border-radius:13px;flex-shrink:0;
+  width:clamp(38px,3.9vw,76px);height:clamp(38px,3.9vw,76px);
+  border-radius:27%;flex-shrink:0;
   display:grid;place-items:center;
-  font-size:clamp(15px,1.25vw,19px);
+  font-size:clamp(16px,1.65vw,32px);
 }
 .ico.blauw{background:var(--npuls-blauw);color:var(--npuls-geel)}
 .ico.geel{background:var(--npuls-geel);color:var(--npuls-blauw)}
 .ico.roze{background:var(--npuls-roze);color:var(--npuls-zwart)}
 .ico.groen{background:var(--npuls-groen);color:var(--npuls-roze)}
 .ico.oranje{background:var(--npuls-oranje);color:var(--npuls-zwart)}
-.ico.zwart{background:var(--npuls-zwart);color:var(--npuls-geel)}
 .ico.wit{background:var(--npuls-wit);color:var(--npuls-blauw)}
 
 .steps{display:flex;flex-direction:column;gap:clamp(8px,1.3vh,20px)}
 .step{display:flex;gap:clamp(11px,1.1vw,18px);align-items:flex-start;
   background:var(--npuls-wit);border-radius:18px;padding:clamp(10px,.95vw,15px) clamp(13px,1.2vw,20px)}
 .step .num{
-  flex-shrink:0;width:clamp(28px,2.4vw,38px);height:clamp(28px,2.4vw,38px);
+  flex-shrink:0;width:clamp(30px,2.4vw,46px);height:clamp(30px,2.4vw,46px);
   border-radius:99px;display:grid;place-items:center;font-weight:600;
-  font-size:clamp(12px,1vw,15px);
+  font-size:clamp(12px,1vw,22px);
 }
 .step-t{font-weight:600;font-size:clamp(16px,1.85vw,38px);margin-bottom:.2em}
 .step p{opacity:.8}
+
+/* componenten uit ceda-powerpoint-maker (Edwin): stapkolom, kerncijfer naast lead, heldenkaart, notitiebalk,
+   inzichtregel, lijstkaart, pillenkaart. Kleuren alleen via tokens. */
+.steps.kol{flex-direction:row;align-items:stretch}
+.steps.kol .step{flex:1;flex-direction:column;gap:.7em;padding:clamp(14px,1.6vw,30px)}
+.steps.kol .num{width:clamp(34px,3.4vw,66px);height:clamp(34px,3.4vw,66px);font-size:clamp(14px,1.35vw,26px)}
+.lead-cijfer{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(22px,3.4vw,64px);align-items:center}
+.lead-cijfer .lead{font-size:clamp(24px,3.6vw,70px);line-height:1.25}
+.lead-cijfer .card{min-height:clamp(200px,42vh,460px);justify-content:center;padding:clamp(22px,3vw,60px)}
+.lead-cijfer .big-num{font-size:clamp(64px,10.5vw,200px)}
+.lead-cijfer .stat .cap{font-size:clamp(12px,1.2vw,24px);opacity:1}
+.lead-cijfer .card .big-num{color:var(--npuls-oranje)}
+.held{background:var(--npuls-groen);border-radius:20px;padding:clamp(22px,3vw,56px);display:grid;grid-template-columns:1.6fr 1fr;gap:clamp(18px,2.4vw,44px);align-items:center;min-height:50vh}
+.held.blauw{background:var(--npuls-blauw);color:var(--npuls-wit)}
+.held.oranje{background:var(--npuls-oranje)}
+.held .eyebrow{font-size:clamp(11px,1.05vw,22px);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8em}
+.held .vraag{font-family:var(--font-secundair);font-weight:300;font-size:clamp(24px,2.9vw,56px);line-height:1.2}
+.held img{width:100%;max-height:44vh;object-fit:contain}
+.notitie{background:var(--npuls-roze);color:var(--npuls-zwart);border-radius:20px;padding:clamp(12px,1.3vw,24px) clamp(16px,1.8vw,32px);display:flex;align-items:center;gap:1em;margin-top:clamp(12px,1.7vh,22px)}
+.inzichten{display:flex;flex-direction:column;gap:clamp(8px,1.2vh,16px)}
+.inzicht{display:grid;grid-template-columns:auto clamp(70px,9vw,150px) 1fr auto;align-items:center;gap:clamp(12px,1.4vw,24px);background:var(--npuls-wit);border-radius:20px;padding:clamp(10px,1.1vw,20px) clamp(14px,1.5vw,26px)}
+.inzicht span:not(.tag){font-size:clamp(15px,1.6vw,32px)}
+.pillen li{font-size:clamp(15px,1.6vw,32px)}
+.inzicht b{font-weight:600;font-size:clamp(17px,1.9vw,38px)}
+.inzicht .tag{font-size:clamp(18px,.95vw,22px);font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--npuls-blauw)}
+.pillen{list-style:none;display:flex;flex-direction:column;gap:.5em}
+.pillen li{background:var(--npuls-wit);border-radius:16px;padding:.55em 1em}
+.card .pillen li{background:var(--licht-blauw)}
+.card .lijst{list-style:none;display:flex;flex-direction:column;gap:.5em}
+.card .lijst li{display:flex;gap:.7em;align-items:flex-start}
+.card .lijst li::before{content:"";flex:none;width:.6em;height:.6em;margin-top:.55em;border-radius:99px;background:var(--accent)}
 
 .minirow{display:flex;justify-content:space-between;align-items:baseline;gap:1em;
   padding:.4em 0;border-bottom:1px solid rgba(0,0,0,.08);font-size:clamp(14px,1.6vw,34px)}
@@ -176,6 +214,11 @@ strong{font-weight:600}
 .bars{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
   column-gap:clamp(10px,1.1vw,18px);row-gap:clamp(8px,1.25vh,17px);align-items:center}
 .bar-row{display:contents}
+.bars.groot{row-gap:clamp(18px,3.4vh,44px)}
+.bars.groot .bar-track{height:clamp(36px,5vw,96px)}
+/* kaart naast een grafiek die zegt wat opvalt: even hoog als de grafiek, zoals in de pptx */
+.card.takeaway{min-height:clamp(200px,46vh,500px);justify-content:center}
+.bars.groot .bar-name,.bars.groot .bar-val{font-size:clamp(18px,2vw,40px)}
 .bar-name{font-weight:600;font-size:clamp(14px,1.6vw,34px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar-name .tag{font-weight:400;opacity:.55;font-size:.82em}
 .bar-track{position:relative;height:clamp(20px,2.1vw,34px);background:rgba(0,0,0,.075);border-radius:99px;overflow:hidden}
@@ -251,7 +294,7 @@ tr td:last-child{border-radius:0 12px 12px 0}
 }
 .big-num{font-size:clamp(40px,5vw,76px);font-weight:600;line-height:.95;letter-spacing:-.03em}
 .stat{display:flex;flex-direction:column;gap:.25em}
-.stat .cap{font-size:clamp(11px,.9vw,14px);font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
+.stat .cap{font-size:clamp(12px,.95vw,22px);font-weight:600;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
 
 ul.ticks{list-style:none;display:flex;flex-direction:column;gap:.55em}
 ul.ticks li{display:flex;gap:.7em;align-items:flex-start}
@@ -286,12 +329,12 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
 /* logo linksboven (zwarte SVG; wit via invert op blauw, groen en oranje) */
 .npuls-logo{
   position:absolute;z-index:4;
-  top:clamp(22px,3.6vh,46px);left:clamp(28px,5.5vw,110px);
-  width:clamp(92px,8vw,150px);height:auto;
+  top:clamp(22px,6.5vh,72px);left:clamp(28px,5.5vw,110px);
+  width:clamp(110px,14vw,270px);height:auto;
   filter:var(--logo-filter,none);
 }
 .npuls-logo.groot{position:relative;top:auto;left:auto;width:clamp(220px,25vw,440px)}
-.slide:has(.npuls-logo:not(.groot)){padding-top:clamp(84px,13vh,150px)}
+.slide:has(.npuls-logo:not(.groot)){padding-top:clamp(96px,18vh,200px)}
 .s-blauw,.s-groen,.s-oranje{--logo-filter:invert(1)}
 .partner-paneel{--logo-filter:none}
 
@@ -310,12 +353,14 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
 /* tegels: vierkante vormblokken uit het template */
 .tegel{display:block;width:100%;height:100%;object-fit:cover}
 
-/* Titeldia — groot, links uitgelijnd, logo + bogen */
-.lay-titel .body{justify-content:center}
-.lay-titel .body::before,.lay-titel .body::after{display:none}
-.lay-titel h1{font-size:clamp(40px,5.4vw,80px);max-width:16ch}
-.lay-titel .lede{margin-top:clamp(16px,2.4vh,30px);max-width:38ch}
-.lay-titel .meta{margin-top:clamp(22px,3.4vh,44px);opacity:.75}
+/* Titeldia: zoals de potx: grote oranje titel met oranje ondertitel, twee metaregels in Cooper onderaan, logo + bogen */
+.lay-titel .body{justify-content:flex-end}
+.lay-titel .body::before{flex:1 1 0}
+.lay-titel .body::after{display:none}
+.lay-titel h1{font-size:clamp(44px,6.8vw,132px);color:var(--npuls-oranje);max-width:none;letter-spacing:-.025em}
+.lay-titel .lede{font-family:var(--font-primair);font-weight:400;color:var(--npuls-oranje);font-size:clamp(19px,2.4vw,46px);margin-top:clamp(8px,1.4vh,20px);max-width:40ch}
+.lay-titel .meta{margin-top:clamp(32px,9vh,120px);font-family:var(--font-secundair);font-weight:300;font-size:clamp(16px,1.85vw,36px);line-height:1.6}
+.lay-titel .meta p{font-size:inherit;line-height:inherit}
 
 /* Titeldia 3 — grijze driehoek links op een verzadigde slide */
 .lay-driehoek::before{
@@ -346,8 +391,10 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
 /* Quote — Cooper, groot, met openingsteken in de accentkleur */
 .lay-quote .body{justify-content:center}
 .lay-quote .body::before,.lay-quote .body::after{display:none}
-.quote{font-family:var(--font-secundair);font-weight:300;font-size:clamp(28px,3.6vw,56px);line-height:1.18;max-width:22ch}
+.quote{font-family:var(--font-secundair);font-weight:300;font-size:clamp(28px,4vw,80px);line-height:1.15;max-width:20ch}
 .quote::before{content:'\201C';display:block;color:var(--accent-2);font-size:1.9em;line-height:.6;margin-bottom:.15em}
+.lay-quote .split{grid-template-columns:1.8fr 1fr}
+.lay-quote .quote{max-width:24ch}
 .quote-bron{margin-top:clamp(16px,2.4vh,30px);font-weight:600}
 
 /* Tekst en vorm-blokken — 2×3 tegels tegen de rechterrand */
@@ -378,8 +425,11 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
 .partner-logos{display:flex;gap:clamp(18px,2.4vw,44px);align-items:center;flex-wrap:wrap;justify-content:center}
 .partner-logos img{height:clamp(36px,5vh,64px);width:auto}
 
-/* Einddia — tegelmozaïek links, logo + vraag rechts, CC-licentie */
-.lay-eind{padding-left:calc(100vh*2/3 + clamp(36px,5vw,96px))}
+/* Einddia: zoals de potx: tegelmozaïek links, groot logo vanaf het midden, "Onderwijs bewegen." eronder, CC-licentie */
+.lay-eind{padding-left:max(50vw,calc(100vh*2/3 + clamp(36px,5vw,96px)))}
+.lay-eind .npuls-logo.groot{width:min(39.5vw,calc(100vw - 100vh*2/3 - 2*clamp(36px,5vw,96px)))}
+.lay-eind .payoff{font-weight:400;font-size:clamp(20px,2.9vw,56px);margin-top:clamp(14px,3vh,34px)}
+.lay-eind .payoff strong{font-weight:600}
 .lay-eind .tegels{left:0;right:auto}
 .lay-eind .body{justify-content:center;align-items:flex-start}
 .lay-eind .body::before,.lay-eind .body::after{display:none}
@@ -396,6 +446,12 @@ ul.ticks.groot li{font-size:clamp(18px,1.9vw,30px);line-height:1.3}
 .ceda-punten li{display:flex;align-items:center;gap:.8em}
 .ceda-punten .stip{width:.8em;height:.8em;border-radius:99px;flex-shrink:0}
 .foto{display:block;width:100%;height:auto;max-height:min(58vh,560px);object-fit:cover;border-radius:20px}
+/* Wie zijn wij: zoals de pptx: foto 3:2 op de marge, projecten ernaast in het midden */
+.team{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,3.6vw,72px);align-items:center}
+.team .foto{height:min(58vh,calc((100vw - 2*clamp(28px,5.5vw,110px)) * .38));width:auto;max-height:none;aspect-ratio:3/2;object-position:50% 30%}
+.projecten .lede{margin-bottom:.5em}
+.projecten p+p{margin-top:.45em}
+.projecten strong{color:var(--accent)}
 .linkkaart{background:var(--npuls-wit);border-radius:20px;padding:clamp(16px,1.6vw,28px);display:flex;flex-direction:column;align-items:center;gap:.7em;text-decoration:none;color:var(--npuls-zwart)}
 .linkkaart b{font-size:clamp(16px,1.7vw,36px);font-weight:600}
 .pill{display:inline-block;padding:.38em 1.1em;border-radius:99px;font-size:clamp(11px,1.05vw,22px);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
@@ -552,41 +608,13 @@ table.risico td:last-child{color:var(--npuls-blauw);font-weight:600}
   <img class="npuls-logo" src="npuls/vormen/npuls-logo.svg" alt="Npuls">
   <div class="deco bogen"></div>
   <div class="body">
-    <span class="kicker">cedapress · voorbeeld</span>
     <h1>Eén bron, twee vormen</h1>
     <p class="lede">Elk deck heeft één bron-markdown; HTML en pptx komen eruit.</p>
-    <p class="meta">CEDA &middot; Npuls &middot; 19 november 2026</p>
+    <div class="meta"><p>cedapress &middot; voorbeeld</p><p>19 november 2026</p></div>
   </div>
 </section>
 
-<!-- ========== 2. WIE IS CEDA (vast, tekst niet aanpassen) ========== -->
-<section class="slide s-wit lay-partner">
-  <div class="partner-paneel"><img class="npuls-logo groot" src="npuls/vormen/npuls-logo.svg" alt="Npuls"></div>
-  <div class="body">
-    <p class="label" style="color:var(--npuls-oranje)">Wie is CEDA</p>
-    <h2 style="color:var(--npuls-blauw);margin-top:.4em;max-width:16ch">Centre of Educational Data Analytics</h2>
-    <p class="lede" style="margin-top:.8em">Eén team binnen Npuls. Van ruwe data tot AI-toepassing, open source.</p>
-    <ul class="ceda-punten">
-      <li><span class="stip" style="background:var(--npuls-blauw)"></span>Data, analytics en generatieve AI in één keten</li>
-      <li><span class="stip" style="background:var(--npuls-oranje)"></span>Altijd in co-creatie met mbo, hbo en wo</li>
-      <li><span class="stip" style="background:var(--npuls-groen)"></span>Open source, voor elke instelling</li>
-    </ul>
-  </div>
-</section>
-
-<!-- ========== 3. WIE ZIJN WIJ (vast; alleen de projectenlijst mag anders) ========== -->
-<section class="slide s-wit">
-  <div class="deco bogen"></div>
-  <div class="slide-head"><h2>Wie zijn wij</h2></div>
-  <div class="split">
-    <img class="foto" src="img/team-groep.png" alt="Groepsfoto van het CEDA-team">
-    <div><p class="lede">Diverse projecten, waaronder</p>
-      <p style="margin-top:1em"><strong>Instroomprognose</strong></p>
-      <p style="margin-top:.6em"><strong>Staat van de Onderwijsinstelling</strong></p></div>
-  </div>
-</section>
-
-<!-- INHOUD: zet de inhoudsslides hieronder, vóór de contactslide -->
+<!-- INHOUD: zet de inhoudsslides hieronder, vóór het blok vaste CEDA-slides -->
 
 <!-- Notes: Testslide voor de renderers; geen echte inhoud. -->
 <section class="slide s-lblauw">
@@ -607,7 +635,7 @@ table.risico td:last-child{color:var(--npuls-blauw);font-weight:600}
     <ul class="ticks groot">
       <li>HTML en deck-spec dragen de hash van de bron</li>
       <li>Andere hash: check en build falen</li>
-      <li>Wijziging uit pptx: terugschrijven, daarna opnieuw maken</li>
+      <li>Wijziging: eerst bron.md, daarna opnieuw maken</li>
     </ul>
   </div>
 </section>
@@ -619,6 +647,32 @@ table.risico td:last-child{color:var(--npuls-blauw);font-weight:600}
 </section>
 
 
+<!-- ========== N-3. WIE IS CEDA (vast, tekst niet aanpassen) ========== -->
+<section class="slide s-wit lay-partner">
+  <div class="partner-paneel"><img class="npuls-logo groot" src="npuls/vormen/npuls-logo.svg" alt="Npuls"></div>
+  <div class="body">
+    <p class="label" style="color:var(--npuls-oranje)">Wie is CEDA</p>
+    <h2 style="color:var(--npuls-blauw);margin-top:.4em;max-width:16ch">Centre of Educational Data Analytics</h2>
+    <p class="lede" style="margin-top:.8em">Eén team binnen Npuls. Van ruwe data tot AI-toepassing, open source.</p>
+    <ul class="ceda-punten">
+      <li><span class="stip" style="background:var(--npuls-blauw)"></span>Data, analytics en generatieve AI in één keten</li>
+      <li><span class="stip" style="background:var(--npuls-oranje)"></span>Altijd in co-creatie met mbo, hbo en wo</li>
+      <li><span class="stip" style="background:var(--npuls-groen)"></span>Open source, voor elke instelling</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========== N-2. WIE ZIJN WIJ (vast; alleen de projectenlijst mag anders) ========== -->
+<section class="slide s-lblauw">
+  <div class="slide-head"><h2>Wie zijn wij</h2></div>
+  <div class="body"><div class="team">
+    <img class="foto" src="img/team-groep.png" alt="Groepsfoto van het CEDA-team">
+    <div class="projecten"><p class="lede">Diverse projecten, waaronder</p>
+      <p><strong>Instroomprognose</strong></p>
+      <p><strong>Staat van de Onderwijsinstelling</strong></p></div>
+  </div></div>
+</section>
+
 <!-- ========== N-1. BLIJF IN CONTACT (vast, tekst niet aanpassen) ========== -->
 <section class="slide s-roze">
   <img class="npuls-logo" src="npuls/vormen/npuls-logo.svg" alt="Npuls">
@@ -627,7 +681,7 @@ table.risico td:last-child{color:var(--npuls-blauw);font-weight:600}
     <p class="label" style="color:var(--npuls-oranje)">Tot slot</p>
     <h1 style="color:var(--npuls-blauw);margin-top:.3em">Blijf in contact</h1>
     <p style="margin-top:.8em">Vragen, feedback of zin om mee te bouwen? We horen graag van je.</p>
-    <div class="grid g3" style="margin-top:clamp(20px,3.4vh,44px);width:min(100%,900px)">
+    <div class="grid g3" style="margin-top:clamp(20px,3.4vh,44px);width:min(100%,62vw)">
       <a class="linkkaart" href="https://github.com/cedanl"><span class="pill blauw">GitHub</span><b>github.com/cedanl</b></a>
       <a class="linkkaart" href="https://edu.nl/7b4yg"><span class="pill groen">Community</span><b>edu.nl/7b4yg</b></a>
       <a class="linkkaart" href="mailto:ceda@surf.nl"><span class="pill oranje">Email</span><b>ceda@surf.nl</b></a>
@@ -647,8 +701,7 @@ table.risico td:last-child{color:var(--npuls-blauw);font-weight:600}
   </div>
   <div class="body">
     <img class="npuls-logo groot" src="npuls/vormen/npuls-logo.svg" alt="Npuls">
-    <h2 style="margin-top:clamp(22px,3.4vh,44px);max-width:20ch">Werkt één bron voor jouw decks?</h2>
-    <p class="payoff" style="margin-top:clamp(20px,3vh,38px)">Onderwijs bewegen.</p>
+    <p class="payoff">Onderwijs <strong>bewegen.</strong></p>
   </div>
   <img class="cc" src="npuls/vormen/cc-by-sa.svg" alt="Creative Commons BY-SA">
 </section>

@@ -6,14 +6,14 @@ Elk blok is een complete `<section>` die je tussen `<!-- SLIDES:START -->` en `<
 
 | Klasse | Achtergrond | Tekst | `.hl` / kicker | Gebruik |
 |---|---|---|---|---|
-| `s-blauw` | blauw | wit | geel | titel, sterk statement |
+| `s-blauw` | blauw | wit | geel | sectie, sterk statement |
 | `s-geel` / `s-groen` / `s-oranje` / `s-roze` | verzadigd | zwart | blauw / roze / roze / blauw | hoofdvraag, advies, afsluiting |
 | `s-lblauw` `s-lgroen` `s-lgeel` `s-lroze` `s-loranje` | licht | zwart | eigen kleur | inhoudsslides met kaarten |
 | `s-wit` | wit | zwart | blauw | data, tabellen, grafieken |
 
-Ritme: titel `s-blauw` → afwisselend licht en `s-wit` → één verzadigde slide per hoofdstuk/kernboodschap → afsluiting `s-roze` (logo). Nooit drie keer dezelfde variant achter elkaar. Zwart is nooit een achtergrond.
+Ritme (OSH-13): titel `s-roze` (titelslide van de potx) → inhoud ongeveer de helft `s-wit`, de rest licht → één verzadigde slide per hoofdstuk/kernboodschap → afsluiting `s-roze` (logo). Nooit twee keer dezelfde variant achter elkaar. Zwart is nooit een achtergrond.
 
-**Kaarten** op lichte slides: wit (`.card`) of een verzadigde kleur (`.card blauw|geel|roze|groen|oranje`). Op `s-wit`: lichte kaarten (`.card lblauw|lgroen|...`). `.card blauw` krijgt automatisch witte tekst; gebruik daarin `.ico geel` of `.ico roze`, en voor `ul.ticks` `style="color:var(--npuls-geel)"` op de `<i>`.
+**Kaarten** op lichte slides: wit (`.card`) of een verzadigde kleur (`.card blauw|geel|roze|groen|oranje`). Op `s-wit`: lichte kaarten (`.card lblauw|lgroen|...`). `.card blauw` krijgt automatisch witte tekst (blauw draagt wit, geel of roze); gebruik daarin `.ico geel` of `.ico roze`, en voor `ul.ticks` `style="color:var(--npuls-geel)"` op de `<i>`.
 
 **Iconen** (`.ico <kleur>`, Font Awesome `fa-solid`): wissel de kleuren af binnen een rij. De icoonkleur bij elke achtergrond is al goed gezet.
 
@@ -53,6 +53,21 @@ De `h2` is een **bewering**, geen onderwerp: "Het gat is in één jaar bijna dic
 ```
 
 `g2` / `g3` / `g4` voor 2–8 kaarten. Bij `g4` maximaal ~18 woorden per kaart.
+
+## 1b. Componenten uit ceda-powerpoint-maker (Edwin)
+
+Kop met pil en accent: `kicker` is de label-pil (kleur = accent van de variant), `.hl` is het accentdeel van de titel. Accent volgt de achtergrond: `s-wit` en `s-lblauw` blauw, `s-lgroen` groen, `s-lgeel` en `s-loranje` oranje. Iconen zijn Font Awesome (`.ico <kleur>`, tegelparen blauw/geel, geel/blauw, groen/roze, oranje/zwart, roze/blauw; zwart is geen vlak). In de pptx komen iconen uit `iconen/<naam>.svg` van het assetpakket (nog niet aanwezig).
+
+| Component | HTML |
+|---|---|
+| Kaart met icoontegel | `.card` met `.ico` en `h3` (zie 1). Max. 2 volle kaartkleuren per slide |
+| Stapkolom | `<div class="steps kol">` met 3 tot 4 × `.step` (kolom met `.num`, `.step-t`, `p`) |
+| Kerncijfer naast lead | `<div class="lead-cijfer"><p class="lead">…</p><div class="card lgeel"><div class="stat"><span class="big-num">X%</span><span class="cap">label</span></div></div></div>` |
+| Heldenkaart | `<div class="held"><div><p class="eyebrow">…</p><p class="vraag">…</p></div><img src="npuls/illustraties/….svg" alt=""></div>` (`.held.blauw`, `.held.oranje`) |
+| Notitiebalk | `<div class="notitie"><p><strong>Let op:</strong> één boodschap.</p></div>`, onder de inhoud |
+| Inzichtregel | `.inzichten` met 3 tot 5 × `<div class="inzicht"><div class="ico blauw">…</div><b>Sleutel</b><span>tekst</span><span class="tag">Tag</span></div>` |
+| Lijstkaart | `.card` met kop en `<ul class="lijst"><li>…</li></ul>` (3 tot 5) |
+| Pillenkaart | `.card` met kop en `<ul class="pillen"><li>…</li></ul>` (3 tot 5) |
 
 ## 2. Statement + lijst | kaarten (split)
 
@@ -161,6 +176,8 @@ Rijen worden witte pillen; zet de tabel op een lichte slide (`s-lgeel`, `s-lblau
 ```
 
 ## 9. Lijn- of staafgrafiek
+
+Kaart naast een grafiek die zegt wat opvalt: `<div class="card blauw takeaway">` (even hoog als de grafiek, zoals in de pptx).
 
 Inline `<svg class="chart" viewBox="0 0 1000 420">` in een `<div class="chart-wrap">`. Assen: `<text class="ax">`, annotaties: `<text class="ann" style="fill:var(--npuls-blauw)">`. Lijnen met `style="stroke:var(--npuls-…)"`. Kerngetallen eronder:
 
@@ -341,7 +358,7 @@ Nagebouwd uit het officiële pptx-template (`npuls/pptx/Npuls_powerpoint-templat
 
 | Klasse op `<section>` | Template-layout | Gebruik |
 |---|---|---|
-| `lay-titel` (s-roze) | Titeldia | Titelslide; staat al in de frame |
+| `lay-titel` (s-roze) | Titeldia | Titelslide; staat al in de frame. Zoals de potx: grote oranje `h1`, oranje `.lede`, `.meta` met twee regels in Cooper (kicker en datum) |
 | `lay-driehoek` (s-oranje/s-blauw) | Titeldia 3 | Tweede titel of hoofdstukopening |
 | `lay-sectie` (verzadigd) | Sectiescheider | `<p class="nr">Deel 1</p><h1>…</h1>` + bogen |
 | `lay-band` (s-blauw/s-oranje) | Tussendia | `.band-l` (groot nummer) + `.band-r` (kop, sub); geen `.body` |
@@ -350,7 +367,7 @@ Nagebouwd uit het officiële pptx-template (`npuls/pptx/Npuls_powerpoint-templat
 | `lay-vormen` | Afbeeldingen en vormen | Grijs vlak, `.vormen-duo` met 2 tegels |
 | `lay-stappen` (s-wit) | Stappen | `<img class="golf" src="npuls/vormen/golf-oranje.svg">` + `.steps` |
 | `lay-partner` (s-wit) | Partnerslide | `.partner-paneel` met groot logo en `.partner-logos` |
-| `lay-eind` (s-roze) | Einddia | Afsluitslide; staat al in de frame |
+| `lay-eind` (s-roze) | Einddia | Afsluitslide; staat al in de frame: groot logo vanaf het midden met "Onderwijs **bewegen.**" eronder, zoals de potx. Een slotvraag krijgt een eigen slide |
 
 **Vaste elementen**
 - Logo linksboven: `<img class="npuls-logo" src="npuls/vormen/npuls-logo.svg" alt="Npuls">`. Wordt automatisch wit op blauw, groen en oranje. `class="npuls-logo groot"` binnen de inhoud.
