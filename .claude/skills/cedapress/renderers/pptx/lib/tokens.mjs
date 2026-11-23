@@ -1,9 +1,9 @@
 // Npuls-palet, kleurrollen en toegestane combinaties als PowerPoint-hex (zonder #), met korte namen (blauw, licht-geel).
 // Alles komt uit vormgever-npuls-huisstijl/references/design-tokens.json: hier staat geen enkele kleurtabel meer.
 // De vorm van de exports (C, ALLOWED, VARIANTS, CARD, ICON_FG, TILE_ON, BADGE_FG, CHART_ORDER) is gelijk gebleven.
-import { colorTable, loadTokens, short } from '../../lib/design-tokens.mjs';
+import { colorTable, loadTokensOrExit, short } from '../../lib/design-tokens.mjs';
 
-const T = loadTokens();
+const T = loadTokensOrExit();
 const S = short;
 const real = (o) => Object.entries(o).filter(([k]) => !k.startsWith('_'));
 const map = (o, f = S) => Object.fromEntries(real(o).map(([k, v]) => [S(k), f(v)]));

@@ -7,7 +7,7 @@
 import { readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { bronHash, bronNaast } from '../lib/bron.mjs';
-import { colorTable, htmlName, loadTokens, short } from '../lib/design-tokens.mjs';
+import { colorTable, htmlName, loadTokensOrExit, short } from '../lib/design-tokens.mjs';
 
 const file = process.argv.slice(2).find((a) => !a.startsWith('--'));
 if (!file) { console.error('Gebruik: node check.mjs <deck.html> [--stempel]'); process.exit(2); }
@@ -54,7 +54,7 @@ for (let k = 2; k < variants.length; k++)
 // 2b. Kleurrollen komen uit design-tokens.json (vormgever-npuls-huisstijl): een variant, kaart-, heldenkaart- of icoonkleur of een
 // var(--npuls-*) die niet in de tokens staat is een fout. npuls.css uit het assetpakket moet de klassen ook definiëren.
 {
-  const T = loadTokens();
+  const T = loadTokensOrExit();
   const real = (o) => Object.keys(o).filter((k) => !k.startsWith('_'));
   const palette = new Set([...real(colorTable(T)), ...real(T.neutrals), ...real(T.colors.layout)].map(short));
   const palClass = new Set([...palette].map((c) => htmlName(c)));

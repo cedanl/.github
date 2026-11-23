@@ -11,6 +11,8 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REL = ['vormgever-npuls-huisstijl', 'references', 'design-tokens.json'];
 
 export function tokenFile() {
+  const env = process.env.NPULS_DESIGN_TOKENS;
+  if (env && !existsSync(env)) throw new Error(`NPULS_DESIGN_TOKENS=${env} bestaat niet`);
   const found = [
     process.env.NPULS_DESIGN_TOKENS,
     resolve(HERE, '..', '..', '..', ...REL),
@@ -22,8 +24,23 @@ export function tokenFile() {
   return found;
 }
 
+const VEREIST = ['slide_roles', 'card_roles', 'tile_pairs', 'badge_fg', 'tints', 'component_defaults'];
+
 export function loadTokens() {
-  return JSON.parse(readFileSync(tokenFile(), 'utf8'));
+  const t = JSON.parse(readFileSync(tokenFile(), 'utf8'));
+  const mist = VEREIST.filter((k) => !t[k]);
+  if (mist.length) throw new Error(`vormgever-npuls-huisstijl te oud of ontbreekt: design-tokens.json mist ${mist.join(', ')}. Update de skill (npx skills add cedanl/.github)`);
+  return t;
+}
+
+/** Zoals loadTokens, maar bij een fout: melding en exit 2 (omgeving niet in orde) in plaats van een stacktrace. */
+export function loadTokensOrExit() {
+  try {
+    return loadTokens();
+  } catch (e) {
+    console.error(`FOUT  ${e.message.startsWith('vormgever') ? e.message : `vormgever-npuls-huisstijl te oud of ontbreekt: ${e.message}. Update de skill (npx skills add cedanl/.github)`}`);
+    process.exit(2);
+  }
 }
 
 /** Tokennaam zonder merkvoorvoegsel: npuls-blauw wordt blauw, licht-geel blijft licht-geel. */
