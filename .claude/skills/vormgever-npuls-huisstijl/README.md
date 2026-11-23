@@ -13,17 +13,15 @@ vormgever-npuls-huisstijl/
 │   │                               #   iconen, vormen, spacing/radii/shadows, neutrals,
 │   │                               #   feedback_colors, data_visualization, css_variables
 │   └── merkcontext.md              # Logo, vormentaal, fotografie, licentie
-└── assets/
-    ├── shapes/                     # De vijf kernvormen als SVG
-    ├── logos/                      # Officieel beeldmerk (JPG op roze) + indicatieve SVG's
-    └── illustrations/              # Voorbeeld-illustraties in de vlakke Npuls-stijl
+└── scripts/
+    └── npuls_assets.py            # Haalt het officiële Npuls-assetpakket op (vaste versie)
 ```
 
 ## Hoe Claude het gebruikt
 
 1. Bepaal het type uiting → alleen `design-tokens.json` (functionele UI) of ook `merkcontext.md` (logo/vormentaal/fotografie prominent).
 2. Kies ≥3 primaire kleuren; check elk achtergrond-voorgrond paar tegen `allowed_combinations`.
-3. Typografie, iconen, vormentaal, fotografie volgens de tokens; hergebruik `assets/`.
+3. Typografie, iconen, vormentaal, fotografie volgens de tokens; hergebruik het assetpakket (`scripts/npuls_assets.py`).
 4. Bouw vanaf het `css_variables`-blok; grafieken/status via `data_visualization` en `feedback_colors`.
 
 ## Verhouding tot andere skills
@@ -41,7 +39,7 @@ Houd de tokens hier canoniek — niet dupliceren in andere skills.
 
 1. Wijzig eerst `references/design-tokens.json` (bron van waarheid).
 2. Pas `SKILL.md` aan als er nieuwe regels bij komen.
-3. Nieuwe SVG's in `assets/<map>/`, met kleuren uit de tokens.
+3. Nieuwe officiële assets horen in het pakket `npuls-assets/` in de repo-root (nieuwe versie uitbrengen).
 4. Commit + push naar `cedanl/.github`.
 
 ## Licentie

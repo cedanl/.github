@@ -1,6 +1,6 @@
 ---
 name: powerclaude
-description: Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen — of een bestaande .pptx wil aanpassen (tekst vervangen, logo wisselen, slides klonen, importeren, verplaatsen of verwijderen). Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
+description: UITGEFASEERD — gebruik cedapress. Gebruik wanneer iemand een PowerPoint (.pptx) wil in Npuls/CEDA-huisstijl — een powerpoint, pptx-deck, presentatie die collega's zelf moeten kunnen aanpassen, een deck voor een externe partij of opdrachtgever, of slides om in Teams/SharePoint te delen — of een bestaande .pptx wil aanpassen (tekst vervangen, logo wisselen, slides klonen, importeren, verplaatsen of verwijderen). Ook bij "/powerclaude". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een los HTML-bestand, show-deck of Mentimeter-deck is `clanna`; een Marp-deck is `build-marp-deck`.
 allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node, git en python met python-pptx (template-engine en edit.py); draait in de root van cedanl/clidev-presentaties (Npuls-template, assets, teamfoto, pptxgenjs en playwright-chromium via npm install). Renderen voor controle via PowerPoint (Windows) of LibreOffice.
 metadata:
@@ -17,6 +17,8 @@ metadata:
   ceda-scope: org
   ceda-verifies: measurable
 ---
+
+> **Uitgefaseerd.** Deze skill wordt vervangen door `cedapress` (maakt HTML- en PowerPoint-presentaties vanuit één bron-markdown) met de ontwerpregels uit `ontwerper-slides-html` en `ontwerper-powerpoint` en de huisstijl en assets uit `vormgever-npuls-huisstijl`. Gebruik voor nieuwe presentaties `cedapress`. Bestaande decks blijven werken; deze skill krijgt geen nieuwe functies meer.
 
 # powerclaude — PowerPoint met Claude
 

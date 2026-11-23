@@ -30,7 +30,11 @@
       { "background": "npuls-oranje", "with": ["npuls-zwart", "npuls-roze"] },
       { "background": "npuls-zwart",  "with": ["npuls-blauw", "npuls-oranje", "npuls-groen", "npuls-geel", "npuls-roze"] }
     ],
-    "forbidden_examples": ["geel-op-groen", "groen-op-blauw"]
+    "forbidden_examples": ["geel-op-groen", "groen-op-blauw"],
+    "layout": {
+      "_comment": "Neutraal layout-vlak uit het officiële Npuls-pptx-template (Tussendia, Titeldia 3, Afbeeldingen en vormen). Alleen als vlak/band, nooit als kaart.",
+      "npuls-grijs": "#E6E6E6"
+    }
   },
   "typography": {
     "primary_font": {
@@ -43,9 +47,9 @@
       "kansas_regular": { "usage": "projectasset, laden via @font-face", "license": "commercieel" }
     },
     "scale": {
-      "h1": { "size": "40-56px", "weight": "SemiBold" },
-      "h2": { "size": "28-36px", "weight": "SemiBold" },
-      "h3": { "size": "20-24px", "weight": "SemiBold" },
+      "h1": { "size": "40-56px", "fluid_vw": "5vw", "weight": "SemiBold" },
+      "h2": { "size": "28-36px", "fluid_vw": "3.5vw", "weight": "SemiBold" },
+      "h3": { "size": "20-24px", "fluid_vw": "2.4vw", "weight": "SemiBold" },
       "body": { "size": "16px", "weight": "Regular" },
       "label": { "size": "12-13px", "weight": "SemiBold", "transform": "uppercase", "letter_spacing": "0.08em" }
     }
@@ -135,10 +139,10 @@
     "chart_background": "npuls-wit of een secondary pastel"
   },
   "assets": {
-    "_comment": "Kant-en-klare SVG's in de skill. Kleuren volgen dit tokenbestand; gebruik ze vóór je nieuwe tekent.",
-    "shapes": "assets/shapes/  (pulse-curve, concentrische-ringen, chevron, starburst, boog)",
-    "logos": "assets/logos/  (npuls_logo.jpg — officieel, achtergrond #F3D9DC, gebruik op npuls-roze; beeldmerk.svg en beeldmerk-wit.svg — indicatief)",
-    "illustrations": "assets/illustrations/  (collaboration, data-insight, learning — voorbeeld-illustraties in de vlakke Npuls-stijl)"
+    "_comment": "Officiele assets staan in het versioned pakket npuls-assets (zie SKILL.md, sectie Assetpakket); haal ze op met scripts/npuls_assets.py.",
+    "shapes": "npuls-assets: vormen/ (SVG) en web/sprite.svg",
+    "logos": "npuls-assets: logos/ (npuls-logo-roze.jpg op npuls-roze, PNG-logo's en beeldmerken)",
+    "illustrations": "npuls-assets: illustraties/ (26 SVG uit het Npuls-template)"
   },
   "css_variables": {
     "_comment": "Kant-en-klaar startpunt voor werkwijze-stap 7 (volledig CSS-bestand met variabelen). Alle waarden komen 1-op-1 uit dit bestand.",

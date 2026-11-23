@@ -1,0 +1,25 @@
+name: Npuls-assets release
+
+on:
+  push:
+    tags:
+      - "npuls-assets-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build zip
+        run: bash scripts/build-npuls-assets.sh
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="$(tr -d '[:space:]' < npuls-assets/VERSION)"
+          gh release create "$GITHUB_REF_NAME" "dist/npuls-assets-${VERSION}.zip" \
+            --title "Npuls-assets ${VERSION}" \
+            --notes-file npuls-assets/CHANGELOG.md

@@ -1,0 +1,3 @@
+# Npuls-assetpakket van vormgever-npuls-huisstijl dat cedapress gebruikt. Eén plek; ophogen = bewuste keuze.
+# Override voor ontwikkelen: env NPULS_ASSETS_DIR=<map met manifest.json>.
+npuls-assets==0.1.0

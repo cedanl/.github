@@ -1,3 +1,11 @@
 **/.DS_Store
 .github/.DS_Store
 .DS_Store
+
+dist/
+
+# cedapress
+__pycache__/
+.claude/skills/cedapress/renderers/node_modules/
+.claude/skills/cedapress/examples/*/exports/
+.claude/skills/cedapress/examples/*/npuls
