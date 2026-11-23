@@ -367,7 +367,29 @@ def no_bullet(paragraphs):
 def footnote(sl, s):
     note = s.get("footnote") or (f"Bron: {s['source']}" if s.get("source") else None)
     if note:
-        sl.text(note, 1.6, 6.92, CW - 0.62, 0.3, 12, "zwart" if sl.v["bg"] != "blauw" else "roze", kind="label")
+        sh = sl.text(note, 1.6, 6.92, CW - 0.62, 0.3, 12, "zwart" if sl.v["bg"] != "blauw" else "roze", kind="label")
+        if sh is not None:
+            sh.name = "cedapress-voetnoot"  # blijft staan bij het verticaal centreren
+
+
+CENTRE = {"cards", "stats", "steps", "lead", "insight", "lists"}
+
+
+def vcentre(sl):
+    """Zet het inhoudsblok verticaal in het midden van de inhoudszone (zoals de HTML, besluit Aslam 2026-11-12):
+    geen lege onderhelft. Titel, label-pil, intro, placeholders, voetnoot en dianummer blijven staan."""
+    zone_top, zone_bot = sl.top, CONTENT_BOTTOM
+    shapes = [sh for sh in sl.s.shapes if not sh.is_placeholder and sh.name != "cedapress-voetnoot" and sh.top / 914400 >= zone_top - 0.2]
+    if not shapes:
+        return
+    lo = min(sh.top for sh in shapes) / 914400
+    hi = max(sh.top + sh.height for sh in shapes) / 914400
+    delta = ((zone_top + zone_bot) / 2) - ((lo + hi) / 2)
+    if delta < 0.12 or hi + delta > zone_bot + 0.01:
+        return
+    for sh in shapes:
+        sh.top = sh.top + int(delta * 914400)
+    sl.rects = [(k, nm, x, y + delta if y >= zone_top - 0.2 else y, w, h) for (k, nm, x, y, w, h) in sl.rects]
 
 
 def footer(sl, s, y):
@@ -475,8 +497,9 @@ def figure_card(sl, x, y, w, h, value, label, bg=None, color="oranje"):
     bg = bg or ("wit" if sl.v["bg"] in ("licht-geel",) else "licht-geel")
     sl.check_pair(bg, color, "kerncijfer")
     sl.box(x, y, w, h, bg, r=0.21)
-    sl.text(str(value), x + 0.29, y + 0.23, w - 0.58, min(1.0, h * 0.5), 59, color, font=HEAD, valign="middle", mn=36)
-    sl.text(str(label).upper(), x + 0.29, y + 1.33, w - 0.58, max(0.4, h - 1.5), 12, "zwart", font=HEAD, kind="label", spc=100)
+    off = max(0.23, (h - 1.65) / 2)  # getal en label samen verticaal in de kaart
+    sl.text(str(value), x + 0.29, y + off, w - 0.58, min(1.0, h * 0.5), 59, color, font=HEAD, valign="middle", mn=36)
+    sl.text(str(label).upper(), x + 0.29, y + off + 1.1, w - 0.58, max(0.4, h - off - 1.2), 12, "zwart", font=HEAD, kind="label", spc=100)
 
 
 def step_row(sl, x, y, w, h, nr, title, text, bg, circle):
@@ -493,13 +516,13 @@ def step_row(sl, x, y, w, h, nr, title, text, bg, circle):
         sl.text(title, tx, y, tw, h, 19, "zwart", font=HEAD, valign="middle", mn=15)
 
 
-def step_card(sl, x, y, w, h, nr, title, text, bg, circle):
+def step_card(sl, x, y, w, h, nr, title, text, bg, circle, th=None, size=15):
     """Stapkolom: verticale kaart met cirkel bovenaan, titel en toelichting."""
     sl.box(x, y, w, h, bg, r=0.17)
     sl.badge(str(nr), x + 0.27, y + 0.24, 0.53, circle, BADGE_FG.get(circle, "zwart"), 16)
-    th = max(0.4, text_height(title, w - 0.54, 19, HEAD) + 0.05)
+    th = th or max(0.4, text_height(title, w - 0.54, 19, HEAD) + 0.05)  # th gelijk voor alle kaarten: toelichting op één lijn
     sl.text(title, x + 0.27, y + 0.93, w - 0.54, th, 19, "zwart", font=HEAD, mn=15)
-    sl.text(text, x + 0.27, y + 0.93 + th + 0.1, w - 0.54, h - (0.93 + th + 0.1) - 0.2, 15, "zwart", mn=15)
+    sl.text(text, x + 0.27, y + 0.93 + th + 0.1, w - 0.54, h - (0.93 + th + 0.1) - 0.2, size, "zwart", mn=15)
     return th
 
 
@@ -512,11 +535,13 @@ def t_steps(n, s):
     gap = 0.33
     cw = (CW - gap * (len(items) - 1)) / len(items)
     tw = cw - 0.54
-    need = max(0.93 + max(0.4, text_height(it["title"], tw, 19, HEAD) + 0.05) + 0.1 + text_height(it.get("text", ""), tw, 15) + 0.3 for it in items)
+    tmax = max(max(0.4, text_height(it["title"], tw, 19, HEAD) + 0.05) for it in items)
+    sz = 17
+    need = 0.93 + tmax + 0.1 + max(text_height(it.get("text", ""), tw, sz) for it in items) + 0.3
     ch = min(bottom - sl.top, max(3.0, need))
     bg, circle = soft_card(sl), sl.v["accent"]
     for i, it in enumerate(items):
-        step_card(sl, ML + i * (cw + gap), sl.top, cw, ch, i + 1, it["title"], it.get("text", ""), bg, circle)
+        step_card(sl, ML + i * (cw + gap), sl.top, cw, ch, i + 1, it["title"], it.get("text", ""), bg, circle, th=tmax, size=sz)
     if s.get("note"):
         note_bar(sl, s["note"], sl.top + ch + 0.3)
     footnote(sl, s)
@@ -551,10 +576,13 @@ def t_lead(n, s):
             step_row(sl, rx, ry + k * (rh + 0.12), rw, rh, k + 1, it["title"], it.get("text"), bg, "groen" if v["bg"] == "wit" else v["accent"])
     else:
         lw = CW * 0.58 if figs else CW
-        sl.text(s.get("lead"), ML, top, lw, bottom - top, 25, v["text"], accent=v["accent"], mn=18)
+        lsz = 32 if figs else 36
+        fh = min(2.46, (bottom - top - 0.25 * (len(figs) - 1)) / len(figs)) if figs else 0
+        blok = fh * len(figs) + 0.25 * max(0, len(figs) - 1)
+        lh = min(bottom - top, max(blok, text_height(s.get("lead") or "", lw, lsz) + 0.1))
+        sl.text(s.get("lead"), ML, top, lw, lh, lsz, v["text"], accent=v["accent"], valign="middle" if figs else "top", mn=18)
         if figs:
             fx, fw = ML + lw + 0.5, CW - lw - 0.5
-            fh = min(2.46, (bottom - top - 0.25 * (len(figs) - 1)) / len(figs))
             for k, f in enumerate(figs):
                 figure_card(sl, fx, top + k * (fh + 0.25), fw, fh, f["value"], f.get("label", ""))
     if s.get("note"):
@@ -572,9 +600,13 @@ def t_hero(n, s):
     top, bottom = sl.top, CONTENT_BOTTOM
     sl.box(ML, top, CW, bottom - top, c, r=0.21)
     tw = CW - 1.07 - (4.2 if s.get("illustration") else 0)
+    # eyebrow en vraag samen verticaal in het midden van de kaart
+    th_ = min(bottom - top - 1.0, text_height(s["text"], tw, 31, QUOTE) + 0.1)
+    by = top + max(0.4, (bottom - top - th_ - (0.55 if s.get("eyebrow") else 0)) / 2)
     if s.get("eyebrow"):
-        sl.label(s["eyebrow"], ML + 0.53, top + 0.47, tw, 0.35, r["label"], size=13)
-    sl.text(s["text"], ML + 0.53, top + 1.0, tw, bottom - top - 1.4, 31, r["text"], font=QUOTE, mn=22)
+        sl.label(s["eyebrow"], ML + 0.53, by, tw, 0.35, r["label"], size=13)
+        by += 0.55
+    sl.text(s["text"], ML + 0.53, by, tw, th_, 31, r["text"], font=QUOTE, mn=22)
     if s.get("illustration"):
         side = min(3.7, bottom - top - 0.3)
         sl.illustration(s["illustration"], ML + CW - side - 0.3, top + 0.15, side, bottom - top - 0.3)
@@ -593,12 +625,15 @@ def t_insight(n, s):
     for k, r in enumerate(rows):
         y = sl.top + k * (rh + gap)
         sl.box(ML, y, CW, rh, bg, r=0.21)
+        if not r.get("icon"):
+            sl.warn(f"inzichtregel {k + 1} heeft geen icon: de icoontegel blijft leeg [OPP-22]")
         icon_tile(sl, ML + 0.24, y + (rh - 0.56) / 2, r.get("icon"), r.get("tile") or tile_color(k))
         sl.text(r.get("key"), ML + 1.07, y, 1.9, rh, 21, "zwart", font=HEAD, valign="middle", mn=15)
         tag_w = 1.9 if r.get("tag") else 0
         sl.text(r["text"], ML + 3.1, y, CW - 3.1 - 0.3 - tag_w, rh, 20, "zwart", valign="middle", mn=15)
         if r.get("tag"):
-            sl.text(str(r["tag"]).upper(), ML + CW - tag_w - 0.27, y, tag_w, rh, 12, sl.v["accent"], font=HEAD, align="right", valign="middle", kind="label", spc=100)
+            tag_fg = "blauw"  # altijd blauw op de witte rij: roze en geel zijn daar onleesbaar, oranje te zwak voor kleine tekst
+            sl.text(str(r["tag"]).upper(), ML + CW - tag_w - 0.27, y, tag_w, rh, 12, tag_fg, font=HEAD, align="right", valign="middle", kind="label", spc=100)
     if s.get("note"):
         note_bar(sl, s["note"], bottom + 0.3)
     footnote(sl, s)
@@ -606,7 +641,7 @@ def t_insight(n, s):
 
 def t_lists(n, s):
     """Lijstkaart en pillenkaart (P8, P13): 2 tot 3 kaarten naast elkaar met een kop, een icoontegel en een lijst met
-    stippen (`style: 'list'`, standaard) of witte pillen (`style: 'pills'`, max. 4)."""
+    stippen (`style: 'list'`, standaard) of witte pillen (`style: 'pills'`, max. 5)."""
     sl = content_slide(n, s)
     sl.title(s["title"])
     groups = s["groups"][:3]
@@ -615,7 +650,11 @@ def t_lists(n, s):
     wts = [0.55 if g.get("style") == "pills" and len(groups) == 2 else 1 for g in groups]
     unit = (CW - gap * (len(groups) - 1)) / sum(wts)
     x = ML
-    h = bottom - sl.top
+
+    def natural(g):
+        n_ = len(g["items"][:5])
+        return 1.15 + (n_ * 0.83 + 0.3 if g.get("style") == "pills" else math.ceil(n_ / g.get("columns", 1)) * 0.75 + 0.25)
+    h = min(bottom - sl.top, max(3.4, max(natural(g) for g in groups)))
     for k, g in enumerate(groups):
         w = unit * wts[k]
         pills = g.get("style") == "pills"
@@ -626,7 +665,7 @@ def t_lists(n, s):
             icon_tile(sl, kx, sl.top + 0.29, g["icon"], g.get("tile") or tile_color(k, avoid=bg))
             kx += 0.73
         sl.text(g["title"], kx, sl.top + 0.27, x + w - kx - 0.33, 0.6, 21 if pills else 23, "zwart", font=HEAD, valign="middle", mn=15)
-        items = g["items"][:4] if pills else g["items"][:5]
+        items = g["items"][:5]
         top = sl.top + 1.15
         if pills:
             ph = min(0.67, (h - 1.15 - 0.3) / len(items) - 0.16)
@@ -767,8 +806,9 @@ def card_row(sl, s, items, y, max_h, min_h, compact=False):
     def secs(it):
         return it.get("sections") or ([{"text": it["text"]}] if it.get("text") else [])
 
+    bsz = 18 if len(items) <= 3 and not compact else 15  # ruim bij drie kaarten: groter leesbaar
     n_sec = max(len(secs(it)) for it in items)
-    sec_h = [max((((0.38 if (secs(it)[k].get("label")) else 0) + text_height(secs(it)[k]["text"], iw, 15,
+    sec_h = [max((((0.38 if (secs(it)[k].get("label")) else 0) + text_height(secs(it)[k]["text"], iw, bsz,
                    HEAD if secs(it)[k].get("strong") else BODY) + 0.25) if k < len(secs(it)) else 0) for it in items)
              for k in range(n_sec)]
     fixed = pad + head_h + ill_h + title_h + sub_h + (0.05 if compact else 0.15)
@@ -808,7 +848,7 @@ def card_row(sl, s, items, y, max_h, min_h, compact=False):
             if sec.get("label"):
                 sl.label(sec["label"], x + 0.3, sy, iw, 0.3, r["label"])
                 sy += 0.38
-            sl.text(sec["text"], x + 0.3, sy, iw, sec_h[k] - (sy - iy) - 0.15, 15, r["text"],
+            sl.text(sec["text"], x + 0.3, sy, iw, sec_h[k] - (sy - iy) - 0.15, bsz, r["text"],
                     font=HEAD if sec.get("strong") else BODY, mn=10)
             iy += sec_h[k]
         if s.get("arrows") and i < len(items) - 1:
@@ -1000,6 +1040,7 @@ def t_chart(n, s):
         ct = {"line": XL_CHART_TYPE.LINE_MARKERS, "pie": XL_CHART_TYPE.PIE, "doughnut": XL_CHART_TYPE.DOUGHNUT}[kind]
     gf = sl.s.shapes.add_chart(ct, E(x + 0.2), E(y + 0.2), E(w - 0.4), E(h - 0.4), cd)
     ch = gf.chart
+    ch.has_title = False  # geen automatische reeksnaam als grafiektitel
     ch.font.name, ch.font.size = BODY, Pt(13)
     paint(ch.font.color, "zwart")
     pie = kind in ("pie", "doughnut")
@@ -1039,13 +1080,15 @@ def t_chart(n, s):
                 paint(se.format.fill.fore_color, c)
         va = ch.value_axis
         va.tick_labels.number_format, va.tick_labels.number_format_is_linked = fmt, False
-        if not re.search(r"\.[0#]", re.sub(r'"[^"]*"', "", fmt)) and all((v_ or 0) >= 0 for se in s["series"] for v_ in se["values"]):
+        fmt_kaal = re.sub(r'"[^"]*"', "", fmt)
+        if "%" not in fmt_kaal and not re.search(r"\.[0#]", fmt_kaal) and all((v_ or 0) >= 0 for se in s["series"] for v_ in se["values"]):
             # formaat zonder decimalen: een geheel getal als stap, anders staan er dubbele labels op de as (4, 3, 3, 2, 2, 1, 1)
             sums = [sum(v_ or 0 for v_ in col) for col in zip(*[se["values"] for se in s["series"]])] if s.get("stacked") else                    [v_ or 0 for se in s["series"] for v_ in se["values"]]
             peak = max(sums + [1])
-            step = next(k * 10 ** e for e in range(0, 9) for k in (1, 2, 5) if k * 10 ** e >= peak / 5)
-            va.minimum_scale, va.major_unit = 0, step
-            va.maximum_scale = math.ceil(peak / step) * step
+            step = next((k * 10 ** e for e in range(0, 9) for k in (1, 2, 5) if k * 10 ** e >= peak / 5), None)
+            if step:  # boven 2,5e9 geen stap: PowerPoint kiest de as zelf
+                va.minimum_scale, va.major_unit = 0, step
+                va.maximum_scale = (math.floor(peak / step) + 1) * step  # ruimte boven de hoogste waarde voor het datalabel
         va.has_major_gridlines = True
         va.major_gridlines.format.line.color.rgb = RGBColor(0xDD, 0xDD, 0xDD)
         va.format.line.fill.background()
@@ -1053,14 +1096,22 @@ def t_chart(n, s):
             ch.category_axis.reverse_order = True
     if s.get("takeaway"):
         tx = ML + CW - side
-        th = min(h, 1.2 + text_height(s["takeaway"], side - 0.6, 20, HEAD))
         c = v["cards"][0]
         r = CARD[c]
-        sl.box(tx, y, side, th, c)
-        sl.label(s.get("takeawayLabel", "Wat valt op"), tx + 0.3, y + 0.35, side - 0.6, 0.3, r["label"])
-        sl.text(s["takeaway"], tx + 0.3, y + 0.8, side - 0.6, th - 1.0, 20, r["title"], font=HEAD, mn=13)
         if s.get("illustration"):
+            th = min(h, 1.2 + text_height(s["takeaway"], side - 0.6, 20, HEAD))
+            sl.box(tx, y, side, th, c)
+            sl.label(s.get("takeawayLabel", "Wat valt op"), tx + 0.3, y + 0.35, side - 0.6, 0.3, r["label"])
+            sl.text(s["takeaway"], tx + 0.3, y + 0.8, side - 0.6, th - 1.0, 20, r["title"], font=HEAD, mn=13)
             sl.illustration(s["illustration"], tx + 0.4, y + th + 0.2, side - 0.8, h - th - 0.2)
+        else:
+            # even hoog als de grafiek, label en tekst samen verticaal gecentreerd
+            sl.box(tx, y, side, h, c)
+            tth = text_height(s["takeaway"], side - 0.6, 20, HEAD)
+            blok = 0.45 + tth
+            by = y + max(0.3, (h - blok) / 2)
+            sl.label(s.get("takeawayLabel", "Wat valt op"), tx + 0.3, by, side - 0.6, 0.3, r["label"])
+            sl.text(s["takeaway"], tx + 0.3, by + 0.45, side - 0.6, tth + 0.1, 20, r["title"], font=HEAD, mn=13)
     footnote(sl, s)
 
 
@@ -1078,7 +1129,7 @@ def t_quote(n, s):
     if s.get("by"):
         sl.text(s["by"], x, y + h + 0.2, w, 0.5, 18, sl.v["text"], font=HEAD)
     if s.get("illustration"):
-        sl.illustration(s["illustration"], 0.5, 4.6, 1.8, 1.8)
+        sl.illustration(s["illustration"], ML, y + (h - 1.5) / 2, 1.5, 1.5)  # in de linkermarge, midden naast de quote
 
 
 def t_image(n, s):
@@ -1233,11 +1284,14 @@ LAYOUTS = {"title": t_title, "section": t_section, "stats": t_stats, "cards": t_
            "steps": t_steps, "lead": t_lead, "hero": t_hero, "insight": t_insight, "lists": t_lists}
 
 slides = list(P["slides"])
-if slides and slides[-1]["type"] == "contact" and P.get("einddia", True):
+if slides and slides[-1]["type"] != "einddia" and P.get("einddia", True):
     slides.append({"type": "einddia"})
 for i, s in enumerate(slides, 1):
     first = len(ALL_SLIDES)
     LAYOUTS[s["type"]](i, s)
+    if s["type"] in CENTRE:
+        for sl_ in ALL_SLIDES[first:]:
+            vcentre(sl_)
     for sl_ in ALL_SLIDES[first:]:
         sl_.check_overlap()
 
