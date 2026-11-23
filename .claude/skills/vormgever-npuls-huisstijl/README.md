@@ -11,7 +11,9 @@ vormgever-npuls-huisstijl/
 ├── references/
 │   ├── design-tokens.json          # Bron van waarheid: kleuren, combinaties, typografie,
 │   │                               #   iconen, vormen, spacing/radii/shadows, neutrals,
-│   │                               #   feedback_colors, data_visualization, css_variables
+│   │                               #   feedback_colors, data_visualization, css_variables,
+│   │                               #   slide_roles, card_roles, tile_pairs, badge_fg
+│   ├── presentaties.md             # Npuls-regels voor decks (beheer: Edwin)
 │   └── merkcontext.md              # Logo, vormentaal, fotografie, licentie
 └── scripts/
     └── npuls_assets.py            # Haalt het officiële Npuls-assetpakket op (vaste versie)
