@@ -18,13 +18,13 @@ In elk tekstveld maakt `**woorden**` die woorden vet (kopfont) in de accentkleur
 | `roze` | kerncijfers, afsluiting (logo verschijnt alleen hier) | blauw, oranje, groen |
 | `groen` / `oranje` / `geel` | één kernboodschap of sectie | roze (op geel: blauw, oranje) |
 | `licht-geel` / `licht-blauw` / `licht-groen` / `licht-roze` | inhoudsslides met kaarten, lijsten, tabellen, grafieken | blauw, oranje, groen, geel |
-| `wit` | alleen als het echt moet (Npuls is kleurrijk) | blauw, oranje, groen, geel |
+| `wit` | ongeveer de helft van de inhoudsslides (OPP-08) | blauw, oranje, groen, geel |
 
 Kaartkleur overschrijven: `color: 'groen'` op een item. De build waarschuwt bij een combinatie
 die niet in `allowed_combinations` staat.
 
-Default: `title` en `section` → `blauw`, de rest → `licht-geel`. Wissel lichte varianten af en
-zet per kernboodschap één verzadigde slide.
+Default (potx-engine): `title` en `closing` → `roze` (titelslide van de potx), `section` → `blauw`, de rest → `wit`.
+Wissel wit en lichte varianten af (nooit twee keer dezelfde achter elkaar) en zet per kernboodschap één verzadigde slide.
 
 ## Types
 

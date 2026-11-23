@@ -1,6 +1,6 @@
 ---
 name: cedapress
-description: Gebruik wanneer iemand een presentatie, deck of slides wil in Npuls/CEDA-huisstijl — een HTML-deck, html-presentatie, show-deck, kick-off of keynote, een PowerPoint of pptx die collega's zelf aanpassen, een deck voor een opdrachtgever, of beide vormen uit één bron — of een bestaand deck wil bijwerken, exporteren naar pdf/pptx of wijzigingen uit een gedeelde pptx wil terughalen. Ook bij "/cedapress" en de oude namen "/clanna" en "/powerclaude". LET OP — een Slidev-presentatie is `clidev`; een Marp-deck is `build-marp-deck`.
+description: Gebruik wanneer iemand een presentatie, deck of slides wil in Npuls/CEDA-huisstijl — een HTML-deck, html-presentatie, show-deck, kick-off of keynote, een PowerPoint of pptx die collega's zelf aanpassen, een deck voor een opdrachtgever, of beide vormen uit één bron — of een bestaand deck wil bijwerken, of exporteren naar pdf/pptx. Ook bij "/cedapress" en de oude namen "/clanna" en "/powerclaude". LET OP — een Marp-deck is `build-marp-deck`; de oude Slidev-skill `clidev` is uitgefaseerd.
 allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node, python 3 en git. pptx-route ook python-pptx en PowerPoint (Windows) of LibreOffice. Npuls-assets via het versioned pakket van vormgever-npuls-huisstijl. playwright-chromium en pptxgenjs eenmalig via npm install in de renderers-map.
 metadata:
