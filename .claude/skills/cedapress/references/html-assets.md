@@ -4,7 +4,7 @@ Alle paden zijn **relatief vanaf de deckmap**; `npuls/` is de link naar het Npul
 
 ## Fonts — zitten al in de frame
 
-`npuls/web/npuls.css` (de frame linkt die al) laadt General Sans via Fontshare, met Plus Jakarta Sans als vervanger. Cooper Light zit niet in het pakket (licentie): alleen zichtbaar als hij lokaal geïnstalleerd is; anders Georgia. Zie `fonts.md` in het pakket.
+`npuls/web/npuls.css` (de frame linkt die al) is gegenereerd uit design-tokens.json (enige bron voor kleuren; de frame bevat geen eigen hex-kleuren, `check.mjs` meldt ze als fout; `bundle.mjs` bakt de css in) en laadt General Sans via Fontshare, met Plus Jakarta Sans als vervanger. Cooper Light zit niet in het pakket (licentie): alleen zichtbaar als hij lokaal geïnstalleerd is; anders Georgia. Zie `fonts.md` in het pakket.
 
 ## Logo
 

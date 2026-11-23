@@ -5,7 +5,7 @@
     {
       "path": "CHANGELOG.md",
       "type": "doc",
-      "sha256": "8eea6458eb4b7397c31561dab9f7aa72557f7fba9695984f4822f30acf0090bf",
+      "sha256": "dcfa13e0fe9515c2fca6af3f0556342cc4fe20993d4c4138d47e6b02def185e1",
       "description": "CHANGELOG.md"
     },
     {
@@ -221,7 +221,7 @@
     {
       "path": "README.md",
       "type": "doc",
-      "sha256": "334e0c6b1fe6273b9ea4938ba5cf3a60c500a5fd049271d298bb65c90106d8db",
+      "sha256": "05ba6151ae45752d1fc7139b20b7037137df4f67cbbb05450205afd11eedee90",
       "description": "README.md"
     },
     {
@@ -473,7 +473,7 @@
     {
       "path": "web/npuls.css",
       "type": "css",
-      "sha256": "e5b5d62706fa821995298e7a244e566e4bf0608739f5a29cc04e59b16e2a4753",
+      "sha256": "48b35d8f182194272a5107f305aa189053f9003cd3eac5c4e8bc61a330fd24cd",
       "description": "CSS-variabelen, kleurcombinaties, typografie, logo en bogen"
     },
     {

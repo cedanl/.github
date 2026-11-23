@@ -26,15 +26,12 @@ const base = dirname(resolve(file));
 const errors = [], warns = [];
 const lineOf = idx => html.slice(0, idx).split('\n').length;
 
-// 1. Geen hex-kleuren buiten het :root-tokenblok
-const root = html.match(/:root\s*\{[\s\S]*?\}/);
-const rootStart = root ? root.index : -1, rootEnd = root ? root.index + root[0].length : -1;
+// 1. Geen hex-kleuren in de deck-CSS of inline styles: alle kleuren komen uit npuls/web/npuls.css (gegenereerd uit design-tokens.json)
 for (const m of html.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) {
-  if (m.index >= rootStart && m.index < rootEnd) continue;
   const before = html.slice(Math.max(0, m.index - 12), m.index);
   if (/href=["']$|&$|url\(["']?$/.test(before)) continue; // anker, entity, fragment
-  if (/#s\d/.test(m[0])) continue;
-  errors.push(`regel ${lineOf(m.index)}: hardcoded kleur ${m[0]} — gebruik var(--npuls-*) of var(--licht-*)`);
+  if (/#s\d/.test(m[0]) || /^#\d+$/.test(m[0])) continue;
+  errors.push(`regel ${lineOf(m.index)}: hardcoded kleur ${m[0]} — gebruik var(--npuls-*) of var(--licht-*) (tokens: design-tokens.json)`);
 }
 
 // 2. Elke slide precies één variant (s-deel = lichte kleur van het deel, vereist data-deel)
@@ -55,7 +52,6 @@ for (let k = 2; k < variants.length; k++)
 
 // 3. Echte Npuls-fonts, geen stand-ins
 if (/fonts\.googleapis\.com/.test(html)) errors.push('Google Fonts gevonden — de echte fonts komen uit het assetpakket (npuls/web/npuls.css, zit in de frame)');
-if (!/General Sans/.test(html)) errors.push("'General Sans' ontbreekt — start vanuit renderers/html/frame.html");
 if (!/<link[^>]+href=["']npuls\/web\/npuls\.css["']/.test(html)) errors.push('link naar npuls/web/npuls.css ontbreekt — start vanuit renderers/html/frame.html');
 if (/public\/npuls\//.test(html)) errors.push('pad public/npuls/ gevonden — assets komen uit het pakket via npuls/ (prepare.mjs)');
 

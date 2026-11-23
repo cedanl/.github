@@ -11,7 +11,7 @@ Versioned pakket met officiele Npuls-assets (PowerPoint, HTML-decks, webpagina's
 | `vormen/` | Vormen en tegels (SVG), o.a. `bogen.svg` | Npuls-communicatiekit; identiek aan de graphics in de slideLayouts van de potx |
 | `logos/` | Logo's en beeldmerken (PNG), logo op roze (JPG) | Npuls-communicatiekit |
 | `slides-preview/` | PNG-previews van de templateslides | uit het template |
-| `web/` | Voor HTML: `npuls.css`, `sprite.svg`, geoptimaliseerde `vormen/` en `logos/` | afgeleid van bovenstaande |
+| `web/` | Voor HTML: `npuls.css`, `sprite.svg`, geoptimaliseerde `vormen/` en `logos/` | `npuls.css` gegenereerd uit `design-tokens.json` (`scripts/gen_npuls_css.py`, niet met de hand bewerken); rest afgeleid van bovenstaande |
 | `fonts.md` | Lettertypen en licenties (geen losse fontbestanden; de potx heeft ze ingesloten) | |
 | `manifest.json` | Versie en alle bestanden met sha256 | gegenereerd |
 

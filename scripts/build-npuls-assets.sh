@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
-# Bouwt dist/npuls-assets-<versie>.zip uit npuls-assets/ en regenereert npuls-assets/manifest.json.
+# Bouwt dist/npuls-assets-<versie>.zip uit npuls-assets/ en regenereert npuls-assets/web/npuls.css (uit design-tokens.json)
+# en npuls-assets/manifest.json.
+#   --check  alleen controleren: faalt als de gecommitte npuls.css afwijkt van design-tokens.json (schrijft niets)
 # Werkt in Git Bash en Linux; vereist alleen bash en Python 3.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PY="$(command -v python3 || command -v python || true)"
 [ -n "$PY" ] || { echo "Python 3 niet gevonden" >&2; exit 1; }
+
+if [ "${1:-}" = "--check" ]; then
+  exec "$PY" -I "$ROOT/scripts/gen_npuls_css.py" --check "$ROOT"
+fi
+"$PY" -I "$ROOT/scripts/gen_npuls_css.py" "$ROOT"
 
 VERSION="$(tr -d '[:space:]' < "$ROOT/npuls-assets/VERSION")"
 [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Ongeldige VERSION: '$VERSION'" >&2; exit 1; }
