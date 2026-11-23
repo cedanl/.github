@@ -112,10 +112,11 @@ h1 { font-size: var(--npuls-h1); } h2 { font-size: var(--npuls-h2); } h3 { font-
 .card.lroze { background: var(--npuls-licht-roze); color: var(--npuls-zwart); }
 .card.loranje { background: var(--npuls-licht-oranje); color: var(--npuls-zwart); }
 .card.lgeel { background: var(--npuls-licht-geel); color: var(--npuls-zwart); }
-/* Heldenkaart: standaardkleur uit component_defaults.hero, de andere kleuren als .held.<kleur> */
+/* Heldenkaart: standaardkleur uit component_defaults.hero, en .held.<kleur> voor alle kaartkleuren (ook de standaard) */
 .held { background: var(--npuls-groen); color: var(--npuls-zwart); }
 .held.blauw { background: var(--npuls-blauw); color: var(--npuls-wit); }
 .held.oranje { background: var(--npuls-oranje); color: var(--npuls-zwart); }
+.held.groen { background: var(--npuls-groen); color: var(--npuls-zwart); }
 .held.geel { background: var(--npuls-geel); color: var(--npuls-zwart); }
 .held.roze { background: var(--npuls-roze); color: var(--npuls-zwart); }
 .held.wit { background: var(--npuls-wit); color: var(--npuls-zwart); }

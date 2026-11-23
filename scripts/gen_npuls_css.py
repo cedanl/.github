@@ -131,10 +131,10 @@ for k, r in cards.items():
 for k in sec:
     slides.append(f".card.{cname(k)} {{ background: var({var(k)}); color: var({var(cards['npuls-wit']['text'])}); }}")
 hero = t["component_defaults"]["hero"]
-slides.append("/* Heldenkaart: standaardkleur uit component_defaults.hero, de andere kleuren als .held.<kleur> */")
+slides.append("/* Heldenkaart: standaardkleur uit component_defaults.hero, en .held.<kleur> voor alle kaartkleuren (ook de standaard) */")
 slides.append(f".held {{ background: var({var(hero)}); color: var({var(cards[hero]['text'])}); }}")
 for k, r in cards.items():
-    if not k.startswith("_") and k != hero:
+    if not k.startswith("_"):
         slides.append(f".held.{cname(k)} {{ background: var({var(k)}); color: var({var(r['text'])}); }}")
 slides.append("/* Icoontegels (tile_pairs.icon_fg): tegelkleur en kleur van het icoon */")
 for k, fg in tiles["icon_fg"].items():
