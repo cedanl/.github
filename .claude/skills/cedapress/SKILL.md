@@ -28,8 +28,10 @@ bron.md  →  HTML-deck       (git, projectrepo)
          →  pptx / pdf      (SharePoint; projectrepo-README linkt)
 ```
 
-`<cp>` = de map van deze skill ("Base directory"). **Vereist:** laad `vormgever-npuls-huisstijl` (palet,
-combinaties, vormtaal) en per vorm `ontwerper-slides-html` en/of `ontwerper-powerpoint` (ontwerpregels).
+`<cp>` = de map van deze skill ("Base directory"). **Vereist:** lees van `vormgever-npuls-huisstijl` alleen
+`references/design-tokens.json` (palet, kleurrollen per achtergrond, tegelparen) en `references/presentaties.md`
+(Npuls-regels voor decks; beheer Edwin), niet de hele SKILL; en per vorm `ontwerper-slides-html` en/of
+`ontwerper-powerpoint` (algemene ontwerpregels). cedapress kopieert geen kleuren: de renderers lezen de tokens.
 
 **Taakverdeling:** de officiële Npuls-potx (via `vormgever-npuls-huisstijl` en `npuls-assets`) is het kader voor HTML én pptx en gaat voor. Vast, beheer bij de vormgever: potx-layouts, kleuren, fonts, logo's, vormen, illustraties, tokens. Flexibel, beheer bij Edwin (`ontwerper-powerpoint`, `ontwerper-slides-html`): componenten, slidepatronen, drempels, kleurkeuze per slide, deckstructuur, binnen de potx-layouts en tokens. Ontbrekende assets (zoals iconen) komen via een nieuwe assetrelease.
 
@@ -177,7 +179,7 @@ Npuls-fonts zien Calibri; stuur de PDF mee.
 - `scripts/test_parse_bron.py` — tests van de parser
 - `renderers/html/` — `frame.html`, `prepare.mjs`, `check.mjs`, `qa.mjs`, `bundle.mjs` (uit clanna)
 - `renderers/pptx/` — `build.mjs`, `build_potx.py`, `render.mjs`, `edit.py`, `install-fonts.mjs`, `lib/`, `voorbeeld.deck.mjs` (uit powerclaude)
-- `renderers/lib/` — assetpakket vinden (`npuls-assets.mjs`, `npuls_assets_path.py`), bron-hash (`bron.mjs`), node-afhankelijkheden (`deps.mjs`)
+- `renderers/lib/` — assetpakket vinden (`npuls-assets.mjs`, `npuls_assets_path.py`), bron-hash (`bron.mjs`), node-afhankelijkheden (`deps.mjs`), `design-tokens.json` van vormgever inlezen (`design-tokens.mjs`; env `NPULS_DESIGN_TOKENS` overschrijft het pad)
 - `examples/261119_voorbeeld/` — klein voorbeelddeck (bron + HTML) om de renderers te testen
 
 ## Veelgemaakte fouten

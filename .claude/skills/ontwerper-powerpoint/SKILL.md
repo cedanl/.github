@@ -29,6 +29,8 @@ Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0
 
 **Taakverdeling (besluit Aslam):** de officiële Npuls-potx en de tokens zijn vast (beheer: `vormgever-npuls-huisstijl` en `npuls-assets`; layouts, kleuren, fonts, logo's, vormen, illustraties). Wat in deze skill staat beheert Edwin en is flexibel (componenten, slidepatronen, drempels, kleurkeuze per slide, deckstructuur), zolang het binnen de potx-layouts en tokens blijft. Ontbrekende assets komen via een nieuwe assetrelease. Achtergrond: pitch cedanl/clidev-presentaties#16.
 
+**Kleur en Npuls-vorm:** hier staan alleen algemene ontwerpregels. Kies kleuren uit de rollen van de huisstijl (kleurrollen per achtergrond, tegelparen, vormentaal, grafiekvolgorde, opening en afsluiter, label-pil): `vormgever-npuls-huisstijl/references/presentaties.md` en `design-tokens.json`. Regelnummers in `references/regels.md` blijven staan en verwijzen daarheen.
+
 > Open punten staan onder "Nog open" in `references/regels.md`.
 
 ## Kern

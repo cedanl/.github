@@ -1,5 +1,5 @@
 /* GEGENEREERD uit design-tokens.json — niet met de hand bewerken (scripts/gen_npuls_css.py, sjabloon scripts/npuls.css.tmpl) */
-/* Npuls web-laag v0.2.1 - waarden komen uit vormgever-npuls-huisstijl/references/design-tokens.json */
+/* Npuls web-laag v0.3.0 - waarden komen uit vormgever-npuls-huisstijl/references/design-tokens.json */
 /* General Sans (Fontshare) met Plus Jakarta Sans als digitale vervanger. Cooper Light: lokaal installeren, zie ../fonts.md */
 @import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
@@ -61,6 +61,72 @@ h1 { font-size: var(--npuls-h1); } h2 { font-size: var(--npuls-h2); } h3 { font-
 .npuls-groen-zwart { background: var(--npuls-groen); color: var(--npuls-zwart); }
 .npuls-oranje-zwart { background: var(--npuls-oranje); color: var(--npuls-zwart); }
 .npuls-oranje-roze { background: var(--npuls-oranje); color: var(--npuls-roze); }
+.npuls-wit-blauw { background: var(--npuls-wit); color: var(--npuls-blauw); }
+.npuls-wit-zwart { background: var(--npuls-wit); color: var(--npuls-zwart); }
+.npuls-wit-groen { background: var(--npuls-wit); color: var(--npuls-groen); }
+.npuls-wit-oranje { background: var(--npuls-wit); color: var(--npuls-oranje); }
+.npuls-licht-groen-blauw { background: var(--npuls-licht-groen); color: var(--npuls-blauw); }
+.npuls-licht-groen-zwart { background: var(--npuls-licht-groen); color: var(--npuls-zwart); }
+.npuls-licht-groen-groen { background: var(--npuls-licht-groen); color: var(--npuls-groen); }
+.npuls-licht-blauw-blauw { background: var(--npuls-licht-blauw); color: var(--npuls-blauw); }
+.npuls-licht-blauw-zwart { background: var(--npuls-licht-blauw); color: var(--npuls-zwart); }
+.npuls-licht-roze-blauw { background: var(--npuls-licht-roze); color: var(--npuls-blauw); }
+.npuls-licht-roze-zwart { background: var(--npuls-licht-roze); color: var(--npuls-zwart); }
+.npuls-licht-roze-groen { background: var(--npuls-licht-roze); color: var(--npuls-groen); }
+.npuls-licht-roze-oranje { background: var(--npuls-licht-roze); color: var(--npuls-oranje); }
+.npuls-licht-oranje-blauw { background: var(--npuls-licht-oranje); color: var(--npuls-blauw); }
+.npuls-licht-oranje-zwart { background: var(--npuls-licht-oranje); color: var(--npuls-zwart); }
+.npuls-licht-oranje-oranje { background: var(--npuls-licht-oranje); color: var(--npuls-oranje); }
+.npuls-licht-geel-blauw { background: var(--npuls-licht-geel); color: var(--npuls-blauw); }
+.npuls-licht-geel-zwart { background: var(--npuls-licht-geel); color: var(--npuls-zwart); }
+.npuls-licht-geel-oranje { background: var(--npuls-licht-geel); color: var(--npuls-oranje); }
+
+/* cedapress-decks: slide-varianten, kaarten, heldenkaart en icoontegels, gegenereerd uit slide_roles, card_roles en tile_pairs.
+   De deck-frame (cedapress/renderers/html/frame.html) houdt alleen layout; wijzig kleurrollen in design-tokens.json. */
+/* Slide-varianten (slide_roles): --paper = achtergrond, --ink = tekst, --accent = accentdeel, --accent-2 = openingsteken citaat */
+.s-blauw { --paper: var(--npuls-blauw); --ink: var(--npuls-wit); --accent: var(--npuls-geel); --accent-2: var(--npuls-roze); }
+.s-roze { --paper: var(--npuls-roze); --ink: var(--npuls-zwart); --accent: var(--npuls-blauw); --accent-2: var(--npuls-oranje); }
+.s-groen { --paper: var(--npuls-groen); --ink: var(--npuls-zwart); --accent: var(--npuls-roze); --accent-2: var(--npuls-zwart); }
+.s-oranje { --paper: var(--npuls-oranje); --ink: var(--npuls-zwart); --accent: var(--npuls-roze); --accent-2: var(--npuls-zwart); }
+.s-geel { --paper: var(--npuls-geel); --ink: var(--npuls-zwart); --accent: var(--npuls-blauw); --accent-2: var(--npuls-oranje); }
+.s-wit { --paper: var(--npuls-wit); --ink: var(--npuls-zwart); --accent: var(--npuls-blauw); --accent-2: var(--npuls-groen); }
+.s-lgeel { --paper: var(--npuls-licht-geel); --ink: var(--npuls-zwart); --accent: var(--npuls-oranje); --accent-2: var(--npuls-blauw); }
+.s-lblauw { --paper: var(--npuls-licht-blauw); --ink: var(--npuls-zwart); --accent: var(--npuls-blauw); --accent-2: var(--npuls-oranje); }
+.s-lgroen { --paper: var(--npuls-licht-groen); --ink: var(--npuls-zwart); --accent: var(--npuls-groen); --accent-2: var(--npuls-oranje); }
+.s-loranje { --paper: var(--npuls-licht-oranje); --ink: var(--npuls-zwart); --accent: var(--npuls-oranje); --accent-2: var(--npuls-blauw); }
+.s-lroze { --paper: var(--npuls-licht-roze); --ink: var(--npuls-zwart); --accent: var(--npuls-oranje); --accent-2: var(--npuls-blauw); }
+/* Titel en citaat op verzadigde vlakken, alleen waar de rol afwijkt van de tekstkleur; op wit en licht-* volgt de titel de layout */
+.s-blauw .quote { color: var(--npuls-geel); }
+/* Markering achter het accentdeel van de titel, waar het accent als tekst te weinig contrast haalt (title_highlight) */
+.s-groen .slide-head h2 .hl { color: var(--ink); background: var(--npuls-roze); padding: 0 .1em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.s-oranje .slide-head h2 .hl { color: var(--ink); background: var(--npuls-roze); padding: 0 .1em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+/* Kaarten (card_roles); licht-* kaarten gebruiken de rollen van npuls-wit */
+.card.blauw { background: var(--npuls-blauw); color: var(--npuls-wit); }
+.card.oranje { background: var(--npuls-oranje); color: var(--npuls-zwart); }
+.card.groen { background: var(--npuls-groen); color: var(--npuls-zwart); }
+.card.geel { background: var(--npuls-geel); color: var(--npuls-zwart); }
+.card.roze { background: var(--npuls-roze); color: var(--npuls-zwart); }
+.card.wit { background: var(--npuls-wit); color: var(--npuls-zwart); }
+.card.lgroen { background: var(--npuls-licht-groen); color: var(--npuls-zwart); }
+.card.lblauw { background: var(--npuls-licht-blauw); color: var(--npuls-zwart); }
+.card.lroze { background: var(--npuls-licht-roze); color: var(--npuls-zwart); }
+.card.loranje { background: var(--npuls-licht-oranje); color: var(--npuls-zwart); }
+.card.lgeel { background: var(--npuls-licht-geel); color: var(--npuls-zwart); }
+/* Heldenkaart: standaardkleur uit component_defaults.hero, en .held.<kleur> voor alle kaartkleuren (ook de standaard) */
+.held { background: var(--npuls-groen); color: var(--npuls-zwart); }
+.held.blauw { background: var(--npuls-blauw); color: var(--npuls-wit); }
+.held.oranje { background: var(--npuls-oranje); color: var(--npuls-zwart); }
+.held.groen { background: var(--npuls-groen); color: var(--npuls-zwart); }
+.held.geel { background: var(--npuls-geel); color: var(--npuls-zwart); }
+.held.roze { background: var(--npuls-roze); color: var(--npuls-zwart); }
+.held.wit { background: var(--npuls-wit); color: var(--npuls-zwart); }
+/* Icoontegels (tile_pairs.icon_fg): tegelkleur en kleur van het icoon */
+.ico.blauw { background: var(--npuls-blauw); color: var(--npuls-geel); }
+.ico.geel { background: var(--npuls-geel); color: var(--npuls-blauw); }
+.ico.groen { background: var(--npuls-groen); color: var(--npuls-roze); }
+.ico.oranje { background: var(--npuls-oranje); color: var(--npuls-zwart); }
+.ico.roze { background: var(--npuls-roze); color: var(--npuls-blauw); }
+.ico.wit { background: var(--npuls-wit); color: var(--npuls-blauw); }
 
 /* Decks: class="npuls-slide" op de slide */
 .npuls-slide { position: relative; overflow: hidden; font-family: var(--npuls-font-primary); }

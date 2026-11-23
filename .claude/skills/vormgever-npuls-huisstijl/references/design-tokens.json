@@ -27,13 +27,60 @@
       { "background": "npuls-roze",   "with": ["npuls-blauw", "npuls-groen", "npuls-zwart", "npuls-oranje"] },
       { "background": "npuls-geel",   "with": ["npuls-oranje", "npuls-zwart", "npuls-blauw"] },
       { "background": "npuls-groen",  "with": ["npuls-roze", "npuls-zwart"] },
-      { "background": "npuls-oranje", "with": ["npuls-zwart", "npuls-roze"] }
+      { "background": "npuls-oranje", "with": ["npuls-zwart", "npuls-roze"] },
+      { "background": "npuls-wit", "with": ["npuls-blauw", "npuls-zwart", "npuls-groen", "npuls-oranje"] },
+      { "background": "licht-groen", "with": ["npuls-blauw", "npuls-zwart", "npuls-groen"] },
+      { "background": "licht-blauw", "with": ["npuls-blauw", "npuls-zwart"] },
+      { "background": "licht-roze", "with": ["npuls-blauw", "npuls-zwart", "npuls-groen", "npuls-oranje"] },
+      { "background": "licht-oranje", "with": ["npuls-blauw", "npuls-zwart", "npuls-oranje"] },
+      { "background": "licht-geel", "with": ["npuls-blauw", "npuls-zwart", "npuls-oranje"] }
     ],
     "forbidden_examples": ["geel-op-groen", "groen-op-blauw"],
     "layout": {
       "_comment": "Neutraal layout-vlak uit het officiële Npuls-pptx-template (Tussendia, Titeldia 3, Afbeeldingen en vormen). Alleen als vlak/band, nooit als kaart.",
       "npuls-grijs": "#E6E6E6"
     }
+  },
+  "slide_roles": {
+    "_comment": "Kleurrollen per slide-achtergrond (de sleutel). title/text = kleur van titel en lopende tekst; accent = accentdeel van de titel, label-pil, kerncijfer; accent_2 = tweede accent (openingsteken van een citaat, pijlen); quote = citaattekst; marker = kleur van het beeldmerk; title_highlight = kleur van een markering achter het accentdeel (alleen waar het accent als tekst te weinig contrast haalt: roze op groen en oranje, ca. 2,2:1), anders null; cards = kaartkleuren die op deze achtergrond mogen (nooit gelijk aan de achtergrond); deco = decoratiekleuren. Elke rol is een toegestane voorgrond uit colors.allowed_combinations. title geldt op verzadigde achtergronden; op npuls-wit en licht-* volgt de titel de potx-layout (zwart) en gebruiken pptx en HTML alleen accent voor het accentdeel. Presentaties (cedapress) lezen dit blok; zie references/presentaties.md.",
+    "npuls-blauw": { "title": "npuls-wit", "text": "npuls-wit", "accent": "npuls-geel", "accent_2": "npuls-roze", "quote": "npuls-geel", "marker": "npuls-roze", "title_highlight": null, "cards": ["npuls-geel", "npuls-roze"], "deco": ["npuls-geel", "npuls-roze"] },
+    "npuls-roze": { "title": "npuls-zwart", "text": "npuls-zwart", "accent": "npuls-blauw", "accent_2": "npuls-oranje", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": null, "cards": ["npuls-blauw", "npuls-oranje", "npuls-groen"], "deco": ["npuls-blauw", "npuls-oranje"] },
+    "npuls-groen": { "title": "npuls-zwart", "text": "npuls-zwart", "accent": "npuls-roze", "accent_2": "npuls-zwart", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": "npuls-roze", "cards": ["npuls-roze"], "deco": ["npuls-roze"] },
+    "npuls-oranje": { "title": "npuls-zwart", "text": "npuls-zwart", "accent": "npuls-roze", "accent_2": "npuls-zwart", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": "npuls-roze", "cards": ["npuls-roze"], "deco": ["npuls-roze"] },
+    "npuls-geel": { "title": "npuls-zwart", "text": "npuls-zwart", "accent": "npuls-blauw", "accent_2": "npuls-oranje", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": null, "cards": ["npuls-blauw", "npuls-oranje", "npuls-wit"], "deco": ["npuls-oranje", "npuls-blauw"] },
+    "npuls-wit": { "title": "npuls-blauw", "text": "npuls-zwart", "accent": "npuls-blauw", "accent_2": "npuls-groen", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": null, "cards": ["npuls-blauw", "npuls-oranje", "npuls-groen", "npuls-geel"], "deco": ["npuls-blauw", "npuls-oranje"] },
+    "licht-geel": { "title": "npuls-blauw", "text": "npuls-zwart", "accent": "npuls-oranje", "accent_2": "npuls-blauw", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": null, "cards": ["npuls-blauw", "npuls-oranje", "npuls-groen", "npuls-geel"], "deco": ["npuls-oranje", "npuls-blauw"] },
+    "licht-blauw": { "title": "npuls-blauw", "text": "npuls-zwart", "accent": "npuls-blauw", "accent_2": "npuls-oranje", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": null, "cards": ["npuls-blauw", "npuls-oranje", "npuls-groen", "npuls-geel"], "deco": ["npuls-blauw"] },
+    "licht-groen": { "title": "npuls-blauw", "text": "npuls-zwart", "accent": "npuls-groen", "accent_2": "npuls-oranje", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": null, "cards": ["npuls-blauw", "npuls-oranje", "npuls-groen", "npuls-geel"], "deco": ["npuls-groen", "npuls-blauw"] },
+    "licht-oranje": { "title": "npuls-blauw", "text": "npuls-zwart", "accent": "npuls-oranje", "accent_2": "npuls-blauw", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": null, "cards": ["npuls-blauw", "npuls-oranje", "npuls-groen", "npuls-geel"], "deco": ["npuls-oranje", "npuls-blauw"] },
+    "licht-roze": { "title": "npuls-blauw", "text": "npuls-zwart", "accent": "npuls-oranje", "accent_2": "npuls-blauw", "quote": "npuls-zwart", "marker": "npuls-zwart", "title_highlight": null, "cards": ["npuls-blauw", "npuls-oranje", "npuls-groen", "npuls-geel"], "deco": ["npuls-oranje", "npuls-blauw"] }
+  },
+  "card_roles": {
+    "_comment": "Tekstrollen per kaartkleur: big = kerncijfer en nummer, title = kaartkop, text = lopende tekst, label = label, pill_bg/pill_fg = pil op de kaart. Body-tekst op groen en oranje is zwart: roze haalt daar geen leesbaar contrast. Kaarten in licht-* kleuren gebruiken de rollen van npuls-wit.",
+    "npuls-blauw": { "big": "npuls-geel", "title": "npuls-wit", "text": "npuls-wit", "label": "npuls-geel", "pill_bg": "npuls-geel", "pill_fg": "npuls-blauw" },
+    "npuls-oranje": { "big": "npuls-zwart", "title": "npuls-zwart", "text": "npuls-zwart", "label": "npuls-zwart", "pill_bg": "npuls-roze", "pill_fg": "npuls-zwart" },
+    "npuls-groen": { "big": "npuls-roze", "title": "npuls-zwart", "text": "npuls-zwart", "label": "npuls-zwart", "pill_bg": "npuls-roze", "pill_fg": "npuls-zwart" },
+    "npuls-geel": { "big": "npuls-blauw", "title": "npuls-blauw", "text": "npuls-zwart", "label": "npuls-blauw", "pill_bg": "npuls-blauw", "pill_fg": "npuls-geel" },
+    "npuls-roze": { "big": "npuls-blauw", "title": "npuls-blauw", "text": "npuls-zwart", "label": "npuls-blauw", "pill_bg": "npuls-blauw", "pill_fg": "npuls-roze" },
+    "npuls-wit": { "big": "npuls-blauw", "title": "npuls-zwart", "text": "npuls-zwart", "label": "npuls-oranje", "pill_bg": "npuls-blauw", "pill_fg": "npuls-roze" }
+  },
+  "tile_pairs": {
+    "_comment": "Icoontegels: icon_fg = kleur van het icoon per tegelkleur (zwart is nooit een vlak); on_card = tegelkleur op een kaart van die kleur (nooit gelijk aan de kaart); cycle = volgorde waarin tegelkleuren binnen één slide afwisselen.",
+    "cycle": ["npuls-blauw", "npuls-geel", "npuls-groen", "npuls-oranje", "npuls-roze"],
+    "icon_fg": { "npuls-blauw": "npuls-geel", "npuls-geel": "npuls-blauw", "npuls-groen": "npuls-roze", "npuls-oranje": "npuls-zwart", "npuls-roze": "npuls-blauw", "npuls-wit": "npuls-blauw" },
+    "on_card": { "npuls-blauw": "npuls-geel", "npuls-oranje": "npuls-roze", "npuls-groen": "npuls-roze", "npuls-geel": "npuls-blauw", "npuls-roze": "npuls-blauw" }
+  },
+  "badge_fg": {
+    "_comment": "Tekst op een gekleurde pil of cirkel (label-pil, stapnummer), per vlakkleur; alleen toegestane combinaties.",
+    "npuls-blauw": "npuls-wit", "npuls-groen": "npuls-zwart", "npuls-oranje": "npuls-zwart", "npuls-geel": "npuls-blauw", "npuls-roze": "npuls-blauw"
+  },
+  "tints": {
+    "_comment": "Zachte tint bij een accentkleur: rijen en kaarten op een witte slide krijgen de tint van het accent (default als het accent hier niet staat).",
+    "npuls-blauw": "licht-blauw", "npuls-groen": "licht-groen", "npuls-oranje": "licht-oranje", "default": "licht-blauw"
+  },
+  "component_defaults": {
+    "_comment": "Standaardkleur van een component als de bron geen kleur geeft.",
+    "hero": "npuls-groen"
   },
   "typography": {
     "primary_font": {

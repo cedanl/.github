@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+- **`web/npuls.css`:** bevat nu de deckklassen `.s-*` (slide-varianten), `.card.<kleur>`, `.held.<kleur>` en `.ico.<kleur>`, gegenereerd uit `slide_roles`, `card_roles` en `tile_pairs` in de tokens. Ze stonden eerst in `cedapress/renderers/html/frame.html`. Nieuw: `.held.geel/.roze/.wit`, tekstkleur op alle kaarten, `.ico.roze` is blauw op roze (was zwart), `.s-blauw .quote` is geel. `allowed_combinations` bevat nu ook wit en de `licht-*`-tinten (nieuwe `.npuls-wit-*` en `.npuls-licht-*`-klassen).
+
 ## 0.2.1
 
 - **Kleur:** wit op blauw is toegestaan (`allowed_combinations` in de tokens, besluit Aslam 2026-11-23). `web/npuls.css` heeft daardoor de nieuwe klasse `.npuls-blauw-wit`.

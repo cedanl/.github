@@ -4,7 +4,7 @@
 Wordt aangeroepen door build.mjs (--engine potx, de standaard); niet zelf draaien.
     python build_potx.py <payload.json>
 build.mjs controleert de spec, rastert de illustraties en schrijft de payload:
-{ name, title, author, template, out, slides, illu: {naam: png}, teamfoto, tokens: {C, VARIANTS, CARD, CHART_ORDER, FONT, ALLOWED} }
+{ name, title, author, template, out, slides, illu: {naam: png}, teamfoto, tokens: {C, VARIANTS, CARD, CHART_ORDER, FONT, ALLOWED, ICON_FG, TILE_ON, BADGE_FG, TILE_CYCLE, TINT, HERO_DEFAULT} }, allemaal uit design-tokens.json (lib/tokens.mjs)
 
 Elk slidetype gebruikt een layout uit de template (zie references/slidetypes.md, "potx-engine").
 Uitvoer: exit 0 = gebouwd (waarschuwingen op stdout), 1 = fout.
@@ -33,6 +33,26 @@ sys.stdout.reconfigure(encoding="utf-8")
 P = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
 T = P["tokens"]
 C, VARIANTS, CARD, CHART_ORDER, FONT, ALLOWED = T["C"], T["VARIANTS"], T["CARD"], T["CHART_ORDER"], T["FONT"], T["ALLOWED"]
+
+
+class TokenFout(Exception):
+    """Een kleur of kleurrol die niet in design-tokens.json staat: het bouwen stopt met FOUT (exit 1)."""
+
+
+class Rollen(dict):
+    """Tabel uit design-tokens.json; een ontbrekende sleutel is een TokenFout (andere KeyErrors blijven gewone bugs)."""
+
+    def __init__(self, data, wat):
+        super().__init__(data)
+        self.wat = wat
+
+    def __missing__(self, key):
+        raise TokenFout(f"'{key}' staat niet in design-tokens.json ({self.wat})")
+
+
+# Alle kleuren en kleurrollen komen uit design-tokens.json via build.mjs (pptx/lib/tokens.mjs); hier staan geen eigen tabellen.
+C, CARD = Rollen(C, "colors"), Rollen(CARD, "card_roles")
+VARIANTS = Rollen(VARIANTS, "slide_roles")
 BODY, HEAD, QUOTE = FONT["body"], FONT["head"], FONT["quote"]
 WARN = []
 
@@ -187,7 +207,7 @@ class Slide:
             self.warn(f"titel te lang voor de template ({len(plain(text))} tekens): \"{plain(text)[:50]}\" → korter")
         # `**accentdeel**` krijgt de accentkleur van de slide (OPP-17, OPP-20). Op groen en oranje haalt roze als tekst
         # maar ca. 2,2:1: daar wordt het accentdeel een roze markering achter zwarte tekst (zelfde kleuren, wel leesbaar).
-        marker = MARKER.get(self.v["bg"]) if "**" in str(text) else None
+        marker = self.v["highlight"] if "**" in str(text) else None  # slide_roles.<bg>.title_highlight
         p = self.set_ph(idx, text, color=color, size=size if size < 40 else None,
                         accent=(color or self.v["title"]) if marker else (self.v["accent"] if "**" in str(text) else None))
         if p is not None and marker:
@@ -364,10 +384,6 @@ class Slide:
             self.warn(f"{fg} op {bg} ({where}) is geen toegestane Npuls-combinatie")
 
 
-# Achtergrond → kleur van de markering achter het accentdeel van de titel (zie Slide.title).
-MARKER = {"groen": "roze", "oranje": "roze"}
-
-
 def highlight(run, name):
     """Markeerstift achter een run (a:highlight, PowerPoint 2019 en later); volgorde in rPr: na de vulling, vóór het lettertype."""
     rPr = run._r.get_or_add_rPr()
@@ -397,7 +413,7 @@ def no_bullet(paragraphs):
 def footnote(sl, s):
     note = s.get("footnote") or (f"Bron: {s['source']}" if s.get("source") else None)
     if note:
-        sh = sl.text(note, 1.6, 6.92, CW - 0.62, 0.3, 12, "zwart" if sl.v["bg"] != "blauw" else "wit", kind="label")
+        sh = sl.text(note, 1.6, 6.92, CW - 0.62, 0.3, 12, sl.v["text"], kind="label")
         if sh is not None:
             sh.name = "cedapress-voetnoot"  # blijft staan bij het verticaal centreren
 
@@ -451,16 +467,15 @@ def card_colors(sl, items):
 # ---------------------------------------------------------------- componenten uit ceda-powerpoint-maker (Edwin)
 # Maten van Edwin (10 × 5,625 in) zijn met S = 4/3 omgerekend naar de 13,33 × 7,5 in van de potx; de breedte volgt
 # de potx-marges (ML, CW), de hoogte de inhoudszone onder de titel-placeholder. Zie references/pptx-slidetypes.md.
-ICON_FG, TILE_ON, BADGE_FG = T["ICON_FG"], T["TILE_ON"], T["BADGE_FG"]
+ICON_FG, TILE_ON, BADGE_FG = Rollen(T["ICON_FG"], "tile_pairs.icon_fg"), Rollen(T["TILE_ON"], "tile_pairs.on_card"), Rollen(T["BADGE_FG"], "badge_fg")
+TILE_CYCLE, TINT, HERO_DEFAULT = T["TILE_CYCLE"], T["TINT"], T["HERO_DEFAULT"]
 ICONS = P.get("icons", {})  # icoonnaam → PNG (zwart, transparant) uit iconen/<naam>.svg van het assetpakket
-TILE_CYCLE = ["blauw", "geel", "groen", "oranje", "roze"]
-SOFT = {"blauw": "licht-blauw", "groen": "licht-groen", "oranje": "licht-oranje"}
 _icon_warned, _tint_cache = set(), {}
 
 
 def soft_card(sl):
     """Kleur voor rijen en kaarten: wit op een lichte of gekleurde slide, een zacht accentvlak op een witte slide."""
-    return SOFT.get(sl.v["accent"], "licht-blauw") if sl.v["bg"] == "wit" else "wit"
+    return TINT.get(sl.v["accent"], TINT["default"]) if sl.v["bg"] == "wit" else "wit"
 
 
 def tile_color(i, avoid=None):
@@ -633,7 +648,7 @@ def t_hero(n, s):
     """Heldenkaart (P4): groot vlak met label en een grote vraag of stelling in Cooper, optioneel met illustratie."""
     sl = content_slide(n, s)
     sl.title(s["title"])
-    c = s.get("color") or "groen"
+    c = s.get("color") or HERO_DEFAULT
     r = CARD[c]
     sl.check_pair(sl.v["bg"], c, "heldenkaart")
     top, bottom = sl.top, CONTENT_BOTTOM
@@ -1167,11 +1182,6 @@ def t_chart(n, s):
     footnote(sl, s)
 
 
-# Kleur van het openingsteken van een citaat per achtergrond (gelijk aan --accent-2 in de HTML-frame).
-QUOTE_MARK = {"wit": "groen", "roze": "oranje", "blauw": "roze", "geel": "oranje", "groen": "roze", "oranje": "roze",
-              "licht-blauw": "oranje", "licht-groen": "oranje", "licht-geel": "blauw", "licht-roze": "blauw", "licht-oranje": "blauw"}
-
-
 def t_quote(n, s):
     """Citaat zoals de HTML: openingsteken, citaat in Cooper links (± 7,4 in breed), de bron er direct onder,
     het blok in het optische midden; een illustratie staat groot rechts, boven de bogen van de layout."""
@@ -1192,7 +1202,7 @@ def t_quote(n, s):
     y = zone_top + OPTISCH * max(0, (zone_bot - zone_top) - (mark_h + th + by_h))
     qc = sl.v["quote"] if sl.v["quote"] != "zwart" else sl.v["title"]
     qc = None if (sl.v["bg"] == "wit" or sl.v["bg"].startswith("licht") or m == 1) else qc
-    sl.text("\u201c", ML - 0.04, y - 0.1, 1.2, mark_h + 0.25, 80, QUOTE_MARK.get(sl.v["bg"], "blauw"), font=QUOTE, mn=40)
+    sl.text("\u201c", ML - 0.04, y - 0.1, 1.2, mark_h + 0.25, 80, sl.v["accent2"], font=QUOTE, mn=40)
     p = sl.place(11, x=ML, y=y + mark_h, w=qw, h=th)
     p.text_frame.word_wrap = True
     p.text_frame.vertical_anchor = MSO_ANCHOR.TOP
@@ -1398,7 +1408,11 @@ if slides and slides[-1]["type"] != "einddia" and P.get("einddia", True):
     slides.append({"type": "einddia"})
 for i, s in enumerate(slides, 1):
     first = len(ALL_SLIDES)
-    LAYOUTS[s["type"]](i, s)
+    try:
+        LAYOUTS[s["type"]](i, s)
+    except TokenFout as e:  # kleur of kleurrol die niet in design-tokens.json staat
+        print(f"FOUT  slide {i}: {e}", file=sys.stderr)
+        sys.exit(1)
     if s["type"] in CENTRE:
         for sl_ in ALL_SLIDES[first:]:
             vcentre(sl_)

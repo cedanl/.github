@@ -1,6 +1,6 @@
 {
   "name": "npuls-assets",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "files": [
     {
       "path": "ceda/teamfoto.png",
@@ -11,7 +11,7 @@
     {
       "path": "CHANGELOG.md",
       "type": "doc",
-      "sha256": "d48ff397e42310db85cd9466a70c76becea40bc4902ae25dcc4e0aa29c72cca4",
+      "sha256": "2414c2209738f8ce8717f2bfe21fe408514e3d67d618beb45a980c81ecb0c486",
       "description": "CHANGELOG.md"
     },
     {
@@ -365,7 +365,7 @@
     {
       "path": "README.md",
       "type": "doc",
-      "sha256": "fde710d4d162bded593cfe4f5b7acac4fe6f1458d9bca718206d2611bbfbb633",
+      "sha256": "b9be7fdb6b2e3f33eb97c2de5d705c07e44b9d036419b421901a86cfe24f1e5c",
       "description": "README.md"
     },
     {
@@ -551,7 +551,7 @@
     {
       "path": "VERSION",
       "type": "doc",
-      "sha256": "71015c979ccb0fc8a0be7ca0ae83046ab045cdc2c8faa09fb2f0f7e440f9b4a6",
+      "sha256": "d915cc95d6ca8f47ae297713ed46d4e5c5d99ddd29fc3c61e263bdf305f2b5b0",
       "description": "VERSION"
     },
     {
@@ -683,7 +683,7 @@
     {
       "path": "web/npuls.css",
       "type": "css",
-      "sha256": "caea04b0a6a6e69ed542ec11ae854a1fc458f4c2e8e800e0fa01a8285ffe48f7",
+      "sha256": "e6be6a2cb757fedf46cba0caba8cbeda20a258e4ca08f861f717ff697f545b96",
       "description": "CSS-variabelen, kleurcombinaties, typografie, logo en bogen"
     },
     {

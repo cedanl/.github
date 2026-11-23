@@ -25,11 +25,11 @@ In 0.1.0 heetten de potx-illustraties `illustratie-01.svg` t/m `illustratie-26.s
 Pin altijd een vaste versie. De helper in de skill `vormgever-npuls-huisstijl` haalt het pakket op en cachet het in `~/.cache/ceda/npuls-assets/<versie>/`:
 
 ```bash
-python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure --version 0.2.1
+python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure --version 0.3.0
 python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py path web/npuls.css
 ```
 
-Handmatig: `https://github.com/cedanl/.github/releases/download/npuls-assets-v0.2.1/npuls-assets-0.2.1.zip`.
+Handmatig: `https://github.com/cedanl/.github/releases/download/npuls-assets-v0.3.0/npuls-assets-0.3.0.zip`.
 
 ## Uitbrengen
 

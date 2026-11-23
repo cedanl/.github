@@ -93,10 +93,59 @@ for combo in c["allowed_combinations"]:
         parts.append(f".npuls-{short(b)}-{short(w)} {{ background: var({var(b)}); color: var({var(w)}); }}")
 combos_css = "\n".join(parts)
 
+# --- slide-varianten en kaartkleuren voor cedapress-decks (slide_roles, card_roles, tile_pairs) ---
+def cname(n):
+    """Klassenaam in de deck-HTML: npuls-blauw -> blauw, licht-blauw -> lblauw."""
+    return short(n).replace("licht-", "l")
+
+
+def light(n):
+    return n == "npuls-wit" or n.startswith("licht-")
+
+
+roles, cards, tiles = t["slide_roles"], t["card_roles"], t["tile_pairs"]
+slides = ["/* Slide-varianten (slide_roles): --paper = achtergrond, --ink = tekst, --accent = accentdeel, --accent-2 = openingsteken citaat */"]
+for bg, r in roles.items():
+    if bg.startswith("_"):
+        continue
+    slides.append(f".s-{cname(bg)} {{ --paper: var({var(bg)}); --ink: var({var(r['text'])}); "
+                  f"--accent: var({var(r['accent'])}); --accent-2: var({var(r['accent_2'])}); }}")
+slides.append("/* Titel en citaat op verzadigde vlakken, alleen waar de rol afwijkt van de tekstkleur; op wit en licht-* volgt de titel de layout */")
+for bg, r in roles.items():
+    if bg.startswith("_") or light(bg):
+        continue
+    if r["title"] != r["text"]:
+        slides.append(f".s-{cname(bg)} .slide-head h2 {{ color: var({var(r['title'])}); }}")
+    if r["quote"] != r["text"]:
+        slides.append(f".s-{cname(bg)} .quote {{ color: var({var(r['quote'])}); }}")
+slides.append("/* Markering achter het accentdeel van de titel, waar het accent als tekst te weinig contrast haalt (title_highlight) */")
+for bg, r in roles.items():
+    if bg.startswith("_") or not r.get("title_highlight"):
+        continue
+    slides.append(f".s-{cname(bg)} .slide-head h2 .hl {{ color: var(--ink); background: var({var(r['title_highlight'])}); padding: 0 .1em; "
+                  "-webkit-box-decoration-break: clone; box-decoration-break: clone; }")
+slides.append("/* Kaarten (card_roles); licht-* kaarten gebruiken de rollen van npuls-wit */")
+for k, r in cards.items():
+    if not k.startswith("_"):
+        slides.append(f".card.{cname(k)} {{ background: var({var(k)}); color: var({var(r['text'])}); }}")
+for k in sec:
+    slides.append(f".card.{cname(k)} {{ background: var({var(k)}); color: var({var(cards['npuls-wit']['text'])}); }}")
+hero = t["component_defaults"]["hero"]
+slides.append("/* Heldenkaart: standaardkleur uit component_defaults.hero, en .held.<kleur> voor alle kaartkleuren (ook de standaard) */")
+slides.append(f".held {{ background: var({var(hero)}); color: var({var(cards[hero]['text'])}); }}")
+for k, r in cards.items():
+    if not k.startswith("_"):
+        slides.append(f".held.{cname(k)} {{ background: var({var(k)}); color: var({var(r['text'])}); }}")
+slides.append("/* Icoontegels (tile_pairs.icon_fg): tegelkleur en kleur van het icoon */")
+for k, fg in tiles["icon_fg"].items():
+    slides.append(f".ico.{cname(k)} {{ background: var({var(k)}); color: var({var(fg)}); }}")
+slides_css = chr(10).join(slides)
+
 header = ("/* GEGENEREERD uit design-tokens.json — niet met de hand bewerken "
           "(scripts/gen_npuls_css.py, sjabloon scripts/npuls.css.tmpl) */\n")
 css = header + (tmpl_path.read_text(encoding="utf-8").replace("@@VERSION@@", version)
-                .replace("@@ROOT@@", root_css).replace("@@COMBINATIES@@", combos_css))
+                .replace("@@ROOT@@", root_css).replace("@@COMBINATIES@@", combos_css)
+                .replace("@@SLIDES@@", slides_css))
 
 problems = []
 for k, v in t.get("css_variables", {}).items():

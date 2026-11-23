@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - ".claude/skills/**"
+      - "npuls-assets/**"
+      - "scripts/**"
   push:
     branches:
       - main
@@ -20,3 +22,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run skill linter
         run: python3 .claude/skills/create-skill/scripts/validate-skill.py .claude/skills
+      - name: Check npuls.css against design-tokens.json
+        run: bash scripts/build-npuls-assets.sh --check
