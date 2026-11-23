@@ -5,13 +5,12 @@ Vaste structuur per regel: **id · regel · meetbaar criterium · fancy-niveau �
 
 Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0), afgeleid uit de CEDA-presentatie Uitnodigingsregel en de Npuls-huisstijl. Alleen het deel dat los staat van het medium is overgenomen (OSH-17 en hoger, plus aangepaste OSH-02, 03, 04, 08, 13, 14, 16). Kleuren en lettertypen staan in `vormgever-npuls-huisstijl` (`design-tokens.json`) en worden met hun tokennaam genoemd.
 
-<!-- Open (TODO(Edwin)): zie onderaan "Nog open". Pas bij wijziging ook
-     cedapress/renderers/html/check.mjs (blok "11. Ontwerpregels") aan. Status: Edwin verwerkt, 2026-11-23. -->
+<!-- Pas bij wijziging van een drempel ook cedapress/renderers/html/check.mjs (blok "11. Ontwerpregels") aan. -->
 
 | id | Regel | Meetbaar criterium | Fancy | Getoetst door | Ernst |
 |---|---|---|---|---|---|
 | OSH-01 | Eén boodschap per slide | ≤ 1 `h2` per inhoudsslide | alle | check.mjs | FOUT |
-| OSH-02 | Weinig tekst | zichtbare woorden per inhoudsslide ≤ 50 (richtlijn), waarschuwing boven 50, fout boven 90; notes en vaste slides tellen niet; kaarttitel 1 tot 4 woorden, kaarttekst ≤ 20 woorden (check.mjs staat nog op 60) | alle | check.mjs | W / F |
+| OSH-02 | Weinig tekst | zichtbare woorden per inhoudsslide ≤ 50 (richtlijn), waarschuwing boven 50, fout boven 90; notes en vaste slides tellen niet; kaarttitel 1 tot 4 woorden, kaarttekst ≤ 20 woorden (niet geautomatiseerd) | alle | check.mjs | W / F |
 | OSH-03 | Kop is een korte bewering | kop ≤ 12 woorden en ≤ ± 45 tekens, formule uit OSH-17 | alle | check.mjs (lengte); bewering: handmatig | W |
 | OSH-04 | Korte lijsten | 3 tot 5 punten per `ul`/`ol` | alle | check.mjs | W |
 | OSH-05 | Leesbaar op de beamer | kleinste gerenderde tekst ≥ 18 px op 1920×1080; niets onder de navigatie of buiten beeld | alle | qa.mjs (overflow); minimale grootte: TODO | F |
@@ -39,6 +38,6 @@ Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0
 
 ## Nog open
 
-- **OSH-05:** minimale lettergrootte blijft 18 px op 1920×1080. Edwins waarden (9 pt label, 11,5 pt body op een dia van 10 inch) zijn voor pptx en niet om te rekenen naar een schermgrootte. Edwin moet de HTML-ondergrens bevestigen (TODO(Edwin)).
-- **check.mjs:** de drempels en nieuwe regels (OSH-02, 04, 08, 13, 14, 17 tot 26) zijn nog niet aangepast of geautomatiseerd.
-- **Iconen:** herkomst en licentie van Edwins iconenset zijn nog niet vastgesteld.
+- **OSH-05:** minimale lettergrootte blijft 18 px op 1920×1080. Edwins waarden (9 pt label, 11,5 pt body op een dia van 10 inch, omgerekend naar potx 12 en 15 pt) gelden voor pptx en worden niet omgerekend naar een schermgrootte. Edwin moet de HTML-ondergrens bevestigen (TODO(Edwin)).
+- **Nog niet geautomatiseerd in check.mjs:** OSH-08 (3 primaire kleuren is er wel), OSH-13, OSH-14 (aantal delen is er wel), OSH-17 tot OSH-26 (formule, label, kleurcombinaties, iconen, illustraties).
+- **Iconen:** HTML gebruikt Font Awesome (tokens); de pptx wacht op een iconenset in het assetpakket (herkomst en licentie van Edwins set onbekend).

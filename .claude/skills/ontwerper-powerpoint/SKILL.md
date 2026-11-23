@@ -40,7 +40,7 @@ Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0
    afbeeldingen. Collega's moeten bij "Nieuwe dia" de Npuls-layouts krijgen.
 4. **Statisch denken:** wat in HTML een animatie of klik is, wordt in pptx een extra slide of een statische
    grafiek (`::: pptx`-blok in de bron). Geen PowerPoint-animaties tenzij de gebruiker erom vraagt.
-5. **Leesbaar:** 16:9, body ≥ 11,5 pt, labels ≥ 9 pt, slidetitel 26 pt; liever splitsen dan verkleinen.
+5. **Leesbaar:** 16:9, body ≥ 15 pt, labels ≥ 12 pt (potx-pt; Edwin: 11,5 en 9 pt op 10 in), slidetitel 40 pt uit de layout; liever splitsen dan verkleinen.
 6. **Toegankelijk:** alt-tekst bij afbeeldingen, leesvolgorde = layoutvolgorde, alleen toegestane kleurcombinaties, zwart nooit als vlak.
 7. **Ontvangers zonder Npuls-fonts zien Calibri:** stuur ook de PDF.
 
