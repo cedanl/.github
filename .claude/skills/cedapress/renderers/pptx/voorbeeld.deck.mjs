@@ -74,7 +74,7 @@ export default {
       variant: 'licht-blauw',
       title: 'Wat je meeneemt',
       bullets: ['Een **werkende devcontainer** met data en codebook', 'Skills die elke stap herhaalbaar maken', 'Een dashboard dat je zelf kunt uitleggen'],
-      illustration: 'illustratie-07',
+      illustration: 'team-rond-idee',
       notes: 'Drie dingen die deelnemers mee naar huis nemen.',
     },
     {
@@ -115,7 +115,7 @@ export default {
       variant: 'blauw',
       text: 'De analist voegt de wijsheid toe: wat mag je concluderen, en hoe presenteer je het?',
       by: 'Uitgangspunt van de workshop',
-      illustration: 'illustratie-19',
+      illustration: 'gloeilamp',
       notes: 'Laat het citaat even staan.',
     },
     {

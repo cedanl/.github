@@ -51,7 +51,7 @@ export function npulsAssetsDir() {
   return (cached = resolve(dir));
 }
 
-/** Vaste paden in het pakket (0.1.0). Fonts en de CEDA-teamfoto zitten er bewust niet in: zie fonts en teamfoto. */
+/** Vaste paden in het pakket (0.2.0). Fonts zitten er bewust niet in (zie fonts). De CEDA-teamfoto staat in `ceda/teamfoto.png`. */
 export function npulsPaths(root = npulsAssetsDir()) {
   return {
     root,
@@ -60,15 +60,17 @@ export function npulsPaths(root = npulsAssetsDir()) {
     logos: join(root, 'logos'),
     logoJpg: join(root, 'logos', 'npuls-logo-roze.jpg'),
     vormen: join(root, 'vormen'),
-    illustraties: join(root, 'illustraties'),   // illustratie-NN.svg (26, uit de potx)
+    tegels: join(root, 'tegels'),
+    huisstijlgids: join(root, 'huisstijlgids', 'Npuls_huisstijlgids_2025.pdf'),
+    illustraties: join(root, 'illustraties'),   // <naam>.svg (48: 26 uit de potx, 22 van npuls.nl)
     slidesPreview: join(root, 'slides-preview'), // slideNN.png, zelfde volgorde als de oude SlideN.PNG
     css: join(root, 'web', 'npuls.css'),
     sprite: join(root, 'web', 'sprite.svg'),
     // Fonts zitten niet in het pakket (licenties, zie fonts.md): web via CDN in npuls.css, voor PowerPoint
     // lokaal uit de Npuls-communicatiekit. Map met de .otf/.ttf: env NPULS_FONTS_DIR.
     fonts: process.env.NPULS_FONTS_DIR || '',
-    // CEDA-teamfoto ("Wie zijn wij") is geen Npuls-asset. TODO(Aslam): vaste plek kiezen (CEDA-assets/huisstijlplus).
-    // Nu: env CEDA_TEAMFOTO, anders img/team-groep.png in de deckmap.
-    teamfoto: process.env.CEDA_TEAMFOTO || '',
+    // CEDA-teamfoto ("Wie zijn wij"): env CEDA_TEAMFOTO wint, anders ceda/teamfoto.png in het pakket (sinds 0.2.0),
+    // anders img/team-groep.png in de deckmap. TODO: CEDA-logo volgt nog in ceda/.
+    teamfoto: process.env.CEDA_TEAMFOTO || (existsSync(join(root, 'ceda', 'teamfoto.png')) ? join(root, 'ceda', 'teamfoto.png') : ''),
   };
 }

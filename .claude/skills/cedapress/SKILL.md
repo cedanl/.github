@@ -5,7 +5,7 @@ allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node, python 3 en git. pptx-route ook python-pptx en PowerPoint (Windows) of LibreOffice. Npuls-assets via het versioned pakket van vormgever-npuls-huisstijl. playwright-chromium en pptxgenjs eenmalig via npm install in de renderers-map.
 metadata:
   ceda-id: ceda.cedapress
-  ceda-version: "0.1.0"
+  ceda-version: "0.2.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -91,7 +91,7 @@ fancy-niveau. Pas de bron aan als een slide de regels niet haalt (te veel tekst 
 Eenmalig: `npm install --prefix <cp>/renderers` (playwright-chromium, pptxgenjs). Assets: de renderers roepen
 `vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure` aan met de versie uit `assets.lock`; override met
 env `NPULS_ASSETS_DIR`. Niet in het pakket: fonts (licentie; web via CDN in `npuls.css`, pptx via env
-`NPULS_FONTS_DIR` naar de communicatiekit) en de CEDA-teamfoto (env `CEDA_TEAMFOTO` of `img/team-groep.png` in de deckmap).
+`NPULS_FONTS_DIR` naar de communicatiekit) en Voor de CEDA-teamfoto: env `CEDA_TEAMFOTO`, anders `ceda/teamfoto.png` in het pakket, anders `img/team-groep.png` in de deckmap.
 
 **HTML** — componenten en slide-varianten: `references/html-componenten.md`; assets en illustraties:
 `references/html-assets.md`.

@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
 """Eenmalige import: vult npuls-assets/ vanuit de bronmap (clidev-presentaties/public/npuls).
 Gebruik: python scripts/import-npuls-assets.py <bronmap>   (vereist Pillow voor PNG-optimalisatie)
-Lettertypebestanden worden bewust NIET meegenomen (licentie)."""
+Lettertypebestanden worden bewust NIET meegenomen (licentie).
+
+Let op: dit is de eenmalige import van pakket 0.1.0, aangepast aan de namen van 0.2.0 voor de potx-illustraties.
+Wat daarna handmatig is toegevoegd (illustraties van npuls.nl, `tegels/`, `huisstijlgids/`, `ceda/`) maakt dit script
+niet; draai het dus niet opnieuw op een bestaande map zonder die onderdelen terug te zetten (zie git)."""
 import re, shutil, sys, unicodedata
 from pathlib import Path
+
+# Namen van de 26 potx-illustraties, in leesvolgorde (pakket 0.1.0: illustratie-01 t/m 26; sinds 0.2.0 deze namen)
+NAMEN = ["laptop-dashboard", "brein-ai-chip", "ai-chip", "atoom", "brein-tandwiel", "servers", "team-rond-idee", "boeken",
+         "kalender", "handdruk", "gesprek", "afstudeerhoed", "videobellen", "samen-idee", "vr-bril", "presentator", "computer",
+         "financien-analyse", "gloeilamp", "netwerk-blokken", "schoolgebouw", "werkplek-idee", "locatie", "verrekijker",
+         "cadeau", "video"]
 
 src = Path(sys.argv[1]).resolve()
 dst = Path(__file__).resolve().parent.parent / "npuls-assets"
@@ -75,9 +85,9 @@ for slide in (18, 19):
         data = zf.read(svg); h = hashlib.sha256(data).hexdigest()
         if h in seen:
             continue
-        n += 1; k = f"illustratie-{n:02d}.svg"; seen[h] = k
+        n += 1; k = NAMEN[n - 1] + ".svg"; seen[h] = k
         (dst / "illustraties" / k).write_bytes(data)
-        mapping[k] = f"bron: potx slide {slide}, shape '{name}' ({svg})"
+        mapping[k] = {"bron": f"potx slide {slide}, shape '{name}' ({svg})", "oude_naam": f"illustratie-{n:02d}.svg"}
 # vormen/ en logos/ komen uit de communicatiekit; vormen/ is gecontroleerd tegen slideLayouts/slideMasters van de potx (zelfde paden)
 (dst / "illustraties-mapping.json").write_text(json.dumps(mapping, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 

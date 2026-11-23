@@ -1,28 +1,175 @@
 {
-  "illustratie-01.svg": "bron: potx slide 18, shape 'Graphic 69' (ppt/media/image74.svg)",
-  "illustratie-02.svg": "bron: potx slide 18, shape 'Graphic 44' (ppt/media/image58.svg)",
-  "illustratie-03.svg": "bron: potx slide 18, shape 'Graphic 42' (ppt/media/image56.svg)",
-  "illustratie-04.svg": "bron: potx slide 18, shape 'Graphic 39' (ppt/media/image54.svg)",
-  "illustratie-05.svg": "bron: potx slide 18, shape 'Graphic 34' (ppt/media/image50.svg)",
-  "illustratie-06.svg": "bron: potx slide 18, shape 'Graphic 36' (ppt/media/image52.svg)",
-  "illustratie-07.svg": "bron: potx slide 18, shape 'Graphic 77' (ppt/media/image82.svg)",
-  "illustratie-08.svg": "bron: potx slide 18, shape 'Graphic 49' (ppt/media/image60.svg)",
-  "illustratie-09.svg": "bron: potx slide 18, shape 'Graphic 51' (ppt/media/image62.svg)",
-  "illustratie-10.svg": "bron: potx slide 18, shape 'Graphic 61' (ppt/media/image66.svg)",
-  "illustratie-11.svg": "bron: potx slide 18, shape 'Graphic 53' (ppt/media/image64.svg)",
-  "illustratie-12.svg": "bron: potx slide 18, shape 'Graphic 63' (ppt/media/image68.svg)",
-  "illustratie-13.svg": "bron: potx slide 18, shape 'Graphic 67' (ppt/media/image72.svg)",
-  "illustratie-14.svg": "bron: potx slide 18, shape 'Graphic 65' (ppt/media/image70.svg)",
-  "illustratie-15.svg": "bron: potx slide 18, shape 'Graphic 75' (ppt/media/image80.svg)",
-  "illustratie-16.svg": "bron: potx slide 18, shape 'Graphic 73' (ppt/media/image78.svg)",
-  "illustratie-17.svg": "bron: potx slide 18, shape 'Graphic 71' (ppt/media/image76.svg)",
-  "illustratie-18.svg": "bron: potx slide 19, shape 'Graphic 46' (ppt/media/image84.svg)",
-  "illustratie-19.svg": "bron: potx slide 19, shape 'Graphic 6' (ppt/media/image88.svg)",
-  "illustratie-20.svg": "bron: potx slide 19, shape 'Graphic 12' (ppt/media/image94.svg)",
-  "illustratie-21.svg": "bron: potx slide 19, shape 'Graphic 4' (ppt/media/image86.svg)",
-  "illustratie-22.svg": "bron: potx slide 19, shape 'Graphic 8' (ppt/media/image90.svg)",
-  "illustratie-23.svg": "bron: potx slide 19, shape 'Graphic 10' (ppt/media/image92.svg)",
-  "illustratie-24.svg": "bron: potx slide 19, shape 'Graphic 16' (ppt/media/image96.svg)",
-  "illustratie-25.svg": "bron: potx slide 19, shape 'Graphic 20' (ppt/media/image100.svg)",
-  "illustratie-26.svg": "bron: potx slide 19, shape 'Graphic 18' (ppt/media/image98.svg)"
+  "laptop-dashboard.svg": {
+    "bron": "potx slide 18, shape 'Graphic 69' (ppt/media/image74.svg)",
+    "oude_naam": "illustratie-01.svg"
+  },
+  "brein-ai-chip.svg": {
+    "bron": "potx slide 18, shape 'Graphic 44' (ppt/media/image58.svg)",
+    "oude_naam": "illustratie-02.svg"
+  },
+  "ai-chip.svg": {
+    "bron": "potx slide 18, shape 'Graphic 42' (ppt/media/image56.svg)",
+    "oude_naam": "illustratie-03.svg"
+  },
+  "atoom.svg": {
+    "bron": "potx slide 18, shape 'Graphic 39' (ppt/media/image54.svg)",
+    "oude_naam": "illustratie-04.svg"
+  },
+  "brein-tandwiel.svg": {
+    "bron": "potx slide 18, shape 'Graphic 34' (ppt/media/image50.svg)",
+    "oude_naam": "illustratie-05.svg"
+  },
+  "servers.svg": {
+    "bron": "potx slide 18, shape 'Graphic 36' (ppt/media/image52.svg)",
+    "oude_naam": "illustratie-06.svg"
+  },
+  "team-rond-idee.svg": {
+    "bron": "potx slide 18, shape 'Graphic 77' (ppt/media/image82.svg)",
+    "oude_naam": "illustratie-07.svg"
+  },
+  "boeken.svg": {
+    "bron": "potx slide 18, shape 'Graphic 49' (ppt/media/image60.svg)",
+    "oude_naam": "illustratie-08.svg"
+  },
+  "kalender.svg": {
+    "bron": "potx slide 18, shape 'Graphic 51' (ppt/media/image62.svg)",
+    "oude_naam": "illustratie-09.svg"
+  },
+  "handdruk.svg": {
+    "bron": "potx slide 18, shape 'Graphic 61' (ppt/media/image66.svg)",
+    "oude_naam": "illustratie-10.svg"
+  },
+  "gesprek.svg": {
+    "bron": "potx slide 18, shape 'Graphic 53' (ppt/media/image64.svg)",
+    "oude_naam": "illustratie-11.svg"
+  },
+  "afstudeerhoed.svg": {
+    "bron": "potx slide 18, shape 'Graphic 63' (ppt/media/image68.svg)",
+    "oude_naam": "illustratie-12.svg"
+  },
+  "videobellen.svg": {
+    "bron": "potx slide 18, shape 'Graphic 67' (ppt/media/image72.svg)",
+    "oude_naam": "illustratie-13.svg"
+  },
+  "samen-idee.svg": {
+    "bron": "potx slide 18, shape 'Graphic 65' (ppt/media/image70.svg)",
+    "oude_naam": "illustratie-14.svg"
+  },
+  "vr-bril.svg": {
+    "bron": "potx slide 18, shape 'Graphic 75' (ppt/media/image80.svg)",
+    "oude_naam": "illustratie-15.svg"
+  },
+  "presentator.svg": {
+    "bron": "potx slide 18, shape 'Graphic 73' (ppt/media/image78.svg)",
+    "oude_naam": "illustratie-16.svg"
+  },
+  "computer.svg": {
+    "bron": "potx slide 18, shape 'Graphic 71' (ppt/media/image76.svg)",
+    "oude_naam": "illustratie-17.svg"
+  },
+  "financien-analyse.svg": {
+    "bron": "potx slide 19, shape 'Graphic 46' (ppt/media/image84.svg)",
+    "oude_naam": "illustratie-18.svg"
+  },
+  "gloeilamp.svg": {
+    "bron": "potx slide 19, shape 'Graphic 6' (ppt/media/image88.svg)",
+    "oude_naam": "illustratie-19.svg"
+  },
+  "netwerk-blokken.svg": {
+    "bron": "potx slide 19, shape 'Graphic 12' (ppt/media/image94.svg)",
+    "oude_naam": "illustratie-20.svg"
+  },
+  "schoolgebouw.svg": {
+    "bron": "potx slide 19, shape 'Graphic 4' (ppt/media/image86.svg)",
+    "oude_naam": "illustratie-21.svg"
+  },
+  "werkplek-idee.svg": {
+    "bron": "potx slide 19, shape 'Graphic 8' (ppt/media/image90.svg)",
+    "oude_naam": "illustratie-22.svg"
+  },
+  "locatie.svg": {
+    "bron": "potx slide 19, shape 'Graphic 10' (ppt/media/image92.svg)",
+    "oude_naam": "illustratie-23.svg"
+  },
+  "verrekijker.svg": {
+    "bron": "potx slide 19, shape 'Graphic 16' (ppt/media/image96.svg)",
+    "oude_naam": "illustratie-24.svg"
+  },
+  "cadeau.svg": {
+    "bron": "potx slide 19, shape 'Graphic 20' (ppt/media/image100.svg)",
+    "oude_naam": "illustratie-25.svg"
+  },
+  "video.svg": {
+    "bron": "potx slide 19, shape 'Graphic 18' (ppt/media/image98.svg)",
+    "oude_naam": "illustratie-26.svg"
+  },
+  "microcredential.svg": {
+    "bron": "npuls.nl/_assets/1a5fbc89…, origineel bestand Microcredentials_card.svg"
+  },
+  "persoon-groot-scherm.svg": {
+    "bron": "npuls.nl/_assets/2aa0e04d…, origineel bestand Sectordoel_Digitale_sectorvoorzieningen.svg"
+  },
+  "digitale-geletterdheid.svg": {
+    "bron": "npuls.nl/_assets/2f212a3b…, origineel bestand Digitale_geletterdheid_card.svg"
+  },
+  "wereldbol.svg": {
+    "bron": "npuls.nl/_assets/52934f7e…, origineel bestand Globe_card.svg"
+  },
+  "samenwerking-leveranciers.svg": {
+    "bron": "npuls.nl/_assets/5ab854ab…, origineel bestand Sectordoel_Samenwerking_leveranciers_en_onderwijssector.svg"
+  },
+  "docentondersteuning.svg": {
+    "bron": "npuls.nl/_assets/84b07941…, origineel bestand Docentondersteuning_card.svg"
+  },
+  "xr-bril.svg": {
+    "bron": "npuls.nl/_assets/8b4dc258…, origineel bestand XR_framework_card.svg"
+  },
+  "ai-chip-geel.svg": {
+    "bron": "npuls.nl/_assets/8b932dfc…, origineel bestand AI_card.svg"
+  },
+  "nederland-pilots.svg": {
+    "bron": "npuls.nl/_assets/927b3020…, origineel bestand Pilots_card.svg"
+  },
+  "regelingen.svg": {
+    "bron": "npuls.nl/_assets/9305c5e3…, origineel bestand Regelingen_card.svg"
+  },
+  "nederland-netwerk.svg": {
+    "bron": "npuls.nl/_assets/96c249a8…, origineel bestand Kennisnetwerken_card.svg"
+  },
+  "leermaterialen-collectief.svg": {
+    "bron": "npuls.nl/_assets/97d71076…, origineel bestand Sectordoel_Collectieve_voorziening_leermaterialen.svg"
+  },
+  "onderwijsaanbod.svg": {
+    "bron": "npuls.nl/_assets/9a9062dd…, origineel bestand Sectordoel_Onderwijsaanbod.svg"
+  },
+  "onderwijsmiddelen.svg": {
+    "bron": "npuls.nl/_assets/9e4c3b95…, origineel bestand Onderwijsmiddelen_card.svg"
+  },
+  "xr.svg": {
+    "bron": "npuls.nl/_assets/a447329e…, origineel bestand XR_card.svg"
+  },
+  "leermaterialen.svg": {
+    "bron": "npuls.nl/_assets/a7278d24…, origineel bestand Leermaterialen_card.svg"
+  },
+  "europa-ai.svg": {
+    "bron": "npuls.nl/_assets/aab68d7c…, origineel bestand Virtual_RAISE.svg",
+    "opmerking": "bevat ingesloten raster"
+  },
+  "ai-raamwerk.svg": {
+    "bron": "npuls.nl/_assets/ae993ec8…, origineel bestand AI-GO_Raamwerk-embedded.svg",
+    "opmerking": "bevat ingesloten raster"
+  },
+  "administratie.svg": {
+    "bron": "npuls.nl/_assets/b83e4db2…, origineel bestand Doc_card.svg"
+  },
+  "scan-vergrootglas.svg": {
+    "bron": "npuls.nl/_assets/d7a0a2db…, origineel bestand Scans_card.svg"
+  },
+  "digitaal-toetsen.svg": {
+    "bron": "npuls.nl/_assets/e20c07ae…, origineel bestand Sectordoel_Digitaal_toetsen.svg"
+  },
+  "kit.svg": {
+    "bron": "npuls.nl/_assets/f57d35fa…, origineel bestand Kit_card.svg",
+    "opmerking": "8285acf8 is identiek"
+  }
 }

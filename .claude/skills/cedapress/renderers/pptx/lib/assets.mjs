@@ -24,19 +24,46 @@ export const TITEL_ROZE = join(NP.slidesPreview, 'slide01.png');
 // pptxgenjs en playwright: uit de huidige map of uit cedapress/renderers/node_modules.
 export const projectRequire = requireDep;
 
-// Oude namen (public/npuls/powerpoint_illustrations) → nummer in het assetpakket, zodat oude deck-specs blijven werken.
+// Oude namen (public/npuls/powerpoint_illustrations) → nieuwe naam in het assetpakket (0.2.0), zodat oude deck-specs blijven werken.
 // Visueel gekoppeld op 2026-11-19; namen zonder tegenhanger in het pakket staan er niet in.
 export const ILLU_ALIAS = {
-  learninganalystics: 1, kunstmatigeintelligentie: 2, chip: 3, Connecties: 4, brains: 5, data: 6, Servers: 6,
-  kennisdeling: 7, books: 8, events: 9, hands: 10, gesprek: 11, hat: 12, 'Laptop met beeld': 13, Combineren: 14,
-  vr: 15, present: 16, pc: 17, Financien: 18, bestuurder: 18, light: 19, Lamp: 19, netwerk: 20,
-  'Gebouw blauw met boom': 21, schoolgebouwen: 21, onderwijsprofessional: 22, locatie: 23, verrekijker: 24,
-  cadeau: 25, video: 26,
+  learninganalystics: 'laptop-dashboard',
+  kunstmatigeintelligentie: 'brein-ai-chip',
+  chip: 'ai-chip',
+  Connecties: 'atoom',
+  brains: 'brein-tandwiel',
+  data: 'servers',
+  Servers: 'servers',
+  kennisdeling: 'team-rond-idee',
+  books: 'boeken',
+  events: 'kalender',
+  hands: 'handdruk',
+  gesprek: 'gesprek',
+  hat: 'afstudeerhoed',
+  'Laptop met beeld': 'videobellen',
+  Combineren: 'samen-idee',
+  vr: 'vr-bril',
+  present: 'presentator',
+  pc: 'computer',
+  Financien: 'financien-analyse',
+  bestuurder: 'financien-analyse',
+  light: 'gloeilamp',
+  Lamp: 'gloeilamp',
+  netwerk: 'netwerk-blokken',
+  'Gebouw blauw met boom': 'schoolgebouw',
+  schoolgebouwen: 'schoolgebouw',
+  onderwijsprofessional: 'werkplek-idee',
+  locatie: 'locatie',
+  verrekijker: 'verrekijker',
+  cadeau: 'cadeau',
+  video: 'video',
 };
+// Pakket 0.1.0 had illustratie-01..26; die nummers (ook "7" of "07") worden nog vertaald naar de nieuwe naam.
+const ILLU_NUMMER = [null, 'laptop-dashboard', 'brein-ai-chip', 'ai-chip', 'atoom', 'brein-tandwiel', 'servers', 'team-rond-idee', 'boeken', 'kalender', 'handdruk', 'gesprek', 'afstudeerhoed', 'videobellen', 'samen-idee', 'vr-bril', 'presentator', 'computer', 'financien-analyse', 'gloeilamp', 'netwerk-blokken', 'schoolgebouw', 'werkplek-idee', 'locatie', 'verrekijker', 'cadeau', 'video'];
 export function illustrationPath(name) {
   const base = String(name).replace(/\.svg$/i, '');
-  const nr = /^\d+$/.test(base) ? Number(base) : ILLU_ALIAS[base];
-  const file = nr ? `illustratie-${String(nr).padStart(2, '0')}.svg` : `${base}.svg`;
+  const nr = base.match(/^(?:illustratie-)?(\d+)$/);
+  const file = nr ? `${ILLU_NUMMER[Number(nr[1])] ?? base}.svg` : `${ILLU_ALIAS[base] ?? base}.svg`;
   return join(ILLU_DIR, file);
 }
 

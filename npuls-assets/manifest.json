@@ -1,11 +1,17 @@
 {
   "name": "npuls-assets",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "files": [
+    {
+      "path": "ceda/teamfoto.png",
+      "type": "ceda",
+      "sha256": "a195ac0a253ef68381df32fcb2c93bcd000057d2c014901c50c5ba17283632fe",
+      "description": "Eigen CEDA-asset (teamfoto.png)"
+    },
     {
       "path": "CHANGELOG.md",
       "type": "doc",
-      "sha256": "dcfa13e0fe9515c2fca6af3f0556342cc4fe20993d4c4138d47e6b02def185e1",
+      "sha256": "497ef4a24c5b9a8515308b3247ebb386df0d1f82caff6f62a9fd356687ee0c57",
       "description": "CHANGELOG.md"
     },
     {
@@ -15,166 +21,304 @@
       "description": "Uitleg lettertypen en licenties"
     },
     {
-      "path": "illustraties/illustratie-01.svg",
-      "type": "illustratie",
-      "sha256": "fc26689df1327e2252fee004bdefe20d84326068b507bbefec6cda78b82767f9",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 69' (ppt/media/image74.svg)"
+      "path": "huisstijlgids/Npuls_huisstijlgids_2025.pdf",
+      "type": "doc",
+      "sha256": "4075817400286eb9073eb81a97c6b0d6d06869a48539db5efa3d0956a7fa5517",
+      "description": "Officiele Npuls-huisstijlgids (PDF)"
     },
     {
-      "path": "illustraties/illustratie-02.svg",
+      "path": "illustraties/administratie.svg",
       "type": "illustratie",
-      "sha256": "371b86258fe466ffec93329c100d48a76b07f585bd6ca3516d3a1b5f419e2ca1",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 44' (ppt/media/image58.svg)"
+      "sha256": "0040c9b399cc921a59cf2f929864e1a921505d94f83e50e1b6fa72a4fd37cb5f",
+      "description": "Illustratie, bron: npuls.nl/_assets/b83e4db2…, origineel bestand Doc_card.svg"
     },
     {
-      "path": "illustraties/illustratie-03.svg",
-      "type": "illustratie",
-      "sha256": "91cffac6e1babda0e80461447c77b524b5b00d927e05e10a581d1952a5a02080",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 42' (ppt/media/image56.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-04.svg",
-      "type": "illustratie",
-      "sha256": "89a3bc243dddc7bf7f14bc29e53531edebe629dfb97ea57e23bd2eff3c789002",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 39' (ppt/media/image54.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-05.svg",
-      "type": "illustratie",
-      "sha256": "dfe0952bd376552ef3ffe191c19ebac35d90ba47873ed0041d5395b4fe2e7765",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 34' (ppt/media/image50.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-06.svg",
-      "type": "illustratie",
-      "sha256": "faaad6e72807929f937f2580be70f0dd2a7154c96bafc9215a553d2419e1cb15",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 36' (ppt/media/image52.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-07.svg",
-      "type": "illustratie",
-      "sha256": "db6c1c5dfa346f1b0705048d9e976330a20874b65125bf9f91f6d61781901d62",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 77' (ppt/media/image82.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-08.svg",
-      "type": "illustratie",
-      "sha256": "42cd16e842214f3408ebee4ae5a372b36e6c16b464547ea7d588d0044b719587",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 49' (ppt/media/image60.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-09.svg",
-      "type": "illustratie",
-      "sha256": "64e597627db0304849a91127074a1fce3bc1781fc240335a1437c2ea847e87bc",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 51' (ppt/media/image62.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-10.svg",
-      "type": "illustratie",
-      "sha256": "dc6892711d2fc2d5124bc1cbc7f7c3a9a4bf32475b327b16fd0ccd50d3da09bd",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 61' (ppt/media/image66.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-11.svg",
-      "type": "illustratie",
-      "sha256": "510626c1c2af90c689e1b4e6c4c29a2d3d3c76c8352cc306c997127021a57e44",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 53' (ppt/media/image64.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-12.svg",
+      "path": "illustraties/afstudeerhoed.svg",
       "type": "illustratie",
       "sha256": "fc7c9b5f235b31fc218465f4eb6672bd172b8a517caac044b665e0b31ea032ae",
       "description": "Illustratie, bron: potx slide 18, shape 'Graphic 63' (ppt/media/image68.svg)"
     },
     {
-      "path": "illustraties/illustratie-13.svg",
+      "path": "illustraties/ai-chip-geel.svg",
       "type": "illustratie",
-      "sha256": "012b3c63e7adc093e3c2745699bca4d3d2f05198720bb525b37496fa80d4c8cf",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 67' (ppt/media/image72.svg)"
+      "sha256": "c7eb7337acab5440a623354ade9c0dfc21458dc4ba0e803e5d338c118d9b379b",
+      "description": "Illustratie, bron: npuls.nl/_assets/8b932dfc…, origineel bestand AI_card.svg"
     },
     {
-      "path": "illustraties/illustratie-14.svg",
+      "path": "illustraties/ai-chip.svg",
       "type": "illustratie",
-      "sha256": "7a2ba72681ecee5f26f1ce441f264b16cab299ffaca7306c0298ad3316804c53",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 65' (ppt/media/image70.svg)"
+      "sha256": "91cffac6e1babda0e80461447c77b524b5b00d927e05e10a581d1952a5a02080",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 42' (ppt/media/image56.svg)"
     },
     {
-      "path": "illustraties/illustratie-15.svg",
+      "path": "illustraties/ai-raamwerk.svg",
       "type": "illustratie",
-      "sha256": "997c4009cea45f85c6766090b34a635c2312aeb2983de7f89d4c3ec91ddf37ac",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 75' (ppt/media/image80.svg)"
+      "sha256": "054a7d977761683b44d3ceba33ae3d3d729ca7972f417922f12e561c82a416be",
+      "description": "Illustratie, bron: npuls.nl/_assets/ae993ec8…, origineel bestand AI-GO_Raamwerk-embedded.svg"
     },
     {
-      "path": "illustraties/illustratie-16.svg",
+      "path": "illustraties/atoom.svg",
       "type": "illustratie",
-      "sha256": "316fcf872e47036c56a189fae7749148cb6ba0a5091f20c588abd3a71c776a9c",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 73' (ppt/media/image78.svg)"
+      "sha256": "89a3bc243dddc7bf7f14bc29e53531edebe629dfb97ea57e23bd2eff3c789002",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 39' (ppt/media/image54.svg)"
     },
     {
-      "path": "illustraties/illustratie-17.svg",
+      "path": "illustraties/boeken.svg",
       "type": "illustratie",
-      "sha256": "adfbaa64b28b9c8602b8bd83073ae498daec41c2d3bfb5a13512de94c13077db",
-      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 71' (ppt/media/image76.svg)"
+      "sha256": "42cd16e842214f3408ebee4ae5a372b36e6c16b464547ea7d588d0044b719587",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 49' (ppt/media/image60.svg)"
     },
     {
-      "path": "illustraties/illustratie-18.svg",
+      "path": "illustraties/brein-ai-chip.svg",
       "type": "illustratie",
-      "sha256": "e98ee1a62113017531d4f649184dd46399f84d012920adc62a1deeaa782a8bcf",
-      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 46' (ppt/media/image84.svg)"
+      "sha256": "371b86258fe466ffec93329c100d48a76b07f585bd6ca3516d3a1b5f419e2ca1",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 44' (ppt/media/image58.svg)"
     },
     {
-      "path": "illustraties/illustratie-19.svg",
+      "path": "illustraties/brein-tandwiel.svg",
       "type": "illustratie",
-      "sha256": "ceb1a4b4fe10f22950ee68190acf828d001e30cc8346140b9988307a7bb4891f",
-      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 6' (ppt/media/image88.svg)"
+      "sha256": "dfe0952bd376552ef3ffe191c19ebac35d90ba47873ed0041d5395b4fe2e7765",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 34' (ppt/media/image50.svg)"
     },
     {
-      "path": "illustraties/illustratie-20.svg",
-      "type": "illustratie",
-      "sha256": "4780b69b33ba3ab1f5eb8da254a6855fcf7601a24d5f8b647f3d349c87dfa5fc",
-      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 12' (ppt/media/image94.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-21.svg",
-      "type": "illustratie",
-      "sha256": "2e05e5e66209871639990a758c9e543b120bffd1f3d638d3b7e323e394a945c7",
-      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 4' (ppt/media/image86.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-22.svg",
-      "type": "illustratie",
-      "sha256": "a8dc71aa269f48ecaf3030e3523d58a583b5f0c36701686ae631b7ebdec4fd44",
-      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 8' (ppt/media/image90.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-23.svg",
-      "type": "illustratie",
-      "sha256": "5e53403e0cfaacb9dc872b6d51e4d452f2738a9d60a9be0e78af7e52ece525b2",
-      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 10' (ppt/media/image92.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-24.svg",
-      "type": "illustratie",
-      "sha256": "b53936b47620494889d9b31537d3fcbd08521253589a4a6db334a8c707645feb",
-      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 16' (ppt/media/image96.svg)"
-    },
-    {
-      "path": "illustraties/illustratie-25.svg",
+      "path": "illustraties/cadeau.svg",
       "type": "illustratie",
       "sha256": "7f9e3123a9412b960036cbfe6795e1baa66dacca09a57ab2c7937cd860015c60",
       "description": "Illustratie, bron: potx slide 19, shape 'Graphic 20' (ppt/media/image100.svg)"
     },
     {
-      "path": "illustraties/illustratie-26.svg",
+      "path": "illustraties/computer.svg",
+      "type": "illustratie",
+      "sha256": "adfbaa64b28b9c8602b8bd83073ae498daec41c2d3bfb5a13512de94c13077db",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 71' (ppt/media/image76.svg)"
+    },
+    {
+      "path": "illustraties/digitaal-toetsen.svg",
+      "type": "illustratie",
+      "sha256": "e315419e81760d41b63960987e7105ecc437532af6205e03e5ce8ffb0dc67afb",
+      "description": "Illustratie, bron: npuls.nl/_assets/e20c07ae…, origineel bestand Sectordoel_Digitaal_toetsen.svg"
+    },
+    {
+      "path": "illustraties/digitale-geletterdheid.svg",
+      "type": "illustratie",
+      "sha256": "ffdb57a0f5aa8daf23483c17510e6b9993084fa95b58525e5c22a4e5e20b92d6",
+      "description": "Illustratie, bron: npuls.nl/_assets/2f212a3b…, origineel bestand Digitale_geletterdheid_card.svg"
+    },
+    {
+      "path": "illustraties/docentondersteuning.svg",
+      "type": "illustratie",
+      "sha256": "025f15a8350548f683450f7629eecef87d62ff86a3e4e3ddf5711cbc74a0e792",
+      "description": "Illustratie, bron: npuls.nl/_assets/84b07941…, origineel bestand Docentondersteuning_card.svg"
+    },
+    {
+      "path": "illustraties/europa-ai.svg",
+      "type": "illustratie",
+      "sha256": "5a061e862b6a53995af26d8f6eb19e05082dcf7585c8e9cd00e06dbe6e2a3433",
+      "description": "Illustratie, bron: npuls.nl/_assets/aab68d7c…, origineel bestand Virtual_RAISE.svg"
+    },
+    {
+      "path": "illustraties/financien-analyse.svg",
+      "type": "illustratie",
+      "sha256": "e98ee1a62113017531d4f649184dd46399f84d012920adc62a1deeaa782a8bcf",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 46' (ppt/media/image84.svg)"
+    },
+    {
+      "path": "illustraties/gesprek.svg",
+      "type": "illustratie",
+      "sha256": "510626c1c2af90c689e1b4e6c4c29a2d3d3c76c8352cc306c997127021a57e44",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 53' (ppt/media/image64.svg)"
+    },
+    {
+      "path": "illustraties/gloeilamp.svg",
+      "type": "illustratie",
+      "sha256": "ceb1a4b4fe10f22950ee68190acf828d001e30cc8346140b9988307a7bb4891f",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 6' (ppt/media/image88.svg)"
+    },
+    {
+      "path": "illustraties/handdruk.svg",
+      "type": "illustratie",
+      "sha256": "dc6892711d2fc2d5124bc1cbc7f7c3a9a4bf32475b327b16fd0ccd50d3da09bd",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 61' (ppt/media/image66.svg)"
+    },
+    {
+      "path": "illustraties/kalender.svg",
+      "type": "illustratie",
+      "sha256": "64e597627db0304849a91127074a1fce3bc1781fc240335a1437c2ea847e87bc",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 51' (ppt/media/image62.svg)"
+    },
+    {
+      "path": "illustraties/kit.svg",
+      "type": "illustratie",
+      "sha256": "1bfb1488543aa301f2f0118af96ec953973bc0fdccf2f3fcae19a385ff3726bc",
+      "description": "Illustratie, bron: npuls.nl/_assets/f57d35fa…, origineel bestand Kit_card.svg"
+    },
+    {
+      "path": "illustraties/laptop-dashboard.svg",
+      "type": "illustratie",
+      "sha256": "fc26689df1327e2252fee004bdefe20d84326068b507bbefec6cda78b82767f9",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 69' (ppt/media/image74.svg)"
+    },
+    {
+      "path": "illustraties/leermaterialen-collectief.svg",
+      "type": "illustratie",
+      "sha256": "6d20b47f77d3f8dbeaa5bf36393e72726d05dc77068d9ee9ba2c810a602c44cb",
+      "description": "Illustratie, bron: npuls.nl/_assets/97d71076…, origineel bestand Sectordoel_Collectieve_voorziening_leermaterialen.svg"
+    },
+    {
+      "path": "illustraties/leermaterialen.svg",
+      "type": "illustratie",
+      "sha256": "65b782f9c4fc17a07dd69410641b0c78af84bde2fcbb82e5ab192a0f5e2dbab4",
+      "description": "Illustratie, bron: npuls.nl/_assets/a7278d24…, origineel bestand Leermaterialen_card.svg"
+    },
+    {
+      "path": "illustraties/locatie.svg",
+      "type": "illustratie",
+      "sha256": "5e53403e0cfaacb9dc872b6d51e4d452f2738a9d60a9be0e78af7e52ece525b2",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 10' (ppt/media/image92.svg)"
+    },
+    {
+      "path": "illustraties/microcredential.svg",
+      "type": "illustratie",
+      "sha256": "1ef5a13919ef4d0e8392b32901374f2b5f54a15c493fc01663b263fef9ee4359",
+      "description": "Illustratie, bron: npuls.nl/_assets/1a5fbc89…, origineel bestand Microcredentials_card.svg"
+    },
+    {
+      "path": "illustraties/nederland-netwerk.svg",
+      "type": "illustratie",
+      "sha256": "304fda1f4f9ce06dc3e108115c670d74b9bfce9b4101d0edc1129d4baad97c71",
+      "description": "Illustratie, bron: npuls.nl/_assets/96c249a8…, origineel bestand Kennisnetwerken_card.svg"
+    },
+    {
+      "path": "illustraties/nederland-pilots.svg",
+      "type": "illustratie",
+      "sha256": "5604646e4570c617f5331b91d8d799acea62473afb21033dd23279fb7c2c2d10",
+      "description": "Illustratie, bron: npuls.nl/_assets/927b3020…, origineel bestand Pilots_card.svg"
+    },
+    {
+      "path": "illustraties/netwerk-blokken.svg",
+      "type": "illustratie",
+      "sha256": "4780b69b33ba3ab1f5eb8da254a6855fcf7601a24d5f8b647f3d349c87dfa5fc",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 12' (ppt/media/image94.svg)"
+    },
+    {
+      "path": "illustraties/onderwijsaanbod.svg",
+      "type": "illustratie",
+      "sha256": "4f1effbbcb97b5c9ed3ca81fe3392c33899db48b392d9442250b628d491631a7",
+      "description": "Illustratie, bron: npuls.nl/_assets/9a9062dd…, origineel bestand Sectordoel_Onderwijsaanbod.svg"
+    },
+    {
+      "path": "illustraties/onderwijsmiddelen.svg",
+      "type": "illustratie",
+      "sha256": "83ffc6b24dcc655134f47c8343f6ff6f39b0a40773eeceecb3c26a8e1852ae6a",
+      "description": "Illustratie, bron: npuls.nl/_assets/9e4c3b95…, origineel bestand Onderwijsmiddelen_card.svg"
+    },
+    {
+      "path": "illustraties/persoon-groot-scherm.svg",
+      "type": "illustratie",
+      "sha256": "f34504f48495a59c713ef10dfede52a699a849d6762e39d817bf92840c417e9d",
+      "description": "Illustratie, bron: npuls.nl/_assets/2aa0e04d…, origineel bestand Sectordoel_Digitale_sectorvoorzieningen.svg"
+    },
+    {
+      "path": "illustraties/presentator.svg",
+      "type": "illustratie",
+      "sha256": "316fcf872e47036c56a189fae7749148cb6ba0a5091f20c588abd3a71c776a9c",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 73' (ppt/media/image78.svg)"
+    },
+    {
+      "path": "illustraties/regelingen.svg",
+      "type": "illustratie",
+      "sha256": "9fe8ae7f01d2f2240f289beaccf39a5f2d04f2e02959302ea7919fd69d507c35",
+      "description": "Illustratie, bron: npuls.nl/_assets/9305c5e3…, origineel bestand Regelingen_card.svg"
+    },
+    {
+      "path": "illustraties/samen-idee.svg",
+      "type": "illustratie",
+      "sha256": "7a2ba72681ecee5f26f1ce441f264b16cab299ffaca7306c0298ad3316804c53",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 65' (ppt/media/image70.svg)"
+    },
+    {
+      "path": "illustraties/samenwerking-leveranciers.svg",
+      "type": "illustratie",
+      "sha256": "0d1a59fc3a6c9769fc4a999cda4bcff2c77f740a4cd4aa8cfc1d82ae603e1294",
+      "description": "Illustratie, bron: npuls.nl/_assets/5ab854ab…, origineel bestand Sectordoel_Samenwerking_leveranciers_en_onderwijssector.svg"
+    },
+    {
+      "path": "illustraties/scan-vergrootglas.svg",
+      "type": "illustratie",
+      "sha256": "5e34c84c18d6ebe8e68d588f9b7592039053bba0c94dd86ba36bac782925439e",
+      "description": "Illustratie, bron: npuls.nl/_assets/d7a0a2db…, origineel bestand Scans_card.svg"
+    },
+    {
+      "path": "illustraties/schoolgebouw.svg",
+      "type": "illustratie",
+      "sha256": "2e05e5e66209871639990a758c9e543b120bffd1f3d638d3b7e323e394a945c7",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 4' (ppt/media/image86.svg)"
+    },
+    {
+      "path": "illustraties/servers.svg",
+      "type": "illustratie",
+      "sha256": "faaad6e72807929f937f2580be70f0dd2a7154c96bafc9215a553d2419e1cb15",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 36' (ppt/media/image52.svg)"
+    },
+    {
+      "path": "illustraties/team-rond-idee.svg",
+      "type": "illustratie",
+      "sha256": "db6c1c5dfa346f1b0705048d9e976330a20874b65125bf9f91f6d61781901d62",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 77' (ppt/media/image82.svg)"
+    },
+    {
+      "path": "illustraties/verrekijker.svg",
+      "type": "illustratie",
+      "sha256": "b53936b47620494889d9b31537d3fcbd08521253589a4a6db334a8c707645feb",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 16' (ppt/media/image96.svg)"
+    },
+    {
+      "path": "illustraties/video.svg",
       "type": "illustratie",
       "sha256": "b1a81bc23b9e1a7eb165c63da04e7b1f14d206a77de0f2e2019bb716ded32f87",
       "description": "Illustratie, bron: potx slide 19, shape 'Graphic 18' (ppt/media/image98.svg)"
     },
     {
+      "path": "illustraties/videobellen.svg",
+      "type": "illustratie",
+      "sha256": "012b3c63e7adc093e3c2745699bca4d3d2f05198720bb525b37496fa80d4c8cf",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 67' (ppt/media/image72.svg)"
+    },
+    {
+      "path": "illustraties/vr-bril.svg",
+      "type": "illustratie",
+      "sha256": "997c4009cea45f85c6766090b34a635c2312aeb2983de7f89d4c3ec91ddf37ac",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 75' (ppt/media/image80.svg)"
+    },
+    {
+      "path": "illustraties/wereldbol.svg",
+      "type": "illustratie",
+      "sha256": "c6be068236833d83592f2f551489596b0becbd12db0219aa13160f10da1f50d5",
+      "description": "Illustratie, bron: npuls.nl/_assets/52934f7e…, origineel bestand Globe_card.svg"
+    },
+    {
+      "path": "illustraties/werkplek-idee.svg",
+      "type": "illustratie",
+      "sha256": "a8dc71aa269f48ecaf3030e3523d58a583b5f0c36701686ae631b7ebdec4fd44",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 8' (ppt/media/image90.svg)"
+    },
+    {
+      "path": "illustraties/xr-bril.svg",
+      "type": "illustratie",
+      "sha256": "0192c15ce066bfc67bdc6a7b66b383f4b835e5a86920b020e68109fd5e386506",
+      "description": "Illustratie, bron: npuls.nl/_assets/8b4dc258…, origineel bestand XR_framework_card.svg"
+    },
+    {
+      "path": "illustraties/xr.svg",
+      "type": "illustratie",
+      "sha256": "549857d91844139670222fce0e53e3ae7725ca76eede971561e1325af25e94bd",
+      "description": "Illustratie, bron: npuls.nl/_assets/a447329e…, origineel bestand XR_card.svg"
+    },
+    {
       "path": "illustraties-mapping.json",
       "type": "data",
-      "sha256": "dd779bd5924b61068cfb020f4fd1cc495d2725a39f1461a6fde9a0353ac6176b",
-      "description": "Mapping oorspronkelijke naam naar kebab-case bestandsnaam"
+      "sha256": "69b6a3ef95783c6f6349654a324d598c81878bb217334a46a84f44e9f329aed3",
+      "description": "Herkomst en oude naam per illustratie"
     },
     {
       "path": "logos/beeldmerk-ring.json",
@@ -221,7 +365,7 @@
     {
       "path": "README.md",
       "type": "doc",
-      "sha256": "05ba6151ae45752d1fc7139b20b7037137df4f67cbbb05450205afd11eedee90",
+      "sha256": "8d96452aca56588cad3871f71f44eb5fe2c6226f4121807d3d18e19749e94647",
       "description": "README.md"
     },
     {
@@ -339,9 +483,75 @@
       "description": "PNG-preview van templateslide"
     },
     {
+      "path": "tegels/tegel-ai.svg",
+      "type": "tegel",
+      "sha256": "8063770fc9d671cef0762d24ea00aead812b72cd130c37e8eae0e20f06e47ac2",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/968b20f4…, origineel bestand AI_tile.svg"
+    },
+    {
+      "path": "tegels/tegel-instelling-of-individu.svg",
+      "type": "tegel",
+      "sha256": "9ae7431f9f7ea0b0d6cea9d505ae909d89a6ff8efc91db79520d3c89f29d6315",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/e7378807…, origineel bestand Instelling_of_individu.svg"
+    },
+    {
+      "path": "tegels/tegel-microcredentials.svg",
+      "type": "tegel",
+      "sha256": "6d68db9e166b9a1f65018de490b1d743f27a673fdd2791909702a96958133cbc",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/1c01778f…, origineel bestand Microcredentials_tile.svg"
+    },
+    {
+      "path": "tegels/tegel-nederland-instellingen.svg",
+      "type": "tegel",
+      "sha256": "137bef68dba224f455f681eab970c2cbb888d0cbee20e35e9e102fe86dfbe468",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/55151a4a…, origineel bestand Onderwijsinstellingen_Npuls.svg"
+    },
+    {
+      "path": "tegels/tegel-onderwijsmiddelen.svg",
+      "type": "tegel",
+      "sha256": "682807d394f0e11c7f1ce970cb9f4ebb9272a025cdf624bf03872837e9c65f6c",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/60b55d92…, origineel bestand Digitale_onderwijsmiddelen_tile.svg"
+    },
+    {
+      "path": "tegels/tegel-professionalisering.svg",
+      "type": "tegel",
+      "sha256": "ce346a67e4af1a0b78b840da2e983509d92249619d45daac98fa13d76719c298",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/d7481f52…, origineel bestand Professionalisering_tile.svg"
+    },
+    {
+      "path": "tegels/tegel-themas.svg",
+      "type": "tegel",
+      "sha256": "e1f47bb0840205624d9dd83834476ea3a8c6f6145ab5b2e12d0dd4a7a0ec5a23",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/be16e681…, origineel bestand Themas.svg"
+    },
+    {
+      "path": "tegels/tegel-toetsen-leren.svg",
+      "type": "tegel",
+      "sha256": "a4d8c434ee243a581f8add1db9786d610724df5a61c574d672b76c64241c355b",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/689657cc…, origineel bestand Toetsen_en_leren_tile.svg"
+    },
+    {
+      "path": "tegels/tegel-verhaal-npuls.svg",
+      "type": "tegel",
+      "sha256": "73f2216aea6fb78124b2842c022582d2837c13d8c016711bba7b3ea8bdd8bc7f",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/4166d92b…, origineel bestand Verhaal_npuls_tile.svg"
+    },
+    {
+      "path": "tegels/tegel-visie-ai.svg",
+      "type": "tegel",
+      "sha256": "470a057354ee3fac70a025b7d9ed0fe55b482fdd86fa6e00126db9cce46457c2",
+      "description": "Gekleurde tegel van npuls.nl, bron: npuls.nl/_assets/3177820b…, origineel bestand Visie_op_AI_tile.svg"
+    },
+    {
+      "path": "tegels-mapping.json",
+      "type": "data",
+      "sha256": "6c7b96ea350dbb3fe1c82b219ee3e37fda7a2e6e8d55bf4c1f6185b01a355a33",
+      "description": "Herkomst per tegel"
+    },
+    {
       "path": "VERSION",
       "type": "doc",
-      "sha256": "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67",
+      "sha256": "1f930dd1f133c1f97a94fe3acb8db34372cf4c01ffdb2b3ff4ca72f9494121e9",
       "description": "VERSION"
     },
     {
@@ -473,7 +683,7 @@
     {
       "path": "web/npuls.css",
       "type": "css",
-      "sha256": "48b35d8f182194272a5107f305aa189053f9003cd3eac5c4e8bc61a330fd24cd",
+      "sha256": "1c63af7ea2ade965c05cf4c7a86fc7f3237671e319a9dff655cb57513e828d10",
       "description": "CSS-variabelen, kleurcombinaties, typografie, logo en bogen"
     },
     {

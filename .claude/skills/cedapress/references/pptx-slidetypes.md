@@ -6,9 +6,9 @@ Een deck is een JS-module met `export default { bron, title, author, slides: [..
 een object met `type`, optioneel `variant`, de velden hieronder en `notes` (sprekersnotities).
 
 In elk tekstveld maakt `**woorden**` die woorden vet (kopfont) in de accentkleur van de variant.
-`\n` is een nieuwe regel. Illustraties: `illustratie-NN` (of alleen het nummer) uit
+`\n` is een nieuwe regel. Illustraties: bestandsnaam zonder `.svg` (bv. `team-rond-idee`) uit
 `illustraties/` in het Npuls-assetpakket; wat erop staat: `references/html-assets.md`. Oude namen
-(`kennisdeling`, `Lamp`, …) worden nog vertaald, maar alleen als er een tegenhanger in het pakket is.
+(`kennisdeling`, `Lamp`, de nummers uit pakket 0.1.0, …) worden nog vertaald, maar alleen als er een tegenhanger in het pakket is.
 
 ## Varianten (achtergrond)
 
@@ -95,7 +95,7 @@ PowerPoint op Windows speelt die niet betrouwbaar af.
 Geen velden. "Wie is CEDA": titel, subtitel en drie punten over wat CEDA doet, links op wit; rechts het roze vlak met het Npuls-logo (template-layout Partnerslide; oude engine: `slides-preview/slide16.png`). Tekst is woordelijk gelijk aan de HTML-frame en `clidev`. Plaats: direct na de titel (of agenda). Bewust zonder links.
 
 ### `team` — vaste teamslide
-Alleen `text` (optioneel). "Wie zijn wij": groepsfoto van het CEDA-team (niet in het assetpakket: env `CEDA_TEAMFOTO`, anders `img/team-groep.png` in de deckmap; zie `teamfoto` in `renderers/lib/npuls-assets.mjs`) met rechts
+Alleen `text` (optioneel). "Wie zijn wij": groepsfoto van het CEDA-team (env `CEDA_TEAMFOTO`, anders `ceda/teamfoto.png` in het assetpakket, anders `img/team-groep.png` in de deckmap; zie `teamfoto` in `renderers/lib/npuls-assets.mjs`) met rechts
 de projecten (standaard: Instroomprognose en Staat van de Onderwijsinstelling), zoals in de DAIR-decks. Plaats: direct na `ceda`.
 
 ### `contact` — vaste afsluitslide

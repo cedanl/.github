@@ -74,7 +74,7 @@ if (tokenFile) {
   }
 }
 
-// CEDA-teamfoto: env CEDA_TEAMFOTO, anders img/team-groep.png in de deckmap (geen Npuls-asset)
+// CEDA-teamfoto: env CEDA_TEAMFOTO, anders ceda/teamfoto.png in het pakket, anders img/team-groep.png in de deckmap
 const TEAM_IMAGE = NPULS.teamfoto || join(dirname(resolve(specPath)), 'img', 'team-groep.png');
 setTeamImage(TEAM_IMAGE);
 

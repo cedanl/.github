@@ -4,7 +4,7 @@ description: Ontwerpregels voor PowerPoint-decks van CEDA/Npuls — tekst per sl
 allowed-tools: Read
 metadata:
   ceda-id: ceda.ontwerper-powerpoint
-  ceda-version: "0.1.0"
+  ceda-version: "0.2.0"
   ceda-type: reference
   ceda-subtype: knowledge
   ceda-origin: own
