@@ -54,6 +54,21 @@ De `h2` is een **bewering**, geen onderwerp: "Het gat is in één jaar bijna dic
 
 `g2` / `g3` / `g4` voor 2–8 kaarten. Bij `g4` maximaal ~18 woorden per kaart.
 
+## 1b. Componenten uit ceda-powerpoint-maker (Edwin)
+
+Kop met pil en accent: `kicker` is de label-pil (kleur = accent van de variant), `.hl` is het accentdeel van de titel. Accent volgt de achtergrond: `s-wit` en `s-lblauw` blauw, `s-lgroen` groen, `s-lgeel` en `s-loranje` oranje. Iconen zijn Font Awesome (`.ico <kleur>`, tegelparen blauw/geel, geel/blauw, groen/roze, oranje/zwart, roze/blauw; zwart is geen vlak). In de pptx komen iconen uit `iconen/<naam>.svg` van het assetpakket (nog niet aanwezig).
+
+| Component | HTML |
+|---|---|
+| Kaart met icoontegel | `.card` met `.ico` en `h3` (zie 1). Max. 2 volle kaartkleuren per slide |
+| Stapkolom | `<div class="steps kol">` met 3 tot 4 × `.step` (kolom met `.num`, `.step-t`, `p`) |
+| Kerncijfer naast lead | `<div class="lead-cijfer"><p class="lead">…</p><div class="card lgeel"><div class="stat"><span class="big-num">X%</span><span class="cap">label</span></div></div></div>` |
+| Heldenkaart | `<div class="held"><div><p class="eyebrow">…</p><p class="vraag">…</p></div><img src="npuls/illustraties/….svg" alt=""></div>` (`.held.blauw`, `.held.oranje`) |
+| Notitiebalk | `<div class="notitie"><p><strong>Let op:</strong> één boodschap.</p></div>`, onder de inhoud |
+| Inzichtregel | `.inzichten` met 3 tot 5 × `<div class="inzicht"><div class="ico blauw">…</div><b>Sleutel</b><span>tekst</span><span class="tag">Tag</span></div>` |
+| Lijstkaart | `.card` met kop en `<ul class="lijst"><li>…</li></ul>` (3 tot 5) |
+| Pillenkaart | `.card` met kop en `<ul class="pillen"><li>…</li></ul>` (max. 4) |
+
 ## 2. Statement + lijst | kaarten (split)
 
 ```html
