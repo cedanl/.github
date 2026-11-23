@@ -29,10 +29,20 @@ Het pakket wordt eenmalig gedownload naar `~/.cache/ceda/npuls-assets/0.3.0/`. O
 - `web/npuls.css` voor HTML: variabelen, kleurcombinaties (`bg-blauw fg-geel`), typografie, `.npuls-logo` en `.npuls-bogen`, en de deckklassen `.s-*`, `.card.<kleur>`, `.held.<kleur>` en `.ico.<kleur>` (gegenereerd uit `slide_roles`, `card_roles` en `tile_pairs`); `web/sprite.svg` bevat alle vormen als `<symbol id="vorm-...">`
 - Geen lettertypebestanden: zie `fonts.md` in het pakket
 
+**Rollen en beheer** (gelijk in vormgever, ontwerper-powerpoint, ontwerper-slides-html en cedapress):
+
+| Skill | Beheer | Wat erin hoort | Wat er niet in hoort |
+|---|---|---|---|
+| `vormgever-npuls-huisstijl` (incl. `design-tokens.json`, `references/presentaties.md` en het assetpakket `npuls-assets`) | Edwin | alles wat Npuls-specifiek is: palet, kleurrollen per achtergrond, tegelparen, fonts, logo's, vormen, illustraties, potx, deckstructuur (roze opening, afsluiter "Onderwijs bewegen.", CC BY-SA), label-pil, grafiekvolgorde | hoe je een goede slide maakt; renderercode |
+| `ontwerper-powerpoint`, `ontwerper-slides-html` | Edwin | algemene ontwerpregels voor elk deck: één boodschap per slide, max. ~50 woorden, titel als bewering, minimale lettergrootte, afwisseling, contrast. Voor kleur: kies uit de rollen van de huisstijl | hexcodes, kleurlijsten, Npuls-namen |
+| `cedapress` | Aslam | orkestreren en bouwen: `bron.md`, renderers, checks, `assets.lock`. Leest de tokens en `presentaties.md`, kopieert niets | eigen kleurtabellen of Npuls-regels |
+
+Een Npuls-afspraak wijzigen = `design-tokens.json` of `presentaties.md` aanpassen (Edwin), daarna een assetrelease en de pin in `cedapress/assets.lock` ophogen (Aslam).
+
 ## Relatie tot andere skills
 
 - `ui-designer` — ISGVO-workflow bij de V (Verbeelding/visueel ontwerp: "hoe ziet het eruit?"); gebruikt dezelfde `references/design-tokens.json` als bron. Houd tokens hier canoniek, niet dupliceren in andere skills.
-- `cedapress` — bouwt presentaties (HTML en pptx) met de assets uit het assetpakket; ontwerpregels in `ontwerper-slides-html` en `ontwerper-powerpoint`.
+- `cedapress` — bouwt presentaties (HTML en pptx) en leest daarvoor alleen `references/design-tokens.json` en `references/presentaties.md`; algemene ontwerpregels in `ontwerper-slides-html` en `ontwerper-powerpoint`.
 
 ## Werkwijze
 

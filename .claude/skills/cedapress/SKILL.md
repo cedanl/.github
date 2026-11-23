@@ -5,7 +5,7 @@ allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node, python 3 en git. pptx-route ook python-pptx en PowerPoint (Windows) of LibreOffice. Npuls-assets via het versioned pakket van vormgever-npuls-huisstijl. playwright-chromium en pptxgenjs eenmalig via npm install in de renderers-map.
 metadata:
   ceda-id: ceda.cedapress
-  ceda-version: "0.3.0"
+  ceda-version: "0.3.1"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -33,7 +33,15 @@ bron.md  →  HTML-deck       (git, projectrepo)
 (Npuls-regels voor decks; beheer Edwin), niet de hele SKILL; en per vorm `ontwerper-slides-html` en/of
 `ontwerper-powerpoint` (algemene ontwerpregels). cedapress kopieert geen kleuren: de renderers lezen de tokens.
 
-**Taakverdeling:** de officiële Npuls-potx (via `vormgever-npuls-huisstijl` en `npuls-assets`) is het kader voor HTML én pptx en gaat voor. Vast, beheer bij de vormgever: potx-layouts, kleuren, fonts, logo's, vormen, illustraties, tokens. Flexibel, beheer bij Edwin (`ontwerper-powerpoint`, `ontwerper-slides-html`): componenten, slidepatronen, drempels, kleurkeuze per slide, deckstructuur, binnen de potx-layouts en tokens. Ontbrekende assets (zoals iconen) komen via een nieuwe assetrelease.
+**Rollen en beheer** (gelijk in vormgever, ontwerper-powerpoint, ontwerper-slides-html en cedapress):
+
+| Skill | Beheer | Wat erin hoort | Wat er niet in hoort |
+|---|---|---|---|
+| `vormgever-npuls-huisstijl` (incl. `design-tokens.json`, `references/presentaties.md` en het assetpakket `npuls-assets`) | Edwin | alles wat Npuls-specifiek is: palet, kleurrollen per achtergrond, tegelparen, fonts, logo's, vormen, illustraties, potx, deckstructuur (roze opening, afsluiter "Onderwijs bewegen.", CC BY-SA), label-pil, grafiekvolgorde | hoe je een goede slide maakt; renderercode |
+| `ontwerper-powerpoint`, `ontwerper-slides-html` | Edwin | algemene ontwerpregels voor elk deck: één boodschap per slide, max. ~50 woorden, titel als bewering, minimale lettergrootte, afwisseling, contrast. Voor kleur: kies uit de rollen van de huisstijl | hexcodes, kleurlijsten, Npuls-namen |
+| `cedapress` | Aslam | orkestreren en bouwen: `bron.md`, renderers, checks, `assets.lock`. Leest de tokens en `presentaties.md`, kopieert niets | eigen kleurtabellen of Npuls-regels |
+
+Een Npuls-afspraak wijzigen = `design-tokens.json` of `presentaties.md` aanpassen (Edwin), daarna een assetrelease en de pin in `cedapress/assets.lock` ophogen (Aslam).
 
 **Met dank aan Janna Berkhout (KIS):** de HTML-frame (engine, slide-varianten, componenten, ritme) komt uit haar
 deck *"Welk open-source model kan mijn LLM-wiki het beste onderhouden?"*, via clanna. "clanna" blijft triggerwoord.
