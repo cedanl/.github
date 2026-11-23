@@ -66,7 +66,7 @@ for (let k = 2; k < variants.length; k++)
     if (v === 's-deel' || v === '?') continue;
     if (!variantOK.has(v.slice(2))) errors.push(`variant ${v} staat niet in slide_roles van design-tokens.json — kies uit: ${[...variantOK].map((x) => 's-' + x).join(', ')}`);
   }
-  for (const m of html.matchAll(/class="([^"]*)"/g)) {
+  for (const m of html.matchAll(/class="([^"]*)"/g)) {
     const cl = m[1].split(/\s+/);
     for (const [base, ok] of [['card', cardOK], ['held', heldOK], ['ico', icoOK]]) {
       if (!cl.includes(base)) continue;
