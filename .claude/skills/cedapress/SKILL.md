@@ -173,7 +173,6 @@ Npuls-fonts zien Calibri; stuur de PDF mee.
 - `references/bronformaat.md` — lees altijd vóór je `bron.md` schrijft
 - `references/html-componenten.md`, `references/html-assets.md` — lees bij de HTML-route
 - `references/pptx-slidetypes.md` — lees bij de pptx-route
-- `references/herkomst-ceda-powerpoint-maker.md` — lees alleen bij vragen over Edwins componenten en ontwerpregels: wat is overgenomen, de taakverdeling en de besluiten
 - `scripts/parse_bron.py` — draaien: valideren, splitsen per vorm, hash; test: `python -m unittest <cp>/scripts/test_parse_bron.py`
 - `scripts/test_parse_bron.py` — tests van de parser
 - `renderers/html/` — `frame.html`, `prepare.mjs`, `check.mjs`, `qa.mjs`, `bundle.mjs` (uit clanna)
