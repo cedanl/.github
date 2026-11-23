@@ -172,7 +172,7 @@ if (slides[0] && slides[0].type !== 'title') warnings.push('eerste slide is geen
 // Vaste CEDA-slides zijn optioneel (bron.md: vaste-slides: ja | nee). Zijn ze er, dan als één blok ceda → team → contact aan het eind.
 const vasteTypes = Object.keys(FIXED);
 const vasteAt = slides.map((s, i) => (vasteTypes.includes(s.type) ? i : -1)).filter((i) => i >= 0);
-const wens = bron?.match(/^vaste-slides:\s*(ja|nee)/mi)?.[1]?.toLowerCase();
+const wens = (bron ? readFileSync(bron, 'utf8') : '').match(/^vaste-slides:\s*(ja|nee)/mi)?.[1]?.toLowerCase();
 if (wens === 'ja' && !vasteAt.length) warnings.push("bron.md zegt vaste-slides: ja, maar de spec heeft geen { type: 'ceda' }, 'team' en 'contact'");
 if (wens === 'nee' && vasteAt.length) warnings.push('bron.md zegt vaste-slides: nee, maar de spec heeft vaste CEDA-slides — haal ze weg of zet vaste-slides: ja');
 if (vasteAt.length) {
@@ -233,7 +233,9 @@ if (ENGINE === 'potx') {
     process.exit(r.status === 1 ? 1 : 2);
   }
   warnings.forEach((w) => console.warn(`WAARSCHUWING  ${w}`));
-  process.stdout.write(r.stdout);
+  // Samenvatting telt alle waarschuwingen: die van build.mjs en die van build_potx.py
+  const pyWarn = (r.stdout.match(/^WAARSCHUWING /gm) ?? []).length;
+  process.stdout.write(r.stdout.replace(/(\d+) waarschuwing\(en\)/, `${pyWarn + warnings.length} waarschuwing(en)`));
   schrijfMeta(payload.out);
   process.exit(0);
 }

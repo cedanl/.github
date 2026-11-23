@@ -47,7 +47,7 @@ const bron = join(deckDir, 'bron.md');
 if (!existsSync(bron)) { console.error(`FOUT  ${bron} ontbreekt — schrijf eerst de bron-markdown (verplicht)`); process.exit(1); }
 if (!existsSync(html)) {
   copyFileSync(join(dirname(fileURLToPath(import.meta.url)), 'frame.html'), html);
-  const fancy = (readFileSync(bron, 'utf8').match(/^fancy:\s*([ABC])/m) || [, 'B'])[1];
+  const fancy = (readFileSync(bron, 'utf8').match(/^fancy:\s*([ABC])\b/m) || [, 'B'])[1];
   writeFileSync(html, readFileSync(html, 'utf8').replace('{{BRON_HASH}}', bronHash(bron)).replace('{{FANCY}}', fancy));
   console.log(`✓ frame gekopieerd → ${html}`);
 }
