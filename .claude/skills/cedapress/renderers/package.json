@@ -1,0 +1,10 @@
+{
+  "name": "cedapress-renderers",
+  "private": true,
+  "description": "Afhankelijkheden van de cedapress-renderers. Eenmalig: npm install --prefix <cedapress>/renderers",
+  "type": "module",
+  "dependencies": {
+    "playwright-chromium": "^1.48.0",
+    "pptxgenjs": "^3.12.0"
+  }
+}

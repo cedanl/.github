@@ -1,7 +1,9 @@
 ---
 name: clidev
-description: Maak CEDA/Npuls Slidev presentaties met automatische projectsetup, huisstijl en branding. Gebruik wanneer iemand een Slidev-presentatie of een standaard reviewdeck wil maken voor CEDA, Npuls of 1CHO. Bouwt voort op de slidev skill. LET OP — een los HTML-bestand, show-deck of deck met Mentimeter is `clanna`; een PowerPoint (.pptx) is `powerclaude`; een Marp-deck is `build-marp-deck`.
+description: UITGEFASEERD — gebruik cedapress. Maak CEDA/Npuls Slidev presentaties met automatische projectsetup, huisstijl en branding. Gebruik wanneer iemand een Slidev-presentatie of een standaard reviewdeck wil maken voor CEDA, Npuls of 1CHO. Bouwt voort op de slidev skill. LET OP — een los HTML-bestand, show-deck of deck met Mentimeter is `clanna`; een PowerPoint (.pptx) is `powerclaude`; een Marp-deck is `build-marp-deck`.
 ---
+
+> **Uitgefaseerd.** Deze skill wordt vervangen door `cedapress` (maakt HTML- en PowerPoint-presentaties vanuit één bron-markdown) met de ontwerpregels uit `ontwerper-slides-html` en `ontwerper-powerpoint` en de huisstijl en assets uit `vormgever-npuls-huisstijl`. Gebruik voor nieuwe presentaties `cedapress`. Bestaande decks blijven werken; deze skill krijgt geen nieuwe functies meer. Slidev-decks worden niet gemigreerd; bewaar ze als pdf-export.
 
 # Clidev - CEDA Slidev Presentaties
 

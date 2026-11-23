@@ -135,10 +135,10 @@
     "chart_background": "npuls-wit of een secondary pastel"
   },
   "assets": {
-    "_comment": "Kant-en-klare SVG's in de skill. Kleuren volgen dit tokenbestand; gebruik ze vóór je nieuwe tekent.",
-    "shapes": "assets/shapes/  (pulse-curve, concentrische-ringen, chevron, starburst, boog)",
-    "logos": "assets/logos/  (npuls_logo.jpg — officieel, achtergrond #F3D9DC, gebruik op npuls-roze; beeldmerk.svg en beeldmerk-wit.svg — indicatief)",
-    "illustrations": "assets/illustrations/  (collaboration, data-insight, learning — voorbeeld-illustraties in de vlakke Npuls-stijl)"
+    "_comment": "Officiele assets staan in het versioned pakket npuls-assets (zie SKILL.md, sectie Assetpakket); haal ze op met scripts/npuls_assets.py.",
+    "shapes": "npuls-assets: vormen/ (SVG) en web/sprite.svg",
+    "logos": "npuls-assets: logos/ (npuls-logo-roze.jpg op npuls-roze, PNG-logo's en beeldmerken)",
+    "illustrations": "npuls-assets: illustraties/ (26 SVG uit het Npuls-template)"
   },
   "css_variables": {
     "_comment": "Kant-en-klaar startpunt voor werkwijze-stap 7 (volledig CSS-bestand met variabelen). Alle waarden komen 1-op-1 uit dit bestand.",

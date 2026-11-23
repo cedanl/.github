@@ -1,0 +1,582 @@
+{
+  "name": "npuls-assets",
+  "version": "0.1.0",
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "type": "doc",
+      "sha256": "8eea6458eb4b7397c31561dab9f7aa72557f7fba9695984f4822f30acf0090bf",
+      "description": "CHANGELOG.md"
+    },
+    {
+      "path": "fonts.md",
+      "type": "doc",
+      "sha256": "59d868b2a5c3aa2dcac631ed9753687eee2a127616fa325bafd6b54d3f23d00f",
+      "description": "Uitleg lettertypen en licenties"
+    },
+    {
+      "path": "illustraties/illustratie-01.svg",
+      "type": "illustratie",
+      "sha256": "fc26689df1327e2252fee004bdefe20d84326068b507bbefec6cda78b82767f9",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 69' (ppt/media/image74.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-02.svg",
+      "type": "illustratie",
+      "sha256": "371b86258fe466ffec93329c100d48a76b07f585bd6ca3516d3a1b5f419e2ca1",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 44' (ppt/media/image58.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-03.svg",
+      "type": "illustratie",
+      "sha256": "91cffac6e1babda0e80461447c77b524b5b00d927e05e10a581d1952a5a02080",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 42' (ppt/media/image56.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-04.svg",
+      "type": "illustratie",
+      "sha256": "89a3bc243dddc7bf7f14bc29e53531edebe629dfb97ea57e23bd2eff3c789002",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 39' (ppt/media/image54.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-05.svg",
+      "type": "illustratie",
+      "sha256": "dfe0952bd376552ef3ffe191c19ebac35d90ba47873ed0041d5395b4fe2e7765",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 34' (ppt/media/image50.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-06.svg",
+      "type": "illustratie",
+      "sha256": "faaad6e72807929f937f2580be70f0dd2a7154c96bafc9215a553d2419e1cb15",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 36' (ppt/media/image52.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-07.svg",
+      "type": "illustratie",
+      "sha256": "db6c1c5dfa346f1b0705048d9e976330a20874b65125bf9f91f6d61781901d62",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 77' (ppt/media/image82.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-08.svg",
+      "type": "illustratie",
+      "sha256": "42cd16e842214f3408ebee4ae5a372b36e6c16b464547ea7d588d0044b719587",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 49' (ppt/media/image60.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-09.svg",
+      "type": "illustratie",
+      "sha256": "64e597627db0304849a91127074a1fce3bc1781fc240335a1437c2ea847e87bc",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 51' (ppt/media/image62.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-10.svg",
+      "type": "illustratie",
+      "sha256": "dc6892711d2fc2d5124bc1cbc7f7c3a9a4bf32475b327b16fd0ccd50d3da09bd",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 61' (ppt/media/image66.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-11.svg",
+      "type": "illustratie",
+      "sha256": "510626c1c2af90c689e1b4e6c4c29a2d3d3c76c8352cc306c997127021a57e44",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 53' (ppt/media/image64.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-12.svg",
+      "type": "illustratie",
+      "sha256": "fc7c9b5f235b31fc218465f4eb6672bd172b8a517caac044b665e0b31ea032ae",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 63' (ppt/media/image68.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-13.svg",
+      "type": "illustratie",
+      "sha256": "012b3c63e7adc093e3c2745699bca4d3d2f05198720bb525b37496fa80d4c8cf",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 67' (ppt/media/image72.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-14.svg",
+      "type": "illustratie",
+      "sha256": "7a2ba72681ecee5f26f1ce441f264b16cab299ffaca7306c0298ad3316804c53",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 65' (ppt/media/image70.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-15.svg",
+      "type": "illustratie",
+      "sha256": "997c4009cea45f85c6766090b34a635c2312aeb2983de7f89d4c3ec91ddf37ac",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 75' (ppt/media/image80.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-16.svg",
+      "type": "illustratie",
+      "sha256": "316fcf872e47036c56a189fae7749148cb6ba0a5091f20c588abd3a71c776a9c",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 73' (ppt/media/image78.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-17.svg",
+      "type": "illustratie",
+      "sha256": "adfbaa64b28b9c8602b8bd83073ae498daec41c2d3bfb5a13512de94c13077db",
+      "description": "Illustratie, bron: potx slide 18, shape 'Graphic 71' (ppt/media/image76.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-18.svg",
+      "type": "illustratie",
+      "sha256": "e98ee1a62113017531d4f649184dd46399f84d012920adc62a1deeaa782a8bcf",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 46' (ppt/media/image84.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-19.svg",
+      "type": "illustratie",
+      "sha256": "ceb1a4b4fe10f22950ee68190acf828d001e30cc8346140b9988307a7bb4891f",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 6' (ppt/media/image88.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-20.svg",
+      "type": "illustratie",
+      "sha256": "4780b69b33ba3ab1f5eb8da254a6855fcf7601a24d5f8b647f3d349c87dfa5fc",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 12' (ppt/media/image94.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-21.svg",
+      "type": "illustratie",
+      "sha256": "2e05e5e66209871639990a758c9e543b120bffd1f3d638d3b7e323e394a945c7",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 4' (ppt/media/image86.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-22.svg",
+      "type": "illustratie",
+      "sha256": "a8dc71aa269f48ecaf3030e3523d58a583b5f0c36701686ae631b7ebdec4fd44",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 8' (ppt/media/image90.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-23.svg",
+      "type": "illustratie",
+      "sha256": "5e53403e0cfaacb9dc872b6d51e4d452f2738a9d60a9be0e78af7e52ece525b2",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 10' (ppt/media/image92.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-24.svg",
+      "type": "illustratie",
+      "sha256": "b53936b47620494889d9b31537d3fcbd08521253589a4a6db334a8c707645feb",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 16' (ppt/media/image96.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-25.svg",
+      "type": "illustratie",
+      "sha256": "7f9e3123a9412b960036cbfe6795e1baa66dacca09a57ab2c7937cd860015c60",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 20' (ppt/media/image100.svg)"
+    },
+    {
+      "path": "illustraties/illustratie-26.svg",
+      "type": "illustratie",
+      "sha256": "b1a81bc23b9e1a7eb165c63da04e7b1f14d206a77de0f2e2019bb716ded32f87",
+      "description": "Illustratie, bron: potx slide 19, shape 'Graphic 18' (ppt/media/image98.svg)"
+    },
+    {
+      "path": "illustraties-mapping.json",
+      "type": "data",
+      "sha256": "dd779bd5924b61068cfb020f4fd1cc495d2725a39f1461a6fde9a0353ac6176b",
+      "description": "Mapping oorspronkelijke naam naar kebab-case bestandsnaam"
+    },
+    {
+      "path": "logos/beeldmerk-ring.json",
+      "type": "logo",
+      "sha256": "e36789f18a757e69fa75b78bbacc0f251458f3e24fcf1478855662ec8fdffc7b",
+      "description": "Npuls logo of beeldmerk (beeldmerk-ring.json)"
+    },
+    {
+      "path": "logos/npuls-beeldmerk-wit.png",
+      "type": "logo",
+      "sha256": "0803fab405aa95e29b9cefc7401a61b39c2aa4c19b0fe787af7ceb7fc655511a",
+      "description": "Npuls logo of beeldmerk (npuls-beeldmerk-wit.png)"
+    },
+    {
+      "path": "logos/npuls-beeldmerk-zwart.png",
+      "type": "logo",
+      "sha256": "7b37afa15718b21db7abfb09aee9a6cde9ca330c7678beed3de04b74476f9f20",
+      "description": "Npuls logo of beeldmerk (npuls-beeldmerk-zwart.png)"
+    },
+    {
+      "path": "logos/npuls-logo-horizontaal-wit.png",
+      "type": "logo",
+      "sha256": "81d1b0d05ad84dfc075908ad0bc898edccbcbab16235667add603fbb0a61f88e",
+      "description": "Npuls logo of beeldmerk (npuls-logo-horizontaal-wit.png)"
+    },
+    {
+      "path": "logos/npuls-logo-horizontaal-zwart.png",
+      "type": "logo",
+      "sha256": "21bab033b99fba183ffd013b0a55e5a04194d65097042b7a6b3f9f222bd04115",
+      "description": "Npuls logo of beeldmerk (npuls-logo-horizontaal-zwart.png)"
+    },
+    {
+      "path": "logos/npuls-logo-roze.jpg",
+      "type": "logo",
+      "sha256": "512407e4aad102ecd4c865c245cbd575b60e61194f17927710658b31c4e7c595",
+      "description": "Npuls logo of beeldmerk (npuls-logo-roze.jpg)"
+    },
+    {
+      "path": "pptx/Npuls_powerpoint-template.potx",
+      "type": "pptx-template",
+      "sha256": "b9383f38adfa7eb937090301f203bc43c8c66bbe54e2e4afd340d03b9aa22afd",
+      "description": "Npuls PowerPoint-template (19 slides)"
+    },
+    {
+      "path": "README.md",
+      "type": "doc",
+      "sha256": "334e0c6b1fe6273b9ea4938ba5cf3a60c500a5fd049271d298bb65c90106d8db",
+      "description": "README.md"
+    },
+    {
+      "path": "slides-preview/slide01.png",
+      "type": "preview",
+      "sha256": "60a669b383a1aaa65d05a92b75b1f48778cedcb1ae9b9b83761388f569c8b5fc",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide02.png",
+      "type": "preview",
+      "sha256": "6ca0212d121decb3dc498f5e95ff230c73afd52a265d641b49ba918ec7e47b98",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide03.png",
+      "type": "preview",
+      "sha256": "19bf57612b3c9aad993f8fc1cd9c6a0c1f433bf1584856f530ccdd8c1d90108c",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide04.png",
+      "type": "preview",
+      "sha256": "19bf57612b3c9aad993f8fc1cd9c6a0c1f433bf1584856f530ccdd8c1d90108c",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide05.png",
+      "type": "preview",
+      "sha256": "19bf57612b3c9aad993f8fc1cd9c6a0c1f433bf1584856f530ccdd8c1d90108c",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide06.png",
+      "type": "preview",
+      "sha256": "9c9275f432f5d1ebd7747814d0d74d2e7ad5d8ed272edc61295ee8e0af16fea5",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide07.png",
+      "type": "preview",
+      "sha256": "869e93b608fe909d8e260573ff14aa5844047bdbff475e6a8c74ae2aa86fb31a",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide08.png",
+      "type": "preview",
+      "sha256": "dde89e69d80813556254ff93a006ef646be7736553a57e6b7d86e7b5bfcb83fd",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide09.png",
+      "type": "preview",
+      "sha256": "a04ca663fd83ff2da54e0bbe3af60d7d02ed63f490b3816205ceea3d918f5d87",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide10.png",
+      "type": "preview",
+      "sha256": "6728ef1225fd51618cb787d06c684d3952f3ddfcfbba2d1896efc3d6b329126c",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide11.png",
+      "type": "preview",
+      "sha256": "9b6143e8572dc7ded21820ec026d94c0f86916fb408062860423ccb18ee5f1cb",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide12.png",
+      "type": "preview",
+      "sha256": "861f66e689627d4a2271c00a7780f4f70e50fb2a5015ffec4409ea730b13a57a",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide13.png",
+      "type": "preview",
+      "sha256": "21cf88324b7b32ac455d02cd6a2eddef9472ead85fde396120635468264e4d7f",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide14.png",
+      "type": "preview",
+      "sha256": "0976381e0ace6db5369c8c35a82fe83d6aaa7925b20c11065161d69a632bbfb0",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide15.png",
+      "type": "preview",
+      "sha256": "e7bfdde083ee4a9f44e3d327e9e2d8a6d0e43e06902e253d130fa8c013e1c3c8",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide16.png",
+      "type": "preview",
+      "sha256": "e84e7d86ee558385ad7ce3fc988946e6e0537e4185066376f59c523736a8daac",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide17.png",
+      "type": "preview",
+      "sha256": "d9b8d39cfca1cba729a68015807451bef2199325545120e45a4ec5f589a68e96",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide18.png",
+      "type": "preview",
+      "sha256": "8a0b44b7bf0aaaca8612fa417125ecd571d85bf9959a346126052c14e477bcb3",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "slides-preview/slide19.png",
+      "type": "preview",
+      "sha256": "b3d479769dcdd054422ae1e912235e6bf4db837cb6eb317b0c3550b9ac4835dc",
+      "description": "PNG-preview van templateslide"
+    },
+    {
+      "path": "VERSION",
+      "type": "doc",
+      "sha256": "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67",
+      "description": "VERSION"
+    },
+    {
+      "path": "vormen/bogen.svg",
+      "type": "vorm",
+      "sha256": "d49c7320388042bfdd19438ea868dcfe08ebadf04bd93e742d4da89fd8c1cb1a",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/cc-by-sa.svg",
+      "type": "vorm",
+      "sha256": "284de7179e3b27d4d26c85f114a82fe87741b32a62761e200c25c94f75fa30c2",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/chevrons-groen.svg",
+      "type": "vorm",
+      "sha256": "61a35f9afa2e533ea076b4ad3a7aae01f4fcbd6dc09960f02e2610c6a1b9bef4",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/golf-oranje.svg",
+      "type": "vorm",
+      "sha256": "4002be426f323df5581f9430d3fb42a4a49dc9d288ea7b199b2d928bf246019d",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/npuls-logo.svg",
+      "type": "vorm",
+      "sha256": "44da571675c9e8c41725f6b5cdf76938b3ad09631223c6f01a646c9d3f2b4910",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-bogen-roze.svg",
+      "type": "vorm",
+      "sha256": "2b980381e3bb5cbc092d959a41a1fbfe63dbd98562418cb6b2cc23df6e689a93",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-boog-geel.svg",
+      "type": "vorm",
+      "sha256": "35675ea341e6c694dd729bd535c26477f9f7e99b85362077416c822d2fce5976",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-chevrons-zwart.svg",
+      "type": "vorm",
+      "sha256": "c41057705c3110591939a064209f4573c33b43622e7bd04e5ec7c0a5cbf05ba2",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-cirkel-geel.svg",
+      "type": "vorm",
+      "sha256": "eb4b6634beb45cfb299bd99d39c965c110a395a716febaa4f1dfdbe6e11c2215",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-doel-groen.svg",
+      "type": "vorm",
+      "sha256": "ed6f3d5afa6e8dd558ab26aa5f82193b973e284fa42877b645fc5823203abc52",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-golf-roze.svg",
+      "type": "vorm",
+      "sha256": "7f922f5f0a467f5ca0bf23eda31e50174430af59b9fe94cc1f5a879b6c613dbc",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-golf-zwart.svg",
+      "type": "vorm",
+      "sha256": "62a7f551f9d11c4a09353b9668344af60e7a78eea8e07e11bd76c893c2f6b53e",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-pijl-oranje.svg",
+      "type": "vorm",
+      "sha256": "4cb182ef4704999020e8f38aaef12630ea3a5b6c3a28b7de9917d5ee38cc0db5",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-schakelaar-blauw.svg",
+      "type": "vorm",
+      "sha256": "655b0136257fa058492bc3018d9941a10921a7aee1abeca9ec2b500fcf633be0",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-ster-oranje.svg",
+      "type": "vorm",
+      "sha256": "73ee3d3a796d647e521a006ec07e88cd468f6cf7e8c87f478b39c2214ade262b",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "vormen/tegel-stippen-geel.svg",
+      "type": "vorm",
+      "sha256": "7f1c7f58264a176dab81453807b27b5e7ade8ce768cbc81937b9c6fb9cc42a3f",
+      "description": "Npuls vorm of tegel (SVG)"
+    },
+    {
+      "path": "web/logos/npuls-beeldmerk-wit.png",
+      "type": "web",
+      "sha256": "0803fab405aa95e29b9cefc7401a61b39c2aa4c19b0fe787af7ceb7fc655511a",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/logos/npuls-beeldmerk-zwart.png",
+      "type": "web",
+      "sha256": "7b37afa15718b21db7abfb09aee9a6cde9ca330c7678beed3de04b74476f9f20",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/logos/npuls-logo-horizontaal-wit.png",
+      "type": "web",
+      "sha256": "81d1b0d05ad84dfc075908ad0bc898edccbcbab16235667add603fbb0a61f88e",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/logos/npuls-logo-horizontaal-zwart.png",
+      "type": "web",
+      "sha256": "21bab033b99fba183ffd013b0a55e5a04194d65097042b7a6b3f9f222bd04115",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/logos/npuls-logo.svg",
+      "type": "web",
+      "sha256": "b2d42eac85bb7f81f753e41bd6e179edfece8b7b9ae16746a9482c1fa12b6ac4",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/npuls.css",
+      "type": "css",
+      "sha256": "e5b5d62706fa821995298e7a244e566e4bf0608739f5a29cc04e59b16e2a4753",
+      "description": "CSS-variabelen, kleurcombinaties, typografie, logo en bogen"
+    },
+    {
+      "path": "web/sprite.svg",
+      "type": "sprite",
+      "sha256": "a2dbaf795a1ebdee37d0b7e81f60797864eb1621383a8a8a2e67a6e1019b4ad2",
+      "description": "Alle vormen als <symbol id=vorm-...>"
+    },
+    {
+      "path": "web/vormen/bogen.svg",
+      "type": "web",
+      "sha256": "696ff72407fe9b79656ddb444d0c29dfa688d8de4e8c9476aca1a3d39ef01edc",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/cc-by-sa.svg",
+      "type": "web",
+      "sha256": "117db49f80c8d511d2c1b13e7e58ee440a7950e3cf7dcb5d675b6486656da3ca",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/chevrons-groen.svg",
+      "type": "web",
+      "sha256": "25870dc9b2c103e6fcbb01d76ff8a7b81996d56a9b497dd73fa4a289ead8fa86",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/golf-oranje.svg",
+      "type": "web",
+      "sha256": "4002be426f323df5581f9430d3fb42a4a49dc9d288ea7b199b2d928bf246019d",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/npuls-logo.svg",
+      "type": "web",
+      "sha256": "b2d42eac85bb7f81f753e41bd6e179edfece8b7b9ae16746a9482c1fa12b6ac4",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-bogen-roze.svg",
+      "type": "web",
+      "sha256": "7cb57e56768e824fab1706fce9273a06cab3704539a7e6f2ca58d5885e283199",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-boog-geel.svg",
+      "type": "web",
+      "sha256": "a6a037ae99457c808dc9c51a0d2693cfacb76bc410b6ae6484eb86ded09dd94b",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-chevrons-zwart.svg",
+      "type": "web",
+      "sha256": "bc04c8ae94297c99b5826a42063d27b616c54d888c5ba3d21719898b5fc8705d",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-cirkel-geel.svg",
+      "type": "web",
+      "sha256": "ca3253fa1bb953b53d98a5cdcea21297055b942c992cade851391cfff08e9a77",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-doel-groen.svg",
+      "type": "web",
+      "sha256": "57c5adcd25de6e2c273c03ebf4b5243776ac09576eb66b6a0553ffaab63d631e",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-golf-roze.svg",
+      "type": "web",
+      "sha256": "06be7d09a1a8445e48c1b766ae007ebc50abdd7f6c0d060a627e05051f44cbad",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-golf-zwart.svg",
+      "type": "web",
+      "sha256": "fb4faa1a1a5fbc9e2ad9b0a41e20886e9f9dfca289025f9552221e06ca74832c",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-pijl-oranje.svg",
+      "type": "web",
+      "sha256": "923f9665e320d5efd62cf214e67945e5c0c3a938dd197caff6293d0da2a879fa",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-schakelaar-blauw.svg",
+      "type": "web",
+      "sha256": "636c067342d2e474a3d182ef93d1977277da08aed933994c1d487a0e0caed462",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-ster-oranje.svg",
+      "type": "web",
+      "sha256": "025637ed127a45547a2e6213705c5f0387e67da180f0cc15b22e5df3d34decd5",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    },
+    {
+      "path": "web/vormen/tegel-stippen-geel.svg",
+      "type": "web",
+      "sha256": "d7c411d66a9981631a8350614e92deb511f082c2267aaf7317edcfe6a9ae2742",
+      "description": "Geoptimaliseerde kopie voor HTML"
+    }
+  ]
+}

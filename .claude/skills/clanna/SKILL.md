@@ -1,6 +1,6 @@
 ---
 name: clanna
-description: Gebruik wanneer iemand een presentatie als los HTML-bestand wil in Npuls/CEDA-huisstijl in plaats van Slidev — een HTML-deck, html-presentatie, show-deck, kick-off of keynote die moet opvallen, met Mentimeter-peilingen, of één bestand dat je kunt mailen. Ook bij "/clanna" of "maak het zoals het LLM-wiki-deck van Janna". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een PowerPoint (.pptx) is `powerclaude`; een Marp-deck is `build-marp-deck`.
+description: UITGEFASEERD — gebruik cedapress. Gebruik wanneer iemand een presentatie als los HTML-bestand wil in Npuls/CEDA-huisstijl in plaats van Slidev — een HTML-deck, html-presentatie, show-deck, kick-off of keynote die moet opvallen, met Mentimeter-peilingen, of één bestand dat je kunt mailen. Ook bij "/clanna" of "maak het zoals het LLM-wiki-deck van Janna". LET OP — een Slidev-presentatie of standaard reviewdeck is `clidev`; een PowerPoint (.pptx) is `powerclaude`; een Marp-deck is `build-marp-deck`.
 allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node and git; draait in de root van cedanl/clidev-presentaties (Npuls-assets en playwright-chromium via npm install)
 metadata:
@@ -17,6 +17,8 @@ metadata:
   ceda-scope: org
   ceda-verifies: measurable
 ---
+
+> **Uitgefaseerd.** Deze skill wordt vervangen door `cedapress` (maakt HTML- en PowerPoint-presentaties vanuit één bron-markdown) met de ontwerpregels uit `ontwerper-slides-html` en `ontwerper-powerpoint` en de huisstijl en assets uit `vormgever-npuls-huisstijl`. Gebruik voor nieuwe presentaties `cedapress`. Bestaande decks blijven werken; deze skill krijgt geen nieuwe functies meer.
 
 # clanna — HTML-presentaties met Claude
 

@@ -1,0 +1,133 @@
+// Voorbeeld-deck-spec voor de cedapress-pptx-renderer: elk slidetype één keer, met de vaste CEDA-slides.
+// Kopieer naar presentaties/YYMMDD_onderwerp/YYMMDD_onderwerp.deck.mjs en vul hem uit bron.md
+// (python <cedapress>/scripts/parse_bron.py bron.md --vorm pptx). `bron` = hash van bron.md
+// (python <cedapress>/scripts/parse_bron.py bron.md --hash); build.mjs faalt als die niet klopt.
+export default {
+  bron: 'sha256:VUL_IN',
+  title: 'Agentic data science in het onderwijs',
+  author: 'CEDA',
+  slides: [
+    {
+      type: 'title',
+      kicker: 'CEDA · DAIR-bijeenkomst',
+      title: 'Agentic data science in het onderwijs',
+      lede: 'Workshop-voorstel: korte rondes met spiegelen',
+      sub: '90 minuten · één casus · één dashboard',
+      notes: 'Welkom. In 90 minuten bouwen we samen met een AI-agent één dashboard.',
+    },
+    // Vaste CEDA-introslide: altijd direct na de titel/agenda. Inhoud ligt vast.
+    { type: 'ceda' },
+    // Vaste teamslide: groepsfoto van het CEDA-team, direct na ceda. Alleen `text` mag anders.
+    { type: 'team' },
+    {
+      type: 'stats',
+      variant: 'roze',
+      title: 'Eén casus, één dashboard, drie rondes',
+      lede: 'AI is geen black box maar een transparante junior-analist. De agent versnelt, jij houdt de regie.',
+      items: [
+        { value: '90', label: 'minuten', text: 'één workshop, negen blokken' },
+        { value: '3', label: 'rondes', text: 'exploreren, bouwen en verantwoorden' },
+        { value: '3', label: 'spiegelmomenten', text: 'elk met een skill die de stap ervoor doet' },
+        { value: '1', label: 'casus', text: 'beantwoord met één dashboard' },
+      ],
+      callout: '**Wow-moment:** elke ronde een zichtbare sprong, gespiegeld aan de groep ernaast.',
+      notes: 'De vier getallen vatten het format samen.',
+    },
+    {
+      type: 'timeline',
+      variant: 'licht-blauw',
+      title: 'Zo loopt de dag',
+      blocks: [
+        { minutes: 15, color: 'geel', title: 'Welkom en uitleg', text: 'Casus en werkwijze' },
+        { minutes: 30, color: 'blauw', title: 'Ronde 1', text: 'Jullie werken zelf' },
+        { minutes: 15, color: 'oranje', title: 'Spiegelmoment', text: 'Skill live', tag: '/skill-naam' },
+        { minutes: 30, color: 'blauw', title: 'Ronde 2', text: 'Andere rol' },
+        { minutes: 10, color: 'groen', title: 'Afsluiting', text: 'Terugblik' },
+      ],
+      legend: [{ color: 'geel', label: 'Uitleg' }, { color: 'blauw', label: 'Werken' }, { color: 'oranje', label: 'Spiegelmoment' }, { color: 'groen', label: 'Afsluiting' }],
+      notes: 'Loop het schema in dertig seconden door.',
+    },
+    {
+      type: 'cards',
+      variant: 'licht-geel',
+      title: 'Eén dashboard, drie stappen',
+      numbered: true,
+      arrows: true,
+      items: [
+        { tag: 'Data → Informatie', title: 'Data exploratie', sections: [{ label: 'Wat je doet', text: 'Data en codebook verkennen met de agent.' }, { label: 'Wat ontstaat', text: 'Begrip van de data en een schets.', strong: true }] },
+        { tag: 'Informatie → Kennis', title: 'Dashboard bouwen', sections: [{ label: 'Wat je doet', text: 'Grafiek, vergelijking en filter bouwen.' }, { label: 'Wat ontstaat', text: 'Een werkend dashboard.', strong: true }] },
+        { tag: 'Kennis → Wijsheid', title: 'Verantwoorden', sections: [{ label: 'Wat je doet', text: 'Toetsen op privacy, framing en bron.' }, { label: 'Wat ontstaat', text: 'Hetzelfde dashboard, nu uitlegbaar.', strong: true }] },
+      ],
+      footer: '**Het dashboard is het middel**, de casusvraag het doel.',
+      notes: 'Drie rondes, elk met een eigen opbrengst.',
+    },
+    {
+      type: 'section',
+      variant: 'oranje',
+      number: 2,
+      title: 'De agent doet het handwerk',
+      text: 'Jij stelt de vraag, controleert de code en trekt de conclusie.',
+      notes: 'Overgang naar het praktijkdeel.',
+    },
+    {
+      type: 'split',
+      variant: 'licht-blauw',
+      title: 'Wat je meeneemt',
+      bullets: ['Een **werkende devcontainer** met data en codebook', 'Skills die elke stap herhaalbaar maken', 'Een dashboard dat je zelf kunt uitleggen'],
+      illustration: 'illustratie-07',
+      notes: 'Drie dingen die deelnemers mee naar huis nemen.',
+    },
+    {
+      type: 'chart',
+      variant: 'licht-roze',
+      title: 'Uitval daalt na het eerste jaar',
+      chart: 'bar',
+      labels: ['Jaar 1', 'Jaar 2', 'Jaar 3'],
+      series: [{ name: 'hbo', values: [15, 7, 4] }, { name: 'wo', values: [11, 5, 3] }],
+      format: '0"%"',
+      takeaway: 'De meeste uitval valt in jaar 1: daar loont vroeg signaleren het meest.',
+      source: 'synthetische 1CHO-data',
+      notes: 'Illustratief, synthetische data.',
+    },
+    {
+      type: 'list',
+      variant: 'licht-groen',
+      title: 'Wat staat vast, wat is open',
+      items: [
+        { title: 'AI-agent: Claude Code', text: 'voor wie direct wil prompten', status: 'Vast', color: 'groen' },
+        { title: 'Data en codebook', text: 'synthetisch 1CHO-bestand, gelabelde waarden', status: 'Vast', color: 'groen' },
+        { title: 'Dashboard: Streamlit', text: 'tool kan nog wijzigen', status: 'Open', color: 'oranje' },
+      ],
+      footnote: 'Het concept staat, de invulling is deels open.',
+      notes: 'Randvoorwaarden.',
+    },
+    {
+      type: 'table',
+      variant: 'licht-geel',
+      title: 'Planning van de middag',
+      columns: ['Tijd', 'Blok', 'Wie'],
+      widths: [0.2, 0.55, 0.25],
+      rows: [['13:00', 'Introductie en casuskeuze', 'CEDA'], ['13:15', 'Ronde 1: data exploratie', 'Groepen'], ['13:45', 'Ronde 2: dashboard bouwen', 'Groepen'], ['14:15', 'Ronde 3: verantwoorden', 'Groepen']],
+      notes: 'Tijdschema.',
+    },
+    {
+      type: 'quote',
+      variant: 'blauw',
+      text: 'De analist voegt de wijsheid toe: wat mag je concluderen, en hoe presenteer je het?',
+      by: 'Uitgangspunt van de workshop',
+      illustration: 'illustratie-19',
+      notes: 'Laat het citaat even staan.',
+    },
+    {
+      type: 'closing',
+      variant: 'blauw',
+      title: 'Afsluiting',
+      question: 'Wat verloor en won je?',
+      text: 'Vertaal het naar je eigen praktijk.',
+      contact: 'Team CEDA',
+      notes: 'Plenaire reflectie.',
+    },
+    // Vaste afsluitslide met de CEDA-links: altijd de allerlaatste slide. Inhoud ligt vast.
+    { type: 'contact' },
+  ],
+};

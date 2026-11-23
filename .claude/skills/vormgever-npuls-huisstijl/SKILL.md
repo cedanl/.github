@@ -11,11 +11,27 @@ Je bent een ervaren digitale vormgever die de Npuls huisstijl consequent toepast
 
 - **`references/design-tokens.json`** — machine-leesbare bron voor alle exacte waarden: hex-codes, toegestane kleurencombinaties, typografie-schaal, iconenregels, kernvormen en fotografie-keywords. Bevat ook een `spacing`- / `radii`- / `shadows`-schaal, `neutrals` (alleen voor tekst/randen), `feedback_colors` en `data_visualization` (statuskleuren en grafiekpaletten), een `font_loading`-blok en een kant-en-klaar `css_variables`-blok als startpunt. Verwijs hiernaar voor elke concrete waarde, hardcode nooit een hex-code uit je geheugen.
 - **`references/merkcontext.md`** — lees dit erbij zodra het logo, de vormentaal of fotografie een prominente rol speelt (posters, covers, social posts, landingspagina's). Bevat logo-plaatsingsregels, vormentaal-toepassing, fotografiestijl, impressie-links en de licentie.
-- **`assets/`** — kant-en-klare SVG's: `shapes/` (de vijf kernvormen), `logos/` (officieel beeldmerk `npuls_logo.jpg` op roze, plus indicatieve SVG's licht + donker) en `illustrations/` (voorbeeld-illustraties in de vlakke Npuls-stijl). Gebruik deze vóór je nieuwe tekent; zie `assets/README.md`.
+- **Assetpakket** — officiële Npuls-assets (logo's, vormen, illustraties, template, `web/npuls.css`) via `scripts/npuls_assets.py`, zie sectie Assetpakket. Gebruik deze vóór je nieuwe tekent; teken zelf geen logo's of vormen.
+
+## Assetpakket
+
+Officiële assets zitten in een versioned pakket (release `npuls-assets-v0.1.0` op `cedanl/.github`). Pin altijd versie 0.1.0:
+
+```bash
+python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure --version 0.1.0   # print de map
+python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py path web/npuls.css        # pad naar één bestand
+```
+
+Het pakket wordt eenmalig gedownload naar `~/.cache/ceda/npuls-assets/0.1.0/`. Offline of testen: `--local <map>` of `NPULS_ASSETS_DIR`.
+
+- `pptx/` template, `logos/`, `vormen/`, `illustraties/` (26 SVG uit het template), `slides-preview/`
+- `web/npuls.css` voor HTML: variabelen, kleurcombinaties (`bg-blauw fg-geel`), typografie, `.npuls-logo` en `.npuls-bogen`; `web/sprite.svg` bevat alle vormen als `<symbol id="vorm-...">`
+- Geen lettertypebestanden: zie `fonts.md` in het pakket
 
 ## Relatie tot andere skills
 
 - `ui-designer` — ISGVO-workflow bij de V (Verbeelding/visueel ontwerp: "hoe ziet het eruit?"); gebruikt dezelfde `references/design-tokens.json` als bron. Houd tokens hier canoniek, niet dupliceren in andere skills.
+- `cedapress` — bouwt presentaties (HTML en pptx) met de assets uit het assetpakket; ontwerpregels in `ontwerper-slides-html` en `ontwerper-powerpoint`.
 
 ## Werkwijze
 
@@ -23,14 +39,14 @@ Je bent een ervaren digitale vormgever die de Npuls huisstijl consequent toepast
 2. **Kleur**: kies minimaal 3 primaire kleuren die zichtbaar een rol spelen. Vermijd een overwegend witte/neutrale aanpak — kleur is de persoonlijkheid van Npuls. Controleer elke kleurcombinatie tegen `allowed_combinations` in design-tokens.json voordat je een achtergrond-voorgrond paar kiest. `npuls-zwart` nooit als achtergrond, alleen voor typografie.
 3. **Typografie**: General Sans (Regular/SemiBold) als primair font; laad Plus Jakarta Sans via Google Fonts als digitale vervanging. Cooper Light alleen voor introducties/quotes/ondertitels. Volg de typografische schaal uit design-tokens.json.
 4. **Iconen**: Font Awesome, uitsluitend solid-sharp, laden via CDN (`icons.cdn_url` in design-tokens.json). Plaats elk icoon in een paletkleur met een toegestane achtergrondkleur; wissel kleurparen af.
-5. **Vormentaal**: zet de kernvormen in ter ondersteuning van een boodschap of decoratief als maskers — zie `merkcontext.md` voor voorbeelden. Kant-en-klare SVG's staan in `assets/shapes/`, het beeldmerk in `assets/logos/` — gebruik die vóór je nieuwe tekent. Ook vormen altijd in een toegestane kleurcombinatie.
+5. **Vormentaal**: zet de kernvormen in ter ondersteuning van een boodschap of decoratief als maskers — zie `merkcontext.md` voor voorbeelden. Officiële vormen en het beeldmerk staan in het assetpakket — gebruik die vóór je nieuwe tekent. Ook vormen altijd in een toegestane kleurcombinatie.
 6. **Fotografie**: als je fotografie beschrijft of zoekt, volg de stijl-keywords (Focus, Innovatie, Actief, Kleurrijk) en de bronnen in design-tokens.json/merkcontext.md.
 7. **Bouw het eindresultaat**: begin bij het `css_variables`-blok uit design-tokens.json en breid dat uit met componentklassen; gebruik de `spacing`-, `radii`- en `shadows`-schaal consistent. Lever een volledig CSS-bestand met variabelen, of de gevraagde React/HTML-uiting. HTML moet direct in de browser werken zonder lokale installatie.
 8. **Dashboards, grafieken en UI-feedback**: gebruik `feedback_colors` voor status (succes/info/waarschuwing/fout — fouten zijn oranje, nooit rood) en `data_visualization` voor grafiekpaletten (`categorical_order`, `sequential`, `diverging`). Grafiekachtergrond wit of een secondary pastel, nooit `npuls-zwart`. `neutrals` alleen voor astekst, gridlijnen en randen.
 
 ## Frameworks & dashboards
 
-Deze skill levert HTML/CSS/React. Voor een **Slidev-presentatie** ga je naar de `clidev`-skill; voor Streamlit/R Shiny-thema's naar `npuls-huisstijl`. Beide gebruiken hetzelfde palet — de kleur-, vorm- en typografieregels hieronder blijven leidend. Voor grafieken in welk framework dan ook gebruik je het `data_visualization`-blok uit design-tokens.json.
+Deze skill levert HTML/CSS/React. Voor een **presentatie** (HTML of pptx) ga je naar `cedapress`; voor Streamlit/R Shiny-thema's naar `npuls-huisstijl`. Beide gebruiken hetzelfde palet — de kleur-, vorm- en typografieregels hieronder blijven leidend. Voor grafieken in welk framework dan ook gebruik je het `data_visualization`-blok uit design-tokens.json.
 
 ## Restricties (altijd controleren voor oplevering)
 
@@ -39,4 +55,4 @@ Deze skill levert HTML/CSS/React. Voor een **Slidev-presentatie** ga je naar de 
 - Minimaal 3 primaire kleuren zichtbaar; vermijd een overwegend witte/neutrale aanpak. `neutrals` alleen voor tekst, randen en subtiele scheidingslijnen — nooit als dominant vlak.
 - Primair font General Sans met Plus Jakarta Sans als digitale vervanger; Cooper Light alleen voor introducties/quotes/ondertitels. Nooit Inter of een ander vervangend font introduceren.
 - Design tokens zijn de bron — verwijs naar `references/design-tokens.json`, nooit hardcoden.
-- Logo's en merkidentiteitselementen zelf niet wijzigen zonder expliciete toestemming (zie licentie in merkcontext.md). Gebruik als logo `assets/logos/npuls_logo.jpg` (op npuls-roze, niet op wit). De SVG's in `assets/logos/` zijn indicatief; vervang ze door het bestand uit de communicatiekit zodra daar een vector of transparante versie van beschikbaar is.
+- Logo's en merkidentiteitselementen zelf niet wijzigen zonder expliciete toestemming (zie licentie in merkcontext.md). Gebruik als logo het bestand uit het assetpakket (`logos/npuls-logo-roze.jpg` op npuls-roze, niet op wit; of de PNG-varianten). Teken geen eigen logo of beeldmerk.

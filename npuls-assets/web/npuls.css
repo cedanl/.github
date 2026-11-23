@@ -1,0 +1,59 @@
+/* Npuls web-laag v0.1.0 - waarden komen uit vormgever-npuls-huisstijl/references/design-tokens.json */
+/* General Sans (Fontshare) met Plus Jakarta Sans als digitale vervanger. Cooper Light: lokaal installeren, zie ../fonts.md */
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --npuls-oranje: #DD784B; --npuls-zwart: #000000; --npuls-roze: #F4D9DC;
+  --npuls-blauw: #3D68EC; --npuls-geel: #F4D74B; --npuls-groen: #00AF81; --npuls-wit: #FFFFFF;
+  --npuls-licht-groen: #CCEEE6; --npuls-licht-blauw: #D6E2FD; --npuls-licht-roze: #FAEAEA;
+  --npuls-licht-oranje: #FFE4D8; --npuls-licht-geel: #FCF5D4;
+  --npuls-grijs-100: #ECECEE; --npuls-grijs-200: #DCDCE0; --npuls-grijs-600: #5C5C66;
+  --npuls-font-primary: 'General Sans', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --npuls-font-secondary: 'Cooper Light', 'Cooper Lt BT', Georgia, 'Times New Roman', serif;
+  --npuls-h1: clamp(40px, 5vw, 56px); --npuls-h2: clamp(28px, 3.5vw, 36px); --npuls-h3: clamp(20px, 2.4vw, 24px);
+  --npuls-body: 16px; --npuls-label: 12.5px;
+  --npuls-space-xs: 4px; --npuls-space-sm: 8px; --npuls-space-md: 16px; --npuls-space-lg: 24px;
+  --npuls-space-xl: 32px; --npuls-space-2xl: 48px; --npuls-space-3xl: 64px; --npuls-space-4xl: 96px;
+  --npuls-radius-sm: 6px; --npuls-radius-md: 12px; --npuls-radius-lg: 20px; --npuls-radius-xl: 32px; --npuls-radius-pill: 9999px;
+  --npuls-shadow-sm: 0 1px 2px rgba(0,0,0,0.06); --npuls-shadow-md: 0 4px 12px rgba(0,0,0,0.08); --npuls-shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
+}
+
+body { font-family: var(--npuls-font-primary); font-size: var(--npuls-body); font-weight: 400; color: var(--npuls-zwart); }
+h1, h2, h3 { font-weight: 600; margin: 0 0 var(--npuls-space-md); }
+h1 { font-size: var(--npuls-h1); } h2 { font-size: var(--npuls-h2); } h3 { font-size: var(--npuls-h3); }
+.npuls-label { font-size: var(--npuls-label); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.npuls-intro, .npuls-quote { font-family: var(--npuls-font-secondary); font-weight: 300; }
+
+/* Toegestane kleurcombinaties (allowed_combinations). Zwart nooit als achtergrond.
+   Gebruik: class="bg-blauw fg-geel". Verboden: geel-op-groen, groen-op-blauw. */
+.bg-blauw { background: var(--npuls-blauw); } .bg-roze { background: var(--npuls-roze); }
+.bg-geel { background: var(--npuls-geel); } .bg-groen { background: var(--npuls-groen); }
+.bg-oranje { background: var(--npuls-oranje); } .bg-wit { background: var(--npuls-wit); }
+.bg-licht-groen { background: var(--npuls-licht-groen); } .bg-licht-blauw { background: var(--npuls-licht-blauw); }
+.bg-licht-roze { background: var(--npuls-licht-roze); } .bg-licht-oranje { background: var(--npuls-licht-oranje); }
+.bg-licht-geel { background: var(--npuls-licht-geel); }
+.fg-blauw { color: var(--npuls-blauw); } .fg-roze { color: var(--npuls-roze); } .fg-geel { color: var(--npuls-geel); }
+.fg-groen { color: var(--npuls-groen); } .fg-oranje { color: var(--npuls-oranje); } .fg-zwart { color: var(--npuls-zwart); }
+.fg-wit { color: var(--npuls-wit); }
+/* kant-en-klare paren (achtergrond-voorgrond) */
+.npuls-blauw-geel { background: var(--npuls-blauw); color: var(--npuls-geel); }
+.npuls-blauw-roze { background: var(--npuls-blauw); color: var(--npuls-roze); }
+.npuls-roze-blauw { background: var(--npuls-roze); color: var(--npuls-blauw); }
+.npuls-roze-groen { background: var(--npuls-roze); color: var(--npuls-groen); }
+.npuls-roze-zwart { background: var(--npuls-roze); color: var(--npuls-zwart); }
+.npuls-roze-oranje { background: var(--npuls-roze); color: var(--npuls-oranje); }
+.npuls-geel-oranje { background: var(--npuls-geel); color: var(--npuls-oranje); }
+.npuls-geel-zwart { background: var(--npuls-geel); color: var(--npuls-zwart); }
+.npuls-geel-blauw { background: var(--npuls-geel); color: var(--npuls-blauw); }
+.npuls-groen-roze { background: var(--npuls-groen); color: var(--npuls-roze); }
+.npuls-groen-zwart { background: var(--npuls-groen); color: var(--npuls-zwart); }
+.npuls-oranje-zwart { background: var(--npuls-oranje); color: var(--npuls-zwart); }
+.npuls-oranje-roze { background: var(--npuls-oranje); color: var(--npuls-roze); }
+
+/* Decks: class="npuls-slide" op de slide */
+.npuls-slide { position: relative; overflow: hidden; font-family: var(--npuls-font-primary); }
+/* Logo linksboven: <img class="npuls-logo" src="logos/npuls-logo-horizontaal-zwart.png" alt="Npuls"> (wit op blauw/groen/oranje) */
+.npuls-logo { position: absolute; top: 3%; left: 3%; height: 6%; width: auto; }
+/* Bogen rechtsonder: <img class="npuls-bogen" src="vormen/bogen.svg" alt=""> */
+.npuls-bogen { position: absolute; right: 0; bottom: 0; height: 45%; width: auto; pointer-events: none; }

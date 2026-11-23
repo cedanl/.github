@@ -1,0 +1,2 @@
+# npuls-assets: bytes exact houden (manifest.json bevat sha256 per bestand)
+npuls-assets/** -text

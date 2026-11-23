@@ -10,11 +10,11 @@ Lees dit bestand wanneer je een uiting maakt waarin het logo, de vormentaal of f
 - Ruimte rondom het logo: minimaal zo groot als de letter "N" — laat het logo ademen, vooral naast kantlijnen of tekst.
 - De pay-off "Onderwijs bewegen." staat altijd apart van het logo (niet eraan vast), hoek is vrij te kiezen afhankelijk van het medium.
 - Bij events/initiatieven mag een gekleurd label aan het logo gekoppeld worden.
-- Het officiële beeldmerk met woordmerk staat in `assets/logos/npuls_logo.jpg` (200 × 200 px, achtergrond `#F3D9DC` ≈ npuls-roze): gebruik het op npuls-roze, niet op wit, en pas het niet zelf aan. Er is geen vector- of transparante versie; de SVG's in dezelfde map (pulserende stippen, licht + donker) zijn een indicatieve benadering. Vervang ze door het bestand uit de communicatiekit zodra daar een vector of transparante versie van is.
+- Het officiële logo en beeldmerk staan in het assetpakket (`logos/`, zie SKILL.md, sectie Assetpakket): `npuls-logo-roze.jpg` (200 × 200 px, achtergrond ≈ npuls-roze, niet op wit gebruiken) en PNG-varianten in zwart en wit. Pas ze niet zelf aan.
 
 ## Vormentaal — toepassing
 
-De vijf kernvormen (zie design-tokens.json voor de lijst; kant-en-klare SVG's in `assets/shapes/`) verbeelden beweging en pulseren. Gebruik ze op twee manieren:
+De vijf kernvormen (zie design-tokens.json voor de lijst; kant-en-klare SVG's in het assetpakket, map `vormen/`) verbeelden beweging en pulseren. Gebruik ze op twee manieren:
 
 1. **Ondersteunend**: naast een one-liner of statement, om de boodschap kracht bij te zetten (bijv. een pijl bij "vooruit helpen", een boog bij "verbinding").
 2. **Decoratief**: als maskers over foto's of kleurvlakken, door vormen en kleuren te combineren tot een spannende layout (zie de programmaboekjes-covers in het huisstijlhandboek als voorbeeld).
