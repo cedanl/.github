@@ -28,6 +28,8 @@ Het id staat in de check-meldingen, bv. `[OSH-02]`.
 
 Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0), afgeleid uit de CEDA-presentatie Uitnodigingsregel en de Npuls-huisstijl. Alleen het deel dat los staat van het medium is overgenomen.
 
+**Taakverdeling (besluit Aslam):** de officiële Npuls-potx en de tokens zijn vast (beheer: `vormgever-npuls-huisstijl` en `npuls-assets`; layouts, kleuren, fonts, logo's, vormen, illustraties). Wat in deze skill staat beheert Edwin en is flexibel (componenten, slidepatronen, drempels, kleurkeuze per slide, deckstructuur), zolang het binnen de potx-layouts en tokens blijft. Ontbrekende assets komen via een nieuwe assetrelease. Zie `cedapress/references/herkomst-ceda-powerpoint-maker.md`.
+
 > Open punten staan onder "Nog open" in `references/regels.md`. Wijzig een drempel daar én in `check.mjs`.
 
 ## Kern

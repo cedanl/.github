@@ -32,6 +32,8 @@ bron.md  →  HTML-deck       (git, projectrepo)
 `<cp>` = de map van deze skill ("Base directory"). **Vereist:** laad `vormgever-npuls-huisstijl` (palet,
 combinaties, vormtaal) en per vorm `ontwerper-slides-html` en/of `ontwerper-powerpoint` (ontwerpregels).
 
+**Taakverdeling:** de officiële Npuls-potx (via `vormgever-npuls-huisstijl` en `npuls-assets`) is het kader voor HTML én pptx en gaat voor. Vast, beheer bij de vormgever: potx-layouts, kleuren, fonts, logo's, vormen, illustraties, tokens. Flexibel, beheer bij Edwin (`ontwerper-powerpoint`, `ontwerper-slides-html`): componenten, slidepatronen, drempels, kleurkeuze per slide, deckstructuur, binnen de potx-layouts en tokens. Ontbrekende assets (zoals iconen) komen via een nieuwe assetrelease.
+
 **Met dank aan Janna Berkhout (KIS):** de HTML-frame (engine, slide-varianten, componenten, ritme) komt uit haar
 deck *"Welk open-source model kan mijn LLM-wiki het beste onderhouden?"*, via clanna. "clanna" blijft triggerwoord.
 
