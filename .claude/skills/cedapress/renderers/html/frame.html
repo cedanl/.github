@@ -58,19 +58,8 @@ body{
 }
 .slide.active{opacity:1;visibility:visible;transform:translateY(0);z-index:2}
 .slide>*{position:relative;z-index:3}
+/* slide-varianten (.s-*), kaartkleuren (.card.<kleur>), heldenkaart (.held) en icoontegels (.ico.<kleur>): npuls/web/npuls.css, gegenereerd uit design-tokens.json */
 
-/* slide-varianten: alleen toegestane kleurcombinaties */
-.s-blauw  {--paper:var(--npuls-blauw); --ink:var(--npuls-wit);  --accent:var(--npuls-geel);   --accent-2:var(--npuls-roze)}
-.s-roze   {--paper:var(--npuls-roze);  --ink:var(--npuls-zwart);--accent:var(--npuls-blauw);  --accent-2:var(--npuls-oranje)}
-.s-geel   {--paper:var(--npuls-geel);  --ink:var(--npuls-zwart);--accent:var(--npuls-blauw);  --accent-2:var(--npuls-oranje)}
-.s-groen  {--paper:var(--npuls-groen); --ink:var(--npuls-zwart);--accent:var(--npuls-roze);   --accent-2:var(--npuls-zwart)}
-.s-oranje {--paper:var(--npuls-oranje);--ink:var(--npuls-zwart);--accent:var(--npuls-roze);   --accent-2:var(--npuls-zwart)}
-.s-lblauw {--paper:var(--licht-blauw); --ink:var(--npuls-zwart);--accent:var(--npuls-blauw);  --accent-2:var(--npuls-oranje)}
-.s-lgroen {--paper:var(--licht-groen); --ink:var(--npuls-zwart);--accent:var(--npuls-groen);  --accent-2:var(--npuls-oranje)}
-.s-lgeel  {--paper:var(--licht-geel);  --ink:var(--npuls-zwart);--accent:var(--npuls-oranje); --accent-2:var(--npuls-blauw)}
-.s-lroze  {--paper:var(--licht-roze);  --ink:var(--npuls-zwart);--accent:var(--npuls-oranje); --accent-2:var(--npuls-blauw)}
-.s-loranje{--paper:var(--licht-oranje);--ink:var(--npuls-zwart);--accent:var(--npuls-oranje); --accent-2:var(--npuls-blauw)}
-.s-wit    {--paper:var(--npuls-wit);   --ink:var(--npuls-zwart);--accent:var(--npuls-blauw);  --accent-2:var(--npuls-groen)}
 
 /* ============================================================
    TYPOGRAFIE
@@ -109,9 +98,6 @@ p,li{font-size:clamp(16px,1.75vw,36px);line-height:1.42}
 /* een split staat op zijn eigen hoogte in het optische midden; grafiek en Mentimeter vullen de ruimte zelf */
 .body>.split{flex:0 1 auto}
 .body:has(>.chart-wrap,>.menti-wrap)::before,.body:has(>.chart-wrap,>.menti-wrap)::after{display:none}
-/* accentdeel op groen en oranje: roze als tekst haalt daar maar ca. 2,2:1, dus een roze markering achter zwarte tekst (gelijk aan de pptx) */
-.s-groen .slide-head h2 .hl,.s-oranje .slide-head h2 .hl{color:var(--npuls-zwart);background:var(--npuls-roze);padding:0 .1em;
-  -webkit-box-decoration-break:clone;box-decoration-break:clone}
 strong{font-weight:600}
 .mono{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.92em}
 .payoff{font-weight:600;letter-spacing:-.01em}
@@ -131,16 +117,6 @@ strong{font-weight:600}
   display:flex;flex-direction:column;gap:.55em;
 }
 .card.row{flex-direction:row;align-items:center;gap:1.2em}
-.card.blauw{background:var(--npuls-blauw);color:var(--npuls-wit)}
-.card.geel{background:var(--npuls-geel)}
-.card.roze{background:var(--npuls-roze)}
-.card.groen{background:var(--npuls-groen)}
-.card.oranje{background:var(--npuls-oranje)}
-.card.lblauw{background:var(--licht-blauw)}
-.card.lgroen{background:var(--licht-groen)}
-.card.lgeel{background:var(--licht-geel)}
-.card.lroze{background:var(--licht-roze)}
-.card.loranje{background:var(--licht-oranje)}
 .card p{opacity:.85}
 .card h3{letter-spacing:-.01em}
 
@@ -150,12 +126,6 @@ strong{font-weight:600}
   display:grid;place-items:center;
   font-size:clamp(16px,1.65vw,32px);
 }
-.ico.blauw{background:var(--npuls-blauw);color:var(--npuls-geel)}
-.ico.geel{background:var(--npuls-geel);color:var(--npuls-blauw)}
-.ico.roze{background:var(--npuls-roze);color:var(--npuls-zwart)}
-.ico.groen{background:var(--npuls-groen);color:var(--npuls-roze)}
-.ico.oranje{background:var(--npuls-oranje);color:var(--npuls-zwart)}
-.ico.wit{background:var(--npuls-wit);color:var(--npuls-blauw)}
 
 .steps{display:flex;flex-direction:column;gap:clamp(8px,1.3vh,20px)}
 .step{display:flex;gap:clamp(11px,1.1vw,18px);align-items:flex-start;
@@ -179,9 +149,7 @@ strong{font-weight:600}
 .lead-cijfer .big-num{font-size:clamp(64px,10.5vw,200px)}
 .lead-cijfer .stat .cap{font-size:clamp(12px,1.2vw,24px);opacity:1}
 .lead-cijfer .card .big-num{color:var(--npuls-oranje)}
-.held{background:var(--npuls-groen);border-radius:20px;padding:clamp(22px,3vw,56px);display:grid;grid-template-columns:1.6fr 1fr;gap:clamp(18px,2.4vw,44px);align-items:center;min-height:50vh}
-.held.blauw{background:var(--npuls-blauw);color:var(--npuls-wit)}
-.held.oranje{background:var(--npuls-oranje)}
+.held{border-radius:20px;padding:clamp(22px,3vw,56px);display:grid;grid-template-columns:1.6fr 1fr;gap:clamp(18px,2.4vw,44px);align-items:center;min-height:50vh}
 .held .eyebrow{font-size:clamp(11px,1.05vw,22px);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8em}
 .held .vraag{font-family:var(--font-secundair);font-weight:300;font-size:clamp(24px,2.9vw,56px);line-height:1.2}
 .held img{width:100%;max-height:44vh;object-fit:contain}

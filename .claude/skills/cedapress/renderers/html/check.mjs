@@ -7,6 +7,7 @@
 import { readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { bronHash, bronNaast } from '../lib/bron.mjs';
+import { colorTable, htmlName, loadTokens, short } from '../lib/design-tokens.mjs';
 
 const file = process.argv.slice(2).find((a) => !a.startsWith('--'));
 if (!file) { console.error('Gebruik: node check.mjs <deck.html> [--stempel]'); process.exit(2); }
@@ -49,6 +50,39 @@ if (delen.size > 5) warns.push(`${delen.size} delen — de navigatie past er max
 for (let k = 2; k < variants.length; k++)
   if (variants[k] !== 's-deel' && variants[k] === variants[k - 1] && variants[k] === variants[k - 2])
     warns.push(`slides ${k - 1}-${k + 1}: drie keer achter elkaar ${variants[k]} — wissel licht/verzadigd af`);
+
+// 2b. Kleurrollen komen uit design-tokens.json (vormgever-npuls-huisstijl): een variant, kaart-, heldenkaart- of icoonkleur of een
+// var(--npuls-*) die niet in de tokens staat is een fout. npuls.css uit het assetpakket moet de klassen ook definiëren.
+{
+  const T = loadTokens();
+  const real = (o) => Object.keys(o).filter((k) => !k.startsWith('_'));
+  const palette = new Set([...real(colorTable(T)), ...real(T.neutrals), ...real(T.colors.layout)].map(short));
+  const palClass = new Set([...palette].map((c) => htmlName(c)));
+  const variantOK = new Set(real(T.slide_roles).map(htmlName));
+  const cardOK = new Set([...real(T.card_roles), ...real(T.colors.secondary)].map(htmlName));
+  const heldOK = new Set(real(T.card_roles).map(htmlName));
+  const icoOK = new Set(real(T.tile_pairs.icon_fg).map(htmlName));
+  for (const v of new Set(variants)) {
+    if (v === 's-deel' || v === '?') continue;
+    if (!variantOK.has(v.slice(2))) errors.push(`variant ${v} staat niet in slide_roles van design-tokens.json — kies uit: ${[...variantOK].map((x) => 's-' + x).join(', ')}`);
+  }
+  for (const m of html.matchAll(/class="([^"]*)"/g)) {
+    const cl = m[1].split(/\s+/);
+    for (const [base, ok] of [['card', cardOK], ['held', heldOK], ['ico', icoOK]]) {
+      if (!cl.includes(base)) continue;
+      for (const c of cl) if (c !== base && palClass.has(c) && !ok.has(c)) errors.push(`regel ${lineOf(m.index)}: ${base} ${c} staat niet in de tokens (${base === 'ico' ? 'tile_pairs.icon_fg' : 'card_roles'}) — kies uit: ${[...ok].join(', ')}`);
+    }
+  }
+  for (const m of html.matchAll(/var\(--(?:npuls|licht)-([a-z0-9-]+)\)/g)) {
+    const name = m[0].includes('--licht-') ? `licht-${m[1]}` : m[1];
+    if (!palette.has(name) && !/^(font|space|radius|shadow|h[123]|body|label)/.test(m[1])) errors.push(`regel ${lineOf(m.index)}: ${m[0]} — kleur "${name}" staat niet in design-tokens.json`);
+  }
+  const cssFile = resolve(base, 'npuls', 'web', 'npuls.css');
+  if (existsSync(cssFile)) {
+    const css = readFileSync(cssFile, 'utf8');
+    for (const v of new Set(variants)) if (v !== 's-deel' && v !== '?' && !css.includes(`.${v} {`) && !css.includes(`.${v}{`)) errors.push(`npuls.css uit het assetpakket definieert .${v} niet — assetpakket te oud (assets.lock) of variant onbekend`);
+  }
+}
 
 // 3. Echte Npuls-fonts, geen stand-ins
 if (/fonts\.googleapis\.com/.test(html)) errors.push('Google Fonts gevonden — de echte fonts komen uit het assetpakket (npuls/web/npuls.css, zit in de frame)');
