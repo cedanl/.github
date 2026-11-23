@@ -1408,7 +1408,7 @@ for i, s in enumerate(slides, 1):
 prs.core_properties.title = P.get("title") or P["name"]
 prs.core_properties.author = P.get("author") or "CEDA"
 if P.get("bron"):
-    prs.core_properties.keywords = f"cedapress-bron {P['bron']}"  # terugschrijven.py leest dit
+    prs.core_properties.keywords = f"cedapress-bron {P['bron']}"  # herkomst: bron-hash in de documenteigenschappen
 out = Path(P["out"])
 out.parent.mkdir(parents=True, exist_ok=True)
 prs.save(out)

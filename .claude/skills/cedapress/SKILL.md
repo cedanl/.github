@@ -25,8 +25,7 @@ of beide. Vervangt `clanna` (HTML) en `powerclaude` (pptx); hun renderers en che
 
 ```
 bron.md  →  HTML-deck       (git, projectrepo)
-   ↑     →  pptx / pdf      (SharePoint; projectrepo-README linkt)
-   └──── tekst en notes uit een bewerkte pptx (terugschrijven)
+         →  pptx / pdf      (SharePoint; projectrepo-README linkt)
 ```
 
 `<cp>` = de map van deze skill ("Base directory"). **Vereist:** laad `vormgever-npuls-huisstijl` (palet,
@@ -41,7 +40,7 @@ deck *"Welk open-source model kan mijn LLM-wiki het beste onderhouden?"*, via cl
 
 | Regel | Waarom |
 |---|---|
-| **`bron.md` is altijd verplicht** en wordt eerst geschreven; HTML en pptx komen er altijd uit | Eén waarheid. HTML of pptx nooit los bewerken; pptx-wijzigingen via terugschrijven |
+| **`bron.md` is altijd verplicht** en wordt eerst geschreven; HTML en pptx komen er altijd uit | Eén waarheid. HTML of pptx nooit los bewerken; wijzigen = eerst `bron.md`, dan opnieuw bouwen |
 | HTML draagt `<meta name="cedapress-bron">`, deck-spec draagt `bron:` = hash van `bron.md` | `check.mjs` en `build.mjs` falen als de output achterloopt op de bron |
 | Npuls-assets alleen uit het assetpakket, versie in `assets.lock` | Eén bron; nooit meer `public/npuls` uit clidev-presentaties |
 | Deck in de **projectrepo**: `presentaties/YYMMDD_onderwerp/` | Deck staat bij het project; README-sectie "Presentaties" linkt |
@@ -149,7 +148,7 @@ node <cp>/renderers/html/qa.mjs     presentaties/YYMMDD_onderwerp/YYMMDD_onderwe
 node <cp>/renderers/pptx/render.mjs presentaties/YYMMDD_onderwerp/exports/YYMMDD_onderwerp.pptx --pdf
 ```
 
-- **In git** (projectrepo): `bron.md`, de HTML, de deck-spec, `*.pptx.meta.json`, `img/`. Niet: `npuls`, `exports/`.
+- **In git** (projectrepo): `bron.md`, de HTML, de deck-spec, `img/`. Niet: `npuls`, `exports/`.
 - **SharePoint:** pdf, pptx, gebundelde html, per jaar en project (lokale OneDrive-sync; vraag het pad als het
   onbekend is). Upload via Graph API is nog niet beschikbaar.
 - **README** van de projectrepo, sectie `## Presentaties` (aanmaken als die ontbreekt): één regel
@@ -159,11 +158,11 @@ node <cp>/renderers/pptx/render.mjs presentaties/YYMMDD_onderwerp/exports/YYMMDD
 Meld: deckmap, uitkomst van check/qa/build/render, exports en waar ze staan. Bij pptx: ontvangers zonder
 Npuls-fonts zien Calibri; stuur de PDF mee.
 
-### 9. Bijwerken en terugschrijven
+### 9. Bijwerken
 
 - Inhoud wijzigen = eerst `bron.md`, dan HTML/spec bijwerken en opnieuw checken.
-- Bestaande pptx die in PowerPoint is bewerkt: `python <cp>/scripts/terugschrijven.py <deckmap> <pptx>` toont
-  wat er in tekst en notes verschilt; na akkoord in `bron.md` verwerken, commit "wijziging uit pptx", opnieuw renderen.
+- Een in PowerPoint bewerkte pptx terugzetten naar `bron.md` kan nog niet (backlog cedanl/.github#130). Neem
+  zulke wijzigingen met de hand over in `bron.md` en bouw opnieuw.
 - Een pptx van buiten cedapress (geen meta, geen bron) klein aanpassen: `python <cp>/renderers/pptx/edit.py`
   (dump, replace, beeldmerk, media, kloon, importeer, verplaatst, verwijder; zie de docstring). Wil de gebruiker
   dat deck verder onderhouden → eerst een `bron.md` uit `edit.py dump --notes` maken.
@@ -177,7 +176,6 @@ Npuls-fonts zien Calibri; stuur de PDF mee.
 - `references/herkomst-ceda-powerpoint-maker.md` — lees alleen bij vragen over Edwins componenten en ontwerpregels: wat is overgenomen, de taakverdeling en de besluiten
 - `scripts/parse_bron.py` — draaien: valideren, splitsen per vorm, hash; test: `python -m unittest <cp>/scripts/test_parse_bron.py`
 - `scripts/test_parse_bron.py` — tests van de parser
-- `scripts/terugschrijven.py` — draaien: pptx → verschillen met de bron (skelet, zie TODO in het bestand)
 - `renderers/html/` — `frame.html`, `prepare.mjs`, `check.mjs`, `qa.mjs`, `bundle.mjs` (uit clanna)
 - `renderers/pptx/` — `build.mjs`, `build_potx.py`, `render.mjs`, `edit.py`, `install-fonts.mjs`, `lib/`, `voorbeeld.deck.mjs` (uit powerclaude)
 - `renderers/lib/` — assetpakket vinden (`npuls-assets.mjs`, `npuls_assets_path.py`), bron-hash (`bron.mjs`), node-afhankelijkheden (`deps.mjs`)

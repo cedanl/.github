@@ -27,7 +27,7 @@ Split met team-rond-idee rechts.
 type: list
 - HTML en deck-spec dragen de hash van de bron
 - Andere hash: check en build falen
-- Wijziging uit pptx: terugschrijven, daarna opnieuw maken
+- Wijziging: eerst bron.md, daarna opnieuw maken
 Notes: Laat zien dat check.mjs faalt na een bronwijziging zonder --stempel.
 
 ## Slide 3 — Wat vind jij?

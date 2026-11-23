@@ -1,8 +1,8 @@
 # Bron-markdown (`bron.md`)
 
 Eén `bron.md` per deck is de **single source of truth**. Altijd verplicht: cedapress schrijft hem eerst,
-HTML en pptx worden er altijd uit gemaakt. Nooit HTML of pptx los bewerken zonder dat de bron mee verandert;
-wijzigingen in een gedeelde pptx komen via `scripts/terugschrijven.py` terug. Formaat uit pitch
+HTML en pptx worden er altijd uit gemaakt. Nooit HTML of pptx los bewerken zonder dat de bron mee verandert.
+Formaat uit pitch
 cedanl/clidev-presentaties#16. Parser en validatie: `python <cedapress>/scripts/parse_bron.py bron.md --check`.
 
 ## Plaats
@@ -12,7 +12,6 @@ cedanl/clidev-presentaties#16. Parser en validatie: `python <cedapress>/scripts/
   bron.md                              # inhoud (git)
   YYMMDD_onderwerp.html                # HTML-deck, draagt de bron-hash (git)
   YYMMDD_onderwerp.deck.mjs            # pptx-deckspec, draagt de bron-hash (git)
-  YYMMDD_onderwerp.pptx.meta.json      # hash van de geëxporteerde pptx, voor terugschrijven (git)
   img/                                 # eigen afbeeldingen, los (git)
   npuls  -> assetpakket                # link, niet in git (prepare.mjs)
   exports/                             # pdf, pptx, gebundelde html: niet in git, naar SharePoint
@@ -85,7 +84,4 @@ Stempel alleen nadat de inhoud echt is bijgewerkt.
 
 ## Terugschrijven uit pptx
 
-1. Bij export schrijft `build.mjs` `<naam>.pptx.meta.json` met de hash van de pptx en van de bron.
-2. Is de pptx op SharePoint bewerkt (andere hash): `python <cedapress>/scripts/terugschrijven.py <deckmap> <pptx>`.
-3. Toon de verschillen (tekst en notes) aan de gebruiker; verwerk na akkoord in `bron.md`, commit
-   "wijziging uit pptx", maak HTML en exports opnieuw. Opmaak uit PowerPoint komt niet terug.
+Nog niet beschikbaar (backlog cedanl/.github#130). Een in PowerPoint bewerkte pptx: neem de wijziging met de hand over in `bron.md` en bouw opnieuw.

@@ -6,16 +6,14 @@
 //
 // Engine potx (standaard): bouwt op pptx/Npuls_powerpoint-template.potx uit het Npuls-assetpakket
 // (versie in cedapress/assets.lock) via build_potx.py (python-pptx). Engine pptxgenjs: de eigen layouts uit lib/layouts.mjs.
-// Schrijft <deckmap>/exports/<naam>.pptx en <deckmap>/<naam>.pptx.meta.json (bron- en pptx-hash, voor terugschrijven). Exit 0 = gebouwd zonder fouten
+// Schrijft <deckmap>/exports/<naam>.pptx. Exit 0 = gebouwd zonder fouten
 // (waarschuwingen mogelijk), 1 = fouten in de spec, 2 = omgeving niet in orde.
 import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { createHash } from 'node:crypto';
 import { bronHash, bronNaast } from '../lib/bron.mjs';
-import { lockedVersion } from '../lib/npuls-assets.mjs';
 import { ILLU_DIR, NPULS, beeldmerkDots, illustrationPath, projectRequire, rasterize } from './lib/assets.mjs';
 import { Canvas, LAYOUTS, TYPES, setTeamImage } from './lib/layouts.mjs';
 import { ALLOWED, BADGE_FG, C, CARD, CHART_ORDER, FONT, ICON_FG, TILE_ON, VARIANTS } from './lib/tokens.mjs';
@@ -236,7 +234,6 @@ if (ENGINE === 'potx') {
   // Samenvatting telt alle waarschuwingen: die van build.mjs en die van build_potx.py
   const pyWarn = (r.stdout.match(/^WAARSCHUWING /gm) ?? []).length;
   process.stdout.write(r.stdout.replace(/(\d+) waarschuwing\(en\)/, `${pyWarn + warnings.length} waarschuwing(en)`));
-  schrijfMeta(payload.out);
   process.exit(0);
 }
 
@@ -262,12 +259,4 @@ const file = join(outDir, `${name}.pptx`);
 await pptx.writeFile({ fileName: file });
 warnings.forEach((w) => console.warn(`WAARSCHUWING  ${w}`));
 console.log(`OK  ${file} — ${slides.length} slides, ${warnings.length} waarschuwing(en)`);
-schrijfMeta(resolve(file));
 
-// Hashes voor terugschrijven: bron waaruit gebouwd is + de pptx zoals geëxporteerd. Afwijkende pptx-hash = in PowerPoint bewerkt.
-function schrijfMeta(pptx) {
-  const meta = { deck: name, bron: deck.bron, pptx: 'sha256:' + createHash('sha256').update(readFileSync(pptx)).digest('hex'),
-    gebouwd: new Date().toISOString(), npulsAssets: process.env.NPULS_ASSETS_DIR ? 'NPULS_ASSETS_DIR' : lockedVersion() };
-  // in de deckmap (wel in git), niet in exports/: zo weet terugschrijven.py ook later welke pptx gedeeld is
-  writeFileSync(join(dirname(resolve(specPath)), `${name}.pptx.meta.json`), JSON.stringify(meta, null, 2));
-}
