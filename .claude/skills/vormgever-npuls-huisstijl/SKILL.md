@@ -11,21 +11,22 @@ Je bent een ervaren digitale vormgever die de Npuls huisstijl consequent toepast
 
 - **`references/design-tokens.json`** — machine-leesbare bron voor alle exacte waarden: hex-codes, toegestane kleurencombinaties, typografie-schaal, iconenregels, kernvormen en fotografie-keywords. Bevat ook een `spacing`- / `radii`- / `shadows`-schaal, `neutrals` (alleen voor tekst/randen), `feedback_colors` en `data_visualization` (statuskleuren en grafiekpaletten), een `font_loading`-blok en een kant-en-klaar `css_variables`-blok als startpunt. Verwijs hiernaar voor elke concrete waarde, hardcode nooit een hex-code uit je geheugen.
 - **`references/merkcontext.md`** — lees dit erbij zodra het logo, de vormentaal of fotografie een prominente rol speelt (posters, covers, social posts, landingspagina's). Bevat logo-plaatsingsregels, vormentaal-toepassing, fotografiestijl, impressie-links en de licentie.
+- **`references/presentaties.md`** — Npuls-regels voor presentaties (HTML en pptx): kleurrollen per achtergrond, tegelparen, vormentaal, grafiekvolgorde, opening en afsluiter, label-pil. **Beheer: Edwin.** De waarden staan in `design-tokens.json` (`slide_roles`, `card_roles`, `tile_pairs`, `badge_fg`); `cedapress` leest alleen deze twee bestanden en kopieert niets. Lees dit bij elk deck.
 - **Assetpakket** — officiële Npuls-assets (logo's, vormen, illustraties, template, `web/npuls.css`) via `scripts/npuls_assets.py`, zie sectie Assetpakket. Gebruik deze vóór je nieuwe tekent; teken zelf geen logo's of vormen.
 
 ## Assetpakket
 
-Officiële assets zitten in een versioned pakket (release `npuls-assets-v0.2.1` op `cedanl/.github`). Pin altijd versie 0.2.1:
+Officiële assets zitten in een versioned pakket (release `npuls-assets-v0.3.0` op `cedanl/.github`). Pin altijd versie 0.3.0:
 
 ```bash
-python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure --version 0.2.1   # print de map
+python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py ensure --version 0.3.0   # print de map
 python .claude/skills/vormgever-npuls-huisstijl/scripts/npuls_assets.py path web/npuls.css        # pad naar één bestand
 ```
 
-Het pakket wordt eenmalig gedownload naar `~/.cache/ceda/npuls-assets/0.2.1/`. Offline of testen: `--local <map>` of `NPULS_ASSETS_DIR`.
+Het pakket wordt eenmalig gedownload naar `~/.cache/ceda/npuls-assets/0.3.0/`. Offline of testen: `--local <map>` of `NPULS_ASSETS_DIR`.
 
 - `pptx/` template, `logos/`, `vormen/`, `illustraties/` (48 SVG: 26 uit het template, 22 van npuls.nl; namen zoals `team-rond-idee.svg`), `tegels/` (10 gekleurde banner- en kaarttegels van npuls.nl, o.a. `tegel-themas.svg` met officiële lijnpictogrammen), `huisstijlgids/Npuls_huisstijlgids_2025.pdf` (officiële huisstijlgids), `ceda/teamfoto.png` (CEDA-teamfoto), `slides-preview/`
-- `web/npuls.css` voor HTML: variabelen, kleurcombinaties (`bg-blauw fg-geel`), typografie, `.npuls-logo` en `.npuls-bogen`; `web/sprite.svg` bevat alle vormen als `<symbol id="vorm-...">`
+- `web/npuls.css` voor HTML: variabelen, kleurcombinaties (`bg-blauw fg-geel`), typografie, `.npuls-logo` en `.npuls-bogen`, en de deckklassen `.s-*`, `.card.<kleur>`, `.held.<kleur>` en `.ico.<kleur>` (gegenereerd uit `slide_roles`, `card_roles` en `tile_pairs`); `web/sprite.svg` bevat alle vormen als `<symbol id="vorm-...">`
 - Geen lettertypebestanden: zie `fonts.md` in het pakket
 
 ## Relatie tot andere skills
