@@ -106,6 +106,29 @@ Geen velden. "Blijf in contact" met drie klikbare kaarten: GitHub (`github.com/c
 verzinnen), `points: [{ tag?, text }]` + `pointsTitle` **of** `illustration`. Op `roze` komt
 het Npuls-logo rechtsonder.
 
+## Componenten uit ceda-powerpoint-maker (potx-engine)
+
+Alleen in de potx-engine. Maten van Edwin (10 in breed) zijn met 4/3 omgerekend naar de potx (13,33 in); layouts en kleuren blijven die van de potx.
+
+**Op elke inhoudsslide** (`cards`, `stats`, `list`, `table`, `chart`, `image`, `steps`, `lead`, `insight`, `lists`, `hero`):
+- `label`: label-pil linksboven, 1 tot 3 woorden (OPP-18), kleur = accent van de slide.
+- `title` met `**accentdeel**`: neutraal deel zwart, accentdeel in de accentkleur. Accent volgt de achtergrond: `wit` en `licht-blauw` blauw, `licht-groen` groen, `licht-oranje` en `licht-geel` oranje (OPP-20). Max ~45 tekens.
+- `intro`: korte regel (16 pt) onder de titel; de inhoud schuift mee naar beneden.
+- `note`: notitiebalk onderaan (`cards`, `steps`, `lead`, `insight`, `lists`): tekst of `{ text, bold, icon, color }`.
+- `icon` op een item (`cards`, `insight`, `lists`, `note`): icoontegel, afgeronde tegel in een paletkleur (tegelparen OPP-22: blauw/geel, geel/blauw, groen/roze, oranje/zwart, roze/blauw) met het icoon uit `iconen/<naam>.svg` van het assetpakket. Zit er geen iconenset in het pakket (nu nog niet), dan blijft de tegel leeg en volgt een waarschuwing; er worden geen eigen iconen meegeleverd.
+
+| Type | Velden | Edwins patroon |
+|---|---|---|
+| `steps` | `items: [{ title, text }]` (3 tot 4) | stapkolom (P7): verticale stap-kaarten met cirkel |
+| `lead` | `lead`, `figures: [{ value, label }]` (1 tot 2), optioneel `items` (stappen rechts, 3 tot 4) en `eyebrow` | kernzin met kerncijfer(s) (P1) |
+| `hero` | `eyebrow`, `text` (Cooper), `illustration`, `color` (standaard groen) | heldenkaart (P4) |
+| `insight` | `rows: [{ icon, key, text, tag }]` (3 tot 5) | inzichtregels (P3) |
+| `lists` | `groups: [{ title, icon, items, style: 'list' \| 'pills', columns }]` (2 tot 3 kaarten, 3 tot 5 items) | lijstkaart en pillenkaart (P8, P13) |
+
+`cards`: een item met `icon` krijgt een icoontegel; een item met `illustration` krijgt een eigen blok boven de titel, zodat de tekst er nooit overheen loopt. Volle kaartkleuren (blauw, groen, oranje) max. 2 per slide (OPP-21): geef de rest `color: 'wit'`.
+
+**Controles in de build** (waarschuwingen): tekst past niet (inkorten, niet verkleinen), woord breekt midden in het woord (langste woord breder dan het vak), illustratie overlapt tekst, meer dan 60 woorden (OPP-02), tekst kleiner dan 15 pt (body) of 12 pt (label) is niet mogelijk: kleinere groottes worden opgetrokken, past het dan niet, dan volgt de waarschuwing.
+
 ## Template-engine (standaard)
 
 `build.mjs` bouwt op `pptx/Npuls_powerpoint-template.potx` uit het Npuls-assetpakket. Elk type krijgt een layout uit de template:

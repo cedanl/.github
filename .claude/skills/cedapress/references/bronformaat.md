@@ -61,7 +61,8 @@ Notes: In HTML zit dit achter de klik op slide 1.
 | Element | Betekenis |
 |---|---|
 | `## ` | Nieuwe slide. `Slide N — ` ervoor mag, de rest is de **titel** (een bewering, geen onderwerp). |
-| Sleutels direct onder de kop | `type` (pptx-slidetype of HTML-component), `alleen`, `variant`, `layout`, `deel`. Alleen deze namen. |
+| Sleutels direct onder de kop | `type` (pptx-slidetype of HTML-component), `alleen`, `variant`, `layout`, `deel`, `label`. Alleen deze namen. |
+| `label` | Label-pil boven de titel: 1 tot 3 woorden in kapitalen (`AANLEIDING`). Titels mogen `**accentdeel**` bevatten ("Wat de regel **doet**"); het accentdeel krijgt de accentkleur van de slide. Componenten en velden: `pptx-slidetypes.md` en `html-componenten.md`. |
 | Tekst | Wat op de slide staat, in markdown. Gedeeld door beide vormen. |
 | `Notes:` | Sprekersnotities, tot de volgende slide of het volgende blok. Elke slide heeft notes. |
 | `::: html` … `:::` | Alleen voor HTML: animatie, timer, interactie, Mentimeter. |
