@@ -53,6 +53,7 @@ class TestParseBron(unittest.TestCase):
         s = self.doc["slides"][0]
         self.assertEqual(s["type"], "stats")
         self.assertIn("1 op de 4", s["tekst"])
+        self.assertNotIn("label", s)
         self.assertNotIn("Teller", s["tekst"])
         self.assertTrue(s["notes"].startswith("Benadruk"))
         self.assertEqual(s["html"], "Teller loopt op van 0 naar 25%.")
@@ -85,6 +86,13 @@ class TestParseBron(unittest.TestCase):
             self.assertIs(doc["meta"]["vaste_slides"], verwacht)
         fout = parse(kop + "vaste-slides: misschien\n---\n## A\nNotes: n")
         self.assertIn("vaste-slides moet ja of nee zijn", " ".join(fout["fouten"]))
+
+    def test_label_is_slidesleutel(self):
+        doc = parse("## Wat levert het **op?**\ntype: cards\nlabel: RESULTATEN\nTekst.\nNotes: n")
+        self.assertEqual(doc["fouten"], [])
+        self.assertEqual(doc["slides"][0]["label"], "RESULTATEN")
+        self.assertEqual(doc["slides"][0]["titel"], "Wat levert het **op?**")
+        self.assertEqual(doc["slides"][0]["tekst"], "Tekst.")
 
     def test_hash_stabiel_over_regeleinden(self):
         self.assertEqual(bron_hash(BRON), bron_hash(BRON.replace("\n", "\r\n")))

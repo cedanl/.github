@@ -18,7 +18,7 @@ import { bronHash, bronNaast } from '../lib/bron.mjs';
 import { lockedVersion } from '../lib/npuls-assets.mjs';
 import { ILLU_DIR, NPULS, beeldmerkDots, illustrationPath, projectRequire, rasterize } from './lib/assets.mjs';
 import { Canvas, LAYOUTS, TYPES, setTeamImage } from './lib/layouts.mjs';
-import { ALLOWED, C, CARD, CHART_ORDER, FONT, VARIANTS } from './lib/tokens.mjs';
+import { ALLOWED, BADGE_FG, C, CARD, CHART_ORDER, FONT, ICON_FG, TILE_ON, VARIANTS } from './lib/tokens.mjs';
 
 const args = process.argv.slice(2);
 const engineAt = args.indexOf('--engine');
@@ -98,9 +98,19 @@ const FIXED = {
 const FIXED_FIELDS = { team: ['text'] }; // velden die een vaste slide wel mag hebben
 const FIXED_VARIANT = { ceda: 'wit', team: 'licht-blauw', contact: 'roze' };
 
+// Typen die alleen de potx-engine kent (componenten uit Edwins ceda-powerpoint-maker, zie references/pptx-slidetypes.md).
+const POTX_TYPES = ['steps', 'lead', 'hero', 'insight', 'lists'];
+const ALL_TYPES = [...TYPES, ...POTX_TYPES];
+// Velden zonder zichtbare tekst: tellen niet mee voor het aantal woorden (OPP-02).
+const NON_TEXT = new Set(['type', 'variant', 'color', 'colors', 'illustration', 'icon', 'image', 'video', 'poster', 'alt', 'link', 'notes', 'format', 'chart', 'side', 'style', 'tile']);
+const zichtbaar = (v, key = '') => (NON_TEXT.has(key) ? [] : typeof v === 'string' ? v.split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)) : Array.isArray(v) ? v.flatMap((x) => zichtbaar(x)) : v && typeof v === 'object' ? Object.entries(v).flatMap(([k, x]) => zichtbaar(x, k)) : []);
+const iconen = new Set();
+const noteOf = (s) => (typeof s.note === 'string' ? { text: s.note } : s.note);
+
 slides.forEach((s, i) => {
   const n = i + 1;
-  if (!TYPES.includes(s.type)) return err(n, `onbekend type "${s.type}". Kies uit: ${TYPES.join(', ')}`);
+  if (!ALL_TYPES.includes(s.type)) return err(n, `onbekend type "${s.type}". Kies uit: ${ALL_TYPES.join(', ')}`);
+  if (POTX_TYPES.includes(s.type) && ENGINE !== 'potx') return err(n, `type "${s.type}" bestaat alleen in de potx-engine`);
   if (FIXED[s.type]) {
     const extra = Object.keys(s).filter((k) => !['type', 'notes', ...(FIXED_FIELDS[s.type] ?? [])].includes(k));
     if (extra.length) warnings.push(`slide ${n}: ${s.type} is een vaste slide; ${extra.join(', ')} wordt genegeerd`);
@@ -116,7 +126,21 @@ slides.forEach((s, i) => {
   s.variant = variant;
   used.add(VARIANTS[variant].bg);
   for (const c of VARIANTS[variant].cards) if (['cards', 'stats'].includes(s.type)) used.add(c);
-  if (['stats', 'cards', 'list'].includes(s.type) && !s.items?.length && !(s.type === 'cards' && s.rows?.length)) err(n, `${s.type} heeft items (of bij cards rows) nodig`);
+  if (['stats', 'cards', 'list', 'steps', 'lead'].includes(s.type) && !s.items?.length && !s.figures?.length && !(s.type === 'cards' && s.rows?.length) && !(s.type === 'lead' && s.lead)) err(n, `${s.type} heeft items (of bij cards rows) nodig`);
+  if (s.type === 'insight' && !s.rows?.length) err(n, 'insight heeft rows nodig: [{ icon, key, text, tag }]');
+  if (s.type === 'lists' && !s.groups?.length) err(n, 'lists heeft groups nodig: [{ title, icon, items, style }]');
+  if (s.type === 'hero' && !s.text) err(n, 'hero heeft text nodig');
+  // OPP-19: aantallen per patroon
+  const aantal = (what, k, lo, hi) => { if (k < lo || k > hi) warnings.push(`slide ${n}: ${k} ${what}, richtlijn ${lo} tot ${hi} [OPP-19]`); };
+  if (s.type === 'cards' && s.items) aantal('kaarten', s.items.length, 2, 4);
+  if (s.type === 'steps') aantal('stappen', s.items?.length ?? 0, 3, 4);
+  if (s.type === 'insight') aantal('rijen', s.rows?.length ?? 0, 3, 5);
+  if (s.type === 'lists') { aantal('lijstkaarten', s.groups?.length ?? 0, 2, 3); for (const g of s.groups ?? []) aantal(`items in "${g.title}"`, g.items?.length ?? 0, 3, 5); }
+  if (s.label && s.label.trim().split(/\s+/).length > 3) warnings.push(`slide ${n}: label "${s.label}" heeft meer dan 3 woorden [OPP-18]`);
+  if (!['title', 'section', 'closing', 'quote', 'hero'].includes(s.type) && s.title && s.title.replace(/\*\*/g, '').length > 45) warnings.push(`slide ${n}: titel van ${s.title.replace(/\*\*/g, '').length} tekens, richtlijn max 45 [OPP-17]`);
+  if (s.title && ['cards', 'steps', 'lead', 'insight', 'lists', 'stats', 'hero'].includes(s.type) && s.label && !s.title.includes('**')) warnings.push(`slide ${n}: titel zonder **accentdeel** [OPP-17]`);
+  const iconHere = [...(s.items ?? []), ...(s.rows ?? []).flatMap((r) => [r, ...(r.items ?? [])]), ...(s.groups ?? []), noteOf(s)].filter(Boolean);
+  for (const it of iconHere) if (it.icon) iconen.add(it.icon);
   if (s.type === 'timeline' && (!s.blocks?.length || s.blocks.some((b) => !(b.minutes > 0) || !b.title))) err(n, 'timeline heeft blocks nodig, elk met minutes en title');
   if (s.type === 'chart' && (!s.labels?.length || !s.series?.length)) err(n, 'chart heeft labels en series nodig');
   if (s.type === 'table' && (!s.columns?.length || !s.rows?.length)) err(n, 'table heeft columns en rows nodig');
@@ -140,8 +164,9 @@ slides.forEach((s, i) => {
     }
   }
   if (!s.notes) warnings.push(`slide ${n}: geen sprekersnotities`);
-  const words = JSON.stringify({ ...s, notes: undefined, variant: undefined, type: undefined }).replace(/"[a-zA-Z]+":/g, ' ').split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length;
-  if (words > 90) warnings.push(`slide ${n}: ~${words} woorden zichtbaar — splitsen (richtlijn: max ~70)`);
+  // OPP-02: richtlijn max 50 woorden zichtbaar per inhoudsslide, waarschuwing boven 60
+  const words = ['title', 'section', 'quote', 'closing'].includes(s.type) ? 0 : zichtbaar(s).length;
+  if (words > 60) warnings.push(`slide ${n}: ${words} woorden zichtbaar [OPP-02] — splitsen of naar de notes (richtlijn max 50)`);
 });
 if (slides[0] && slides[0].type !== 'title') warnings.push('eerste slide is geen title');
 // Vaste CEDA-slides zijn optioneel (bron.md: vaste-slides: ja | nee). Zijn ze er, dan als één blok ceda → team → contact aan het eind.
@@ -171,6 +196,10 @@ if (errors.length) {
 // ---------- bouwen ----------
 const outDir = join(dirname(resolve(specPath)), 'exports');
 mkdirSync(outDir, { recursive: true });
+// Iconen komen uit het assetpakket (iconen/<naam>.svg). Zit er (nog) geen iconenset in, dan toont de icoontegel een lege tegel en volgt een waarschuwing.
+const ICON_DIR = join(NPULS.root, 'iconen');
+const iconPaths = new Map([...iconen].filter((k) => existsSync(join(ICON_DIR, `${k}.svg`))).map((k) => [k, join(ICON_DIR, `${k}.svg`)]));
+const iconPng = iconPaths.size ? await rasterize([...iconPaths.values()], join(outDir, 'img'), 256) : new Map();
 const illu = await rasterize([...illus].map(illustrationPath), join(outDir, 'img'));
 const illuByName = new Map([...illus].map((k) => [k, illu.get(illustrationPath(k))]));
 // Video zonder poster: het beeld op `posterAt` seconden (standaard 1) wordt het stilstaande beeld.
@@ -191,7 +220,8 @@ if (ENGINE === 'potx') {
     name, bron: deck.bron, title: deck.title ?? name, author: deck.author ?? 'CEDA', einddia: deck.einddia ?? true,
     template: resolve(TEMPLATE), out: resolve(join(outDir, `${name}.pptx`)),
     slides, illu: Object.fromEntries([...illuByName].map(([k, v]) => [k, resolve(v)])),
-    tokens: { C, VARIANTS, CARD, CHART_ORDER, FONT, ALLOWED }, teamfoto: resolve(TEAM_IMAGE),
+    icons: Object.fromEntries([...iconPaths].map(([k, v]) => [k, resolve(iconPng.get(v))])), iconsAsked: [...iconen],
+    tokens: { C, VARIANTS, CARD, CHART_ORDER, FONT, ALLOWED, ICON_FG, TILE_ON, BADGE_FG }, teamfoto: resolve(TEAM_IMAGE),
   };
   const pf = join(tmpdir(), `cedapress-${name}.json`); // tijdelijk: alleen voor build_potx.py
   writeFileSync(pf, JSON.stringify(payload, null, 1));

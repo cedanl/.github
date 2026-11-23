@@ -46,6 +46,12 @@ CW = W - 2 * ML
 TOP = 1.8  # eerste regel onder de titel-placeholder
 BOTTOM = 6.75  # boven het dianummer
 
+# Minimale lettergrootte in pt op de 13,33 in brede dia. Edwins waarden gelden voor 10 in (body 11,5 pt, label 9 pt)
+# en zijn omgerekend met 4/3: 15,3 en 12 pt (afgerond 15 en 12). Zie ontwerper-powerpoint OPP-05.
+S = 4 / 3
+MIN_BODY, MIN_LABEL = 15, 12
+CONTENT_BOTTOM = 6.65  # onderkant inhoud; daaronder het dianummer
+
 # Masters in de template: 0 wit, 1 roze, 2 oranje, 3 blauw, 4 geel.
 MASTER = {"wit": 0, "roze": 1, "oranje": 2, "blauw": 3, "geel": 4}
 
@@ -106,17 +112,29 @@ def text_height(text, w, size, font=BODY, line=1.18):
     return lines * size * line / 72
 
 
+def longest_word_w(text, size, font=BODY):
+    """Breedte in inches van het langste woord (schatting): past dat niet in het vak, dan breekt PowerPoint midden in het woord."""
+    words = plain(text).split()
+    return max((len(w_) for w_ in words), default=0) * size * EM.get(font, 0.53) / 72
+
+
 def fit(text, w, h, size, font=BODY, mn=None):
-    floor = mn if mn is not None else max(10, round(size * 0.75))
+    floor = mn if mn is not None else max(MIN_BODY if size >= MIN_BODY else MIN_LABEL, round(size * 0.75))
     for s in range(int(size), int(floor) - 1, -1):
         if text_height(text, w, s, font) <= h:
             return s, True
     return floor, False
 
 
+ALL_SLIDES = []
+
+
 class Slide:
     def __init__(self, n, s, master, layout_name):
         self.n, self.spec = n, s
+        self.rects = []  # (soort, naam, x, y, w, h) van tekst en illustraties, voor de overlapcontrole
+        self.top = TOP  # bovenkant van de inhoud; lager als er een intro onder de titel staat
+        ALL_SLIDES.append(self)
         lay = layout(master, layout_name)
         self.s = prs.slides.add_slide(lay)
         for ph in lay.placeholders:  # dianummer wordt door python-pptx niet meegekopieerd
@@ -148,14 +166,14 @@ class Slide:
                                             E(w) if w is not None else p.width, E(h) if h is not None else p.height)
         return p
 
-    def set_ph(self, idx, text, color=None, size=None, max_chars=None, bullets=True):
+    def set_ph(self, idx, text, color=None, size=None, max_chars=None, bullets=True, accent=None):
         p = self.ph(idx)
         if p is None or text in (None, ""):
             self.drop(idx)
             return None
         if max_chars and len(plain(text)) > max_chars:
             self.warn(f"tekst past mogelijk niet in de template-placeholder ({len(plain(text))} tekens, richtlijn {max_chars}): \"{plain(text)[:50]}…\"")
-        self._fill(p.text_frame, text, color=color, size=size)
+        self._fill(p.text_frame, text, color=color, size=size, accent=accent)
         if not bullets:
             no_bullet(p.text_frame.paragraphs)
         return p
@@ -167,10 +185,28 @@ class Slide:
         size, ok = fit(plain(text), w, max(h, 0.6) * 1.2, 40, HEAD, 24)
         if not ok:
             self.warn(f"titel te lang voor de template ({len(plain(text))} tekens): \"{plain(text)[:50]}\" → korter")
-        return self.set_ph(idx, plain(text), color=color, size=size if size < 40 else None)
+        # `**accentdeel**` krijgt de accentkleur van de slide (OPP-17, OPP-20)
+        return self.set_ph(idx, text, color=color, size=size if size < 40 else None, accent=self.v["accent"] if "**" in str(text) else None)
+
+    def note_rect(self, text, x, y, w, h, size, font, valign, align="left"):
+        """Onthoud waar de tekst echt staat (niet het hele vak), zodat een illustratie eroverheen opvalt."""
+        lines = plain(text).split("\n")
+        used = min(w, max(len(l_) for l_ in lines) * size * EM.get(font, 0.53) / 72)
+        th = min(h, text_height(text, w, size, font))
+        ty = y if valign == "top" else (y + (h - th) / 2 if valign == "middle" else y + h - th)
+        tx = x if align == "left" else (x + (w - used) / 2 if align == "center" else x + w - used)
+        self.rects.append(("tekst", plain(text)[:30], tx, ty, used, th))
+
+    def check_overlap(self):
+        for a in (r for r in self.rects if r[0] == "illu"):
+            for b in (r for r in self.rects if r[0] == "tekst"):
+                ox = min(a[2] + a[4], b[2] + b[4]) - max(a[2], b[2])
+                oy = min(a[3] + a[5], b[3] + b[5]) - max(a[3], b[3])
+                if ox > 0.05 and oy > 0.05:
+                    self.warn(f"illustratie \"{a[1]}\" overlapt de tekst \"{b[1]}…\" → ruimte reserveren of de illustratie verplaatsen")
 
     # --- tekst
-    def _fill(self, tf, text, color=None, size=None, font=None, accent=None, align=None, para_space=0, line=None):
+    def _fill(self, tf, text, color=None, size=None, font=None, accent=None, align=None, para_space=0, line=None, spc=None):
         tf.clear()
         for i, para in enumerate(str(text).split("\n")):
             p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
@@ -196,27 +232,36 @@ class Slide:
                 c = (accent or color) if strong else color
                 if c:
                     paint(f.color, c)
+                if spc:
+                    r._r.get_or_add_rPr().set("spc", str(spc))  # letterspatiëring in 1/100 pt
 
     def text(self, text, x, y, w, h, size, color="zwart", font=BODY, accent=None, align="left", valign="top",
-             mn=None, para_space=0, link=None, line=None):
+             mn=None, para_space=0, link=None, line=None, kind="body", spc=None):
+        """kind "body" (minimaal MIN_BODY pt) of "label" (labels, tags, pillen: minimaal MIN_LABEL pt). Kleinere
+        groottes worden opgetrokken; past de tekst dan niet, dan volgt een waarschuwing (inkorten, niet verkleinen)."""
         if text in (None, ""):
             return None
+        lo = MIN_LABEL if kind == "label" else MIN_BODY
+        size, mn = max(size, lo), max(mn or 0, lo)
         sz, ok = fit(text, w, h, size, font, mn)
         if not ok:
             self.warn(f"tekst past niet ({w:.1f}×{h:.1f} in, {sz}pt): \"{plain(text)[:50]}…\" → inkorten of splitsen")
+        elif longest_word_w(text, sz, font) > w:
+            self.warn(f"woord past niet op één regel ({w:.1f} in breed, {sz}pt) en breekt midden in het woord: \"{max(plain(text).split(), key=len)}\" → breder vak of korter woord")
+        self.note_rect(text, x, y, w, h, sz, font, valign, align)
         box = self.s.shapes.add_textbox(E(x), E(y), E(w), E(h))
         tf = box.text_frame
         tf.word_wrap = True
         tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
         tf.vertical_anchor = {"top": MSO_ANCHOR.TOP, "middle": MSO_ANCHOR.MIDDLE, "bottom": MSO_ANCHOR.BOTTOM}[valign]
         al = {"left": PP_ALIGN.LEFT, "center": PP_ALIGN.CENTER, "right": PP_ALIGN.RIGHT}[align]
-        self._fill(tf, text, color=color, size=sz, font=font, accent=accent, align=al, para_space=para_space, line=line)
+        self._fill(tf, text, color=color, size=sz, font=font, accent=accent, align=al, para_space=para_space, line=line, spc=spc)
         if link:  # link op het tekstvak: een hyperlink in de tekst kleurt PowerPoint altijd in de themakleur
             box.click_action.hyperlink.address = link
         return box
 
-    def label(self, text, x, y, w, h, color, size=11, align="left"):
-        self.text(str(text).upper(), x, y, w, h, size, color, font=HEAD, mn=8, align=align)
+    def label(self, text, x, y, w, h, color, size=12, align="left"):
+        self.text(str(text).upper(), x, y, w, h, size, color, font=HEAD, align=align, kind="label", spc=100)
 
     # --- vormen
     def box(self, x, y, w, h, fill, r=0.28, shape=None):
@@ -252,7 +297,7 @@ class Slide:
 
     def pill(self, text, x, y, w, h, fill, color, size=13):
         self.box(x, y, w, h, fill, r=h / 2)
-        self.text(text, x + 0.1, y, w - 0.2, h, size, color, font=HEAD, align="center", valign="middle", mn=8)
+        self.text(text, x + 0.1, y, w - 0.2, h, size, color, font=HEAD, align="center", valign="middle", kind="label")
 
     def badge(self, text, x, y, d, fill, color, size=None):
         self.circle(x, y, d, fill)
@@ -287,7 +332,9 @@ class Slide:
         png = P["illu"].get(name)
         if not png:
             return self.warn(f"illustratie \"{name}\" niet gevonden")
-        return self.picture(png, x, y, w, h, alt)
+        pic = self.picture(png, x, y, w, h, alt)
+        self.rects.append(("illu", name, pic.left / 914400, pic.top / 914400, pic.width / 914400, pic.height / 914400))
+        return pic
 
     def ph_box(self, idx):
         p = self.ph(idx)
@@ -320,7 +367,7 @@ def no_bullet(paragraphs):
 def footnote(sl, s):
     note = s.get("footnote") or (f"Bron: {s['source']}" if s.get("source") else None)
     if note:
-        sl.text(note, 1.6, 6.92, CW - 0.62, 0.3, 11, "zwart" if sl.v["bg"] != "blauw" else "roze", mn=9)
+        sl.text(note, 1.6, 6.92, CW - 0.62, 0.3, 12, "zwart" if sl.v["bg"] != "blauw" else "roze", kind="label")
 
 
 def footer(sl, s, y):
@@ -333,11 +380,275 @@ def content_slide(n, s, layout_name="Alleen titel"):
     """Inhoudsslide op de witte master; een niet-witte variant wordt de achtergrond van deze slide."""
     sl = Slide(n, s, 0, layout_name)
     sl.background(sl.v["bg"])
+    if s.get("label"):
+        label_pill(sl, s["label"])
+    if s.get("intro"):  # korte regel onder de titel; de inhoud begint daaronder
+        sl.text(s["intro"], ML, 1.66, CW, 0.5, 16, sl.v["text"], mn=15)
+        sl.top = 2.35
     return sl
 
 
 def card_colors(sl, items):
     return [it.get("color") or sl.v["cards"][i % len(sl.v["cards"])] for i, it in enumerate(items)]
+
+
+# ---------------------------------------------------------------- componenten uit ceda-powerpoint-maker (Edwin)
+# Maten van Edwin (10 × 5,625 in) zijn met S = 4/3 omgerekend naar de 13,33 × 7,5 in van de potx; de breedte volgt
+# de potx-marges (ML, CW), de hoogte de inhoudszone onder de titel-placeholder. Zie references/pptx-slidetypes.md.
+ICON_FG, TILE_ON, BADGE_FG = T["ICON_FG"], T["TILE_ON"], T["BADGE_FG"]
+ICONS = P.get("icons", {})  # icoonnaam → PNG (zwart, transparant) uit iconen/<naam>.svg van het assetpakket
+TILE_CYCLE = ["blauw", "geel", "groen", "oranje", "roze"]
+SOFT = {"blauw": "licht-blauw", "groen": "licht-groen", "oranje": "licht-oranje"}
+_icon_warned, _tint_cache = set(), {}
+
+
+def soft_card(sl):
+    """Kleur voor rijen en kaarten: wit op een lichte of gekleurde slide, een zacht accentvlak op een witte slide."""
+    return SOFT.get(sl.v["accent"], "licht-blauw") if sl.v["bg"] == "wit" else "wit"
+
+
+def tile_color(i, avoid=None):
+    cyc = [c for c in TILE_CYCLE if c != avoid]
+    return cyc[i % len(cyc)]
+
+
+def tinted_icon(name, color):
+    """Het zwarte icoon in de kleur van het tegelpaar (alpha blijft, de kleur wordt vervangen)."""
+    png = ICONS.get(name)
+    if not png:
+        return None
+    if (name, color) not in _tint_cache:
+        from PIL import Image
+        im = Image.open(png).convert("RGBA")
+        flat = Image.new("RGBA", im.size, "#" + C[color])
+        flat.putalpha(im.getchannel("A"))
+        out = Path(P["out"]).parent / "img" / f"icoon-{name}-{color}.png"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        flat.save(out)
+        _tint_cache[(name, color)] = out
+    return _tint_cache[(name, color)]
+
+
+def icon_tile(sl, x, y, icon, tile, size=0.56):
+    """Afgeronde tegel in een paletkleur met het icoon in de kleur van het tegelpaar (OPP-22). Zonder icoon in het
+    assetpakket blijft de tegel leeg en volgt een waarschuwing; er worden geen eigen iconen meegeleverd."""
+    sl.box(x, y, size, size, tile, r=size * 0.27)
+    png = tinted_icon(icon, ICON_FG[tile]) if icon else None
+    if png:
+        sl.picture(png, x + size * 0.275, y + size * 0.275, size * 0.45, size * 0.45)
+    elif icon and icon not in _icon_warned:
+        _icon_warned.add(icon)
+        sl.warn(f"icoon \"{icon}\" zit niet in het assetpakket (iconen/{icon}.svg): icoontegel zonder icoon. Iconen komen via een nieuwe assetrelease")
+    return size
+
+
+def label_pill(sl, text):
+    """Label-pil linksboven (OPP-18): 1 tot 3 woorden in kapitalen, kleur = accent van de slide."""
+    fill = sl.v["accent"] if sl.v["accent"] in BADGE_FG else "blauw"
+    t = str(text).upper()
+    w = (0.34 + 0.088 * len(t)) * S
+    sl.box(ML, 0.55, w, 0.37, fill, r=0.185)
+    sl.text(t, ML, 0.55, w, 0.37, 12, BADGE_FG[fill], font=HEAD, align="center", valign="middle", kind="label", spc=100)
+
+
+def note_space(s):
+    return 1.35 if s.get("note") else 0
+
+
+def note_bar(sl, note, y, h=1.05):
+    """Notitiebalk: brede balk met één boodschap, optioneel met icoontegel en vet begin (`bold`)."""
+    note = {"text": note} if isinstance(note, str) else note
+    c = note.get("color") or ("wit" if sl.v["bg"] == "roze" else "roze")
+    sl.box(ML, y, CW, h, c, r=min(0.21, h * 0.25))
+    tx = ML + 0.33
+    if note.get("icon"):
+        icon_tile(sl, ML + 0.27, y + (h - 0.56) / 2, note["icon"], note.get("tile") or tile_color(0, avoid=c))
+        tx = ML + 1.07
+    txt = (f"**{note['bold']}** " if note.get("bold") else "") + note["text"]
+    fg = CARD[c]["text"]
+    sl.text(txt, tx, y, CW - (tx - ML) - 0.33, h, 17, fg, accent=fg, valign="middle", mn=15)
+    return h
+
+
+def figure_card(sl, x, y, w, h, value, label, bg=None, color="oranje"):
+    """Kerncijfer: groot getal (vet, oranje) met het label in kapitalen eronder."""
+    bg = bg or ("wit" if sl.v["bg"] in ("licht-geel",) else "licht-geel")
+    sl.check_pair(bg, color, "kerncijfer")
+    sl.box(x, y, w, h, bg, r=0.21)
+    sl.text(str(value), x + 0.29, y + 0.23, w - 0.58, min(1.0, h * 0.5), 59, color, font=HEAD, valign="middle", mn=36)
+    sl.text(str(label).upper(), x + 0.29, y + 1.33, w - 0.58, max(0.4, h - 1.5), 12, "zwart", font=HEAD, kind="label", spc=100)
+
+
+def step_row(sl, x, y, w, h, nr, title, text, bg, circle):
+    """Horizontale stap: genummerde cirkel, vette titel, optionele toelichting."""
+    sl.box(x, y, w, h, bg, r=min(0.21, h * 0.2))
+    d = 0.53 if h >= 0.8 else 0.45
+    sl.badge(str(nr), x + 0.24, y + (h - d) / 2, d, circle, BADGE_FG.get(circle, "zwart"), 16)
+    tx = x + 0.24 + d + 0.27
+    tw = w - (tx - x) - 0.2
+    if text:
+        sl.text(title, tx, y + 0.1, tw, 0.4, 19, "zwart", font=HEAD, mn=15)
+        sl.text(text, tx, y + 0.5, tw, h - 0.55, 15, "zwart", mn=15)
+    else:
+        sl.text(title, tx, y, tw, h, 19, "zwart", font=HEAD, valign="middle", mn=15)
+
+
+def step_card(sl, x, y, w, h, nr, title, text, bg, circle):
+    """Stapkolom: verticale kaart met cirkel bovenaan, titel en toelichting."""
+    sl.box(x, y, w, h, bg, r=0.17)
+    sl.badge(str(nr), x + 0.27, y + 0.24, 0.53, circle, BADGE_FG.get(circle, "zwart"), 16)
+    th = max(0.4, text_height(title, w - 0.54, 19, HEAD) + 0.05)
+    sl.text(title, x + 0.27, y + 0.93, w - 0.54, th, 19, "zwart", font=HEAD, mn=15)
+    sl.text(text, x + 0.27, y + 0.93 + th + 0.1, w - 0.54, h - (0.93 + th + 0.1) - 0.2, 15, "zwart", mn=15)
+    return th
+
+
+def t_steps(n, s):
+    """Stapkolom (P7): 3 tot 4 verticale stap-kaarten naast elkaar, optioneel een notitiebalk eronder."""
+    sl = content_slide(n, s)
+    sl.title(s["title"])
+    items = s["items"][:4]
+    bottom = CONTENT_BOTTOM - note_space(s)
+    gap = 0.33
+    cw = (CW - gap * (len(items) - 1)) / len(items)
+    tw = cw - 0.54
+    need = max(0.93 + max(0.4, text_height(it["title"], tw, 19, HEAD) + 0.05) + 0.1 + text_height(it.get("text", ""), tw, 15) + 0.3 for it in items)
+    ch = min(bottom - sl.top, max(3.0, need))
+    bg, circle = soft_card(sl), sl.v["accent"]
+    for i, it in enumerate(items):
+        step_card(sl, ML + i * (cw + gap), sl.top, cw, ch, i + 1, it["title"], it.get("text", ""), bg, circle)
+    if s.get("note"):
+        note_bar(sl, s["note"], sl.top + ch + 0.3)
+    footnote(sl, s)
+
+
+def t_lead(n, s):
+    """Kernzin met kerncijfers (P1): lead links; kerncijfers eronder en stappen rechts, of kerncijfers naast de lead."""
+    sl = content_slide(n, s)
+    sl.title(s["title"])
+    v, top = sl.v, sl.top
+    bottom = CONTENT_BOTTOM - note_space(s)
+    figs, items = (s.get("figures") or [])[:2], (s.get("items") or [])[:4]
+    gap = 0.33
+    if items:
+        lw = CW * 0.46
+        lh = min(2.0, text_height(s["lead"], lw, 25) + 0.1) if s.get("lead") else 0
+        sl.text(s.get("lead"), ML, top, lw, lh, 25, v["text"], accent=v["accent"], mn=18)
+        fy = top + lh + 0.3
+        if figs:
+            fw = (lw - gap * (len(figs) - 1)) / len(figs)
+            for k, f in enumerate(figs):
+                figure_card(sl, ML + k * (fw + gap), fy, fw, max(1.9, min(2.46, bottom - fy)), f["value"], f.get("label", ""))
+        rx = ML + lw + 0.6
+        rw = CW - lw - 0.6
+        ry = top
+        if s.get("eyebrow"):
+            sl.label(s["eyebrow"], rx, ry, rw, 0.3, v["accent"])
+            ry += 0.45
+        rh = min(1.07, (bottom - ry - 0.12 * (len(items) - 1)) / len(items))
+        bg = soft_card(sl) if v["bg"] != "wit" else "licht-groen"
+        for k, it in enumerate(items):
+            step_row(sl, rx, ry + k * (rh + 0.12), rw, rh, k + 1, it["title"], it.get("text"), bg, "groen" if v["bg"] == "wit" else v["accent"])
+    else:
+        lw = CW * 0.58 if figs else CW
+        sl.text(s.get("lead"), ML, top, lw, bottom - top, 25, v["text"], accent=v["accent"], mn=18)
+        if figs:
+            fx, fw = ML + lw + 0.5, CW - lw - 0.5
+            fh = min(2.46, (bottom - top - 0.25 * (len(figs) - 1)) / len(figs))
+            for k, f in enumerate(figs):
+                figure_card(sl, fx, top + k * (fh + 0.25), fw, fh, f["value"], f.get("label", ""))
+    if s.get("note"):
+        note_bar(sl, s["note"], CONTENT_BOTTOM - 1.05)
+    footnote(sl, s)
+
+
+def t_hero(n, s):
+    """Heldenkaart (P4): groot vlak met label en een grote vraag of stelling in Cooper, optioneel met illustratie."""
+    sl = content_slide(n, s)
+    sl.title(s["title"])
+    c = s.get("color") or "groen"
+    r = CARD[c]
+    sl.check_pair(sl.v["bg"], c, "heldenkaart")
+    top, bottom = sl.top, CONTENT_BOTTOM
+    sl.box(ML, top, CW, bottom - top, c, r=0.21)
+    tw = CW - 1.07 - (4.2 if s.get("illustration") else 0)
+    if s.get("eyebrow"):
+        sl.label(s["eyebrow"], ML + 0.53, top + 0.47, tw, 0.35, r["label"], size=13)
+    sl.text(s["text"], ML + 0.53, top + 1.0, tw, bottom - top - 1.4, 31, r["text"], font=QUOTE, mn=22)
+    if s.get("illustration"):
+        side = min(3.7, bottom - top - 0.3)
+        sl.illustration(s["illustration"], ML + CW - side - 0.3, top + 0.15, side, bottom - top - 0.3)
+    footnote(sl, s)
+
+
+def t_insight(n, s):
+    """Inzichtregels (P3): rijen met icoon, vet sleutelwoord, tekst en een tag rechts (wie, wil, want, maar)."""
+    sl = content_slide(n, s)
+    sl.title(s["title"])
+    rows = s["rows"][:5]
+    bottom = CONTENT_BOTTOM - note_space(s)
+    gap = 0.16
+    rh = min(1.03, (bottom - sl.top - gap * (len(rows) - 1)) / len(rows))
+    bg = soft_card(sl)
+    for k, r in enumerate(rows):
+        y = sl.top + k * (rh + gap)
+        sl.box(ML, y, CW, rh, bg, r=0.21)
+        icon_tile(sl, ML + 0.24, y + (rh - 0.56) / 2, r.get("icon"), r.get("tile") or tile_color(k))
+        sl.text(r.get("key"), ML + 1.07, y, 1.9, rh, 21, "zwart", font=HEAD, valign="middle", mn=15)
+        tag_w = 1.9 if r.get("tag") else 0
+        sl.text(r["text"], ML + 3.1, y, CW - 3.1 - 0.3 - tag_w, rh, 20, "zwart", valign="middle", mn=15)
+        if r.get("tag"):
+            sl.text(str(r["tag"]).upper(), ML + CW - tag_w - 0.27, y, tag_w, rh, 12, sl.v["accent"], font=HEAD, align="right", valign="middle", kind="label", spc=100)
+    if s.get("note"):
+        note_bar(sl, s["note"], bottom + 0.3)
+    footnote(sl, s)
+
+
+def t_lists(n, s):
+    """Lijstkaart en pillenkaart (P8, P13): 2 tot 3 kaarten naast elkaar met een kop, een icoontegel en een lijst met
+    stippen (`style: 'list'`, standaard) of witte pillen (`style: 'pills'`, max. 4)."""
+    sl = content_slide(n, s)
+    sl.title(s["title"])
+    groups = s["groups"][:3]
+    bottom = CONTENT_BOTTOM - note_space(s)
+    gap = 0.33
+    wts = [0.55 if g.get("style") == "pills" and len(groups) == 2 else 1 for g in groups]
+    unit = (CW - gap * (len(groups) - 1)) / sum(wts)
+    x = ML
+    h = bottom - sl.top
+    for k, g in enumerate(groups):
+        w = unit * wts[k]
+        pills = g.get("style") == "pills"
+        bg = g.get("bg") or soft_card(sl)
+        sl.box(x, sl.top, w, h, bg, r=0.21)
+        kx = x + 0.33
+        if g.get("icon"):
+            icon_tile(sl, kx, sl.top + 0.29, g["icon"], g.get("tile") or tile_color(k, avoid=bg))
+            kx += 0.73
+        sl.text(g["title"], kx, sl.top + 0.27, x + w - kx - 0.33, 0.6, 21 if pills else 23, "zwart", font=HEAD, valign="middle", mn=15)
+        items = g["items"][:4] if pills else g["items"][:5]
+        top = sl.top + 1.15
+        if pills:
+            ph = min(0.67, (h - 1.15 - 0.3) / len(items) - 0.16)
+            for i, it in enumerate(items):
+                py = top + i * (ph + 0.16)
+                sl.box(x + 0.33, py, w - 0.66, ph, "wit" if bg != "wit" else "licht-blauw", r=0.21)
+                sl.text(it, x + 0.6, py, w - 1.2, ph, 17, "zwart", valign="middle", mn=15)
+        else:
+            cols = g.get("columns", 1)
+            per = math.ceil(len(items) / cols)
+            rh = min(0.75, (h - 1.15 - 0.2) / per)
+            kw = (w - 0.66) / cols
+            stip = g.get("dot") or tile_color(k, avoid=bg)
+            for i, it in enumerate(items):
+                col, row = divmod(i, per)
+                ix, iy = x + 0.4 + col * kw, top + row * rh
+                sl.circle(ix, iy + 0.1, 0.15, stip)
+                sl.text(it, ix + 0.33, iy, kw - 0.45, rh, 17, "zwart", mn=15)
+        x += w + gap
+    if s.get("note"):
+        note_bar(sl, s["note"], bottom + 0.3)
+    footnote(sl, s)
 
 
 # ---------------------------------------------------------------- slidetypes
@@ -402,7 +713,7 @@ def t_stats(n, s):
     sl = content_slide(n, s)
     v = sl.v
     sl.title(s["title"])
-    y = TOP
+    y = sl.top
     if s.get("lede"):
         lh = min(0.95, text_height(s["lede"], CW, 20) + 0.05)
         sl.text(s["lede"], ML, y - 0.15, CW, lh, 20, v["text"], mn=15)
@@ -438,12 +749,18 @@ def card_row(sl, s, items, y, max_h, min_h, compact=False):
     iw = cw - 0.6
     ts = 20 if len(items) > 3 else 24
     pad = 0.22 if compact else 0.3
-    has_badge = any(it.get("badge") or s.get("numbered") for it in items)
+    has_badge = any(it.get("badge") or s.get("numbered") or it.get("icon") for it in items)
     bw = 0.6 if compact and has_badge else 0
+    if sum(c_ in ("blauw", "groen", "oranje") for c_ in cols) > 2:
+        sl.warn("meer dan 2 volle kaartkleuren (blauw, groen, oranje) op één slide: laat de rest wit of licht [OPP-21]")
+    # Een illustratie krijgt een eigen blok boven de titel (kaart) of rechts naast de kop (compacte rij); de tekst loopt er nooit overheen.
+    ill_h = 1.3 if not compact and any(it.get("illustration") for it in items) else 0
+    ill_w = 1.0 if compact and any(it.get("illustration") for it in items) else 0
+    iw -= ill_w
     longest = max(len(w_) for it in items for w_ in plain(it["title"]).split())  # geen woord afbreken
     while ts > 14 and longest * ts * EM[HEAD] > (iw - bw) * 72:
         ts -= 1
-    head_h = 0.85 if not compact and any(it.get("badge") or s.get("numbered") or it.get("tag") for it in items) else 0
+    head_h = 0.85 if not compact and any(it.get("badge") or s.get("numbered") or it.get("tag") or it.get("icon") for it in items) else 0
     title_h = max([0.4] + [text_height(it["title"], iw - bw, ts, HEAD) for it in items]) + 0.12
     sub_h = 0.5 if any(it.get("sub") for it in items) else 0
 
@@ -454,7 +771,7 @@ def card_row(sl, s, items, y, max_h, min_h, compact=False):
     sec_h = [max((((0.38 if (secs(it)[k].get("label")) else 0) + text_height(secs(it)[k]["text"], iw, 15,
                    HEAD if secs(it)[k].get("strong") else BODY) + 0.25) if k < len(secs(it)) else 0) for it in items)
              for k in range(n_sec)]
-    fixed = pad + head_h + title_h + sub_h + (0.05 if compact else 0.15)
+    fixed = pad + head_h + ill_h + title_h + sub_h + (0.05 if compact else 0.15)
     natural = fixed + sum(sec_h)
     if natural > max_h:
         sec_h = [h * (max_h - fixed) / (natural - fixed) for h in sec_h]
@@ -466,6 +783,9 @@ def card_row(sl, s, items, y, max_h, min_h, compact=False):
         sl.box(x, y, cw, ch, c)
         iy = y + pad
         badge = it.get("badge") or (str(i + 1) if s.get("numbered") else None)
+        if it.get("icon"):
+            icon_tile(sl, x + 0.3, iy - (0.02 if compact else 0), it["icon"], it.get("tile") or TILE_ON.get(c) or tile_color(i, avoid=c), 0.46 if compact else 0.56)
+            badge = None if not it.get("tag") else badge
         if badge and compact:
             sl.badge(badge, x + 0.3, iy - 0.02, 0.46, r["pillBg"], r["pillFg"], 16)
         elif badge:
@@ -473,8 +793,11 @@ def card_row(sl, s, items, y, max_h, min_h, compact=False):
         if it.get("tag"):
             sl.pill(it["tag"], x + (1.05 if badge else 0.3), iy + 0.08, cw - (1.35 if badge else 0.6), 0.44, r["pillBg"], r["pillFg"], 12)
         iy += head_h
-        if it.get("illustration"):
-            sl.illustration(it["illustration"], x + cw - 1.3, y + 0.2, 1.1, 1.1)
+        if it.get("illustration") and compact:
+            sl.illustration(it["illustration"], x + cw - 1.1, y + 0.12, 0.85, 0.85)
+        elif it.get("illustration"):
+            sl.illustration(it["illustration"], x + 0.3, iy, 1.3, 1.3)
+        iy += ill_h
         sl.text(it["title"], x + 0.3 + bw, iy, iw - bw, title_h - 0.15, ts, r["title"], font=HEAD, mn=14)
         iy += title_h
         if it.get("sub"):
@@ -502,7 +825,7 @@ def t_cards(n, s):
     sl.title(s["title"])
     callout_h = 1.1 if s.get("callout") else 0
     bottom = BOTTOM - 0.15 - (0.5 if s.get("footer") else 0) - (callout_h + 0.3 if callout_h else 0)
-    y = TOP
+    y = sl.top
     if s.get("rows"):
         rows = s["rows"][:2]
         label_h, row_gap = 0.4, 0.3
@@ -513,7 +836,7 @@ def t_cards(n, s):
             y += label_h
             y += card_row(sl, s, row["items"], y, max_h, 1.2, True) + (row_gap if k < len(rows) - 1 else 0)
     else:
-        y += card_row(sl, s, s["items"], y, bottom - y, 2.8)
+        y += card_row(sl, s, s["items"], y, bottom - y, 3.4)
     if s.get("callout"):
         y += 0.3
         sl.box(ML, y, CW, callout_h, "wit" if sl.v["bg"] != "wit" else "licht-blauw", r=0.2)
@@ -562,7 +885,7 @@ def t_list(n, s):
         return list_steps(n, s, items)
     sl = content_slide(n, s)
     sl.title(s["title"])
-    y0 = TOP
+    y0 = sl.top
     avail = (BOTTOM - y0) - (0.6 if s.get("footer") else 0)
     rh = min(0.95, avail / len(items) - 0.1)
     card = "roze" if sl.v["bg"] == "blauw" else ("licht-roze" if sl.v["bg"] == "wit" else "wit")
@@ -626,7 +949,7 @@ def t_table(n, s):
     rows, cols = s["rows"], s["columns"]
     fs = 12 if len(rows) > 8 else 14
     row_h = 0.42 if len(rows) > 8 else 0.5
-    gf = sl.s.shapes.add_table(len(rows) + 1, len(cols), E(ML), E(TOP), E(CW), E(row_h * (len(rows) + 1)))
+    gf = sl.s.shapes.add_table(len(rows) + 1, len(cols), E(ML), E(sl.top), E(CW), E(row_h * (len(rows) + 1)))
     tbl = gf.table
     if s.get("widths"):
         for i, f in enumerate(s["widths"]):
@@ -654,7 +977,7 @@ def t_table(n, s):
             cell(r, c, val, alt[r % 2], "zwart", BODY)
     if len(rows) > 10:
         sl.warn("tabel met meer dan 10 rijen: splitsen of samenvatten")
-    footer(sl, s, TOP + row_h * (len(rows) + 1) + 0.25)
+    footer(sl, s, sl.top + row_h * (len(rows) + 1) + 0.25)
 
 
 def t_chart(n, s):
@@ -663,7 +986,7 @@ def t_chart(n, s):
     sl.title(s["title"])
     kind = s.get("chart", "bar")
     side = 4.0 if s.get("takeaway") else 0
-    x, y, w, h = ML, TOP, CW - side - (0.3 if side else 0), BOTTOM - TOP - 0.3
+    x, y, w, h = ML, sl.top, CW - side - (0.3 if side else 0), BOTTOM - sl.top - 0.3
     if not (v["bg"] == "wit" or v["bg"].startswith("licht")):
         sl.box(x, y, w, h, "wit", r=0.2)
     cd = CategoryChartData()
@@ -716,6 +1039,13 @@ def t_chart(n, s):
                 paint(se.format.fill.fore_color, c)
         va = ch.value_axis
         va.tick_labels.number_format, va.tick_labels.number_format_is_linked = fmt, False
+        if not re.search(r"\.[0#]", re.sub(r'"[^"]*"', "", fmt)) and all((v_ or 0) >= 0 for se in s["series"] for v_ in se["values"]):
+            # formaat zonder decimalen: een geheel getal als stap, anders staan er dubbele labels op de as (4, 3, 3, 2, 2, 1, 1)
+            sums = [sum(v_ or 0 for v_ in col) for col in zip(*[se["values"] for se in s["series"]])] if s.get("stacked") else                    [v_ or 0 for se in s["series"] for v_ in se["values"]]
+            peak = max(sums + [1])
+            step = next(k * 10 ** e for e in range(0, 9) for k in (1, 2, 5) if k * 10 ** e >= peak / 5)
+            va.minimum_scale, va.major_unit = 0, step
+            va.maximum_scale = math.ceil(peak / step) * step
         va.has_major_gridlines = True
         va.major_gridlines.format.line.color.rgb = RGBColor(0xDD, 0xDD, 0xDD)
         va.format.line.fill.background()
@@ -756,8 +1086,8 @@ def t_image(n, s):
     v = sl.v
     sl.title(s["title"])
     side = 4.1 if s.get("text") else 0
-    bx, by, bw = ML, TOP, CW - side - (0.3 if side else 0)
-    bh = (BOTTOM - TOP) - (0.55 if s.get("caption") else 0)
+    bx, by, bw = ML, sl.top, CW - side - (0.3 if side else 0)
+    bh = (BOTTOM - sl.top) - (0.55 if s.get("caption") else 0)
     alt = s.get("alt") or s.get("caption", "")
     if s.get("video"):
         sl.movie(s["video"], s["poster"], bx, by, bw, bh, alt)
@@ -766,7 +1096,7 @@ def t_image(n, s):
     if s.get("caption"):
         sl.text(s["caption"], bx, by + bh + 0.12, bw, 0.4, 13, v["text"], align="center", mn=10)
     if s.get("text"):
-        sl.text(s["text"], ML + CW - side, TOP, side, BOTTOM - TOP, 18, v["text"], accent=v["accent"] if v["bg"] != "wit" else "blauw", mn=12, para_space=8)
+        sl.text(s["text"], ML + CW - side, sl.top, side, BOTTOM - sl.top, 18, v["text"], accent=v["accent"] if v["bg"] != "wit" else "blauw", mn=12, para_space=8)
     footnote(sl, s)
 
 
@@ -899,13 +1229,17 @@ def t_einddia(n, s):
 
 LAYOUTS = {"title": t_title, "section": t_section, "stats": t_stats, "cards": t_cards, "split": t_split, "list": t_list,
            "table": t_table, "chart": t_chart, "quote": t_quote, "image": t_image, "video": t_image, "timeline": t_timeline,
-           "ceda": t_ceda, "team": t_team, "contact": t_contact, "closing": t_closing, "einddia": t_einddia}
+           "ceda": t_ceda, "team": t_team, "contact": t_contact, "closing": t_closing, "einddia": t_einddia,
+           "steps": t_steps, "lead": t_lead, "hero": t_hero, "insight": t_insight, "lists": t_lists}
 
 slides = list(P["slides"])
 if slides and slides[-1]["type"] == "contact" and P.get("einddia", True):
     slides.append({"type": "einddia"})
 for i, s in enumerate(slides, 1):
+    first = len(ALL_SLIDES)
     LAYOUTS[s["type"]](i, s)
+    for sl_ in ALL_SLIDES[first:]:
+        sl_.check_overlap()
 
 prs.core_properties.title = P.get("title") or P["name"]
 prs.core_properties.author = P.get("author") or "CEDA"

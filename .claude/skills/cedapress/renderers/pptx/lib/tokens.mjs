@@ -32,7 +32,7 @@ export const ALLOWED = {
   'licht-groen': ['blauw', 'zwart', 'groen'],
   'licht-blauw': ['blauw', 'zwart'],
   'licht-roze': ['blauw', 'zwart', 'groen', 'oranje'],
-  'licht-oranje': ['blauw', 'zwart'],
+  'licht-oranje': ['blauw', 'zwart', 'oranje'],
   'licht-geel': ['blauw', 'zwart', 'oranje'],
 };
 
@@ -44,10 +44,11 @@ export const VARIANTS = {
   groen: { bg: 'groen', title: 'roze', text: 'zwart', accent: 'roze', quote: 'zwart', mark: 'zwart', cards: ['roze'], deco: ['roze'] },
   oranje: { bg: 'oranje', title: 'zwart', text: 'zwart', accent: 'roze', quote: 'zwart', mark: 'zwart', cards: ['roze'], deco: ['roze'] },
   geel: { bg: 'geel', title: 'blauw', text: 'zwart', accent: 'oranje', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'wit'], deco: ['oranje', 'blauw'] },
-  wit: { bg: 'wit', title: 'blauw', text: 'zwart', accent: 'oranje', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['blauw', 'oranje'] },
+  wit: { bg: 'wit', title: 'blauw', text: 'zwart', accent: 'blauw', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['blauw', 'oranje'] },
   'licht-geel': { bg: 'licht-geel', title: 'blauw', text: 'zwart', accent: 'oranje', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['oranje', 'blauw'] },
   'licht-blauw': { bg: 'licht-blauw', title: 'blauw', text: 'zwart', accent: 'blauw', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['blauw'] },
   'licht-groen': { bg: 'licht-groen', title: 'blauw', text: 'zwart', accent: 'groen', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['groen', 'blauw'] },
+  'licht-oranje': { bg: 'licht-oranje', title: 'blauw', text: 'zwart', accent: 'oranje', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['oranje', 'blauw'] },
   'licht-roze': { bg: 'licht-roze', title: 'blauw', text: 'zwart', accent: 'oranje', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['oranje', 'blauw'] },
 };
 
@@ -61,6 +62,14 @@ export const CARD = {
   roze: { big: 'blauw', title: 'blauw', text: 'zwart', label: 'blauw', pillBg: 'blauw', pillFg: 'roze' },
   wit: { big: 'blauw', title: 'blauw', text: 'zwart', label: 'oranje', pillBg: 'blauw', pillFg: 'roze' },
 };
+
+// Accent volgt de achtergrond (OPP-20): wit en licht-blauw → blauw, licht-groen → groen, licht-oranje en licht-geel → oranje.
+// Icoontegel: tegelkleur → kleur van het icoon (tegelparen uit OPP-22; zwart is nooit een vlak).
+export const ICON_FG = { blauw: 'geel', geel: 'blauw', groen: 'roze', oranje: 'zwart', roze: 'blauw', wit: 'blauw' };
+// Tegelkleur op een kaart: nooit gelijk aan de kaartkleur.
+export const TILE_ON = { blauw: 'geel', oranje: 'roze', groen: 'roze', geel: 'blauw', roze: 'blauw' };
+// Tekst op een gekleurde pil of cirkel (label-pil, stapnummer): alleen toegestane combinaties.
+export const BADGE_FG = { blauw: 'roze', groen: 'zwart', oranje: 'zwart', geel: 'blauw', roze: 'blauw' };
 
 // Grafiekreeksen in de volgorde uit data_visualization.categorical_order.
 export const CHART_ORDER = ['blauw', 'oranje', 'groen', 'geel', 'roze'];

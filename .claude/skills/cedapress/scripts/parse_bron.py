@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 VORMEN = ("html", "pptx")
-SLIDE_KEYS = ("type", "alleen", "variant", "layout", "deel")
+SLIDE_KEYS = ("type", "alleen", "variant", "layout", "deel", "label")
 SLIDE_HEAD = re.compile(r"^##\s+(?:Slide\s+\d+\s*[—–-]\s*)?(?P<titel>.+?)\s*$")
 BLOK_OPEN = re.compile(r"^:::\s*(?P<vorm>[a-z]+)\s*$")
 BLOK_DICHT = re.compile(r"^:::\s*$")
