@@ -144,11 +144,19 @@ slides.forEach((s, i) => {
   if (words > 90) warnings.push(`slide ${n}: ~${words} woorden zichtbaar — splitsen (richtlijn: max ~70)`);
 });
 if (slides[0] && slides[0].type !== 'title') warnings.push('eerste slide is geen title');
-const cedaAt = slides.findIndex((s) => s.type === 'ceda');
-if (cedaAt === -1) warnings.push("vaste CEDA-introslide ontbreekt: zet { type: 'ceda' } direct na de titel/agenda (alleen weglaten als de gebruiker dat vraagt)");
-else if (cedaAt > 2) warnings.push(`CEDA-introslide staat op slide ${cedaAt + 1}: hoort direct na de titel/agenda`);
-if (cedaAt >= 0 && slides[cedaAt + 1]?.type !== 'team') warnings.push("teamslide ontbreekt na de CEDA-introslide: zet { type: 'team' } direct na { type: 'ceda' } (alleen weglaten als de gebruiker dat vraagt)");
-if (slides.length && slides.at(-1).type !== 'contact') warnings.push("laatste slide is niet de vaste afsluitslide: eindig met { type: 'contact' } (alleen weglaten als de gebruiker dat vraagt)");
+// Vaste CEDA-slides zijn optioneel (bron.md: vaste-slides: ja | nee). Zijn ze er, dan als één blok ceda → team → contact aan het eind.
+const vasteTypes = Object.keys(FIXED);
+const vasteAt = slides.map((s, i) => (vasteTypes.includes(s.type) ? i : -1)).filter((i) => i >= 0);
+const wens = bron?.match(/^vaste-slides:\s*(ja|nee)/mi)?.[1]?.toLowerCase();
+if (wens === 'ja' && !vasteAt.length) warnings.push("bron.md zegt vaste-slides: ja, maar de spec heeft geen { type: 'ceda' }, 'team' en 'contact'");
+if (wens === 'nee' && vasteAt.length) warnings.push('bron.md zegt vaste-slides: nee, maar de spec heeft vaste CEDA-slides — haal ze weg of zet vaste-slides: ja');
+if (vasteAt.length) {
+  const types = vasteAt.map((i) => slides[i].type);
+  if (vasteTypes.some((t) => !types.includes(t))) warnings.push(`vaste CEDA-slides horen als blok bij elkaar: ${vasteTypes.filter((t) => !types.includes(t)).join(', ')} ontbreekt`);
+  const contiguous = vasteAt.every((v, k) => k === 0 || v === vasteAt[k - 1] + 1);
+  const tail = slides.length - 1 - vasteAt.at(-1); // slides ná het blok (alleen closing mag, de einddia komt automatisch)
+  if (!contiguous || tail > 0) warnings.push('vaste CEDA-slides (ceda, team, contact) horen als één blok aan het eind, vóór de afsluiter');
+}
 for (const t of Object.keys(FIXED)) if (slides.filter((s) => s.type === t).length > 1) warnings.push(`${t} staat meer dan één keer in het deck`);
 if (ENGINE === 'potx') for (const c of ['oranje', 'roze']) used.add(c); // de template zelf toont oranje bogen en roze vlakken
 const primaries = [...used].filter((c) => SATURATED.includes(c));

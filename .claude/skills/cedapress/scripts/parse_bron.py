@@ -64,6 +64,11 @@ def parse(text: str) -> dict:
             fouten.append(f"frontmatter: onbekende vorm {v!r} (html, pptx of beide)")
     if meta.get("fancy") and meta["fancy"].upper() not in ("A", "B", "C"):
         fouten.append(f"frontmatter: fancy moet A, B of C zijn, niet {meta['fancy']!r}")
+    # vaste CEDA-slides (Wie is CEDA, Wie zijn wij, Blijf in contact) zijn optioneel: ja of nee, de auteur kiest per deck
+    vast = meta.get("vaste-slides", "").lower()
+    if vast and vast not in ("ja", "nee"):
+        fouten.append(f"frontmatter: vaste-slides moet ja of nee zijn, niet {meta['vaste-slides']!r}")
+    meta["vaste_slides"] = {"ja": True, "nee": False}.get(vast)  # None = niet opgegeven
     for k in ("titel", "publiek", "kernboodschap"):
         if not meta.get(k):
             warns.append(f"frontmatter: {k} ontbreekt")

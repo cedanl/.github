@@ -46,7 +46,7 @@ deck *"Welk open-source model kan mijn LLM-wiki het beste onderhouden?"*, via cl
 | Npuls-assets alleen uit het assetpakket, versie in `assets.lock` | Eén bron; nooit meer `public/npuls` uit clidev-presentaties |
 | Deck in de **projectrepo**: `presentaties/YYMMDD_onderwerp/` | Deck staat bij het project; README-sectie "Presentaties" linkt |
 | Binaire exports (pdf, pptx, gebundelde html) niet in git → SharePoint | Repo blijft klein; exports zijn altijd opnieuw te maken |
-| Vaste CEDA-slides aan: titel → Wie is CEDA → Wie zijn wij → inhoud → Blijf in contact → Einddia | Tekst ligt vast; alleen weglaten op expliciet verzoek |
+| Vaste CEDA-slides (Wie is CEDA, Wie zijn wij, Blijf in contact) zijn **optioneel**: de auteur kiest per deck met `vaste-slides: ja \| nee` in `bron.md`. Zijn ze er, dan als één blok vóór de afsluiter (Einddia) | Tekst van de slides ligt vast; de keuze niet. Past bij een extern publiek dat CEDA nog niet kent |
 | Zakelijk, geen opvulling; elke bewering en elk cijfer tegen de bron getoetst vóór export | Geen LLM-fluff (sectiescheiders zonder inhoud, wervende ledes); tekst volgens `npuls-schrijfwijzer` |
 | Niet "klaar" melden zonder check, qa/render en alle screenshots bekeken | Overloop, botsingen en lege vlakken zie je niet in de broncode |
 
@@ -73,6 +73,8 @@ Verder, in hetzelfde bericht en alleen wat ontbreekt:
 5. **Project** — bepaalt de repo. Bekende projecten: Uitnodigingsregel, Instroomprognose, Sectorale
    informatievoorziening, Samenwijzer, SkillsRadar, NKO, Open-onderwijsdata-chat, MCP en EduGenAI,
    Instellingsdata-chat, Synthetische data.
+6. **Vaste CEDA-slides** (Wie is CEDA, Wie zijn wij, Blijf in contact): ja of nee, zet het in `bron.md` (`vaste-slides:`).
+   Standaard ja bij een extern publiek dat CEDA nog niet kent, anders nee.
 
 Plus: bronnen (lees ze zelf), spreker, datum. Een gevraagd aantal slides telt inhoudsslides.
 

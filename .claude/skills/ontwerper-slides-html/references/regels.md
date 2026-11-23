@@ -33,7 +33,7 @@ Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0
 | OSH-21 | Iconen | altijd in een afgeronde tegel in een paletkleur, nooit los; tegelparen blauw/geel, geel/blauw, groen/roze, oranje/zwart, roze/blauw, afwisselen binnen één slide | alle | handmatig | W |
 | OSH-22 | Illustraties | één illustratie per slide, alleen op een vlak in dezelfde kleur als de ingebakken achtergrond; geen stockfoto's tenzij aangeleverd, geen foto's van publieke personen | alle | handmatig | W |
 | OSH-23 | Vormentaal | afgeronde rechthoeken, cirkels, pillen; geen schaduwen, geen verlopen, geen randen | alle | handmatig | W |
-| OSH-24 | Deckstructuur | opening → delen (kleurvolgorde `npuls-roze` → `npuls-oranje` → `npuls-groen` → `npuls-blauw`) → oproep/vervolg → afsluiting "Onderwijs **bewegen.**" met CC BY-SA 4.0 en naamsvermelding | alle | handmatig | W |
+| OSH-24 | Deckstructuur | opening → delen (kleurvolgorde `npuls-roze` → `npuls-oranje` → `npuls-groen` → `npuls-blauw`) → oproep/vervolg → optioneel blok vaste CEDA-slides (Wie is CEDA, Wie zijn wij, Blijf in contact; de auteur kiest met `vaste-slides: ja` of `nee` in `bron.md`) → afsluiting "Onderwijs **bewegen.**" met CC BY-SA 4.0 en naamsvermelding | alle | handmatig | W |
 | OSH-25 | Tekst en toon | Nederlands, B1, actief en uitnodigend, korte zinnen (`npuls-schrijfwijzer`); bronnen en voorbehoud in de notes, met markering wat afgeleid is | alle | handmatig | W |
 | OSH-26 | Grafieken | kleurvolgorde blauw, oranje, groen, geel, roze (één reeks = blauw); altijd een kaart of titel die zegt wat opvalt | alle | handmatig | W |
 

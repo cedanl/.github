@@ -20,7 +20,7 @@ Kleuren en lettertypen staan in `vormgever-npuls-huisstijl` (`design-tokens.json
 | OPP-06 | Alt-tekst | `image`/`video` hebben `alt` | alle | handmatig (TODO in build.mjs) | W |
 | OPP-07 | Kleuren | alleen Npuls-kleurnamen (tokens), geen hex; elke slide toont minstens 3 primaire kleuren; `npuls-zwart` nooit als vlak of achtergrond, alleen voor tekst en iconen | alle | build.mjs | F / W |
 | OPP-08 | Ritme | nooit twee keer dezelfde achtergrondtint achter elkaar; ongeveer de helft van de inhoudsslides wit, de rest licht (`licht-*`) | alle | build.mjs | W |
-| OPP-09 | Vaste slides | `ceda` na titel, `team` na `ceda`, eindigen met `contact`; samen te lezen met OPP-26 (zie "Nog open") | alle | build.mjs | W |
+| OPP-09 | Vaste slides (optioneel) | de auteur kiest per deck (`vaste-slides: ja` of `nee` in `bron.md`). Met `ja`: één blok `ceda` → `team` → `contact` vóór de afsluiter; bij een onvolledig of verspreid blok, of een keuze die niet met de spec klopt, volgt een waarschuwing | alle | build.mjs | W |
 | OPP-10 | Sober is sober | fancy A: alleen wit/licht, geen video | A | handmatig (TODO) | W |
 | OPP-11 | Beeld | fancy B/C: ≥ 2 Npuls-illustraties in het deck | B, C | build.mjs | W |
 | OPP-12 | Visueel gecontroleerd | elke gerenderde PNG bekeken; geen overloop of botsing | alle | render.mjs + handmatig | F |
@@ -37,7 +37,7 @@ Kleuren en lettertypen staan in `vormgever-npuls-huisstijl` (`design-tokens.json
 | OPP-23 | Illustraties | één illustratie per slide, alleen op een vlak in dezelfde kleur als de ingebakken achtergrond (deel-slide, heldenkaart of losse tegel); geen stockfoto's tenzij aangeleverd, geen foto's van publieke personen | alle | handmatig | W |
 | OPP-24 | Vormentaal | afgeronde rechthoeken (kaarten), cirkels (stapnummers, stippen), pillen (labels); geen schaduwen, geen verlopen, geen randen | alle | handmatig | W |
 | OPP-25 | Grafieken | native en bewerkbaar; kolom of staaf voor vergelijken, lijn voor trend, donut alleen voor 2 tot 4 delen van één geheel; kleurvolgorde blauw, oranje, groen, geel, roze (één reeks = blauw); altijd een kaart of titel die zegt wat opvalt; bron in notes | alle | handmatig | W |
-| OPP-26 | Deckstructuur | opening (geel) → delen → oproep/vervolg of "Meer weten / Met dank aan" → afsluiting; opening: titel 54 pt vet, ondertitel 40 pt regular (vraag of belofte), 2 metaregels | alle | build.mjs | W |
+| OPP-26 | Deckstructuur | opening (geel) → delen → oproep/vervolg of "Meer weten / Met dank aan" → optioneel blok vaste CEDA-slides (OPP-09) → afsluiting; opening: titel 54 pt vet, ondertitel 40 pt regular (vraag of belofte), 2 metaregels | alle | build.mjs | W |
 | OPP-27 | Delen | elk deel: één deel-slide (pil "DEEL n", titel 40 pt, intro 18 pt Cooper, illustratie rechts) + 2 tot 4 inhoudsslides; max. 4 delen; kleurvolgorde `npuls-roze` → `npuls-oranje` → `npuls-groen` → `npuls-blauw` | alle | build.mjs | W |
 | OPP-28 | Afsluiting | "Onderwijs **bewegen.**", CC BY-SA 4.0-tekst met naamsvermelding (waarop de inhoud gebaseerd is), Npuls-logo; logo en merkelementen niet wijzigen | alle | build.mjs / handmatig | F |
 | OPP-29 | Tekst en toon | Nederlands, B1, actief en uitnodigend, korte zinnen (volgens `npuls-schrijfwijzer`); opening- en deeltitels kort en prikkelend | alle | handmatig | W |
@@ -67,6 +67,5 @@ Past het niet: tekst inkorten of over twee slides verdelen, nooit verkleinen.
 
 ## Nog open
 
-- **Vaste CEDA-slides (OPP-09 en OPP-26):** cedapress eist titel → Wie is CEDA → Wie zijn wij → inhoud → contact. Edwins structuur kent die slides niet. Tot een besluit gelden beide: de vaste slides horen bij opening en afsluiting.
 - **build.mjs:** drempels in `renderers/pptx/build.mjs` staan nog op 70/90 woorden en 14 pt; de nieuwe waarden (OPP-02, OPP-05, OPP-15 tot OPP-28) zijn nog niet geautomatiseerd.
 - **Iconen:** herkomst en licentie van Edwins iconenset zijn nog niet vastgesteld.

@@ -34,7 +34,7 @@ fancy: B               # A sober | B huisstijl+ | C rijk (ontwerper-skills)
 duur: 15               # minuten; ~1 inhoudsslide per 2 minuten
 spreker: Naam
 datum: 2026-11-19
-vaste-slides: ja       # Wie is CEDA, Wie zijn wij, Blijf in contact; nee alleen op expliciet verzoek
+vaste-slides: ja       # optioneel blok vóór de afsluiter: Wie is CEDA, Wie zijn wij, Blijf in contact; ja of nee, de auteur kiest
 bronnen: pad/of/url, pad2
 ---
 
@@ -69,9 +69,10 @@ Notes: In HTML zit dit achter de klik op slide 1.
 | Geen blok | Slide is in beide vormen gelijk. |
 | `alleen: html` / `alleen: pptx` | Slide bestaat in één vorm. |
 
-Vaste CEDA-slides (titel, Wie is CEDA, Wie zijn wij, Blijf in contact, Einddia) staan **niet** in de bron:
-de renderers zetten ze erin (`vaste-slides: ja`). Alleen de projectenlijst op "Wie zijn wij" mag in de
-frontmatter: `team-projecten: Instroomprognose, Staat van de Onderwijsinstelling`.
+De vaste CEDA-slides (Wie is CEDA, Wie zijn wij, Blijf in contact) zijn **optioneel** en staan niet in de bron.
+Met `vaste-slides: ja` komen ze als één blok vóór de afsluiter (Einddia); met `nee` ontbreken ze. Niet opgegeven
+betekent: de auteur heeft nog niet gekozen, de check geeft dan geen melding. Alleen de projectenlijst op "Wie zijn wij"
+mag in de frontmatter: `team-projecten: Instroomprognose, Staat van de Onderwijsinstelling`.
 
 ## Hash
 

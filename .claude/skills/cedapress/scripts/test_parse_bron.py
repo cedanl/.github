@@ -74,6 +74,18 @@ class TestParseBron(unittest.TestCase):
         self.assertIn("niet afgesloten", f)
         self.assertIn("geen slides", " ".join(parse("---\ntitel: x\n---\nlos")["fouten"]))
 
+    def test_vaste_slides_optioneel(self):
+        kop = "---\ntitel: x\n"
+        zonder = parse(kop + "---\n## A\nNotes: n")
+        self.assertEqual(zonder["fouten"], [])  # niet opgeven mag
+        self.assertIsNone(zonder["meta"]["vaste_slides"])
+        for waarde, verwacht in (("ja", True), ("nee", False), ("Nee", False)):
+            doc = parse(kop + f"vaste-slides: {waarde}   # keuze per deck\n---\n## A\nNotes: n")
+            self.assertEqual(doc["fouten"], [])
+            self.assertIs(doc["meta"]["vaste_slides"], verwacht)
+        fout = parse(kop + "vaste-slides: misschien\n---\n## A\nNotes: n")
+        self.assertIn("vaste-slides moet ja of nee zijn", " ".join(fout["fouten"]))
+
     def test_hash_stabiel_over_regeleinden(self):
         self.assertEqual(bron_hash(BRON), bron_hash(BRON.replace("\n", "\r\n")))
         self.assertNotEqual(bron_hash(BRON), bron_hash(BRON + "x"))

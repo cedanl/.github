@@ -91,15 +91,15 @@ op `posterAt` seconden (standaard 1) uit de video met ffmpeg. De video zit in he
 van de mp4 erbij. Speelt niet af in de PDF of in Google Slides; daar zie je alleen de poster. Geen `.webm`:
 PowerPoint op Windows speelt die niet betrouwbaar af.
 
-### `ceda` — vaste CEDA-introslide
-Geen velden. "Wie is CEDA": titel, subtitel en drie punten over wat CEDA doet, links op wit; rechts het roze vlak met het Npuls-logo (template-layout Partnerslide; oude engine: `slides-preview/slide16.png`). Tekst is woordelijk gelijk aan de HTML-frame en `clidev`. Plaats: direct na de titel (of agenda). Bewust zonder links.
+### `ceda` — vaste CEDA-introslide (optioneel)
+Geen velden. "Wie is CEDA": titel, subtitel en drie punten over wat CEDA doet, links op wit; rechts het roze vlak met het Npuls-logo (template-layout Partnerslide; oude engine: `slides-preview/slide16.png`). Tekst is woordelijk gelijk aan de HTML-frame en `clidev`. Plaats: eerste van het optionele blok `ceda` → `team` → `contact` vóór de afsluiter. Bewust zonder links.
 
-### `team` — vaste teamslide
+### `team` — vaste teamslide (optioneel)
 Alleen `text` (optioneel). "Wie zijn wij": groepsfoto van het CEDA-team (env `CEDA_TEAMFOTO`, anders `ceda/teamfoto.png` in het assetpakket, anders `img/team-groep.png` in de deckmap; zie `teamfoto` in `renderers/lib/npuls-assets.mjs`) met rechts
 de projecten (standaard: Instroomprognose en Staat van de Onderwijsinstelling), zoals in de DAIR-decks. Plaats: direct na `ceda`.
 
-### `contact` — vaste afsluitslide
-Geen velden. "Blijf in contact" met drie klikbare kaarten: GitHub (`github.com/cedanl`), Community (`edu.nl/7b4yg`) en e-mail (`ceda@surf.nl`), op `slides-preview/slide01.png`. Altijd de allerlaatste slide; blijft in beeld tijdens de vragen.
+### `contact` — vaste afsluitslide (optioneel)
+Geen velden. "Blijf in contact" met drie klikbare kaarten: GitHub (`github.com/cedanl`), Community (`edu.nl/7b4yg`) en e-mail (`ceda@surf.nl`), op `slides-preview/slide01.png`. Sluit het blok vaste slides af; blijft in beeld tijdens de vragen. Alleen de Einddia volgt nog.
 
 ### `closing` — afsluiting (optioneel, vóór `contact`)
 `title` (default "Vragen?"), `question` (Cooper), `text`, `contact` (alleen als bekend; nooit
