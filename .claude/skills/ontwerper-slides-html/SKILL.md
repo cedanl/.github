@@ -4,7 +4,7 @@ description: Ontwerpregels voor HTML-presentaties van CEDA/Npuls — tekst per s
 allowed-tools: Read
 metadata:
   ceda-id: ceda.ontwerper-slides-html
-  ceda-version: "0.2.0"
+  ceda-version: "0.3.0"
   ceda-type: reference
   ceda-subtype: knowledge
   ceda-origin: own
@@ -26,14 +26,15 @@ Best practices voor HTML-decks. `cedapress` raadpleegt deze skill vóór het ren
 **Toetsbare regels:** `references/regels.md` (id, regel, meetbaar criterium, fancy-niveau, waar getoetst).
 Het id staat in de check-meldingen, bv. `[OSH-02]`.
 
-> **Voorlopig.** De drempels zijn een eerste versie van CEDA. Edwin Lieftink (ontwerp) levert de definitieve
-> regels; zie het blok "TODO(Edwin)" in `references/regels.md`. Wijzig een drempel daar én in `check.mjs`.
+Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0), afgeleid uit de CEDA-presentatie Uitnodigingsregel en de Npuls-huisstijl. Alleen het deel dat los staat van het medium is overgenomen.
+
+> Open punten staan onder "Nog open" in `references/regels.md`. Wijzig een drempel daar én in `check.mjs`.
 
 ## Kern
 
 1. **Eén boodschap per slide.** De kop is een bewering ("Uitval zit vooral in jaar 1"), geen onderwerp.
-2. **Weinig tekst.** Max ~60 woorden zichtbaar, max 5 punten per lijst. Meer → splitsen of naar de notes.
-3. **Verhaallijn:** aanleiding → kern (3 à 5 delen bij meer dan 8 inhoudsslides) → wat vragen we → afsluitvraag.
+2. **Weinig tekst.** Max ~50 woorden zichtbaar, 3 tot 5 punten per lijst. Meer → splitsen of naar de notes.
+3. **Verhaallijn:** aanleiding → kern (max 4 delen bij meer dan 8 inhoudsslides, 2 tot 4 inhoudsslides per deel) → wat vragen we → afsluitvraag.
    Licht en verzadigd afwisselen; één verzadigde slide per kernboodschap.
 4. **Leesbaar van achterin de zaal:** tekst schaalt mee met de breedte; geen lage bovengrens op `font-size`.
    Lege onderhelft → grotere componenten, niet kleinere letters.

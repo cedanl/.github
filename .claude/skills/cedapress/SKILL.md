@@ -5,7 +5,7 @@ allowed-tools: Read Write Edit Bash Glob Grep
 compatibility: Requires node, python 3 en git. pptx-route ook python-pptx en PowerPoint (Windows) of LibreOffice. Npuls-assets via het versioned pakket van vormgever-npuls-huisstijl. playwright-chromium en pptxgenjs eenmalig via npm install in de renderers-map.
 metadata:
   ceda-id: ceda.cedapress
-  ceda-version: "0.2.0"
+  ceda-version: "0.3.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -50,9 +50,21 @@ deck *"Welk open-source model kan mijn LLM-wiki het beste onderhouden?"*, via cl
 
 ## Werkwijze
 
-### 1. Vaste vragen — in één bericht, vraag alleen wat ontbreekt
+### 1. Intake — vraag alleen wat ontbreekt
 
-1. **Voor wie** (publiek, setting, duur)
+Ontbreekt het **onderwerp**: vraag dat eerst in gewone tekst ("Waar moet de presentatie over gaan, en wat moet het
+publiek na afloop weten of doen?"). Stel daarna in **één AskUserQuestion-ronde** de vragen die nog open staan,
+met deze opties (eerste = standaard als niemand antwoordt):
+
+1. **Publiek:** CEDA-community/partners · bestuurders/management · docenten en onderwijsondersteuners · data-analisten/onderzoekers
+2. **Doel:** informeren · overtuigen/besluit vragen · workshop/meedoen · update/voortgang
+3. **Lengte:** middel (± 14 slides, 20 min) · kort (± 8 slides, 10 min) · lang (± 20 slides, 30+ min)
+4. **Bronmateriaal:** geüploade bestanden/links · zelf op het web zoeken · alleen wat ik vertel
+
+Vraag niets wat al in het verzoek staat. Is er niemand om te vragen: kies de standaarden, zeg welke je koos en ga door.
+Verder, in hetzelfde bericht en alleen wat ontbreekt:
+
+1. **Setting en duur** (publiek staat al hierboven)
 2. **Kernboodschap** in één zin
 3. **Vorm:** html, pptx of beide
 4. **Fancy:** A sober, B huisstijl+ (standaard), C rijk — zie de ontwerper-skills
@@ -67,14 +79,18 @@ Plus: bronnen (lees ze zelf), spreker, datum. Een gevraagd aantal slides telt in
 Zoek lokaal (`~/Projects/<repo>`, naam lijkt op het project) en anders `gh repo list cedanl --topic project`.
 Niets gevonden of twijfel → vraag de gebruiker waar het deck moet komen. Maak `presentaties/YYMMDD_onderwerp/`.
 
-### 3. Eén rondje inhoud aanscherpen
+### 3. Slideplan laten bevestigen
 
-Leg de verhaallijn voor in max ~8 regels (titel per slide als bewering + kernboodschap). Vraag één keer om
-reactie; verwerk die. Ontbreekt een cijfer → vragen, nooit verzinnen.
+Maak een **slideplan als tabel**: nr · patroon · label · titel met accentdeel · kerninhoud (ontwerpregels:
+`ontwerper-powerpoint` of `ontwerper-slides-html`). Vraag **één keer** of het klopt; verwerk de reactie. Zei de
+gebruiker "doe maar", of is er niemand: ga door. Het bevestigde slideplan schrijf je in stap 4 in `bron.md`.
+
+Verzin geen cijfers, namen of citaten: ontbreekt een cijfer, vraag ernaar of laat het kerncijfer-patroon weg.
+Noteer per slide de bron in de sprekersnotities (en markeer wat afgeleid is).
 
 ### 4. Bron-markdown schrijven
 
-Formaat: `references/bronformaat.md`. Schrijf `bron.md`, valideer:
+Formaat: `references/bronformaat.md`. Schrijf `bron.md` (met het bevestigde slideplan), valideer:
 
 ```bash
 python <cp>/scripts/parse_bron.py presentaties/YYMMDD_onderwerp/bron.md --check
