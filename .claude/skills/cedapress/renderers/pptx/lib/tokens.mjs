@@ -1,82 +1,47 @@
-// Npuls-palet en de toegestane combinaties, als PowerPoint-hex (zonder #).
-// Bron van waarheid: vormgever-npuls-huisstijl/references/design-tokens.json.
-// build.mjs vergelijkt deze waarden met dat bestand als het gevonden wordt.
+// Npuls-palet, kleurrollen en toegestane combinaties als PowerPoint-hex (zonder #), met korte namen (blauw, licht-geel).
+// Alles komt uit vormgever-npuls-huisstijl/references/design-tokens.json: hier staat geen enkele kleurtabel meer.
+// De vorm van de exports (C, ALLOWED, VARIANTS, CARD, ICON_FG, TILE_ON, BADGE_FG, CHART_ORDER) is gelijk gebleven.
+import { colorTable, loadTokens, short } from '../../lib/design-tokens.mjs';
 
-export const C = {
-  oranje: 'DD784B',
-  zwart: '000000',
-  roze: 'F4D9DC',
-  blauw: '3D68EC',
-  geel: 'F4D74B',
-  groen: '00AF81',
-  wit: 'FFFFFF',
-  'licht-groen': 'CCEEE6',
-  'licht-blauw': 'D6E2FD',
-  'licht-roze': 'FAEAEA',
-  'licht-oranje': 'FFE4D8',
-  'licht-geel': 'FCF5D4',
-};
+const T = loadTokens();
+const S = short;
+const real = (o) => Object.entries(o).filter(([k]) => !k.startsWith('_'));
+const map = (o, f = S) => Object.fromEntries(real(o).map(([k, v]) => [S(k), f(v)]));
+
+export const C = map(colorTable(T), (v) => v.replace('#', '').toUpperCase());
 
 // Neutraal grijs alleen voor voetnoten op lichte vlakken (design-tokens: neutrals).
-export const GRIJS = '5C5C66';
+export const GRIJS = T.neutrals['grijs-600'].replace('#', '').toUpperCase();
 
-// allowed_combinations uit design-tokens.json: achtergrond → toegestane voorgrond.
-// Lichte (secondary) vlakken en wit dragen zwart, blauw, groen of oranje.
-export const ALLOWED = {
-  blauw: ['wit', 'geel', 'roze'],
-  roze: ['blauw', 'groen', 'zwart', 'oranje'],
-  geel: ['oranje', 'zwart', 'blauw'],
-  groen: ['roze', 'zwart'],
-  oranje: ['zwart', 'roze'],
-  wit: ['blauw', 'zwart', 'groen', 'oranje'],
-  'licht-groen': ['blauw', 'zwart', 'groen'],
-  'licht-blauw': ['blauw', 'zwart'],
-  'licht-roze': ['blauw', 'zwart', 'groen', 'oranje'],
-  'licht-oranje': ['blauw', 'zwart', 'oranje'],
-  'licht-geel': ['blauw', 'zwart', 'oranje'],
-};
+// allowed_combinations: achtergrond naar toegestane voorgrond.
+export const ALLOWED = Object.fromEntries(T.colors.allowed_combinations.map((c) => [S(c.background), c.with.map(S)]));
 
-// Slide-varianten: achtergrond + vaste rollen. Elke rol is een toegestane voorgrond.
-// cards = kaartkleuren die op deze achtergrond mogen (nooit gelijk aan de achtergrond).
-export const VARIANTS = {
-  blauw: { bg: 'blauw', title: 'wit', text: 'wit', accent: 'geel', quote: 'geel', mark: 'roze', cards: ['geel', 'roze'], deco: ['geel', 'roze'] },
-  roze: { bg: 'roze', title: 'zwart', text: 'zwart', accent: 'blauw', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen'], deco: ['blauw', 'oranje'] },
-  groen: { bg: 'groen', title: 'zwart', text: 'zwart', accent: 'roze', quote: 'zwart', mark: 'zwart', cards: ['roze'], deco: ['roze'] },
-  oranje: { bg: 'oranje', title: 'zwart', text: 'zwart', accent: 'roze', quote: 'zwart', mark: 'zwart', cards: ['roze'], deco: ['roze'] },
-  geel: { bg: 'geel', title: 'zwart', text: 'zwart', accent: 'blauw', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'wit'], deco: ['oranje', 'blauw'] },
-  wit: { bg: 'wit', title: 'blauw', text: 'zwart', accent: 'blauw', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['blauw', 'oranje'] },
-  'licht-geel': { bg: 'licht-geel', title: 'blauw', text: 'zwart', accent: 'oranje', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['oranje', 'blauw'] },
-  'licht-blauw': { bg: 'licht-blauw', title: 'blauw', text: 'zwart', accent: 'blauw', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['blauw'] },
-  'licht-groen': { bg: 'licht-groen', title: 'blauw', text: 'zwart', accent: 'groen', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['groen', 'blauw'] },
-  'licht-oranje': { bg: 'licht-oranje', title: 'blauw', text: 'zwart', accent: 'oranje', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['oranje', 'blauw'] },
-  'licht-roze': { bg: 'licht-roze', title: 'blauw', text: 'zwart', accent: 'oranje', quote: 'zwart', mark: 'zwart', cards: ['blauw', 'oranje', 'groen', 'geel'], deco: ['oranje', 'blauw'] },
-};
+// Slide-varianten: achtergrond + vaste rollen (slide_roles). Elke rol is een toegestane voorgrond.
+// cards = kaartkleuren die op deze achtergrond mogen. accent2 = openingsteken van een citaat; highlight = markering achter het
+// accentdeel van de titel (alleen waar het accent als tekst te weinig contrast haalt), anders null.
+export const VARIANTS = map(T.slide_roles, (r) => ({
+  title: S(r.title), text: S(r.text), accent: S(r.accent), accent2: S(r.accent_2), quote: S(r.quote), mark: S(r.marker),
+  highlight: r.title_highlight ? S(r.title_highlight) : null, cards: r.cards.map(S), deco: r.deco.map(S),
+}));
+for (const [bg, v] of Object.entries(VARIANTS)) v.bg = bg;
 
-// Tekstrollen per kaartkleur: groot (kerncijfer/badge), kop, tekst, label.
-// Body-tekst op groen en oranje is zwart: roze haalt daar geen leesbaar contrast.
-export const CARD = {
-  blauw: { big: 'geel', title: 'wit', text: 'wit', label: 'geel', pillBg: 'geel', pillFg: 'blauw' },
-  oranje: { big: 'zwart', title: 'zwart', text: 'zwart', label: 'zwart', pillBg: 'roze', pillFg: 'zwart' },
-  groen: { big: 'roze', title: 'zwart', text: 'zwart', label: 'zwart', pillBg: 'roze', pillFg: 'zwart' },
-  geel: { big: 'blauw', title: 'blauw', text: 'zwart', label: 'blauw', pillBg: 'blauw', pillFg: 'geel' },
-  roze: { big: 'blauw', title: 'blauw', text: 'zwart', label: 'blauw', pillBg: 'blauw', pillFg: 'roze' },
-  wit: { big: 'blauw', title: 'zwart', text: 'zwart', label: 'oranje', pillBg: 'blauw', pillFg: 'roze' },
-};
+// Tekstrollen per kaartkleur: groot (kerncijfer/badge), kop, tekst, label, pil.
+export const CARD = map(T.card_roles, (r) => ({
+  big: S(r.big), title: S(r.title), text: S(r.text), label: S(r.label), pillBg: S(r.pill_bg), pillFg: S(r.pill_fg),
+}));
 
-// Accent volgt de achtergrond (OPP-20): wit en licht-blauw → blauw, licht-groen → groen, licht-oranje en licht-geel → oranje.
-// Op verzadigde vlakken moeten titel en accent verschillen, anders is het accentdeel (en de label-pil, die de accentkleur draagt) onzichtbaar:
-// roze: titel zwart, accent blauw · groen: titel zwart, accent roze · blauw: titel roze, accent geel · oranje: titel zwart, accent roze · geel: titel zwart, accent blauw (gelijk aan .s-geel in de HTML-frame; oranje op geel haalt maar 2,1:1).
-// Roze als tekst op groen (2,1:1) en oranje (2,3:1) is te zwak: build_potx.py zet het accentdeel daar als roze markering achter zwarte tekst (MARKER).
-// Oranje op licht-oranje haalt maar ca. 2,5:1: daar alleen voor het titelaccent en groot display (kerncijfer), nooit voor kleine tekst (OPP-20).
-// Icoontegel: tegelkleur → kleur van het icoon (tegelparen uit OPP-22; zwart is nooit een vlak).
-export const ICON_FG = { blauw: 'geel', geel: 'blauw', groen: 'roze', oranje: 'zwart', roze: 'blauw', wit: 'blauw' };
-// Tegelkleur op een kaart: nooit gelijk aan de kaartkleur.
-export const TILE_ON = { blauw: 'geel', oranje: 'roze', groen: 'roze', geel: 'blauw', roze: 'blauw' };
+// Icoontegel: tegelkleur naar kleur van het icoon. Tegelkleur op een kaart: nooit gelijk aan de kaartkleur.
+export const ICON_FG = map(T.tile_pairs.icon_fg);
+export const TILE_ON = map(T.tile_pairs.on_card);
+export const TILE_CYCLE = T.tile_pairs.cycle.map(S);
 // Tekst op een gekleurde pil of cirkel (label-pil, stapnummer): alleen toegestane combinaties.
-export const BADGE_FG = { blauw: 'wit', groen: 'zwart', oranje: 'zwart', geel: 'blauw', roze: 'blauw' };
+export const BADGE_FG = map(T.badge_fg);
+// Zachte tint bij een accentkleur (kaarten en rijen op een witte slide) en standaardkleur van de heldenkaart.
+export const TINT = map(T.tints);
+export const HERO_DEFAULT = S(T.component_defaults.hero);
 
-// Grafiekreeksen in de volgorde uit data_visualization.categorical_order.
-export const CHART_ORDER = ['blauw', 'oranje', 'groen', 'geel', 'roze'];
+// Grafiekreeksen in de volgorde uit data_visualization.categorical_order (zwart is nooit een vlak).
+export const CHART_ORDER = T.data_visualization.categorical_order.map(S).filter((c) => c !== 'zwart');
 
 // Echte Npuls-fonts. De semibold is in Windows een eigen familie: gebruik die
 // naam i.p.v. bold:true op "General Sans" (anders tekent PowerPoint een nep-vet).
@@ -91,3 +56,28 @@ export const hex = (name) => {
   if (!v) throw new Error(`Onbekende Npuls-kleur "${name}". Kies uit: ${Object.keys(C).join(', ')}`);
   return v;
 };
+
+/** Controleert of de tokens zelf kloppen: elke kleurrol verwijst naar een bestaande kleur en elke voorgrond op een
+ *  verzadigde achtergrond is een toegestane combinatie. Geeft een lijst met fouten (leeg = goed). */
+export function checkTokens() {
+  const errs = [];
+  const known = (name, where) => { if (!C[name]) errs.push(`design-tokens.json: ${where} gebruikt kleur "${name}" die niet in colors staat`); };
+  const light = (bg) => bg === 'wit' || bg.startsWith('licht-');
+  for (const [bg, v] of Object.entries(VARIANTS)) {
+    if (!C[bg]) errs.push(`design-tokens.json: slide_roles.${bg} is geen kleur uit colors`);
+    for (const role of ['title', 'text', 'accent', 'accent2', 'quote', 'mark', 'highlight']) if (v[role]) known(v[role], `slide_roles.${bg}.${role}`);
+    for (const c of [...v.cards, ...v.deco]) known(c, `slide_roles.${bg}.cards/deco`);
+    if (!light(bg)) {
+      for (const role of ['title', 'text', 'accent', 'quote']) {
+        if (v[role] !== bg && !ALLOWED[bg]?.includes(v[role])) errs.push(`design-tokens.json: slide_roles.${bg}.${role} = ${v[role]} is geen toegestane combinatie (allowed_combinations)`);
+      }
+    }
+  }
+  for (const [c, r] of Object.entries(CARD)) for (const [role, name] of Object.entries(r)) known(name, `card_roles.${c}.${role}`);
+  for (const [group, o] of Object.entries({ icon_fg: ICON_FG, on_card: TILE_ON, badge_fg: BADGE_FG })) {
+    for (const [k, v] of Object.entries(o)) { known(k, group); known(v, `${group}.${k}`); }
+  }
+  for (const c of [...TILE_CYCLE, ...CHART_ORDER]) known(c, 'tile_pairs.cycle/data_visualization');
+  for (const [bg, fgs] of Object.entries(ALLOWED)) { known(bg, 'allowed_combinations'); fgs.forEach((f) => known(f, `allowed_combinations.${bg}`)); }
+  return errs;
+}

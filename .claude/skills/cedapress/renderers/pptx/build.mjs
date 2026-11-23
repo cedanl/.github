@@ -10,13 +10,13 @@
 // (waarschuwingen mogelijk), 1 = fouten in de spec, 2 = omgeving niet in orde.
 import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { homedir, tmpdir } from 'node:os';
+import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { bronHash, bronNaast } from '../lib/bron.mjs';
 import { ILLU_DIR, NPULS, beeldmerkDots, illustrationPath, projectRequire, rasterize } from './lib/assets.mjs';
 import { Canvas, LAYOUTS, TYPES, setTeamImage } from './lib/layouts.mjs';
-import { ALLOWED, BADGE_FG, C, CARD, CHART_ORDER, FONT, ICON_FG, TILE_ON, VARIANTS } from './lib/tokens.mjs';
+import { ALLOWED, BADGE_FG, C, CARD, CHART_ORDER, FONT, HERO_DEFAULT, ICON_FG, TILE_CYCLE, TILE_ON, TINT, VARIANTS, checkTokens } from './lib/tokens.mjs';
 
 const args = process.argv.slice(2);
 const engineAt = args.indexOf('--engine');
@@ -55,22 +55,9 @@ const errors = [];
 const warnings = [];
 const err = (n, m) => errors.push(`slide ${n}: ${m}`);
 
-// ---------- tokens in sync met vormgever-npuls-huisstijl ----------
-const tokenFile = [
-  resolve(import.meta.dirname, '../../../vormgever-npuls-huisstijl/references/design-tokens.json'),
-  join(homedir(), '.claude', 'skills', 'vormgever-npuls-huisstijl', 'references', 'design-tokens.json'),
-  join(homedir(), '.agents', 'skills', 'vormgever-npuls-huisstijl', 'references', 'design-tokens.json'),
-  join(homedir(), 'Projects', '.github', '.claude', 'skills', 'vormgever-npuls-huisstijl', 'references', 'design-tokens.json'),
-].find((p) => existsSync(p));
-if (tokenFile) {
-  const t = JSON.parse(readFileSync(tokenFile, 'utf8')).colors;
-  for (const [k, v] of Object.entries({ ...t.primary, ...t.secondary })) {
-    const key = k.replace(/^npuls-/, '');
-    if (C[key] && C[key].toUpperCase() !== v.replace('#', '').toUpperCase()) {
-      errors.push(`tokens.mjs: ${key} is ${C[key]}, design-tokens.json zegt ${v} — werk tokens.mjs bij`);
-    }
-  }
-}
+// ---------- tokens: alle kleuren en kleurrollen komen uit vormgever-npuls-huisstijl (design-tokens.json) ----------
+// tokens.mjs leest dat bestand; hier alleen controleren dat de rollen zelf kloppen (bestaande kleuren, toegestane combinaties).
+errors.push(...checkTokens());
 
 // CEDA-teamfoto: env CEDA_TEAMFOTO, anders ceda/teamfoto.png in het pakket, anders img/team-groep.png in de deckmap
 const TEAM_IMAGE = NPULS.teamfoto || join(dirname(resolve(specPath)), 'img', 'team-groep.png');
@@ -219,7 +206,7 @@ if (ENGINE === 'potx') {
     template: resolve(TEMPLATE), out: resolve(join(outDir, `${name}.pptx`)),
     slides, illu: Object.fromEntries([...illuByName].map(([k, v]) => [k, resolve(v)])),
     icons: Object.fromEntries([...iconPaths].map(([k, v]) => [k, resolve(iconPng.get(v))])), iconsAsked: [...iconen],
-    tokens: { C, VARIANTS, CARD, CHART_ORDER, FONT, ALLOWED, ICON_FG, TILE_ON, BADGE_FG }, teamfoto: resolve(TEAM_IMAGE),
+    tokens: { C, VARIANTS, CARD, CHART_ORDER, FONT, ALLOWED, ICON_FG, TILE_ON, BADGE_FG, TILE_CYCLE, TINT, HERO_DEFAULT }, teamfoto: resolve(TEAM_IMAGE),
   };
   const pf = join(tmpdir(), `cedapress-${name}.json`); // tijdelijk: alleen voor build_potx.py
   writeFileSync(pf, JSON.stringify(payload, null, 1));
