@@ -35,17 +35,24 @@ T = P["tokens"]
 C, VARIANTS, CARD, CHART_ORDER, FONT, ALLOWED = T["C"], T["VARIANTS"], T["CARD"], T["CHART_ORDER"], T["FONT"], T["ALLOWED"]
 
 
-class TokenFout(KeyError):
+class TokenFout(Exception):
     """Een kleur of kleurrol die niet in design-tokens.json staat: het bouwen stopt met FOUT (exit 1)."""
 
 
-class Kleuren(dict):
+class Rollen(dict):
+    """Tabel uit design-tokens.json; een ontbrekende sleutel is een TokenFout (andere KeyErrors blijven gewone bugs)."""
+
+    def __init__(self, data, wat):
+        super().__init__(data)
+        self.wat = wat
+
     def __missing__(self, key):
-        raise TokenFout(f"kleur '{key}' staat niet in design-tokens.json (colors)")
+        raise TokenFout(f"'{key}' staat niet in design-tokens.json ({self.wat})")
 
 
 # Alle kleuren en kleurrollen komen uit design-tokens.json via build.mjs (pptx/lib/tokens.mjs); hier staan geen eigen tabellen.
-C = Kleuren(C)
+C, CARD = Rollen(C, "colors"), Rollen(CARD, "card_roles")
+VARIANTS = Rollen(VARIANTS, "slide_roles")
 BODY, HEAD, QUOTE = FONT["body"], FONT["head"], FONT["quote"]
 WARN = []
 
@@ -460,7 +467,7 @@ def card_colors(sl, items):
 # ---------------------------------------------------------------- componenten uit ceda-powerpoint-maker (Edwin)
 # Maten van Edwin (10 × 5,625 in) zijn met S = 4/3 omgerekend naar de 13,33 × 7,5 in van de potx; de breedte volgt
 # de potx-marges (ML, CW), de hoogte de inhoudszone onder de titel-placeholder. Zie references/pptx-slidetypes.md.
-ICON_FG, TILE_ON, BADGE_FG = T["ICON_FG"], T["TILE_ON"], T["BADGE_FG"]
+ICON_FG, TILE_ON, BADGE_FG = Rollen(T["ICON_FG"], "tile_pairs.icon_fg"), Rollen(T["TILE_ON"], "tile_pairs.on_card"), Rollen(T["BADGE_FG"], "badge_fg")
 TILE_CYCLE, TINT, HERO_DEFAULT = T["TILE_CYCLE"], T["TINT"], T["HERO_DEFAULT"]
 ICONS = P.get("icons", {})  # icoonnaam → PNG (zwart, transparant) uit iconen/<naam>.svg van het assetpakket
 _icon_warned, _tint_cache = set(), {}
@@ -1403,8 +1410,8 @@ for i, s in enumerate(slides, 1):
     first = len(ALL_SLIDES)
     try:
         LAYOUTS[s["type"]](i, s)
-    except KeyError as e:  # kleur of kleurrol die niet in design-tokens.json staat (TokenFout, of een rol-opzoeking)
-        print(f"FOUT  slide {i}: kleur of kleurrol {e} staat niet in design-tokens.json", file=sys.stderr)
+    except TokenFout as e:  # kleur of kleurrol die niet in design-tokens.json staat
+        print(f"FOUT  slide {i}: {e}", file=sys.stderr)
         sys.exit(1)
     if s["type"] in CENTRE:
         for sl_ in ALL_SLIDES[first:]:
