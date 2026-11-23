@@ -14,8 +14,8 @@ Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0
 ## Kleurrollen per achtergrond (OPP-20, OSH-19)
 
 - Alleen `allowed_combinations` uit de tokens (dus nooit geel op groen of groen op blauw).
-- Het accent volgt de achtergrond: wit en `licht-blauw` geven `npuls-blauw`, `licht-groen` geeft `npuls-groen`, `licht-oranje` en `licht-geel` geven `npuls-oranje`.
-- Op verzadigde vlakken verschillen titel en accent altijd (anders is het accentdeel en de label-pil onzichtbaar): roze = titel zwart + accent blauw; groen = titel zwart + accent roze; blauw = titel wit + accent geel; oranje = titel zwart + accent roze; geel = titel zwart + accent blauw. Op wit en `licht-*` volgt de titel de layout (zwart) en kleurt alleen het accentdeel.
+- Het accent volgt de achtergrond: wit en `licht-blauw` geven `npuls-blauw`, `licht-groen` geeft `npuls-groen`, `licht-oranje`, `licht-geel` en `licht-roze` geven `npuls-oranje`.
+- Op verzadigde vlakken verschillen titel en accent altijd (anders is het accentdeel en de label-pil onzichtbaar): roze = titel zwart + accent blauw; groen = titel zwart + accent roze; blauw = titel wit + accent geel; oranje = titel zwart + accent roze; geel = titel zwart + accent blauw. Op wit en `licht-*` is de titelrol in de tokens `npuls-blauw` (`slide_roles.<bg>.title`); de potx-layout en de HTML-frame tonen de titel daar nu zwart en kleuren alleen het accentdeel, dus de titelrol geldt daar nog niet in de weergave.
 - Roze als tekst haalt op groen en oranje maar ca. 2,2:1: daar is het accentdeel een roze markering achter zwarte tekst (token `title_highlight`).
 - De label-pil heeft de accentkleur (zie Label-pil).
 - Oranje op `licht-oranje` haalt maar ca. 2,5:1: alleen voor het titelaccent en groot display (kerncijfer), nooit voor kleine tekst.
@@ -25,7 +25,7 @@ Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0
 
 ## Tegelparen voor iconen (OPP-22, OSH-21)
 
-Een icoon staat altijd in een afgeronde icoontegel in een paletkleur, nooit los (pptx 0,56 in; Edwin 0,42 in op 10 in). Tegelparen (tegel/icoon): blauw/geel, geel/blauw, groen/roze, oranje/zwart, roze/blauw (token `tile_pairs.icon_fg`); op een kaart nooit dezelfde tegelkleur als de kaart (`tile_pairs.on_card`). Wissel de kleurparen af binnen één slide (`tile_pairs.cycle`). Getoetst: handmatig.
+Een icoon staat altijd in een afgeronde icoontegel in een paletkleur, nooit los (pptx 0,56 in; Edwin 0,42 in op 10 in). Tegelparen (tegel/icoon): blauw/geel, geel/blauw, groen/roze, oranje/zwart, roze/blauw, wit/blauw (token `tile_pairs.icon_fg`); op een kaart nooit dezelfde tegelkleur als de kaart (`tile_pairs.on_card`). Wissel de kleurparen af binnen één slide (`tile_pairs.cycle`). Getoetst: handmatig.
 
 ## Vormentaal (OPP-24, OSH-23)
 
@@ -33,7 +33,7 @@ Afgeronde rechthoeken (kaarten), cirkels (stapnummers, stippen) en pillen (label
 
 ## Grafieken (OPP-25, OSH-26)
 
-Kleurvolgorde blauw, oranje, groen, geel, roze (token `data_visualization.categorical_order`; één reeks = blauw). Native en bewerkbaar; altijd een kaart of titel die zegt wat opvalt. Getoetst: handmatig.
+Kleurvolgorde blauw, oranje, groen, geel, roze (token `data_visualization.categorical_order`, zonder het zesde element `npuls-zwart`: zwart is nooit een vlak; één reeks = blauw). Native en bewerkbaar; altijd een kaart of titel die zegt wat opvalt. Getoetst: handmatig.
 
 ## Deckstructuur: opening, delen en afsluiter (OPP-26, OPP-27, OPP-28, OSH-24)
 
@@ -44,4 +44,4 @@ Kleurvolgorde blauw, oranje, groen, geel, roze (token `data_visualization.catego
 
 ## Label-pil (OPP-18, OSH-18)
 
-De label-pil staat linksboven, heeft de accentkleur van de slide (zelfde kleur als het accentdeel van de titel) en de tekstkleur uit `badge_fg`. Inhoud: 1 tot 3 woorden in KAPITALEN die de functie van de slide noemen (de inhoudsregel staat in de ontwerper-skill). Getoetst: handmatig (de lengte door `build.mjs`).
+De label-pil staat linksboven, heeft de accentkleur van de slide (zelfde kleur als het accentdeel van de titel) en de tekstkleur uit `card_roles.<accent>.big` (pptx). Tekst op een gekleurde cirkel (stapnummer) volgt `badge_fg`. Inhoud: 1 tot 3 woorden in KAPITALEN die de functie van de slide noemen (de inhoudsregel staat in de ontwerper-skill). Getoetst: handmatig (de lengte door `build.mjs`).
