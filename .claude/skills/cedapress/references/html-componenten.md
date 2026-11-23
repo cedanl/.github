@@ -177,6 +177,8 @@ Rijen worden witte pillen; zet de tabel op een lichte slide (`s-lgeel`, `s-lblau
 
 ## 9. Lijn- of staafgrafiek
 
+Kaart naast een grafiek die zegt wat opvalt: `<div class="card blauw takeaway">` (even hoog als de grafiek, zoals in de pptx).
+
 Inline `<svg class="chart" viewBox="0 0 1000 420">` in een `<div class="chart-wrap">`. Assen: `<text class="ax">`, annotaties: `<text class="ann" style="fill:var(--npuls-blauw)">`. Lijnen met `style="stroke:var(--npuls-…)"`. Kerngetallen eronder:
 
 ```html
@@ -356,7 +358,7 @@ Nagebouwd uit het officiële pptx-template (`npuls/pptx/Npuls_powerpoint-templat
 
 | Klasse op `<section>` | Template-layout | Gebruik |
 |---|---|---|
-| `lay-titel` (s-roze) | Titeldia | Titelslide; staat al in de frame |
+| `lay-titel` (s-roze) | Titeldia | Titelslide; staat al in de frame. Zoals de potx: grote oranje `h1`, oranje `.lede`, `.meta` met twee regels in Cooper (kicker en datum) |
 | `lay-driehoek` (s-oranje/s-blauw) | Titeldia 3 | Tweede titel of hoofdstukopening |
 | `lay-sectie` (verzadigd) | Sectiescheider | `<p class="nr">Deel 1</p><h1>…</h1>` + bogen |
 | `lay-band` (s-blauw/s-oranje) | Tussendia | `.band-l` (groot nummer) + `.band-r` (kop, sub); geen `.body` |
@@ -365,7 +367,7 @@ Nagebouwd uit het officiële pptx-template (`npuls/pptx/Npuls_powerpoint-templat
 | `lay-vormen` | Afbeeldingen en vormen | Grijs vlak, `.vormen-duo` met 2 tegels |
 | `lay-stappen` (s-wit) | Stappen | `<img class="golf" src="npuls/vormen/golf-oranje.svg">` + `.steps` |
 | `lay-partner` (s-wit) | Partnerslide | `.partner-paneel` met groot logo en `.partner-logos` |
-| `lay-eind` (s-roze) | Einddia | Afsluitslide; staat al in de frame |
+| `lay-eind` (s-roze) | Einddia | Afsluitslide; staat al in de frame: groot logo vanaf het midden met "Onderwijs **bewegen.**" eronder, zoals de potx. Een slotvraag krijgt een eigen slide |
 
 **Vaste elementen**
 - Logo linksboven: `<img class="npuls-logo" src="npuls/vormen/npuls-logo.svg" alt="Npuls">`. Wordt automatisch wit op blauw, groen en oranje. `class="npuls-logo groot"` binnen de inhoud.

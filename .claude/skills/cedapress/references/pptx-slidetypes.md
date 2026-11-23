@@ -30,9 +30,9 @@ zet per kernboodschap één verzadigde slide.
 
 ### `title` — openingsslide
 De standaard is `roze`: de originele Npuls-titelslide (`slides-preview/slide01.png`, roze met zwart logo linksboven en
-oranje bogen rechtsonder; logo en bogen zitten in de achtergrond). Alleen tekst erbij: `title` (blauw),
-`lede` (Cooper, één zin), en één kleine regel die `kicker` en `sub` samenvoegt (bv.
-`CEDA · DAIR-bijeenkomst · 120 minuten`). `illustration` mag, `agenda`, `tagline` en `deco` worden op
+oranje bogen rechtsonder; logo en bogen zitten in de achtergrond). Alleen tekst erbij: `title` (groot, oranje, het titelvak
+is verbreed zodat een korte titel op één regel blijft), `lede` (oranje, één zin) en twee metaregels in Cooper: `kicker`
+(bv. `CEDA · mbo-instellingen`) en `sub` (bv. de datum). De HTML-titelslide (`lay-titel`) is hier gelijk aan. `illustration` mag, `agenda`, `tagline` en `deco` worden op
 roze niet getoond (waarschuwing): zet het programma in een tijdlijn.
 Wil je toch de blauwe titelslide (blauw met bogen, wit logo, kicker-pill, agenda genummerd rechts of
 `illustration`, `tagline`, `deco: false` zet de golven uit), geef dan `variant: 'blauw'`. `npuls: false` zet
@@ -139,11 +139,11 @@ Alleen in de potx-engine. Maten van Edwin (10 in breed) zijn met 4/3 omgerekend 
 | `section` | Sectiescheider op de master van de variant: `blauw`, `oranje`, `geel` of `roze` (`groen` bestaat niet → blauw). `number` komt klein bovenaan |
 | `split` | Tekst en afbeelding 1 (illustratie rechts) of 2 (`side: 'left'`); `image` mag in plaats van `illustration` |
 | `list` | Tot 4 items zonder `footer`: Stappen (golf links, vakken rechts; `illustration` per item wordt het icoon). Meer: rijen op Alleen titel |
-| `quote` | Quote (op `roze` de roze master) |
+| `quote` | Quote (op `roze` de roze master): openingsteken, citaat in Cooper links, bron direct eronder, het blok in het optische midden; `illustration` groot rechts. Gelijk aan de HTML (`lay-quote`) |
 | `closing` | Sectiescheider (standaard roze): `title` klein bovenaan, `question` groot |
 | `ceda` | Partnerslide (wit met rechts het roze Npuls-vlak) |
-| `team` | Alleen titel, groepsfoto met tekst rechts (licht-blauw) |
-| `contact` | Titeldia roze (logo en bogen uit de template), gecentreerd met drie witte kaarten en klikbare links, gelijk aan de oude engine; daarna volgt automatisch de **Einddia** (Npuls-logo). `einddia: false` op het deck zet die uit |
+| `team` | Alleen titel (licht-blauw): groepsfoto 3:2 op de marge, bijgesneden met afgeronde hoeken, projecten ernaast in het midden (eerste regel Cooper, namen in de accentkleur). Gelijk aan de HTML |
+| `contact` | Titeldia roze (logo en bogen uit de template), gecentreerd met drie witte kaarten en klikbare links, gelijk aan de oude engine; daarna volgt automatisch de **Einddia** (Npuls-logo met "Onderwijs **bewegen.**" eronder, OPP-28). `einddia: false` op het deck zet die uit |
 | `cards`, `stats`, `chart`, `table`, `timeline`, `image` | Alleen titel, met de inhoud getekend als vormen, grafiek of tabel |
 
 Verschillen met de oude engine:
