@@ -4,7 +4,7 @@ description: Ontwerpregels voor PowerPoint-decks van CEDA/Npuls — tekst per sl
 allowed-tools: Read
 metadata:
   ceda-id: ceda.ontwerper-powerpoint
-  ceda-version: "0.3.0"
+  ceda-version: "0.3.1"
   ceda-type: reference
   ceda-subtype: knowledge
   ceda-origin: own
@@ -27,7 +27,15 @@ Huisstijl en template komen uit `vormgever-npuls-huisstijl`.
 
 Regels gebaseerd op de ontwerprichtlijnen van Edwin (ceda-powerpoint-maker 0.2.0), afgeleid uit de CEDA-presentatie Uitnodigingsregel en de Npuls-huisstijl.
 
-**Taakverdeling (besluit Aslam):** de officiële Npuls-potx en de tokens zijn vast (beheer: `vormgever-npuls-huisstijl` en `npuls-assets`; layouts, kleuren, fonts, logo's, vormen, illustraties). Wat in deze skill staat beheert Edwin en is flexibel (componenten, slidepatronen, drempels, kleurkeuze per slide, deckstructuur), zolang het binnen de potx-layouts en tokens blijft. Ontbrekende assets komen via een nieuwe assetrelease. Achtergrond: pitch cedanl/clidev-presentaties#16.
+**Rollen en beheer** (gelijk in vormgever, ontwerper-powerpoint, ontwerper-slides-html en cedapress):
+
+| Skill | Beheer | Wat erin hoort | Wat er niet in hoort |
+|---|---|---|---|
+| `vormgever-npuls-huisstijl` (incl. `design-tokens.json`, `references/presentaties.md` en het assetpakket `npuls-assets`) | Edwin | alles wat Npuls-specifiek is: palet, kleurrollen per achtergrond, tegelparen, fonts, logo's, vormen, illustraties, potx, deckstructuur (roze opening, afsluiter "Onderwijs bewegen.", CC BY-SA), label-pil, grafiekvolgorde | hoe je een goede slide maakt; renderercode |
+| `ontwerper-powerpoint`, `ontwerper-slides-html` | Edwin | algemene ontwerpregels voor elk deck: één boodschap per slide, max. ~50 woorden, titel als bewering, minimale lettergrootte, afwisseling, contrast. Voor kleur: kies uit de rollen van de huisstijl | hexcodes, kleurlijsten, Npuls-namen |
+| `cedapress` | Aslam | orkestreren en bouwen: `bron.md`, renderers, checks, `assets.lock`. Leest de tokens en `presentaties.md`, kopieert niets | eigen kleurtabellen of Npuls-regels |
+
+Een Npuls-afspraak wijzigen = `design-tokens.json` of `presentaties.md` aanpassen (Edwin), daarna een assetrelease en de pin in `cedapress/assets.lock` ophogen (Aslam).
 
 **Kleur en Npuls-vorm:** hier staan alleen algemene ontwerpregels. Kies kleuren uit de rollen van de huisstijl (kleurrollen per achtergrond, tegelparen, vormentaal, grafiekvolgorde, opening en afsluiter, label-pil): `vormgever-npuls-huisstijl/references/presentaties.md` en `design-tokens.json`. Regelnummers in `references/regels.md` blijven staan en verwijzen daarheen.
 
