@@ -185,8 +185,18 @@ class Slide:
         size, ok = fit(plain(text), w, max(h, 0.6) * 1.2, 40, HEAD, 24)
         if not ok:
             self.warn(f"titel te lang voor de template ({len(plain(text))} tekens): \"{plain(text)[:50]}\" → korter")
-        # `**accentdeel**` krijgt de accentkleur van de slide (OPP-17, OPP-20)
-        return self.set_ph(idx, text, color=color, size=size if size < 40 else None, accent=self.v["accent"] if "**" in str(text) else None)
+        # `**accentdeel**` krijgt de accentkleur van de slide (OPP-17, OPP-20). Op groen en oranje haalt roze als tekst
+        # maar ca. 2,2:1: daar wordt het accentdeel een roze markering achter zwarte tekst (zelfde kleuren, wel leesbaar).
+        marker = MARKER.get(self.v["bg"]) if "**" in str(text) else None
+        p = self.set_ph(idx, text, color=color, size=size if size < 40 else None,
+                        accent=(color or self.v["title"]) if marker else (self.v["accent"] if "**" in str(text) else None))
+        if p is not None and marker:
+            for para in p.text_frame.paragraphs:
+                for r in para.runs:
+                    if r.font.name == HEAD and r.text.strip():
+                        r.text = "\u200a" + r.text + "\u200a"  # haarspatie: de markering loopt iets door om de letters
+                        highlight(r, marker)
+        return p
 
     def note_rect(self, text, x, y, w, h, size, font, valign, align="left"):
         """Onthoud waar de tekst echt staat (niet het hele vak), zodat een illustratie eroverheen opvalt."""
@@ -354,6 +364,26 @@ class Slide:
             self.warn(f"{fg} op {bg} ({where}) is geen toegestane Npuls-combinatie")
 
 
+# Achtergrond → kleur van de markering achter het accentdeel van de titel (zie Slide.title).
+MARKER = {"groen": "roze", "oranje": "roze"}
+
+
+def highlight(run, name):
+    """Markeerstift achter een run (a:highlight, PowerPoint 2019 en later); volgorde in rPr: na de vulling, vóór het lettertype."""
+    rPr = run._r.get_or_add_rPr()
+    for old in rPr.findall(qn("a:highlight")):
+        rPr.remove(old)
+    hl = rPr.makeelement(qn("a:highlight"), {})
+    clr = hl.makeelement(qn("a:srgbClr"), {"val": C[name]})
+    hl.append(clr)
+    after = [qn(t) for t in ("a:latin", "a:ea", "a:cs", "a:sym", "a:hlinkClick", "a:hlinkMouseOver", "a:rtl", "a:extLst", "a:uLnTx", "a:uLn", "a:uFillTx", "a:uFill")]
+    nxt = next((el for el in rPr if el.tag in after), None)
+    if nxt is not None:
+        nxt.addprevious(hl)
+    else:
+        rPr.append(hl)
+
+
 def no_bullet(paragraphs):
     for p in paragraphs:
         pPr = p._p.get_or_add_pPr()
@@ -375,17 +405,21 @@ def footnote(sl, s):
 CENTRE = {"cards", "stats", "steps", "lead", "insight", "lists"}
 
 
+OPTISCH = 0.4  # deel van de vrije ruimte boven het inhoudsblok; gelijk aan de HTML-frame (.body::before 2, ::after 3)
+
+
 def vcentre(sl):
-    """Zet het inhoudsblok verticaal in het midden van de inhoudszone (zoals de HTML, besluit Aslam 2026-11-12):
-    geen lege onderhelft. Titel, label-pil, intro, placeholders, voetnoot en dianummer blijven staan."""
+    """Zet het inhoudsblok in het optische midden van de inhoudszone (zoals de HTML, besluit Aslam 2026-11-12):
+    geen lege onderhelft en geen lege band onder de titel. Van de vrije ruimte komt 40 % boven en 60 % onder het blok,
+    zo staat het blok net boven het wiskundige midden. Titel, label-pil, intro, placeholders, voetnoot en dianummer blijven staan."""
     zone_top, zone_bot = sl.top, CONTENT_BOTTOM
     shapes = [sh for sh in sl.s.shapes if not sh.is_placeholder and sh.name != "cedapress-voetnoot" and sh.top / 914400 >= zone_top - 0.2]
     if not shapes:
         return
     lo = min(sh.top for sh in shapes) / 914400
     hi = max(sh.top + sh.height for sh in shapes) / 914400
-    delta = ((zone_top + zone_bot) / 2) - ((lo + hi) / 2)
-    if delta < 0.12 or hi + delta > zone_bot + 0.01:
+    delta = zone_top + OPTISCH * ((zone_bot - zone_top) - (hi - lo)) - lo
+    if abs(delta) < 0.06 or hi + delta > zone_bot + 0.01 or lo + delta < zone_top - 0.01:
         return
     for sh in shapes:
         sh.top = sh.top + int(delta * 914400)
@@ -492,14 +526,17 @@ def note_bar(sl, note, y, h=1.05):
     return h
 
 
-def figure_card(sl, x, y, w, h, value, label, bg=None, color="oranje"):
-    """Kerncijfer: groot getal (vet, oranje) met het label in kapitalen eronder."""
+def figure_card(sl, x, y, w, h, value, label, bg=None, color="oranje", size=59):
+    """Kerncijfer: groot getal (vet, oranje) met het label in kapitalen eronder; getal en label samen in het midden."""
     bg = bg or ("wit" if sl.v["bg"] in ("licht-geel",) else "licht-geel")
     sl.check_pair(bg, color, "kerncijfer")
     sl.box(x, y, w, h, bg, r=0.21)
-    off = max(0.23, (h - 1.65) / 2)  # getal en label samen verticaal in de kaart
-    sl.text(str(value), x + 0.29, y + off, w - 0.58, min(1.0, h * 0.5), 59, color, font=HEAD, valign="middle", mn=36)
-    sl.text(str(label).upper(), x + 0.29, y + off + 1.1, w - 0.58, max(0.4, h - off - 1.2), 12, "zwart", font=HEAD, kind="label", spc=100)
+    vh = size * 1.05 / 72  # hoogte van de cijferregel
+    off = max(0.23, (h - vh - 0.55) / 2)
+    pad = 0.45 if size > 59 else 0.29
+    sl.text(str(value), x + pad, y + off, w - 2 * pad, vh, size, color, font=HEAD, valign="middle", mn=36)
+    sl.text(str(label).upper(), x + pad, y + off + vh + 0.12, w - 2 * pad, max(0.4, h - off - vh - 0.2), 12 if size <= 59 else 14,
+            "zwart", font=HEAD, kind="label", spc=100)
 
 
 def step_row(sl, x, y, w, h, nr, title, text, bg, circle):
@@ -538,7 +575,7 @@ def t_steps(n, s):
     tmax = max(max(0.4, text_height(it["title"], tw, 19, HEAD) + 0.05) for it in items)
     sz = 17
     need = 0.93 + tmax + 0.1 + max(text_height(it.get("text", ""), tw, sz) for it in items) + 0.3
-    ch = min(bottom - sl.top, max(3.0, need))
+    ch = min(bottom - sl.top, max(2.4, need))  # zo hoog als de inhoud: geen lege onderkant in de kaart
     bg, circle = soft_card(sl), sl.v["accent"]
     for i, it in enumerate(items):
         step_card(sl, ML + i * (cw + gap), sl.top, cw, ch, i + 1, it["title"], it.get("text", ""), bg, circle, th=tmax, size=sz)
@@ -575,16 +612,18 @@ def t_lead(n, s):
         for k, it in enumerate(items):
             step_row(sl, rx, ry + k * (rh + 0.12), rw, rh, k + 1, it["title"], it.get("text"), bg, "groen" if v["bg"] == "wit" else v["accent"])
     else:
-        lw = CW * 0.58 if figs else CW
-        lsz = 32 if figs else 36
-        fh = min(2.46, (bottom - top - 0.25 * (len(figs) - 1)) / len(figs)) if figs else 0
+        # Eén kerncijfer: groot vlak naast een grote kernzin, samen een blok van ca. de halve slidehoogte (geen lege slide).
+        lw = CW * 0.56 if figs else CW
+        lsz = 36
+        one = len(figs) == 1
+        fh = (min(3.4, bottom - top) if one else min(2.46, (bottom - top - 0.25 * (len(figs) - 1)) / len(figs))) if figs else 0
         blok = fh * len(figs) + 0.25 * max(0, len(figs) - 1)
         lh = min(bottom - top, max(blok, text_height(s.get("lead") or "", lw, lsz) + 0.1))
         sl.text(s.get("lead"), ML, top, lw, lh, lsz, v["text"], accent=v["accent"], valign="middle" if figs else "top", mn=18)
         if figs:
-            fx, fw = ML + lw + 0.5, CW - lw - 0.5
+            fx, fw = ML + lw + 0.6, CW - lw - 0.6
             for k, f in enumerate(figs):
-                figure_card(sl, fx, top + k * (fh + 0.25), fw, fh, f["value"], f.get("label", ""))
+                figure_card(sl, fx, top + (lh - blok) / 2 + k * (fh + 0.25), fw, fh, f["value"], f.get("label", ""), size=110 if one else 59)
     if s.get("note"):
         note_bar(sl, s["note"], CONTENT_BOTTOM - 1.05)
     footnote(sl, s)
@@ -700,6 +739,9 @@ def t_title(n, s):
     if v == "roze":
         sl = Slide(n, s, 1, "Titeldia")
         sl.set_ph(0, plain(s["title"]), max_chars=40)
+        # Het titelvak van de layout (8,9 in) breekt een titel als "De Uitnodigingsregel" na het eerste woord af.
+        # Breder tot vlak voor de rechtermarge: de bogen staan rechtsonder, onder het titelvak.
+        sl.place(0, w=W - ML - 1.0)
         sl.set_ph(10, s.get("lede"), max_chars=80)
         sl.set_ph(1, s.get("kicker"), max_chars=60)
         if sl.set_ph(11, s.get("sub"), max_chars=70) is not None:
@@ -1093,7 +1135,17 @@ def t_chart(n, s):
         va.major_gridlines.format.line.color.rgb = RGBColor(0xDD, 0xDD, 0xDD)
         va.format.line.fill.background()
         if s.get("horizontal"):
+            # liggende staven: de datalabels geven de waarde; geen waardeas of rasterlijnen (die kwamen bovenaan te staan)
             ch.category_axis.reverse_order = True
+            va.visible = False
+            va.has_major_gridlines = False
+            ca = ch.category_axis
+            ca.tick_labels.font.size, ca.tick_labels.font.name = Pt(18), HEAD
+            ca.format.line.fill.background()
+            if kind == "bar" and not s.get("stacked"):
+                plot.gap_width = 45
+                if plot.has_data_labels:
+                    plot.data_labels.font.size = Pt(16)
     if s.get("takeaway"):
         tx = ML + CW - side
         c = v["cards"][0]
@@ -1115,21 +1167,43 @@ def t_chart(n, s):
     footnote(sl, s)
 
 
+# Kleur van het openingsteken van een citaat per achtergrond (gelijk aan --accent-2 in de HTML-frame).
+QUOTE_MARK = {"wit": "groen", "roze": "oranje", "blauw": "roze", "geel": "oranje", "groen": "roze", "oranje": "roze",
+              "licht-blauw": "oranje", "licht-groen": "oranje", "licht-geel": "blauw", "licht-roze": "blauw", "licht-oranje": "blauw"}
+
+
 def t_quote(n, s):
+    """Citaat zoals de HTML: openingsteken, citaat in Cooper links (± 7,4 in breed), de bron er direct onder,
+    het blok in het optische midden; een illustratie staat groot rechts, boven de bogen van de layout."""
     v = s.get("variant", "wit")
     m = 1 if v == "roze" else 0
     sl = Slide(n, s, m, "Quote")
     if m == 0:
         sl.background(sl.v["bg"])
-    p = sl.set_ph(11, plain(s["text"]), max_chars=180)
-    if p is not None and not (sl.v["bg"] == "wit" or sl.v["bg"].startswith("licht") or m == 1):
-        for r in (r for para in p.text_frame.paragraphs for r in para.runs):
-            paint(r.font.color, sl.v["quote"] if sl.v["quote"] != "zwart" else sl.v["title"])
-    x, y, w, h = sl.ph_box(11)
+    ill = s.get("illustration")
+    qw = 7.4 if ill else 9.6
+    text = plain(s["text"])
+    size, ok = fit(text, qw, 3.3, 40, QUOTE, 28)
+    if not ok:
+        sl.warn(f"citaat te lang ({len(text)} tekens): \"{text[:50]}…\" → inkorten")
+    th = text_height(text, qw, size, QUOTE, 1.12) + 0.1
+    mark_h, by_h = 0.75, (0.6 if s.get("by") else 0)
+    zone_top, zone_bot = 1.45, CONTENT_BOTTOM
+    y = zone_top + OPTISCH * max(0, (zone_bot - zone_top) - (mark_h + th + by_h))
+    qc = sl.v["quote"] if sl.v["quote"] != "zwart" else sl.v["title"]
+    qc = None if (sl.v["bg"] == "wit" or sl.v["bg"].startswith("licht") or m == 1) else qc
+    sl.text("\u201c", ML - 0.04, y - 0.1, 1.2, mark_h + 0.25, 80, QUOTE_MARK.get(sl.v["bg"], "blauw"), font=QUOTE, mn=40)
+    p = sl.place(11, x=ML, y=y + mark_h, w=qw, h=th)
+    p.text_frame.word_wrap = True
+    p.text_frame.vertical_anchor = MSO_ANCHOR.TOP
+    sl._fill(p.text_frame, text, color=qc, size=size, line=1.0)
+    no_bullet(p.text_frame.paragraphs)
+    sl.note_rect(text, ML, y + mark_h, qw, th, size, QUOTE, "top")
     if s.get("by"):
-        sl.text(s["by"], x, y + h + 0.2, w, 0.5, 18, sl.v["text"], font=HEAD)
-    if s.get("illustration"):
-        sl.illustration(s["illustration"], ML, y + (h - 1.5) / 2, 1.5, 1.5)  # in de linkermarge, midden naast de quote
+        sl.text(s["by"], ML, y + mark_h + th + 0.15, qw, 0.45, 18, sl.v["text"], font=HEAD)
+    if ill:
+        side = 3.6
+        sl.illustration(ill, W - ML - side, 1.55, side, 3.5)
 
 
 def t_image(n, s):
@@ -1206,9 +1280,44 @@ TEAM_TEXT = "Diverse projecten, waaronder\n\n**Instroomprognose**\n\n**Staat van
 
 
 def t_team(n, s):
-    """Vaste teamslide "Wie zijn wij": groepsfoto van het CEDA-team (zoals in de DAIR-decks); `text` mag anders."""
-    t_image(n, {**s, "title": "Wie zijn wij", "image": P.get("teamfoto") or "public/shots/team/groep.png", "alt": "Groepsfoto van het CEDA-team",
-                "text": s.get("text") or TEAM_TEXT})
+    """Vaste teamslide "Wie zijn wij": groepsfoto links op de marge (bijgesneden, afgeronde hoeken), rechts de projecten,
+    samen in het optische midden; gelijk aan de HTML-frame. `text` mag anders (eerste regel in Cooper, **namen** in de accentkleur)."""
+    s = {**s, "title": "Wie zijn wij"}
+    sl = content_slide(n, s)
+    sl.title(s["title"])
+    from PIL import Image
+    img = P.get("teamfoto") or "public/shots/team/groep.png"
+    pw, ph_ = 6.6, 4.4
+    y = sl.top + OPTISCH * max(0, (CONTENT_BOTTOM - sl.top) - ph_)
+    pic = sl.s.shapes.add_picture(str(img), E(ML), E(y), E(pw), E(ph_))
+    with Image.open(img) as im:
+        iw, ih = im.size
+    want, have = pw / ph_, iw / ih
+    if have > want:  # te breed: links en rechts bijsnijden
+        c = (1 - want / have) / 2
+        pic.crop_left = pic.crop_right = c
+    elif have < want:  # te hoog: vooral onder bijsnijden (gezichten staan boven)
+        c = 1 - have / want
+        pic.crop_top, pic.crop_bottom = c * 0.25, c * 0.75
+    pic.auto_shape_type = MSO_SHAPE.ROUNDED_RECTANGLE
+    geom = pic._element.spPr.find(qn("a:prstGeom"))
+    av = geom.find(qn("a:avLst"))
+    if av is None:
+        av = geom.makeelement(qn("a:avLst"), {})
+        geom.append(av)
+    av.append(av.makeelement(qn("a:gd"), {"name": "adj", "fmla": f"val {int(0.21 / ph_ * 50000 * 2)}"}))
+    pic._element.nvPicPr.cNvPr.set("descr", "Groepsfoto van het CEDA-team")
+    tx = ML + pw + 0.6
+    tw = W - ML - tx
+    lines = [l_ for l_ in (s.get("text") or TEAM_TEXT).split("\n") if l_.strip()]
+    head, rest = lines[0], lines[1:]
+    bh = 0.55 + 0.55 * len(rest)
+    ty = y + (ph_ - bh) / 2
+    sl.text(head, tx, ty, tw, 0.5, 22, "zwart", font=QUOTE, mn=18)
+    nsz = min([20] + [fit(l_, tw, 0.5, 20, HEAD, 15)[0] for l_ in rest])  # alle namen even groot
+    for k, l_ in enumerate(rest):
+        sl.text(l_ if "**" in l_ else f"**{l_}**", tx, ty + 0.6 + k * 0.55, tw, 0.5, nsz, "zwart", accent=sl.v["accent"], mn=15)
+    footnote(sl, s)
 
 
 def t_contact(n, s):
@@ -1228,10 +1337,8 @@ def t_contact(n, s):
     for i, (tag, txt, c, fg, url) in enumerate(links):
         x = x0 + i * (cw + gap)
         sl.box(x, 4.0, cw, 1.35, "wit", r=0.2)
-        sl.pill(tag, x + (cw - 1.6) / 2, 4.22, 1.6, 0.4, c, fg, size=12)
-        box = sl.text(txt, x + 0.15, 4.78, cw - 0.3, 0.4, 14, "zwart", align="center", link=url)
-        for rr in (rr for pa in box.text_frame.paragraphs for rr in pa.runs):
-            rr.font.underline = True
+        sl.pill(tag.upper(), x + (cw - 1.6) / 2, 4.22, 1.6, 0.4, c, fg, size=12)
+        sl.text(txt, x + 0.15, 4.75, cw - 0.3, 0.45, 18, "zwart", font=HEAD, align="center", link=url)  # zoals de HTML-linkkaart
 
 
 def t_closing(n, s):
@@ -1275,7 +1382,10 @@ def t_closing(n, s):
 
 
 def t_einddia(n, s):
-    Slide(n, s, 1, "Einddia")
+    """Einddia uit de template (tegels, logo, CC-licentie) met de afsluiter "Onderwijs **bewegen.**" onder het logo (OPP-28),
+    gelijk aan de HTML-frame. Het logo staat in de layout op x 6,67 in, y 2,85 tot 4,65 in."""
+    sl = Slide(n, s, 1, "Einddia")
+    sl.text("Onderwijs **bewegen.**", 6.72, 4.95, 5.2, 0.6, 28, "zwart", accent="zwart", mn=20)
 
 
 LAYOUTS = {"title": t_title, "section": t_section, "stats": t_stats, "cards": t_cards, "split": t_split, "list": t_list,
