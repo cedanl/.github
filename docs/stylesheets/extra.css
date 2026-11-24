@@ -22,6 +22,7 @@
   /* Pasteltinten */
   --npuls-licht-blauw: #D6E2FD;
   --npuls-licht-roze: #FAEAEA;
+  --npuls-roze-subtiel: rgba(244, 217, 220, 0.55);
   --npuls-licht-oranje: #FFE4D8;
   --npuls-licht-groen: #CCEEE6;
   --npuls-groen: #00AF81;
@@ -110,6 +111,15 @@
 
 .md-nav__link:hover {
   color: var(--npuls-blauw);
+}
+
+/* Subtiele roze highlight: huidige pagina (zijbalk links) en huidige
+   sectie (inhoudsopgave rechts). npuls-roze op 55% dekking, zwarte tekst. */
+.md-nav--primary .md-nav__item .md-nav__link--active,
+.md-nav--secondary .md-nav__link--active {
+  color: var(--npuls-zwart);
+  background-color: var(--npuls-roze-subtiel);
+  border-radius: var(--npuls-radius-sm);
 }
 
 .md-typeset h1 {
