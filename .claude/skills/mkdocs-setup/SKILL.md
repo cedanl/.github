@@ -1,368 +1,121 @@
 ---
 name: mkdocs-setup
-description: Voeg een MkDocs Material documentatiesite toe aan een cedanl Python project en configureer GitHub Pages. Gebruik wanneer iemand documentatie wil toevoegen, een docs-site wil opzetten, of vraagt hoe MkDocs werkt in cedanl repos.
+description: Richt een MkDocs Material documentatiesite in volgens het CEDA-handboekontwerp met Npuls-palet, pil-tabbladen, rustige Markdown-startpagina en GitHub Pages-workflow. Gebruik bij "/mkdocs-setup", "maak een docs-site", "voeg MkDocs toe" of "pas MkDocs aan". LET OP — niet voor applicatie-UI buiten MkDocs; gebruik daar `vormgever-npuls-huisstijl` en voor presentaties `clidev`.
+allowed-tools: Read Grep Glob Write Edit Bash AskUserQuestion
+compatibility: Requires python3 and uv (and gh CLI when configuring GitHub Pages)
+metadata:
+  ceda-id: ceda.mkdocs-setup
+  ceda-version: "1.0.0"
+  ceda-type: workflow
+  ceda-subtype: ""
+  ceda-origin: own
+  ceda-upstream: ""
+  ceda-source: docs/stylesheets/extra.css
+  ceda-activation: command
+  ceda-binding: default
+  ceda-execution: inline
+  ceda-scope: org
+  ceda-verifies: measurable
 ---
 
-# MkDocs Setup
+# MkDocs Setup in CEDA/Npuls-stijl
 
-Voeg een volledige MkDocs Material documentatiesite toe aan een cedanl Python project, inclusief GitHub Actions workflow en GitHub Pages configuratie. Gebaseerd op de opzet van `cedanl/1cijferho` en `cedanl/studentprognose`.
+Bouwt een nieuwe MkDocs Material documentatiesite op voor een `cedanl`-repository — of trekt een bestaande MkDocs-site gelijk naar de vaste CEDA/Npuls-stijl uit `cedanl/.github`. Vraag eerst de projectgegevens uit en toon een overzicht ter akkoord voordat je bestanden wegschrijft of GitHub Pages aanpast.
+
+## Vaste stijlelementen (niet van afwijken)
+
+Elke CEDA MkDocs-site deelt exact dezelfde rustige opzet en Npuls-tokens (bron: `.claude/skills/vormgever-npuls-huisstijl/references/design-tokens.json`):
+
+- **Header en navigatiebalk (`.md-header`, `.md-tabs`):** achtergrond `npuls-roze` (`#F4D9DC`) met tekst in `npuls-zwart` (`#000000`, contrast 15,8:1 WCAG AAA) en een onderrand van `2px solid #DD784B` (`npuls-oranje`).
+- **Beeldmerk en favicon:** `docs/assets/logos/npuls_logo.jpg` (met `#F3D9DC`-achtergrond die naadloos wegvalt op `npuls-roze`) als `logo` en `docs/assets/logos/beeldmerk.svg` als `favicon`.
+- **Pil-tabbladen en zoekbalk:** top-level tabs verticaal gecentreerd (`height: 2.6rem`), hover in `rgba(255, 255, 255, 0.65)` en actieve tab als pil in `npuls-oranje` (`#DD784B`) met vette zwarte tekst (`#000000`, 6,86:1 AA). Zoekbalk (`.md-search__form`) als witte pil (`#FFFFFF`, `border-radius: 9999px`) met blauwe hover-rand (`#3D68EC`).
+- **Typografie en links:** `'General Sans', 'Plus Jakarta Sans', system-ui, sans-serif` (geladen via Google Fonts; nooit Inter). Links in de tekst in `npuls-blauw` (`#3D68EC`) met hover-markering in `licht-geel` (`#FCF5D4`). Zichtbare toetsenbordfocus (`3px solid #3D68EC`).
+- **Tabellen, codeblokken en admonitions:** afgeronde tabellen (`12px` radius) met koprij (`th`) op `npuls-roze` (`#F4D9DC`) en vette zwarte tekst. Admonitions volgen de Npuls-statuskleuren zonder standaard rood buiten het palet: `info`/`note` = `npuls-blauw` (`#3D68EC` op `#D6E2FD`), `warning` = `npuls-oranje` (`#DD784B` op `#FFE4D8`), `tip`/`success` = `npuls-groen` (`#00AF81` op `#CCEEE6`).
+- **Footer:** `npuls-roze` (`#F4D9DC`) met `2px solid #DD784B` bovenrand en `licht-roze` (`#FAEAEA`) balk voor copyright en vaste links naar Npuls, de CEDA-community (`edu.nl/twt84`) en `ceda@surf.nl`.
+- **MkDocs Material features:** `navigation.tabs`, `navigation.tabs.sticky`, `navigation.sections`, `navigation.indexes`, `navigation.path`, `navigation.top`, `search.highlight`, `search.suggest`, `content.code.copy`, `content.code.annotate`, `content.tabs.link`, `toc.follow`.
 
 ## Workflow
 
-When the user invokes `/mkdocs-setup`:
+When the user invokes `/mkdocs-setup [optioneel: pad of repo]`:
 
-### 1. Controleer bestaande setup
+### 1. Inspecteer de huidige repository
 
-Check of MkDocs al geconfigureerd is:
-
-```bash
-ls mkdocs.yml mkdocs.yaml docs/ .github/workflows/docs.yml 2>/dev/null
-```
-
-Als `mkdocs.yml` al bestaat: lees de huidige configuratie en bied aan om deze te updaten in plaats van opnieuw te beginnen. Vraag de gebruiker wat er gewijzigd moet worden en stop hier als dat het geval is.
-
-Stel ook vast wat de huidige repo en organisatie zijn:
+Controleer wat er al aanwezig is:
 
 ```bash
-gh repo view --json name,owner,description --jq '{name: .name, owner: .owner.login, description: .description}'
+ls -la mkdocs.yml mkdocs.yaml pyproject.toml docs/ .github/workflows/docs.yml 2>/dev/null || true
 ```
 
-### 2. Interview — vraag 1
+- **Bestaat `mkdocs.yml` al?** Lees de huidige `mkdocs.yml`, `docs/index.md` en eventuele `extra.css`. Stel voor om de bestaande site over te zetten naar de CEDA/Npuls-stijl met behoud van de bestaande inhoud en `nav:`.
+- **Nieuwe site?** Bepaal of de repository een Python-pakket met `pyproject.toml` is of een losse documentatie-repository zonder `pyproject.toml`.
 
-> Wat is de naam van de site? Dit wordt de titel in de navigatiebalk.
-> (Standaard: de repo-naam in leesbare vorm, bijv. `1cijferho` → `1CijferHO`)
+### 2. Kort interview
 
-Wacht op antwoord.
+Stel de ontbrekende vragen in één keer via `AskUserQuestion` (geen vraag over accentkleur — het Npuls-palet ligt vast):
 
-### 3. Interview — vraag 2
+1. **Sitenaam en korte beschrijving** — titel in de header (bijv. `1CijferHO` of `<Repo> Documentatie`) en één zin voor `site_description`.
+2. **Python API-referentie (`mkdocstrings`)** — alleen vragen als `src/<package>/` aanwezig is: wil je automatische API-documentatie op basis van Google-style docstrings?
+3. **Uitbreidingen** — zijn **Mermaid**-diagrammen of **MathJax**-formules nodig, of geen van beide?
 
-> Wat is een korte beschrijving van het project? (1 zin, wordt gebruikt als `site_description` en in de browser-tab)
+### 3. Bouw het ontwerp op vanuit de gebundelde templates
 
-Wacht op antwoord.
+1. **`mkdocs.yml`:** neem `assets/mkdocs.yml.tpl` als basis. Vul `<site_name>`, `<site_description>` en `<repo>` in, schakel alleen de gevraagde optionele blokken (`mkdocstrings`, `include-markdown`, Mermaid of MathJax) in en zet alle navigatietitels in helder Nederlands.
+2. **`docs/stylesheets/extra.css`:** kopieer `assets/extra.css` ongewijzigd naar `docs/stylesheets/extra.css`.
+3. **Logo en favicon (`docs/assets/logos/`):** kopieer `npuls_logo.jpg` en `beeldmerk.svg` vanuit `.claude/skills/vormgever-npuls-huisstijl/assets/logos/` naar `docs/assets/logos/`. Is die map lokaal niet aanwezig, haal beide bestanden dan op uit `cedanl/.github` en plaats nooit een lege placeholder.
+4. **Startpagina (`docs/index.md`):** gebruik `assets/index.md.tpl`. Schrijf actief Nederlands volgens de Npuls-schrijfwijzer (`je`/`wij`, geen `u`/`uw`, korte zinnen).
+5. **Dependencies en `.gitignore`:**
+   - Voeg `site/` toe aan `.gitignore` als die regel nog ontbreekt.
+   - Heeft de repo een `pyproject.toml`? Voeg dan alleen de `docs`-groep toe (`mkdocs>=1.6.0`, `mkdocs-material>=9.5.0`, `pymdown-extensions>=10.0`, en optioneel `mkdocstrings[python]>=0.26.0` of `mkdocs-include-markdown-plugin`) zonder de rest van `pyproject.toml` te overschrijven.
+6. **GitHub Actions (`.github/workflows/docs.yml`):** gebruik `assets/docs-workflow.yml.tpl` — kies Variant A voor nieuwe Python-projecten (GitHub Pages bron = `GitHub Actions`) of Variant B wanneer een bestaande repo al via een `gh-pages` branch publiceert.
 
-### 4. Interview — vraag 3
+### 4. Toon de draft en wacht op akkoord
 
-> Heeft het project een `src/<package>/` layout met Python code waarvan je de API wil documenteren via docstrings?
-> (ja / nee — als ja, wordt `mkdocstrings` geconfigureerd)
+Presenteer welke bestanden worden aangemaakt of bijgewerkt (inclusief de `nav:`-structuur en de gekozen workflow-variant) en wacht op expliciet akkoord vóór het schrijven of aanpassen van GitHub Pages-instellingen.
 
-Wacht op antwoord.
+### 5. Schrijf weg, valideer lokaal en configureer optioneel GitHub Pages
 
-### 5. Interview — vraag 4
+1. Schrijf de goedgekeurde bestanden weg.
+2. Draai direct de strikte build-controle (zie **Verificatie**) en los eventuele link- of ankerwaarschuwingen op.
+3. Alleen bij Variant A én na akkoord van de gebruiker: controleer via `gh api repos/cedanl/<repo>/pages` of GitHub Pages op `build_type=workflow` staat.
 
-> Heb je extra's nodig?
-> - **Mermaid** — diagrammen in Markdown (bijv. flowcharts, sequentiediagrammen)
-> - **MathJax** — wiskundige formules via LaTeX
-> - **Geen van beide**
+## Let op: houd `docs/index.md` net zo rustig als vervolgpagina's
 
-Wacht op antwoord.
+Maak op `docs/index.md` **geen** uitbundige landingspagina: geen custom HTML-hero, geen decoratieve kernvorm-SVG's, geen gekleurde sectiekaders, geen losse pill-knoppen of kaartengrids en géén `hide: [navigation, toc]`. Gebruik precies dezelfde rustige Markdown-opbouw als op de dieperliggende pagina's:
 
-### 6. Interview — vraag 5
+- Standaard `# Titel` en een korte introductie van twee zinnen.
+- Duidelijke `##`-koppen met gewone Markdown-tabellen (die via `extra.css` automatisch de `npuls-roze` koprij krijgen) en de standaard inhoudsopgave rechts.
+- Hooguit één rustig `!!! info`-blok onderaan voor doorverwijzing naar de CEDA-community of verwante documentatie.
 
-> Welke accentkleur wil je gebruiken voor het thema?
->
-> | Kleur | Voorbeeld gebruik |
-> |-------|-------------------|
-> | `teal` | 1CijferHO |
-> | `indigo` | Studentprognose |
-> | `deep purple` | — |
-> | `blue` | — |
->
-> (Standaard: `teal`)
+## Let op: geen dark-mode toggle en nooit zwart als achtergrondvlak
 
-Wacht op antwoord.
+Voeg geen `scheme: slate` (dark mode) of generieke Material-kleuren (`teal`, `indigo`) toe. `npuls_logo.jpg` heeft een vaste `#F3D9DC` achtergrond die gemaakt is voor de `#F4D9DC` (`npuls-roze`) header, en de Npuls-huisstijl verbiedt `#000000` als achtergrondvlak. Houd `palette` daarom altijd op één blok met `scheme: default`, `primary: custom` en `accent: custom`.
 
-### 7. Genereer de bestanden
+## Let op: zet bronpagina's direct in `docs/`
 
-Genereer op basis van de antwoorden de volgende bestanden. Toon ze **allemaal als draft** aan de gebruiker voor het wegschrijven (zie stap 8).
+Zet de Markdown-pagina's zelf in `docs/` (zoals `cedanl/.github` dat sinds #126 doet) in plaats van spiegelbestanden die Markdown uit de hoofdmap insluiten. Links in een ingesloten bestand zijn geschreven vanaf de hoofdmap, maar worden opgelost vanaf de spiegelpagina in `docs/`; ze breken dan in een strikte build (zie `cedanl/.github#124`). Gebruik `include-markdown` alleen voor bestanden die echt in de hoofdmap moeten blijven (zoals `README.md` of `CHANGELOG.md`), zet daarop `rewrite-relative-urls=false` en schrijf de links in dat bestand relatief aan de spiegelpagina. Een strikte build is de toets.
 
----
+## Verificatie
 
-#### `mkdocs.yml`
-
-```yaml
-site_name: <site_name>
-site_description: <site_description>
-site_url: https://cedanl.github.io/<repo>/
-repo_url: https://github.com/cedanl/<repo>
-repo_name: cedanl/<repo>
-edit_uri: edit/main/docs/
-
-docs_dir: docs
-site_dir: site
-
-theme:
-  name: material
-  language: nl
-  logo: assets/logo.png
-  favicon: assets/logo.png
-  palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: <kleur>
-      accent: <kleur>
-      toggle:
-        icon: material/brightness-7
-        name: Donker thema
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: <kleur>
-      accent: <kleur>
-      toggle:
-        icon: material/brightness-4
-        name: Licht thema
-  features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.top
-    - navigation.indexes
-    - search.suggest
-    - search.highlight
-    - content.code.copy
-    - content.tabs.link
-
-plugins:
-  - search:
-      lang: nl
-  # Alleen als src-layout met Python code (vraag 3 = ja):
-  - mkdocstrings:
-      handlers:
-        python:
-          paths: [src]
-          options:
-            docstring_style: google
-            show_source: false
-            show_root_heading: true
-            show_symbol_type_heading: true
-            members_order: source
-
-markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
-  - pymdownx.superfences:
-      # Alleen als Mermaid gewenst (vraag 4):
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.snippets:
-      base_path: ["."]
-  - admonition
-  - pymdownx.details
-  - attr_list
-  - pymdownx.tabbed:
-      alternate_style: true
-  - tables
-  - toc:
-      permalink: true
-  # Alleen als MathJax gewenst (vraag 4):
-  - pymdownx.arithmatex:
-      generic: true
-
-# Alleen als MathJax gewenst:
-extra_javascript:
-  - javascripts/mathjax.js
-  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
-
-nav:
-  - Home: index.md
-  - Aan de slag: aan-de-slag.md
-  # Als src-layout (vraag 3 = ja):
-  - API-referentie:
-    - api/index.md
-```
-
-Pas de nav aan op basis van bestaande `.md` bestanden in `docs/` als die al bestaan.
-
----
-
-#### `.github/workflows/docs.yml`
-
-Gebruik altijd het twee-job patroon (build + deploy gescheiden), zodat PR's de docs bouwen maar niet deployen:
-
-```yaml
-name: Docs
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-
-      - name: Install docs dependencies
-        run: uv sync --group docs
-
-      - name: Build docs
-        run: uv run mkdocs build --strict
-
-      - name: Upload Pages artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site/
-
-  deploy:
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-```
-
----
-
-#### `pyproject.toml` — dependency group toevoegen
-
-Voeg toe aan de bestaande `pyproject.toml` (niet vervangen — alleen de groep toevoegen):
-
-```toml
-[dependency-groups]
-docs = [
-    "mkdocs>=1.6.0",
-    "mkdocs-material>=9.5.0",
-    "mkdocstrings[python]>=0.26.0",  # alleen als vraag 3 = ja
-    "pymdown-extensions>=10.0",
-]
-```
-
-Als de repo `[project.optional-dependencies]` gebruikt in plaats van `[dependency-groups]`: gebruik dan `[project.optional-dependencies] docs = [...]` en pas het workflow-commando aan naar `uv sync --extra docs`.
-
----
-
-#### `docs/` structuur aanmaken
-
-```
-docs/
-├── assets/
-│   └── logo.png          ← placeholder, gebruiker vervangt dit
-├── index.md              ← homepage
-├── aan-de-slag.md        ← getting started
-└── api/
-    └── index.md          ← alleen als vraag 3 = ja
-```
-
-Alleen als MathJax gewenst (vraag 4):
-```
-docs/javascripts/mathjax.js
-```
-
-Met als inhoud:
-```javascript
-window.MathJax = {
-  tex: {
-    inlineMath: [["\\(", "\\)"]],
-    displayMath: [["\\[", "\\]"]],
-    processEscapes: true,
-  },
-  options: {
-    ignoreHtmlClass: ".*|",
-    processHtmlClass: "arithmatex",
-  },
-};
-```
-
----
-
-#### Starter `docs/index.md`
-
-```markdown
-# <site_name>
-
-<site_description>
-
-## Snel aan de slag
-
-Zie [Aan de slag](aan-de-slag.md) voor installatie-instructies.
-
-## Over dit project
-
-Dit project is onderdeel van de [CEDA](https://github.com/cedanl) organisatie.
-```
-
-### 8. Toon de draft en wacht op akkoord
-
-Presenteer een samenvatting van alle te genereren bestanden:
-
-> **MkDocs setup voor `<repo>`**
->
-> De volgende bestanden worden aangemaakt of gewijzigd:
->
-> - `mkdocs.yml` — siteconfiguratie
-> - `.github/workflows/docs.yml` — build + deploy workflow
-> - `pyproject.toml` — docs dependency group toegevoegd
-> - `docs/index.md`, `docs/aan-de-slag.md` — starter pagina's
-> - `docs/assets/` — map voor logo en andere assets
-> [+ `docs/api/index.md` als vraag 3 = ja]
-> [+ `docs/javascripts/mathjax.js` als MathJax gewenst]
->
-> Klopt dit? Zeg wat je wil aanpassen, of geef akkoord om te schrijven.
-
-Wacht op akkoord voor je bestanden schrijft.
-
-### 9. Schrijf de bestanden
-
-Schrijf alle gegenereerde bestanden naar de repo. Wijzig `pyproject.toml` via edit (voeg de dependency group toe, vervang niet de hele file).
-
-### 10. Configureer GitHub Pages
-
-Stel GitHub Pages in om GitHub Actions als bron te gebruiken:
+`ceda-verifies: measurable` — de opzet is geslaagd wanneer een strikte MkDocs-build zonder fouten of waarschuwingen eindigt (exit code `0`):
 
 ```bash
-# Controleer of Pages al geconfigureerd is
-gh api repos/cedanl/<repo>/pages 2>/dev/null && echo "exists" || echo "new"
+# Bij een repo met pyproject.toml:
+uv run mkdocs build --strict -d /tmp/mkdocs-check && rm -rf /tmp/mkdocs-check
 
-# Als nieuw: activeer Pages met GitHub Actions als bron
-gh api repos/cedanl/<repo>/pages \
-  --method POST \
-  -H "Accept: application/vnd.github+json" \
-  -f "build_type=workflow"
-
-# Als al bestaat: zet bron om naar GitHub Actions
-gh api repos/cedanl/<repo>/pages \
-  --method PUT \
-  -H "Accept: application/vnd.github+json" \
-  -f "build_type=workflow"
+# Bij een losse docs-repo zonder pyproject.toml:
+uv run --with mkdocs-material mkdocs build --strict -d /tmp/mkdocs-check && rm -rf /tmp/mkdocs-check
+# (voeg `--with mkdocs-include-markdown-plugin` toe als de site include-markdown gebruikt)
 ```
 
-### 11. Rapporteer het resultaat
+## Gebundelde bestanden
 
-> **MkDocs setup compleet voor `<repo>`**
->
-> **Aangemaakt:**
-> - `mkdocs.yml`
-> - `.github/workflows/docs.yml`
-> - `docs/index.md`, `docs/aan-de-slag.md` [+ extras]
->
-> **GitHub Pages:** geconfigureerd op GitHub Actions
-> **Live URL (na eerste deploy):** `https://cedanl.github.io/<repo>/`
->
-> **Volgende stappen:**
-> 1. Vervang `docs/assets/logo.png` met het Npuls-logo (zie `/npuls-huisstijl`)
-> 2. Vul `docs/aan-de-slag.md` met installatie-instructies
-> 3. Commit en push naar `main` — de workflow deployt automatisch
-> 4. Controleer de live site na ~2 minuten op de URL hierboven
+- `assets/mkdocs.yml.tpl` — lees altijd bij stap 3: het canonieke `mkdocs.yml`-sjabloon met Npuls-features, plugins en extensies
+- `assets/extra.css` — kopieer altijd bij stap 3 ongewijzigd naar `docs/stylesheets/extra.css`: het volledige Npuls-stylesheet voor MkDocs Material
+- `assets/index.md.tpl` — lees bij stap 3 wanneer je een nieuwe `docs/index.md` opzet of een drukke startpagina terugbrengt naar de rustige Markdown-stijl
+- `assets/docs-workflow.yml.tpl` — lees bij stap 3 wanneer `.github/workflows/docs.yml` wordt aangemaakt of gesplitst in `build` (`--strict`) + `deploy`
 
 ## Important
 
-- Gebruik altijd het twee-job patroon voor de workflow (build + deploy gescheiden) — zo bouwen PR's ook de docs zonder te deployen, waardoor je breekbare docs eerder ziet
-- Voeg `mkdocstrings` alleen toe als het project een `src/<package>/` layout heeft met Python-functies en Google-style docstrings
-- Vervang nooit de volledige `pyproject.toml` — voeg alleen de `[dependency-groups] docs` sectie toe
-- GitHub Pages moet op "GitHub Actions" staan als bron, niet op een branch — anders werkt `actions/deploy-pages@v4` niet
-- Voor het Npuls-logo: verwijs de gebruiker naar `/npuls-huisstijl`
+- Overschrijf nooit een volledige bestaande `pyproject.toml`; voeg uitsluitend de `docs`-dependencygroep toe.
+- Zet geen uitgebreide catalogus van alle CEDA-repositories op een project- of handboeksite; verwijs voor het inhoudelijke projectoverzicht naar de CEDA-community (`https://edu.nl/twt84`).
+- Push of wijzig nooit GitHub Pages-instellingen zonder voorafgaand akkoord van de gebruiker.
