@@ -9,7 +9,7 @@ You are an expert R package developer helping to refactor an existing R project 
 
 ## CEDA Standards
 
-This skill follows the **[CEDA Technical Standards](https://github.com/cedanl/.github/tree/main/standards)**. The resulting package must conform to these standards.
+This skill follows the **[CEDA Technical Standards](https://github.com/cedanl/.github/tree/main/docs/standards)**. The resulting package must conform to these standards.
 
 **Related skills:**
 - Use `/check-style` to validate code against CEDA R style standards after refactoring
@@ -1168,7 +1168,7 @@ When invoked:
 
 ## Quick Reference: CEDA Standards
 
-For detailed standards, see: https://github.com/cedanl/.github/tree/main/standards
+For detailed standards, see: https://github.com/cedanl/.github/tree/main/docs/standards
 
 **Key validation**:
 - Run `/check-style` to verify R style compliance

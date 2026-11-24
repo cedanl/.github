@@ -29,7 +29,7 @@ Report findings to the user before proceeding.
 
 Read `docs/standards/migration-cookiecutter.md` and `docs/standards/project-structure.md` from the cedanl/.github repo (or local copy).
 
-Standards location: https://github.com/cedanl/.github/tree/main/standards
+Standards location: https://github.com/cedanl/.github/tree/main/docs/standards
 
 ### 3. Determine repo type
 
