@@ -27,9 +27,9 @@ Report findings to the user before proceeding.
 
 ### 2. Read migration standard
 
-Read `standards/migration-cookiecutter.md` and `standards/project-structure.md` from the cedanl/.github repo (or local copy).
+Read `docs/standards/migration-cookiecutter.md` and `docs/standards/project-structure.md` from the cedanl/.github repo (or local copy).
 
-Standards location: https://github.com/cedanl/.github/tree/main/standards
+Standards location: https://github.com/cedanl/.github/tree/main/docs/standards
 
 ### 3. Determine repo type
 
@@ -122,7 +122,7 @@ path = files("project_name.metadata") / "definitions.csv"
 ```
 
 #### Create pyproject.toml
-Use the template from `standards/python-style.md` with proper `[project]`, `[tool.uv]`, `[tool.ruff]`, `[tool.pytest]` sections.
+Use the template from `docs/standards/python-style.md` with proper `[project]`, `[tool.uv]`, `[tool.ruff]`, `[tool.pytest]` sections.
 
 #### Create Streamlit app
 Minimal app that imports and calls package functions. No business logic. The app should import and use the package's config loader for all project settings. Do not create a separate config loading mechanism for settings that the package already provides.
@@ -158,5 +158,5 @@ After migration:
 - Always get user approval before executing the migration plan
 - Preserve git history where possible (use `git mv` for renames)
 - Keep the `Makefile` if it exists — it's optional but useful
-- The migration is a one-time operation; `standards/migration-cookiecutter.md` has the full reference
+- The migration is a one-time operation; `docs/standards/migration-cookiecutter.md` has the full reference
 - After migration, the repo should pass `/check-style`
