@@ -24,9 +24,9 @@ If both are present, ask the user which to check.
 
 ### 2. Read the relevant standard
 
-- R projects: read `standards/r-style.md` from the cedanl/.github repo (or local copy)
-- Python projects: read `standards/python-style.md` from the cedanl/.github repo (or local copy)
-- Always also check against `standards/principles.md` and `standards/data-conventions.md`
+- R projects: read `docs/standards/r-style.md` from the cedanl/.github repo (or local copy)
+- Python projects: read `docs/standards/python-style.md` from the cedanl/.github repo (or local copy)
+- Always also check against `docs/standards/principles.md` and `docs/standards/data-conventions.md`
 
 Standards location: https://github.com/cedanl/.github/tree/main/standards
 

@@ -1,21 +1,31 @@
-site_name: CEDA
+site_name: CEDA Ontwikkelaarshandboek
 site_url: https://cedanl.github.io/.github/
-site_description: Center for Educational Data Analytics — van data naar betrouwbare inzichten voor het onderwijs.
-repo_url: https://github.com/cedanl
-repo_name: cedanl
+site_description: Ontwikkelstandaarden, ontwikkelstack, werkafspraken en handleidingen van het Centrum Educatieve Data Analyse (CEDA).
+repo_url: https://github.com/cedanl/.github
+repo_name: cedanl/.github
 
 docs_dir: docs
+exclude_docs: |
+  _template.md
 
 theme:
   name: material
   language: nl
+  logo: assets/logos/npuls_logo.jpg
+  favicon: assets/logos/beeldmerk.svg
   features:
     - navigation.tabs
-    - navigation.top
+    - navigation.tabs.sticky
     - navigation.sections
+    - navigation.indexes
+    - navigation.path
+    - navigation.top
     - search.highlight
     - search.suggest
+    - content.code.copy
+    - content.code.annotate
     - content.tabs.link
+    - toc.follow
   palette:
     - scheme: default
       primary: custom
@@ -25,39 +35,53 @@ extra_css:
   - stylesheets/extra.css
 
 nav:
-  - Home: index.md
-  - Standards:
+  - Start: index.md
+  - Ontwikkelstandaarden:
     - Overzicht: standards/index.md
-    - Principes: standards/principles.md
+    - Ontwikkelprincipes: standards/principles.md
     - Projectstructuur: standards/project-structure.md
     - Dataconventies: standards/data-conventions.md
-    - Python stijl: standards/python-style.md
-    - R stijl: standards/r-style.md
+    - Python-stijlgids: standards/python-style.md
+    - R-stijlgids: standards/r-style.md
+    - Migratie vanuit Cookiecutter: standards/migration-cookiecutter.md
+  - Ontwikkelstack: tooling/index.md
+  - Bijdragen: bijdragen/index.md
   - Werkafspraken:
     - Overzicht: werkafspraken/index.md
     - Devcontainer: werkafspraken/devcontainer.md
-    - Presentaties: werkafspraken/presentaties.md
     - Pitches: werkafspraken/pitches.md
+    - Presentaties: werkafspraken/presentaties.md
     - Gebruikersrechten: werkafspraken/gebruikersrechten.md
     - Feedback zonder persoonsgegevens: werkafspraken/feedback-zonder-persoonsgegevens.md
     - Entire: werkafspraken/entire.md
-  - Guides:
-    - Azure AI modellen: guides/azure-ai.md
+  - Handleidingen:
+    - Overzicht: guides/index.md
+    - Azure AI-modellen: guides/azure-ai.md
     - Entire CLI: guides/entire-cli.md
+
+extra:
+  generator: false
+
+copyright: >-
+  Centrum Educatieve Data Analyse (CEDA) · Onderdeel van <a href="https://npuls.nl/" target="_blank" rel="noopener">Npuls</a> · <a href="https://edu.nl/twt84" target="_blank" rel="noopener">CEDA-community</a> · <a href="mailto:ceda@surf.nl">ceda@surf.nl</a>
 
 plugins:
   - search:
       lang: nl
-  - include-markdown
 
 markdown_extensions:
   - attr_list
   - md_in_html
+  - tables
   - admonition
   - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+  - toc:
+      permalink: true
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg

@@ -159,7 +159,7 @@ project-name/
 
 #### CLAUDE.md
 
-Use the template from `standards/project-structure.md`:
+Use the template from `docs/standards/project-structure.md`:
 
 ```markdown
 # [Project Name]
@@ -168,7 +168,7 @@ Use the template from `standards/project-structure.md`:
 [description]
 
 ## Standards
-Follow CEDA technical standards: https://github.com/cedanl/.github/tree/main/standards/README.md
+Follow CEDA technical standards: https://github.com/cedanl/.github/tree/main/docs/standards/index.md
 
 ## Tech Stack
 [R or Python], key packages.
