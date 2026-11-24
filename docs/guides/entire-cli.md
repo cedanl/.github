@@ -29,40 +29,46 @@ Jouw branch                    entire/checkpoints/v1
 
 ## Installatie
 
-### macOS (Homebrew)
+=== ":fontawesome-brands-apple: macOS"
 
-```bash
-brew tap entireio/tap
-brew trust entireio/tap
-brew install --cask entire
-```
+    Via Homebrew:
 
-### Linux
+    ```bash
+    brew tap entireio/tap
+    brew trust entireio/tap
+    brew install --cask entire
+    ```
 
-```bash
-curl -fsSL https://entire.io/install.sh | bash
-```
+=== ":fontawesome-brands-linux: Linux"
 
-Voor ARM64:
+    ```bash
+    curl -fsSL https://entire.io/install.sh | bash
+    ```
 
-```bash
-curl -LO https://github.com/entireio/cli/releases/latest/download/entire-linux-arm64.tar.gz
-tar -xzf entire-linux-arm64.tar.gz
-sudo mv entire /usr/local/bin/
-```
+    Voor ARM64:
 
-### Windows (Scoop)
+    ```bash
+    curl -LO https://github.com/entireio/cli/releases/latest/download/entire-linux-arm64.tar.gz
+    tar -xzf entire-linux-arm64.tar.gz
+    sudo mv entire /usr/local/bin/
+    ```
 
-```bash
-scoop bucket add entire https://github.com/entireio/scoop-bucket.git
-scoop install entire/entire
-```
+=== ":fontawesome-brands-windows: Windows"
 
-### Vanuit bron (Go 1.21+)
+    Via Scoop:
 
-```bash
-go install github.com/entireio/cli/cmd/entire@latest
-```
+    ```bash
+    scoop bucket add entire https://github.com/entireio/scoop-bucket.git
+    scoop install entire/entire
+    ```
+
+=== ":lucide-code-xml: Vanuit bron"
+
+    Vereist Go 1.21 of nieuwer:
+
+    ```bash
+    go install github.com/entireio/cli/cmd/entire@latest
+    ```
 
 ### Verifiëren
 
