@@ -1,3 +1,7 @@
+---
+icon: lucide/folder-tree
+---
+
 # Projectstructuur
 
 Dit overzicht laat zien hoe CEDA-repositories zijn opgebouwd per type toepassing en programmeertaal.

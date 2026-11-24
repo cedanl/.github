@@ -1,3 +1,7 @@
+---
+icon: lucide/chart-line
+---
+
 # R-stijlgids
 
 Deze stijlgids beschrijft hoe wij R-code schrijven binnen `cedanl`. We volgen de [Tidyverse style guide](https://style.tidyverse.org/), aangevuld met vaste afspraken voor CEDA-pakketten.

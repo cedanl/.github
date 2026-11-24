@@ -1,3 +1,7 @@
+---
+icon: lucide/compass
+---
+
 # Ontwikkelprincipes
 
 Deze twaalf kernprincipes gelden voor alle repositories binnen `cedanl`, ongeacht of je in R of in Python werkt.

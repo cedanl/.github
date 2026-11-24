@@ -1,3 +1,7 @@
+---
+icon: lucide/lightbulb
+---
+
 # Pitches
 
 **Niveau:** Verplicht · **Eigenaar:** [@CorneeldH](https://github.com/CorneeldH) · **Akkoord:** [@CorneeldH](https://github.com/CorneeldH)

@@ -1,3 +1,7 @@
+---
+icon: lucide/database
+---
+
 # Dataconventies
 
 Deze afspraken zorgen voor eenduidige kolomnamen, uitwisselbare bestandsformaten en veilige omgang met onderwijsdata in alle CEDA-projecten.

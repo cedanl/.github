@@ -1,3 +1,7 @@
+---
+icon: lucide/presentation
+---
+
 # Presentaties
 
 **Niveau:** Verplicht · **Eigenaar:** [@EdwinLieftink](https://github.com/EdwinLieftink) · **Akkoord:** [@CorneeldH](https://github.com/CorneeldH)

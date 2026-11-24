@@ -1,3 +1,7 @@
+---
+icon: lucide/git-branch
+---
+
 # Entire — AI-sessies vastleggen
 
 **Niveau:** Experiment · **Eigenaar:** [@Tomeriko96](https://github.com/Tomeriko96) · **Akkoord:** [@CorneeldH](https://github.com/CorneeldH)

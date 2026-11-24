@@ -1,3 +1,7 @@
+---
+icon: lucide/cloud
+---
+
 # Azure AI – Modellen deployen
 
 Handleiding voor het activeren van Azure-toegang via PIM en het deployen van een model via Azure AI Studio.

@@ -1,3 +1,7 @@
+---
+icon: lucide/terminal
+---
+
 # Entire CLI — Handleiding
 
 Entire is een Git-natieve tool die AI-sessies (prompts, tool calls, transcripts) vastlegt naast je commits. Elke wijziging is herleidbaar naar de prompt die hem veroorzaakte. De CLI is open source ([entireio/cli](https://github.com/entireio/cli), MIT-licentie, Go).

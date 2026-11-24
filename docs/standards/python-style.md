@@ -1,3 +1,7 @@
+---
+icon: lucide/code-xml
+---
+
 # Python-stijlgids
 
 Deze stijlgids beschrijft hoe wij Python-code schrijven in CEDA-repositories. We bouwen voort op PEP 8 met vaste keuzes voor onderwijsdata-analyse.

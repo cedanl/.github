@@ -1,3 +1,7 @@
+---
+icon: lucide/arrow-right-left
+---
+
 # Migratie vanuit Cookiecutter
 
 Veel oudere data-science-projecten zijn opgezet met de klassieke *Cookiecutter Data Science*-indeling. Deze gids laat zien hoe je zo'n project stapsgewijs omzet naar de CEDA-pakketstandaard.

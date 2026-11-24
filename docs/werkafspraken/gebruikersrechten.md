@@ -1,3 +1,7 @@
+---
+icon: lucide/key-round
+---
+
 # Gebruikersrechten
 
 **Niveau:** Verplicht · **Eigenaar:** [@Tomeriko96](https://github.com/Tomeriko96) · **Akkoord:** [@CorneeldH](https://github.com/CorneeldH)
