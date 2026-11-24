@@ -14,7 +14,7 @@ Op deze pagina lees je uit welke lagen onze stack bestaat en waarom wij deze hul
 | **Opslagformaten** | Parquet (tussenstappen) + `;`-CSV (einduitvoer) | Parquet (tussenstappen) + `;`-CSV (einduitvoer) | Parquet bewaart datatypen tussen R en Python; puntkomma-CSV opent direct goed in Excel. |
 | **Codekwaliteit & tests** | `ruff` (lint + opmaak) en `pytest` | `air` (opmaak), `roxygen2` en `testthat` | Eenduidige opmaak en automatische controles bij elke wijziging. |
 | **Interactieve schil** | `Streamlit` (of Shiny voor Python) | `Shiny` | Collega's bij instellingen gebruiken modellen via een scherm zonder zelf code aan te passen. |
-| **Rapportage & docs** | `Quarto` en `MkDocs Material` | `Quarto` | Reproduceerbare rapporten en doorzoekbare technische documentatie vanuit Markdown. |
+| **Rapportage & docs** | `Quarto` en `Zensical` | `Quarto` | Reproduceerbare rapporten en doorzoekbare technische documentatie vanuit Markdown. |
 
 ## Ontwikkelomgeving en containers
 
@@ -27,7 +27,7 @@ Niet elke instelling heeft dezelfde rechten of lokale installaties op werkplekke
 ## Automatisering, CI en documentatie
 
 - **GitHub Actions:** controleert bij pull requests automatisch code-opmaak, tests en documentatieopbouw voordat wijzigingen landen op `main`.
-- **MkDocs Material:** bouwt dit ontwikkelaarshandboek en pakketdocumentatie rechtstreeks vanuit Markdown-bestanden in versiebeheer.
+- **Zensical:** de opvolger van MkDocs Material bouwt dit ontwikkelaarshandboek rechtstreeks vanuit Markdown-bestanden in versiebeheer. Het leest dezelfde `mkdocs.yml`, dus bestaande MkDocs-sites kunnen geleidelijk overstappen.
 - **Slidev in Npuls-huisstijl:** presentaties schrijven we als Markdown in git, zodat huisstijl en inhoud gescheiden blijven; zie de werkafspraak [Presentaties](../werkafspraken/presentaties.md).
 
 ## AI-ondersteund ontwikkelen en herleidbaarheid

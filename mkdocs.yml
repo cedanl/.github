@@ -10,6 +10,7 @@ exclude_docs: |
 
 theme:
   name: material
+  variant: classic
   language: nl
   logo: assets/logos/npuls_logo.jpg
   favicon: assets/logos/beeldmerk.svg
