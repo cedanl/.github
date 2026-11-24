@@ -1,6 +1,6 @@
 ---
 name: docs-setup
-description: Richt een Zensical-docssite (opvolger van MkDocs Material) in volgens het CEDA-handboekontwerp met Npuls-palet en GitHub Pages-workflow. Gebruik bij "/docs-setup", "maak een docs-site", "voeg Zensical of MkDocs toe". LET OP — niet voor applicatie-UI; gebruik daar `vormgever-npuls-huisstijl`, voor presentaties `clidev`.
+description: Richt een Zensical-docssite (opvolger van MkDocs Material) in volgens het CEDA-handboekontwerp met Npuls-palet en GitHub Pages-workflow. Gebruik bij "/docs-setup", "maak een docs-site", "voeg Zensical of MkDocs toe". LET OP — alleen van MkDocs naar Zensical overstappen: `mkdocs-naar-zensical`; applicatie-UI: `vormgever-npuls-huisstijl`; presentaties: `clidev`.
 allowed-tools: Read Grep Glob Write Edit Bash AskUserQuestion
 compatibility: Requires python3 and uv (and gh CLI when configuring GitHub Pages)
 metadata:
@@ -46,7 +46,7 @@ Controleer wat er al aanwezig is:
 ls -la mkdocs.yml mkdocs.yaml pyproject.toml docs/ .github/workflows/docs.yml 2>/dev/null || true
 ```
 
-- **Bestaat `mkdocs.yml` al?** Lees de huidige `mkdocs.yml`, `docs/index.md` en eventuele `extra.css`. Stel voor om de bestaande site over te zetten naar de CEDA/Npuls-stijl en naar Zensical, met behoud van de bestaande inhoud en `nav:`. Controleer eerst of Zensical alles ondersteunt: `hooks` in `mkdocs.yml` worden niet ondersteund, en plugins buiten [de lijst met ondersteunde plugins](https://zensical.org/docs/compatibility/mkdocs/plugins/) worden stil genegeerd. Meld elk geval aan de gebruiker voordat je verdergaat.
+- **Bestaat `mkdocs.yml` al?** Lees de huidige `mkdocs.yml`, `docs/index.md` en eventuele `extra.css`. Gaat het alleen om de overstap van MkDocs naar Zensical zonder nieuwe vormgeving, gebruik dan `mkdocs-naar-zensical`; die controleert ook op niet-ondersteunde `hooks` en plugins. Wil de gebruiker de site óók in de CEDA/Npuls-stijl zetten, doe dan eerst die migratie en pas daarna de stijl uit deze skill toe, met behoud van de bestaande inhoud en `nav:`.
 - **Nieuwe site?** Bepaal of de repository een Python-pakket met `pyproject.toml` is of een losse documentatie-repository zonder `pyproject.toml`.
 
 ### 2. Kort interview
