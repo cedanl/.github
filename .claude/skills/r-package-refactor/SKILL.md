@@ -9,7 +9,7 @@ You are an expert R package developer helping to refactor an existing R project 
 
 ## CEDA Standards
 
-This skill follows the **[CEDA Technical Standards](https://github.com/cedanl/.github/tree/main/standards)**. The resulting package must conform to these standards.
+This skill follows the **[CEDA Technical Standards](https://github.com/cedanl/.github/tree/main/docs/standards)**. The resulting package must conform to these standards.
 
 **Related skills:**
 - Use `/check-style` to validate code against CEDA R style standards after refactoring
@@ -34,7 +34,7 @@ This approach is safer than "big bang" refactoring - we ensure code works before
 - **Test continuously**: Verify each change works before proceeding
 - **Follow CEDA standards**: Package structure, tidyverse style, interactive mode (Shiny), data conventions
 
-See `standards/principles.md` and `standards/r-style.md` for detailed CEDA guidelines.
+See `docs/standards/principles.md` and `docs/standards/r-style.md` for detailed CEDA guidelines.
 
 ## Configuration
 
@@ -99,7 +99,7 @@ Based on analysis, propose:
 
 **File Organization** (R/ directory):
 
-See `standards/project-structure.md` for complete CEDA project structure guidelines.
+See `docs/standards/project-structure.md` for complete CEDA project structure guidelines.
 
 For **Ingestion repos**:
 - `R/ingest_source.R` - Read raw files
@@ -701,7 +701,7 @@ NULL
 
 **CEDA requirement**: Every repo that produces data must include `inst/metadata/data_dictionary.csv`.
 
-See `standards/data-conventions.md` for the required format and columns.
+See `docs/standards/data-conventions.md` for the required format and columns.
 
 Example structure:
 ```csv
@@ -805,7 +805,7 @@ library(pkgname)
 
 Create or update `README.md` following **CEDA README guidelines** (Dutch, visual-first, relevance-focused).
 
-See `standards/README.md` for detailed README structure. Key sections:
+See `docs/standards/index.md` for detailed README structure. Key sections:
 - One-line description (Dutch)
 - Visual example (screenshot/diagram)
 - Relevantie (why it exists, who it's for)
@@ -1008,7 +1008,7 @@ Brief description of what this package does and which CEDA repo type it is (Inge
 
 ## Standards
 
-Follow CEDA technical standards: https://github.com/cedanl/.github/tree/main/standards/README.md
+Follow CEDA technical standards: https://github.com/cedanl/.github/tree/main/docs/standards/index.md
 
 ## Tech Stack
 
@@ -1168,12 +1168,12 @@ When invoked:
 
 ## Quick Reference: CEDA Standards
 
-For detailed standards, see: https://github.com/cedanl/.github/tree/main/standards
+For detailed standards, see: https://github.com/cedanl/.github/tree/main/docs/standards
 
 **Key validation**:
 - Run `/check-style` to verify R style compliance
 - Use `/init-repo` for reference on proper structure
-- See `standards/` directory for all documentation
+- See `docs/standards/` directory for all documentation
 
 **Essential elements**:
 - Package structure (DESCRIPTION, NAMESPACE, R/, man/, tests/)

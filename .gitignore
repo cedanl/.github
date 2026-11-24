@@ -9,3 +9,5 @@ __pycache__/
 .claude/skills/cedapress/renderers/node_modules/
 .claude/skills/cedapress/examples/*/exports/
 .claude/skills/cedapress/examples/*/npuls
+
+site/
