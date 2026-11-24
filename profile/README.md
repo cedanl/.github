@@ -11,7 +11,7 @@ CEDA is onderdeel van [Npuls](https://npuls.nl/), het programma van en voor het 
 | **Overzicht van oplossingen en projecten voor jouw instelling** | Bekijk de **[CEDA-community](https://edu.nl/twt84)** voor het actuele projectoverzicht, ervaringen en werkgroepen. |
 | **Onze ontwikkelstandaarden, ontwikkelstack en werkafspraken** | Open het **[CEDA Ontwikkelaarshandboek](https://cedanl.github.io/.github/)**. |
 | **Een fout melden, code bijdragen of een eigen oplossing delen** | Lees **[Meebouwen en bijdragen](https://cedanl.github.io/.github/bijdragen/)** of open een issue bij de betreffende repository (zonder persoonsgegevens). |
-| **Direct naar een specifieke broncode-repository** | Gebruik de gepinde projecten of het tabblad **Repositories** hieronder op GitHub. |
+| **Direct naar een specifieke broncode-repository** | Gebruik de gepinde projecten of het tabblad **[Repositories](https://github.com/orgs/cedanl/repositories)** hieronder op GitHub. |
 
 ## Contact
 
