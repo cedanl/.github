@@ -1,4 +1,4 @@
-# Centrum Educatieve Data Analyse (CEDA)!
+# Centrum Educatieve Data Analyse (CEDA)
 
 Samen met onderwijsinstellingen in het mbo, hbo en wo maakt CEDA bewezen data- en AI-oplossingen breed bruikbaar. Wij halen werkende informatieproducten op bij instellingen en delen ze als open source in Python en R. De code draait op je eigen machine met je eigen data; de regie blijft bij het publieke onderwijs.
 
