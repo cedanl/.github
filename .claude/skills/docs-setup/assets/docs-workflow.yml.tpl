@@ -1,0 +1,58 @@
+# Zensical heeft geen `gh-deploy`: publiceren gaat via GitHub Pages met bron "GitHub Actions"
+# (Settings > Pages > Source). Kies in de stap "Build docs (strict)" Variant A of B.
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  # Vastgepind: Zensical is nog pre-1.0. Verhoog bewust en controleer de build.
+  ZENSICAL_VERSION: "<versie>"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+
+      - name: Build docs (strict)
+        # Variant A (repo met pyproject.toml en een `docs`-groep met zensical; verwijder dan ZENSICAL_VERSION):
+        #   run: uv run --group docs zensical build --strict --clean
+        # Variant B (losse docs-repo zonder pyproject.toml, zoals cedanl/.github):
+        run: uv run --with "zensical==${ZENSICAL_VERSION}" zensical build --strict --clean
+
+      - uses: actions/configure-pages@v6
+        if: github.event_name != 'pull_request'
+
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request'
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
