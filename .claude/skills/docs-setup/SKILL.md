@@ -1,10 +1,10 @@
 ---
-name: mkdocs-setup
-description: Richt een Zensical-docssite (opvolger van MkDocs Material) in volgens het CEDA-handboekontwerp met Npuls-palet en GitHub Pages-workflow. Gebruik bij "/mkdocs-setup", "maak een docs-site", "voeg Zensical of MkDocs toe". LET OP — niet voor applicatie-UI; gebruik daar `vormgever-npuls-huisstijl`, voor presentaties `clidev`.
+name: docs-setup
+description: Richt een Zensical-docssite (opvolger van MkDocs Material) in volgens het CEDA-handboekontwerp met Npuls-palet en GitHub Pages-workflow. Gebruik bij "/docs-setup", "maak een docs-site", "voeg Zensical of MkDocs toe". LET OP — niet voor applicatie-UI; gebruik daar `vormgever-npuls-huisstijl`, voor presentaties `clidev`.
 allowed-tools: Read Grep Glob Write Edit Bash AskUserQuestion
 compatibility: Requires python3 and uv (and gh CLI when configuring GitHub Pages)
 metadata:
-  ceda-id: ceda.mkdocs-setup
+  ceda-id: ceda.docs-setup
   ceda-version: "1.0.0"
   ceda-type: workflow
   ceda-subtype: ""
@@ -36,7 +36,7 @@ Elke CEDA-docssite deelt exact dezelfde rustige opzet en Npuls-tokens (bron: `.c
 
 ## Workflow
 
-When the user invokes `/mkdocs-setup [optioneel: pad of repo]`:
+When the user invokes `/docs-setup [optioneel: pad of repo]`:
 
 ### 1. Inspecteer de huidige repository
 
@@ -61,7 +61,7 @@ Stel de ontbrekende vragen in één keer via `AskUserQuestion` (geen vraag over 
 
 1. **`mkdocs.yml`:** neem `assets/mkdocs.yml.tpl` als basis. Vul `<site_name>`, `<site_description>` en `<repo>` in, schakel alleen de gevraagde optionele blokken (`mkdocstrings`, `include-markdown`, Mermaid of MathJax) in en behoud `variant: classic` onder `theme` (bewaart het Material-uiterlijk waar `extra.css` op is gebouwd) en zet alle navigatietitels in helder Nederlands.
 2. **`docs/stylesheets/extra.css`:** kopieer `assets/extra.css` ongewijzigd naar `docs/stylesheets/extra.css`.
-3. **Logo en favicon (`docs/assets/logos/`):** kopieer `npuls_logo.jpg` en `beeldmerk.svg` vanuit `.claude/skills/vormgever-npuls-huisstijl/assets/logos/` naar `docs/assets/logos/`. Is die map lokaal niet aanwezig, haal beide bestanden dan op uit `cedanl/.github` en plaats nooit een lege placeholder.
+3. **Logo en favicon (`docs/assets/logos/`):** kopieer `assets/logos/npuls_logo.jpg` en `assets/logos/beeldmerk.svg` uit deze skill naar `docs/assets/logos/`. Plaats nooit een lege placeholder.
 4. **Startpagina (`docs/index.md`):** gebruik `assets/index.md.tpl`. Schrijf actief Nederlands volgens de Npuls-schrijfwijzer (`je`/`wij`, geen `u`/`uw`, korte zinnen).
 5. **Dependencies en `.gitignore`:**
    - Voeg `site/` toe aan `.gitignore` als die regel nog ontbreekt.
@@ -111,6 +111,7 @@ uv run --with "zensical==<versie>" zensical build --strict --clean
 - `assets/mkdocs.yml.tpl` — lees altijd bij stap 3: het canonieke `mkdocs.yml`-sjabloon met Npuls-features, plugins en extensies
 - `assets/extra.css` — kopieer altijd bij stap 3 ongewijzigd naar `docs/stylesheets/extra.css`: het volledige Npuls-stylesheet, gebouwd op de Material-klassen die Zensical met `variant: classic` behoudt
 - `assets/index.md.tpl` — lees bij stap 3 wanneer je een nieuwe `docs/index.md` opzet of een drukke startpagina terugbrengt naar de rustige Markdown-stijl
+- `assets/logos/npuls_logo.jpg` en `assets/logos/beeldmerk.svg` — kopieer bij stap 3 naar `docs/assets/logos/`: de vaste header-afbeelding en favicon (de JPG heeft een `#F3D9DC`-achtergrond die naadloos op `npuls-roze` valt)
 - `assets/docs-workflow.yml.tpl` — lees bij stap 3 wanneer `.github/workflows/docs.yml` wordt aangemaakt of gesplitst in `build` (`--strict`) + `deploy`
 
 ## Important
