@@ -1,4 +1,5 @@
-# Variant A (standaard voor nieuwe repos: GitHub Pages op "GitHub Actions" met pyproject.toml)
+# Zensical heeft geen `gh-deploy`: publiceren gaat via GitHub Pages met bron "GitHub Actions"
+# (Settings > Pages > Source). Kies in de stap "Build docs (strict)" Variant A of B.
 name: Docs
 
 on:
@@ -8,6 +9,17 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  # Vastgepind: Zensical is nog pre-1.0. Verhoog bewust en controleer de build.
+  ZENSICAL_VERSION: "<versie>"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,20 +27,20 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-
-      - name: Install docs dependencies
-        run: uv sync --group docs
 
       - name: Build docs (strict)
-        run: uv run mkdocs build --strict
+        # Variant A (repo met pyproject.toml en een `docs`-groep met zensical; verwijder dan ZENSICAL_VERSION):
+        #   run: uv run --group docs zensical build --strict --clean
+        # Variant B (losse docs-repo zonder pyproject.toml, zoals cedanl/.github):
+        run: uv run --with "zensical==${ZENSICAL_VERSION}" zensical build --strict --clean
 
-      - name: Upload Pages artifact
+      - uses: actions/configure-pages@v6
         if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
+
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request'
         with:
-          path: site/
+          path: site
 
   deploy:
     needs: build
@@ -43,10 +55,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
-
-# ---
-# Variant B (voor repos zonder pyproject.toml of met bestaande gh-pages branch, zoals cedanl/.github):
-# Gebruik in beide jobs `uv run --with mkdocs-material` (voeg `--with mkdocs-include-markdown-plugin` toe als de site include-markdown gebruikt):
-# - job `build`: `mkdocs build --strict` (ook op pull_request)
-# - job `deploy` (`if: github.event_name != 'pull_request'`, `permissions: contents: write`): `mkdocs gh-deploy --force`
+        uses: actions/deploy-pages@v5

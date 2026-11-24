@@ -8,6 +8,8 @@ docs_dir: docs
 
 theme:
   name: material
+  # Zensical: classic bewaart het Material-uiterlijk waar extra.css op is gebouwd
+  variant: classic
   language: nl
   logo: assets/logos/npuls_logo.jpg
   favicon: assets/logos/beeldmerk.svg

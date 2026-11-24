@@ -1,6 +1,6 @@
 ---
 name: mkdocs-setup
-description: Richt een MkDocs Material documentatiesite in volgens het CEDA-handboekontwerp met Npuls-palet, pil-tabbladen, rustige Markdown-startpagina en GitHub Pages-workflow. Gebruik bij "/mkdocs-setup", "maak een docs-site", "voeg MkDocs toe" of "pas MkDocs aan". LET OP — niet voor applicatie-UI buiten MkDocs; gebruik daar `vormgever-npuls-huisstijl` en voor presentaties `clidev`.
+description: Richt een Zensical-docssite (opvolger van MkDocs Material) in volgens het CEDA-handboekontwerp met Npuls-palet en GitHub Pages-workflow. Gebruik bij "/mkdocs-setup", "maak een docs-site", "voeg Zensical of MkDocs toe". LET OP — niet voor applicatie-UI; gebruik daar `vormgever-npuls-huisstijl`, voor presentaties `clidev`.
 allowed-tools: Read Grep Glob Write Edit Bash AskUserQuestion
 compatibility: Requires python3 and uv (and gh CLI when configuring GitHub Pages)
 metadata:
@@ -18,13 +18,13 @@ metadata:
   ceda-verifies: measurable
 ---
 
-# MkDocs Setup in CEDA/Npuls-stijl
+# Docs-site (Zensical) in CEDA/Npuls-stijl
 
-Bouwt een nieuwe MkDocs Material documentatiesite op voor een `cedanl`-repository — of trekt een bestaande MkDocs-site gelijk naar de vaste CEDA/Npuls-stijl uit `cedanl/.github`. Vraag eerst de projectgegevens uit en toon een overzicht ter akkoord voordat je bestanden wegschrijft of GitHub Pages aanpast.
+Bouwt een nieuwe documentatiesite op voor een `cedanl`-repository met **Zensical** (de opvolger van Material for MkDocs, van dezelfde makers) — of trekt een bestaande MkDocs-site gelijk naar de vaste CEDA/Npuls-stijl uit `cedanl/.github` en laat die met Zensical bouwen. Zensical leest de bestaande `mkdocs.yml`, dus de configuratie blijft `mkdocs.yml` heten en MkDocs-sites hoeven niet naar `zensical.toml`. Vraag eerst de projectgegevens uit en toon een overzicht ter akkoord voordat je bestanden wegschrijft of GitHub Pages aanpast.
 
 ## Vaste stijlelementen (niet van afwijken)
 
-Elke CEDA MkDocs-site deelt exact dezelfde rustige opzet en Npuls-tokens (bron: `.claude/skills/vormgever-npuls-huisstijl/references/design-tokens.json`):
+Elke CEDA-docssite deelt exact dezelfde rustige opzet en Npuls-tokens (bron: `.claude/skills/vormgever-npuls-huisstijl/references/design-tokens.json`):
 
 - **Header en navigatiebalk (`.md-header`, `.md-tabs`):** achtergrond `npuls-roze` (`#F4D9DC`) met tekst in `npuls-zwart` (`#000000`, contrast 15,8:1 WCAG AAA) en een onderrand van `2px solid #DD784B` (`npuls-oranje`).
 - **Beeldmerk en favicon:** `docs/assets/logos/npuls_logo.jpg` (met `#F3D9DC`-achtergrond die naadloos wegvalt op `npuls-roze`) als `logo` en `docs/assets/logos/beeldmerk.svg` als `favicon`.
@@ -32,7 +32,7 @@ Elke CEDA MkDocs-site deelt exact dezelfde rustige opzet en Npuls-tokens (bron: 
 - **Typografie en links:** `'General Sans', 'Plus Jakarta Sans', system-ui, sans-serif` (geladen via Google Fonts; nooit Inter). Links in de tekst in `npuls-blauw` (`#3D68EC`) met hover-markering in `licht-geel` (`#FCF5D4`). Zichtbare toetsenbordfocus (`3px solid #3D68EC`).
 - **Tabellen, codeblokken en admonitions:** afgeronde tabellen (`12px` radius) met koprij (`th`) op `npuls-roze` (`#F4D9DC`) en vette zwarte tekst. Admonitions volgen de Npuls-statuskleuren zonder standaard rood buiten het palet: `info`/`note` = `npuls-blauw` (`#3D68EC` op `#D6E2FD`), `warning` = `npuls-oranje` (`#DD784B` op `#FFE4D8`), `tip`/`success` = `npuls-groen` (`#00AF81` op `#CCEEE6`).
 - **Footer:** `npuls-roze` (`#F4D9DC`) met `2px solid #DD784B` bovenrand en `licht-roze` (`#FAEAEA`) balk voor copyright en vaste links naar Npuls, de CEDA-community (`edu.nl/twt84`) en `ceda@surf.nl`.
-- **MkDocs Material features:** `navigation.tabs`, `navigation.tabs.sticky`, `navigation.sections`, `navigation.indexes`, `navigation.path`, `navigation.top`, `search.highlight`, `search.suggest`, `content.code.copy`, `content.code.annotate`, `content.tabs.link`, `toc.follow`.
+- **Material-features (door Zensical ondersteund):** `navigation.tabs`, `navigation.tabs.sticky`, `navigation.sections`, `navigation.indexes`, `navigation.path`, `navigation.top`, `search.highlight`, `search.suggest`, `content.code.copy`, `content.code.annotate`, `content.tabs.link`, `toc.follow`.
 
 ## Workflow
 
@@ -46,7 +46,7 @@ Controleer wat er al aanwezig is:
 ls -la mkdocs.yml mkdocs.yaml pyproject.toml docs/ .github/workflows/docs.yml 2>/dev/null || true
 ```
 
-- **Bestaat `mkdocs.yml` al?** Lees de huidige `mkdocs.yml`, `docs/index.md` en eventuele `extra.css`. Stel voor om de bestaande site over te zetten naar de CEDA/Npuls-stijl met behoud van de bestaande inhoud en `nav:`.
+- **Bestaat `mkdocs.yml` al?** Lees de huidige `mkdocs.yml`, `docs/index.md` en eventuele `extra.css`. Stel voor om de bestaande site over te zetten naar de CEDA/Npuls-stijl en naar Zensical, met behoud van de bestaande inhoud en `nav:`. Controleer eerst of Zensical alles ondersteunt: `hooks` in `mkdocs.yml` worden niet ondersteund, en plugins buiten [de lijst met ondersteunde plugins](https://zensical.org/docs/compatibility/mkdocs/plugins/) worden stil genegeerd. Meld elk geval aan de gebruiker voordat je verdergaat.
 - **Nieuwe site?** Bepaal of de repository een Python-pakket met `pyproject.toml` is of een losse documentatie-repository zonder `pyproject.toml`.
 
 ### 2. Kort interview
@@ -59,14 +59,14 @@ Stel de ontbrekende vragen in één keer via `AskUserQuestion` (geen vraag over 
 
 ### 3. Bouw het ontwerp op vanuit de gebundelde templates
 
-1. **`mkdocs.yml`:** neem `assets/mkdocs.yml.tpl` als basis. Vul `<site_name>`, `<site_description>` en `<repo>` in, schakel alleen de gevraagde optionele blokken (`mkdocstrings`, `include-markdown`, Mermaid of MathJax) in en zet alle navigatietitels in helder Nederlands.
+1. **`mkdocs.yml`:** neem `assets/mkdocs.yml.tpl` als basis. Vul `<site_name>`, `<site_description>` en `<repo>` in, schakel alleen de gevraagde optionele blokken (`mkdocstrings`, `include-markdown`, Mermaid of MathJax) in en behoud `variant: classic` onder `theme` (bewaart het Material-uiterlijk waar `extra.css` op is gebouwd) en zet alle navigatietitels in helder Nederlands.
 2. **`docs/stylesheets/extra.css`:** kopieer `assets/extra.css` ongewijzigd naar `docs/stylesheets/extra.css`.
 3. **Logo en favicon (`docs/assets/logos/`):** kopieer `npuls_logo.jpg` en `beeldmerk.svg` vanuit `.claude/skills/vormgever-npuls-huisstijl/assets/logos/` naar `docs/assets/logos/`. Is die map lokaal niet aanwezig, haal beide bestanden dan op uit `cedanl/.github` en plaats nooit een lege placeholder.
 4. **Startpagina (`docs/index.md`):** gebruik `assets/index.md.tpl`. Schrijf actief Nederlands volgens de Npuls-schrijfwijzer (`je`/`wij`, geen `u`/`uw`, korte zinnen).
 5. **Dependencies en `.gitignore`:**
    - Voeg `site/` toe aan `.gitignore` als die regel nog ontbreekt.
-   - Heeft de repo een `pyproject.toml`? Voeg dan alleen de `docs`-groep toe (`mkdocs>=1.6.0`, `mkdocs-material>=9.5.0`, `pymdown-extensions>=10.0`, en optioneel `mkdocstrings[python]>=0.26.0` of `mkdocs-include-markdown-plugin`) zonder de rest van `pyproject.toml` te overschrijven.
-6. **GitHub Actions (`.github/workflows/docs.yml`):** gebruik `assets/docs-workflow.yml.tpl` — kies Variant A voor nieuwe Python-projecten (GitHub Pages bron = `GitHub Actions`) of Variant B wanneer een bestaande repo al via een `gh-pages` branch publiceert.
+   - Heeft de repo een `pyproject.toml`? Voeg dan alleen de `docs`-groep toe (`zensical`, vastgepind op een exacte versie omdat Zensical nog pre-1.0 is, en optioneel `mkdocstrings-python`; `mkdocs`, `mkdocs-material`, `pymdown-extensions` en `mkdocs-include-markdown-plugin` zijn niet meer nodig) zonder de rest van `pyproject.toml` te overschrijven.
+6. **GitHub Actions (`.github/workflows/docs.yml`):** gebruik `assets/docs-workflow.yml.tpl` — kies Variant A voor Python-projecten met `pyproject.toml` of Variant B voor een losse docs-repo. Zensical heeft geen `gh-deploy`: publiceren gaat altijd via GitHub Pages met bron `GitHub Actions`. Staat Pages nog op de `gh-pages`-branch (`build_type=legacy`), vraag dan akkoord om de instelling om te zetten voordat de workflow wordt gemerged.
 
 ### 4. Toon de draft en wacht op akkoord
 
@@ -76,7 +76,7 @@ Presenteer welke bestanden worden aangemaakt of bijgewerkt (inclusief de `nav:`-
 
 1. Schrijf de goedgekeurde bestanden weg.
 2. Draai direct de strikte build-controle (zie **Verificatie**) en los eventuele link- of ankerwaarschuwingen op.
-3. Alleen bij Variant A én na akkoord van de gebruiker: controleer via `gh api repos/cedanl/<repo>/pages` of GitHub Pages op `build_type=workflow` staat.
+3. Na akkoord van de gebruiker: controleer via `gh api repos/cedanl/<repo>/pages` of GitHub Pages op `build_type=workflow` staat en zet dat zo nodig om.
 
 ## Let op: houd `docs/index.md` net zo rustig als vervolgpagina's
 
@@ -92,25 +92,24 @@ Voeg geen `scheme: slate` (dark mode) of generieke Material-kleuren (`teal`, `in
 
 ## Let op: zet bronpagina's direct in `docs/`
 
-Zet de Markdown-pagina's zelf in `docs/` (zoals `cedanl/.github` dat sinds #126 doet) in plaats van spiegelbestanden die Markdown uit de hoofdmap insluiten. Links in een ingesloten bestand zijn geschreven vanaf de hoofdmap, maar worden opgelost vanaf de spiegelpagina in `docs/`; ze breken dan in een strikte build (zie `cedanl/.github#124`). Gebruik `include-markdown` alleen voor bestanden die echt in de hoofdmap moeten blijven (zoals `README.md` of `CHANGELOG.md`), zet daarop `rewrite-relative-urls=false` en schrijf de links in dat bestand relatief aan de spiegelpagina. Een strikte build is de toets.
+Zet de Markdown-pagina's zelf in `docs/` (zoals `cedanl/.github` dat sinds #126 doet) in plaats van spiegelbestanden die Markdown uit de hoofdmap insluiten. Links in een ingesloten bestand zijn geschreven vanaf de hoofdmap, maar worden opgelost vanaf de insluitende pagina in `docs/`; ze breken dan in een strikte build (zie `cedanl/.github#124`). Zensical ondersteunt `include-markdown` zonder extra pakket, maar negeert argumenten per invoeging zoals `rewrite-relative-urls` en lost links altijd op vanaf de insluitende pagina. Gebruik het daarom alleen voor bestanden die echt in de hoofdmap moeten blijven (zoals `README.md` of `CHANGELOG.md`) en schrijf de links in dat bestand relatief aan de insluitende pagina. Een strikte build is de toets.
 
 ## Verificatie
 
-`ceda-verifies: measurable` — de opzet is geslaagd wanneer een strikte MkDocs-build zonder fouten of waarschuwingen eindigt (exit code `0`):
+`ceda-verifies: measurable` — de opzet is geslaagd wanneer een strikte Zensical-build zonder fouten of waarschuwingen eindigt (exit code `0`). De uitvoer komt in `site/`, dat in `.gitignore` staat:
 
 ```bash
-# Bij een repo met pyproject.toml:
-uv run mkdocs build --strict -d /tmp/mkdocs-check && rm -rf /tmp/mkdocs-check
+# Bij een repo met pyproject.toml (zensical in de docs-groep):
+uv run --group docs zensical build --strict --clean
 
-# Bij een losse docs-repo zonder pyproject.toml:
-uv run --with mkdocs-material mkdocs build --strict -d /tmp/mkdocs-check && rm -rf /tmp/mkdocs-check
-# (voeg `--with mkdocs-include-markdown-plugin` toe als de site include-markdown gebruikt)
+# Bij een losse docs-repo zonder pyproject.toml (gebruik de vastgepinde versie uit de workflow):
+uv run --with "zensical==<versie>" zensical build --strict --clean
 ```
 
 ## Gebundelde bestanden
 
 - `assets/mkdocs.yml.tpl` — lees altijd bij stap 3: het canonieke `mkdocs.yml`-sjabloon met Npuls-features, plugins en extensies
-- `assets/extra.css` — kopieer altijd bij stap 3 ongewijzigd naar `docs/stylesheets/extra.css`: het volledige Npuls-stylesheet voor MkDocs Material
+- `assets/extra.css` — kopieer altijd bij stap 3 ongewijzigd naar `docs/stylesheets/extra.css`: het volledige Npuls-stylesheet, gebouwd op de Material-klassen die Zensical met `variant: classic` behoudt
 - `assets/index.md.tpl` — lees bij stap 3 wanneer je een nieuwe `docs/index.md` opzet of een drukke startpagina terugbrengt naar de rustige Markdown-stijl
 - `assets/docs-workflow.yml.tpl` — lees bij stap 3 wanneer `.github/workflows/docs.yml` wordt aangemaakt of gesplitst in `build` (`--strict`) + `deploy`
 
