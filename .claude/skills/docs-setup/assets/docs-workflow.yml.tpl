@@ -1,6 +1,6 @@
 # Zensical heeft geen `gh-deploy`: publiceren gaat via GitHub Pages met bron "GitHub Actions"
 # (Settings > Pages > Source). Kies in de stap "Build docs (strict)" Variant A of B.
-name: Docs
+name: Deploy docs
 
 on:
   push:

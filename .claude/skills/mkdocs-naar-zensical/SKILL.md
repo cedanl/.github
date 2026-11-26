@@ -5,7 +5,7 @@ allowed-tools: Read Grep Glob Write Edit Bash AskUserQuestion
 compatibility: Requires python3, uv and gh CLI
 metadata:
   ceda-id: ceda.mkdocs-naar-zensical
-  ceda-version: "0.1.0"
+  ceda-version: "0.2.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -68,7 +68,7 @@ curl -s https://pypi.org/pypi/zensical/json | python3 -I -c "import json,sys;pri
 uv run --with "zensical==<versie>" zensical build --strict --clean
 ```
 
-De uitvoer staat in `site/` (of `site_dir`). Bij een Material-site met eigen CSS: voeg `variant: classic` toe onder `theme:` in `mkdocs.yml`. Dat bewaart het Material-uiterlijk; `modern` is de standaard en kan afwijken. Pas verder **niets** aan: houd `mkdocs.yml` en zet de configuratie niet om naar `zensical.toml` (niet nodig, en Zensical zelf adviseert daarmee te wachten).
+De uitvoer staat in `site/` (of `site_dir`). Bij een Material-site met eigen CSS: voeg `variant: classic` toe onder `theme:` in `mkdocs.yml`; dat bewaart het oude Material-uiterlijk, terwijl `modern` de standaard is en kan afwijken. Dit geldt alleen voor een overstap zonder nieuwe vormgeving. Wil de gebruiker de CEDA/Npuls-stijl, laat `variant` dan weg: de stijl van `docs-setup` (en van de eigen site `https://cedanl.github.io/.github/`) is op de modern-variant gebouwd, met Lucide-iconen per pagina via front matter (bijvoorbeeld `icon: lucide/compass`, `icon: lucide/code-xml`) en een subtiele roze markering van de huidige pagina. Pas verder **niets** aan: houd `mkdocs.yml` en zet de configuratie niet om naar `zensical.toml` (niet nodig, en Zensical zelf adviseert daarmee te wachten).
 
 ### 5. Vergelijk — dit is de eigenlijke toets
 
@@ -78,7 +78,7 @@ python3 -I .claude/skills/mkdocs-naar-zensical/scripts/vergelijk-builds.py /tmp/
 
 Het script vergelijkt pagina's, interne links, bestanden en de zoekindex. Een **fout** (exit 1) betekent dat er iets verdwenen is: los het op of leg het voor. **Waarschuwingen** (titels) zijn verschillen om te beoordelen, geen blokkade.
 
-Het script ziet geen uiterlijk. Maak daarom schermafbeeldingen van de startpagina en minstens één inhoudspagina uit beide builds (`python3 -m http.server -d <map> <poort>` plus een browser) en leg ze naast elkaar. Verschilt het uiterlijk, controleer dan eerst `variant: classic` en daarna de eigen CSS.
+Het script ziet geen uiterlijk. Maak daarom schermafbeeldingen van de startpagina en minstens één inhoudspagina uit beide builds (`python3 -m http.server -d <map> <poort>` plus een browser) en leg ze naast elkaar. Verschilt het uiterlijk, controleer dan eerst de keuze voor `variant` (`classic` of de standaard `modern`) en daarna de eigen CSS. Gaat het om de CEDA/Npuls-stijl, vergelijk dan met de live site [https://cedanl.github.io/.github/](https://cedanl.github.io/.github/).
 
 ### 6. Zet CI en publicatie om
 
@@ -116,7 +116,7 @@ Niet ondersteund in `zensical build`: `--site-dir`, `--theme`, `--use-directory-
 
 ## Let op: de overstap blijft terug te draaien
 
-Houd `mkdocs.yml` in plaats van het om te zetten naar `zensical.toml`. MkDocs bouwt de site dan nog steeds, ook met `variant: classic` (getest met een strikte MkDocs-build): `git revert` van de PR en een Pages-bron terug naar de branch volstaan. Een omzetting naar `zensical.toml` maakt dat vangnet kapot zonder dat de overstap er iets door wint.
+Houd `mkdocs.yml` in plaats van het om te zetten naar `zensical.toml`. MkDocs bouwt de site dan nog steeds, ook met `variant: classic` of zonder `variant` (getest met een strikte MkDocs-build): `git revert` van de PR en een Pages-bron terug naar de branch volstaan. Een omzetting naar `zensical.toml` maakt dat vangnet kapot zonder dat de overstap er iets door wint.
 
 ## Let op: Zensical is pre-1.0
 
@@ -135,7 +135,7 @@ uv run --with "zensical==<versie>" zensical build --strict --clean
 python3 -I .claude/skills/mkdocs-naar-zensical/scripts/vergelijk-builds.py /tmp/docs-mkdocs site
 ```
 
-Daarnaast heeft een mens de schermafbeeldingen uit stap 5 gezien en bevestigd dat de site online staat na de Pages-omzetting.
+Controleer de live site met `curl`: de pagina verwijst naar `stylesheets/extra.css` en `logos/npuls_logo.jpg`, heeft de generator-tag van `zensical`, en `stylesheets/extra.css` bevat `roze-subtiel` (alleen bij de CEDA/Npuls-stijl). Daarnaast heeft een mens de schermafbeeldingen uit stap 5 gezien en bevestigd dat de site online staat na de Pages-omzetting.
 
 ## Gebundelde bestanden
 
@@ -145,4 +145,4 @@ Daarnaast heeft een mens de schermafbeeldingen uit stap 5 gezien en bevestigd da
 
 - Wijzig niets aan de Pages-instelling, de `gh-pages`-branch of de merge zonder expliciet akkoord van de gebruiker; dat zijn instellingen en acties buiten de code.
 - Migreer één site per keer en toon de uitkomst van stap 2 en 5 voordat je verdergaat.
-- Deze skill zet een bestaande site over zonder de vormgeving te veranderen. Voor een nieuwe site, of om een site in de Npuls-huisstijl te zetten, is er `docs-setup`.
+- Deze skill zet een bestaande site over zonder de vormgeving te veranderen. Voor een nieuwe site, of om een site in de Npuls-huisstijl te zetten (modern-variant, iconen, roze markering), is er `docs-setup`.

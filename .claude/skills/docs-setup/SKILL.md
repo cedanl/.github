@@ -5,7 +5,7 @@ allowed-tools: Read Grep Glob Write Edit Bash AskUserQuestion
 compatibility: Requires python3 and uv (and gh CLI when configuring GitHub Pages)
 metadata:
   ceda-id: ceda.docs-setup
-  ceda-version: "1.0.0"
+  ceda-version: "1.1.0"
   ceda-type: workflow
   ceda-subtype: ""
   ceda-origin: own
@@ -32,7 +32,11 @@ Elke CEDA-docssite deelt exact dezelfde rustige opzet en Npuls-tokens (bron: `.c
 - **Typografie en links:** `'General Sans', 'Plus Jakarta Sans', system-ui, sans-serif` (geladen via Google Fonts; nooit Inter). Links in de tekst in `npuls-blauw` (`#3D68EC`) met hover-markering in `licht-geel` (`#FCF5D4`). Zichtbare toetsenbordfocus (`3px solid #3D68EC`).
 - **Tabellen, codeblokken en admonitions:** afgeronde tabellen (`12px` radius) met koprij (`th`) op `npuls-roze` (`#F4D9DC`) en vette zwarte tekst. Admonitions volgen de Npuls-statuskleuren zonder standaard rood buiten het palet: `info`/`note` = `npuls-blauw` (`#3D68EC` op `#D6E2FD`), `warning` = `npuls-oranje` (`#DD784B` op `#FFE4D8`), `tip`/`success` = `npuls-groen` (`#00AF81` op `#CCEEE6`).
 - **Footer:** `npuls-roze` (`#F4D9DC`) met `2px solid #DD784B` bovenrand en `licht-roze` (`#FAEAEA`) balk voor copyright en vaste links naar Npuls, de CEDA-community (`edu.nl/twt84`) en `ceda@surf.nl`.
-- **Material-features (door Zensical ondersteund):** `navigation.tabs`, `navigation.tabs.sticky`, `navigation.sections`, `navigation.indexes`, `navigation.path`, `navigation.top`, `search.highlight`, `search.suggest`, `content.code.copy`, `content.code.annotate`, `content.tabs.link`, `toc.follow`.
+- **Huidige pagina en sectie:** een subtiele roze markering (`--npuls-roze-subtiel`, `rgba(244, 217, 220, 0.55)`) op de actieve pagina en sectie in de zijbalk.
+- **Modern-variant:** Zensical bouwt met de standaard `modern`-variant. Zet dus **geen** `variant:` onder `theme` en gebruik geen `navigation.tabs.sticky`; `extra.css` is op de modern-opzet gebouwd.
+- **Iconen per pagina:** elke pagina met een eigen plek in de zijbalk krijgt via front matter een Lucide-icoon, bijvoorbeeld `icon: lucide/compass`, `icon: lucide/code-xml` of `icon: lucide/shield-check`. Zoek namen op [lucide.dev/icons](https://lucide.dev/icons/) en schrijf ze als `lucide/<naam>`.
+- **Material-features (door Zensical ondersteund):** `navigation.tabs`, `navigation.sections`, `navigation.indexes`, `navigation.path`, `navigation.footer`, `navigation.top`, `search.highlight`, `search.suggest`, `content.action.edit` (met `edit_uri: edit/main/docs/`), `content.code.copy`, `content.code.select`, `content.code.annotate`, `content.tabs.link`, `content.tooltips` en `toc.follow`.
+- **Markdown-extensies:** naast `attr_list`, `md_in_html`, `tables`, `admonition`, `pymdownx.*` en `toc` ook `abbr` en emoji via `zensical.extensions.emoji` (niet `material.extensions.emoji`).
 
 ## Workflow
 
@@ -59,10 +63,10 @@ Stel de ontbrekende vragen in één keer via `AskUserQuestion` (geen vraag over 
 
 ### 3. Bouw het ontwerp op vanuit de gebundelde templates
 
-1. **`mkdocs.yml`:** neem `assets/mkdocs.yml.tpl` als basis. Vul `<site_name>`, `<site_description>` en `<repo>` in, schakel alleen de gevraagde optionele blokken (`mkdocstrings`, `include-markdown`, Mermaid of MathJax) in en behoud `variant: classic` onder `theme` (bewaart het Material-uiterlijk waar `extra.css` op is gebouwd) en zet alle navigatietitels in helder Nederlands.
+1. **`mkdocs.yml`:** neem `assets/mkdocs.yml.tpl` als basis. Vul `<site_name>`, `<site_description>` en `<repo>` in (`edit_uri` blijft `edit/main/docs/`, tenzij de standaardbranch anders heet), schakel alleen de gevraagde optionele blokken (`mkdocstrings`, `include-markdown`, Mermaid of MathJax) in, voeg geen `variant:` toe onder `theme` en zet alle navigatietitels in helder Nederlands.
 2. **`docs/stylesheets/extra.css`:** kopieer `assets/extra.css` ongewijzigd naar `docs/stylesheets/extra.css`.
 3. **Logo en favicon (`docs/assets/logos/`):** kopieer `assets/logos/npuls_logo.jpg` en `assets/logos/beeldmerk.svg` uit deze skill naar `docs/assets/logos/`. Plaats nooit een lege placeholder.
-4. **Startpagina (`docs/index.md`):** gebruik `assets/index.md.tpl`. Schrijf actief Nederlands volgens de Npuls-schrijfwijzer (`je`/`wij`, geen `u`/`uw`, korte zinnen).
+4. **Startpagina (`docs/index.md`):** gebruik `assets/index.md.tpl` (met `icon: lucide/house` in de front matter). Geef elke andere pagina in `nav:` zelf een passend `icon: lucide/<naam>` in de front matter. Schrijf actief Nederlands volgens de Npuls-schrijfwijzer (`je`/`wij`, geen `u`/`uw`, korte zinnen).
 5. **Dependencies en `.gitignore`:**
    - Voeg `site/` toe aan `.gitignore` als die regel nog ontbreekt.
    - Heeft de repo een `pyproject.toml`? Voeg dan alleen de `docs`-groep toe (`zensical`, vastgepind op een exacte versie omdat Zensical nog pre-1.0 is, en optioneel `mkdocstrings-python`; `mkdocs`, `mkdocs-material`, `pymdown-extensions` en `mkdocs-include-markdown-plugin` zijn niet meer nodig) zonder de rest van `pyproject.toml` te overschrijven.
@@ -77,6 +81,7 @@ Presenteer welke bestanden worden aangemaakt of bijgewerkt (inclusief de `nav:`-
 1. Schrijf de goedgekeurde bestanden weg.
 2. Draai direct de strikte build-controle (zie **Verificatie**) en los eventuele link- of ankerwaarschuwingen op.
 3. Na akkoord van de gebruiker: controleer via `gh api repos/cedanl/<repo>/pages` of GitHub Pages op `build_type=workflow` staat en zet dat zo nodig om.
+4. Vergelijk de gebouwde site na de eerste deploy met de live voorbeeldsite [https://cedanl.github.io/.github/](https://cedanl.github.io/.github/): zelfde header, tabbladen, zijbalkiconen en roze markering van de huidige pagina.
 
 ## Let op: houd `docs/index.md` net zo rustig als vervolgpagina's
 
@@ -106,10 +111,22 @@ uv run --group docs zensical build --strict --clean
 uv run --with "zensical==<versie>" zensical build --strict --clean
 ```
 
+Controleer daarna de live site (vervang `<url>` door de site van de repo; voor het voorbeeld `https://cedanl.github.io/.github/`). Alle vier moeten slagen:
+
+```bash
+U=<url>
+curl -s "$U" | grep -c 'stylesheets/extra.css'            # >= 1
+curl -s "$U" | grep -c 'logos/npuls_logo.jpg'             # >= 1
+curl -s "$U" | grep -o '<meta name="generator" content="zensical[^"]*"'
+curl -s "${U}stylesheets/extra.css" | grep -c 'roze-subtiel'   # >= 1
+```
+
+Open de pagina ook naast [https://cedanl.github.io/.github/](https://cedanl.github.io/.github/): de eigen site van CEDA is het leidende ontwerp. Wijkt jouw site af, werk dan `extra.css` en `mkdocs.yml` bij vanuit die site en niet andersom.
+
 ## Gebundelde bestanden
 
 - `assets/mkdocs.yml.tpl` — lees altijd bij stap 3: het canonieke `mkdocs.yml`-sjabloon met Npuls-features, plugins en extensies
-- `assets/extra.css` — kopieer altijd bij stap 3 ongewijzigd naar `docs/stylesheets/extra.css`: het volledige Npuls-stylesheet, gebouwd op de Material-klassen die Zensical met `variant: classic` behoudt
+- `assets/extra.css` — kopieer altijd bij stap 3 ongewijzigd naar `docs/stylesheets/extra.css`: het volledige Npuls-stylesheet, identiek aan `docs/stylesheets/extra.css` in `cedanl/.github` (modern-variant, iconen en roze markering van de huidige pagina)
 - `assets/index.md.tpl` — lees bij stap 3 wanneer je een nieuwe `docs/index.md` opzet of een drukke startpagina terugbrengt naar de rustige Markdown-stijl
 - `assets/logos/npuls_logo.jpg` en `assets/logos/beeldmerk.svg` — kopieer bij stap 3 naar `docs/assets/logos/`: de vaste header-afbeelding en favicon (de JPG heeft een `#F3D9DC`-achtergrond die naadloos op `npuls-roze` valt)
 - `assets/docs-workflow.yml.tpl` — lees bij stap 3 wanneer `.github/workflows/docs.yml` wordt aangemaakt of gesplitst in `build` (`--strict`) + `deploy`

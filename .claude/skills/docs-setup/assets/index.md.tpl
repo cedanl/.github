@@ -1,3 +1,7 @@
+---
+icon: lucide/house
+---
+
 # <site_name>
 
 <site_description>

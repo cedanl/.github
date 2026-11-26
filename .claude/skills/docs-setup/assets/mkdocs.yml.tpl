@@ -3,28 +3,30 @@ site_url: https://cedanl.github.io/<repo>/
 site_description: <site_description>
 repo_url: https://github.com/cedanl/<repo>
 repo_name: cedanl/<repo>
+edit_uri: edit/main/docs/
 
 docs_dir: docs
 
 theme:
   name: material
-  # Zensical: classic bewaart het Material-uiterlijk waar extra.css op is gebouwd
-  variant: classic
   language: nl
   logo: assets/logos/npuls_logo.jpg
   favicon: assets/logos/beeldmerk.svg
   features:
     - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.sections
     - navigation.indexes
     - navigation.path
+    - navigation.footer
     - navigation.top
     - search.highlight
     - search.suggest
+    - content.action.edit
     - content.code.copy
+    - content.code.select
     - content.code.annotate
     - content.tabs.link
+    - content.tooltips
     - toc.follow
   palette:
     - scheme: default
@@ -68,6 +70,7 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - tables
+  - abbr
   - admonition
   - pymdownx.details
   - pymdownx.highlight:
@@ -84,8 +87,8 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:zensical.extensions.emoji.twemoji
+      emoji_generator: !!python/name:zensical.extensions.emoji.to_svg
   # Voeg toe als MathJax gewenst is (samen met extra_javascript):
   # - pymdownx.arithmatex:
   #     generic: true
