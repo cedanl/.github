@@ -40,7 +40,7 @@ explicitly for a full runbook, or read relevant sections inline as needed.
 
 - **Namespace:** `services-<tenant>` (e.g., `services-voxpop`, `services-ceda-app`)
 - **Helm release:** `<tenant>` or `<tenant>-<component>` (e.g., `voxpop`, `voxpop-migrations`)
-- **GitLab project:** under `git.ia.surf.nl/surf-internal/npuls/ceda/<tenant>`
+- **GitLab project:** under `git.sdp.surf.nl/surf-internal/npuls/ceda/<tenant>`
 - **Flux Kustomization:** `<tenant>-sync` (watches the config repo for `manifests/<env>` changes)
 
 ### Config repo structure (standard)
@@ -138,12 +138,12 @@ kubectl oidc_login get-token
 ### Setup
 
 ```bash
-# Login to git.ia.surf.nl (one-time)
-glab auth login --hostname git.ia.surf.nl
+# Login to git.sdp.surf.nl (one-time)
+glab auth login --hostname git.sdp.surf.nl
 
 # Prompted for:
 # 1. Protocol: https
-# 2. Token: generate at https://git.ia.surf.nl/-/user_settings/personal_access_tokens
+# 2. Token: generate at https://git.sdp.surf.nl/-/user_settings/personal_access_tokens
 #    (scopes: api, write_repository)
 # 3. Git auth: yes
 
@@ -155,28 +155,29 @@ glab auth status
 
 ```bash
 # List all groups you belong to
-glab api --hostname git.ia.surf.nl "/groups" | jq '.[] | {id, name, path}'
+glab api --hostname git.sdp.surf.nl "/groups" | jq '.[] | {id, name, path}'
 
-# List all projects in a group
-glab api --hostname git.ia.surf.nl "/groups/4/projects" | jq '.[] | {id, name, path_with_namespace}'
+# List all projects in a group (2619 = surf-internal/npuls/ceda; look up other group ids with the call above)
+glab api --hostname git.sdp.surf.nl "/groups/2619/projects" | jq '.[] | {id, name, path_with_namespace}'
 
-# Get open MRs in a project
-glab api --hostname git.ia.surf.nl "/projects/5388/merge_requests?state=opened" | jq '.[] | {iid, title, web_url}'
+# Get open MRs in a project (<project-id> = numeric id from the call above, or the URL-encoded path
+# e.g. surf-internal%2Fnpuls%2Fceda%2F1cijfer-ho)
+glab api --hostname git.sdp.surf.nl "/projects/<project-id>/merge_requests?state=opened" | jq '.[] | {iid, title, web_url}'
 
 # Get pipeline status
-glab api --hostname git.ia.surf.nl "/projects/5388/pipelines?per_page=5&order_by=id&sort=desc" | jq '.[] | {id, status, ref}'
+glab api --hostname git.sdp.surf.nl "/projects/<project-id>/pipelines?per_page=5&order_by=id&sort=desc" | jq '.[] | {id, status, ref}'
 
 # Get environments
-glab api --hostname git.ia.surf.nl "/projects/5388/environments" | jq '.[] | {id, name, state}'
+glab api --hostname git.sdp.surf.nl "/projects/<project-id>/environments" | jq '.[] | {id, name, state}'
 ```
 
-**Note:** Always use `--hostname git.ia.surf.nl` to avoid falling back to gitlab.com.
+**Note:** Always use `--hostname git.sdp.surf.nl` to avoid falling back to gitlab.com.
 
 ### Troubleshooting glab
 
 | Error | Fix |
 |-------|-----|
-| "404 Project Not Found" | glab defaulted to gitlab.com; run `glab config set host git.ia.surf.nl` |
+| "404 Project Not Found" | glab defaulted to gitlab.com; run `glab config set host git.sdp.surf.nl` |
 | "401 Unauthorized" | Token expired; regenerate at personal_access_tokens; re-run `glab auth login` |
 | Missing scopes | Token doesn't have `api` + `write_repository`; regenerate with correct scopes |
 

@@ -238,7 +238,7 @@ Trigger a new build in the GitLab pipeline:
 Check GitLab audit logs and Kubernetes audit logs for successful namespace operations:
 ```bash
 # GitLab
-glab api --hostname git.ia.surf.nl "/events" | jq '.[] | {created_at, action, resource_type}'
+glab api --hostname git.sdp.surf.nl "/events" | jq '.[] | {created_at, action, resource_type}'
 
 # Kubernetes
 kubectl logs -n kube-system -l component=audit | grep services-<new-name>
