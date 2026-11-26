@@ -14,6 +14,7 @@ Deze sectie gaat over onze **manier van samenwerken** (doelgroep: het CEDA-kernt
 | [Gebruikersrechten](gebruikersrechten.md) | Verplicht | [@Tomeriko96](https://github.com/Tomeriko96) |
 | [Feedback zonder persoonsgegevens](feedback-zonder-persoonsgegevens.md) | Verplicht | [@Tomeriko96](https://github.com/Tomeriko96) |
 | [Entire — AI-sessies vastleggen](entire.md) | Experiment | [@Tomeriko96](https://github.com/Tomeriko96) |
+| [CEDA-agenda en mail](ceda-agenda-en-mail.md) | Experiment | [@Tomeriko96](https://github.com/Tomeriko96) |
 
 ## Betekenis van de niveaus
 
