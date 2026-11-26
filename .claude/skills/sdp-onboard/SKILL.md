@@ -17,7 +17,8 @@ order (prereqs first):
 
 ## Prereqs / access (docs/access.md)
 - SURF account (`@surf.nl`), on the **SURF VPN (eduVPN)**.
-- GitLab is `https://git.ia.surf.nl/surf-internal/npuls/ceda/` — **not** github.com.
+- GitLab is `https://git.sdp.surf.nl/surf-internal/npuls/ceda/` — **not** github.com.
+  (`git.ia.surf.nl` is the old, archived, read-only instance — don't use it.)
 - SSH: Ed25519 key (`ssh-keygen -t ed25519`), add pubkey to GitLab (Authentication & Signing).
 - Tools (install via your OS package manager — `brew` on macOS, or the Linux
   equivalent): `hadolint`, `yamllint`, `k9s`, `kubectl`, `kubectx`, `kubelogin`,
@@ -26,7 +27,7 @@ order (prereqs first):
 ## 1. Create the GitLab repo (needs SDP-admin merge)
 The repo is declared as **Terraform** in the `surf-internal/gitlab-config` repo:
 ```bash
-git clone git@git.ia.surf.nl:surf-internal/gitlab-config.git
+git clone git@git.sdp.surf.nl:surf-internal/gitlab-config.git
 cd gitlab-config && git checkout -b create_repository_ceda_<app>
 # edit terraform/npuls/ceda/main.tf — add a module block:
 ```
@@ -57,7 +58,7 @@ Infra tweaks (e.g. Ingress port propagation, which environments) may need an MR 
 
 ## 3. Point your code at the new repo
 ```bash
-git remote set-url origin git@git.ia.surf.nl:surf-internal/npuls/ceda/<app>.git
+git remote set-url origin git@git.sdp.surf.nl:surf-internal/npuls/ceda/<app>.git
 ```
 (The runbook has a full rebase dance to start `main` clean when migrating from a
 GitHub repo — follow docs/streamlit-setup.md carefully; don't improvise a
@@ -98,6 +99,18 @@ Flux resource: <app>
 | `staging`      | `.stage.` | `https://<app>.stage.sdp.surf.nl` |
 | `playground`   | `.playground.` | `https://<app>.playground.sdp.surf.nl` |
 | `production`   | (none) | `https://<app>.sdp.surf.nl` |
+
+## Several apps in ONE tenant (monorepo pattern)
+A tenant = one namespace (`services-<tenant>`) and can host many apps. Reference:
+`surf-internal/sdp/templates/monorepo-template` (project 1216; `appone` + `apptwo`).
+Per app: own subdir with `Dockerfile` + `charts/app` + `docker-patch-script.sh`;
+one `docker-pipeline`/`helm-pipeline`/`kubernetes-pipeline` component block per app in
+`.gitlab-ci.yml` (same `tenant_namespace`, per-app `helm_release_name`); per app
+`manifests/<env>/<app>/{helmrelease,kustomization,kustomizeconfig,values}.yaml` with its
+own ingress host; one shared `helmrepo.yaml`. Another Npuls example: `npuls/npuls-web/mini-sites`
+(tenant `mini-sites`, several sites, one chart+values per env). The tenant itself is defined in
+`surf-internal/sdp/infrastructure/kubernetes-clusters` under `services/base/<tenant>/`
+(`namespace.yaml`, `sync.yaml` = HelmRelease of `tenant-template` chart, secrets).
 
 ## Deploy model: Flux + Kustomize (corrects plain-Helm assumptions)
 `manifests/base/` holds Flux `helmrelease.yaml` + `helmrepo.yaml` +
